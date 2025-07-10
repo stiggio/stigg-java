@@ -1,18 +1,18 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.stigg.api.models.v1
+package com.stigg.api.models.v1.customers
 
 import com.stigg.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-internal class V1RetrieveCustomerParamsTest {
+internal class CustomerGetCustomerParamsTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun create() {
-        V1RetrieveCustomerParams.builder()
+        CustomerGetCustomerParams.builder()
             .refId("refId")
             .xApiKey("X-API-KEY")
             .xEnvironmentId("X-ENVIRONMENT-ID")
@@ -23,7 +23,7 @@ internal class V1RetrieveCustomerParamsTest {
     @Test
     fun pathParams() {
         val params =
-            V1RetrieveCustomerParams.builder()
+            CustomerGetCustomerParams.builder()
                 .refId("refId")
                 .xApiKey("X-API-KEY")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
@@ -38,7 +38,7 @@ internal class V1RetrieveCustomerParamsTest {
     @Test
     fun headers() {
         val params =
-            V1RetrieveCustomerParams.builder()
+            CustomerGetCustomerParams.builder()
                 .refId("refId")
                 .xApiKey("X-API-KEY")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
