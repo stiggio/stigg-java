@@ -1,0 +1,49 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.stigg.api.models.v1.customers.subcustomer
+
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.stigg.api.core.jsonMapper
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+
+internal class SubCustomerGetSubCustomerResponseTest {
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun create() {
+        val subCustomerGetSubCustomerResponse =
+            SubCustomerGetSubCustomerResponse.builder()
+                .id("8a201c04-d133-464a-805a-7c8a0ebb509b")
+                .email("john@example.com")
+                .name("John Doe")
+                .build()
+
+        assertThat(subCustomerGetSubCustomerResponse.id())
+            .isEqualTo("8a201c04-d133-464a-805a-7c8a0ebb509b")
+        assertThat(subCustomerGetSubCustomerResponse.email()).contains("john@example.com")
+        assertThat(subCustomerGetSubCustomerResponse.name()).contains("John Doe")
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun roundtrip() {
+        val jsonMapper = jsonMapper()
+        val subCustomerGetSubCustomerResponse =
+            SubCustomerGetSubCustomerResponse.builder()
+                .id("8a201c04-d133-464a-805a-7c8a0ebb509b")
+                .email("john@example.com")
+                .name("John Doe")
+                .build()
+
+        val roundtrippedSubCustomerGetSubCustomerResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(subCustomerGetSubCustomerResponse),
+                jacksonTypeRef<SubCustomerGetSubCustomerResponse>(),
+            )
+
+        assertThat(roundtrippedSubCustomerGetSubCustomerResponse)
+            .isEqualTo(subCustomerGetSubCustomerResponse)
+    }
+}
