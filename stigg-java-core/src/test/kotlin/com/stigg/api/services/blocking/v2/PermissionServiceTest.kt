@@ -1,0 +1,41 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.stigg.api.services.blocking.v2
+
+import com.stigg.api.TestServerExtension
+import com.stigg.api.client.okhttp.StiggOkHttpClient
+import com.stigg.api.core.JsonValue
+import com.stigg.api.models.v2.permissions.PermissionCheckParams
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+
+@ExtendWith(TestServerExtension::class)
+internal class PermissionServiceTest {
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun check() {
+        val client =
+            StiggOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val permissionService = client.v2().permissions()
+
+        val response =
+            permissionService.check(
+                PermissionCheckParams.builder()
+                    .userId("userId")
+                    .addResourcesAndAction(
+                        PermissionCheckParams.ResourcesAndAction.builder()
+                            .action(JsonValue.from("read"))
+                            .resource("product")
+                            .build()
+                    )
+                    .build()
+            )
+
+        response.validate()
+    }
+}
