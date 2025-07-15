@@ -4,7 +4,7 @@ package com.stigg.api.services.async.v2.customers
 
 import com.stigg.api.TestServerExtension
 import com.stigg.api.client.okhttp.StiggOkHttpClientAsync
-import com.stigg.api.models.v2.customers.subcustomer.SubCustomerGetSubCustomerParams
+import com.stigg.api.models.v2.customers.subcustomer.SubCustomerRetrieveParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,7 +14,7 @@ internal class SubCustomerServiceAsyncTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
-    fun getSubCustomer() {
+    fun retrieve() {
         val client =
             StiggOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -22,16 +22,16 @@ internal class SubCustomerServiceAsyncTest {
                 .build()
         val subCustomerServiceAsync = client.v2().customers().subCustomer()
 
-        val responseFuture =
-            subCustomerServiceAsync.getSubCustomer(
-                SubCustomerGetSubCustomerParams.builder()
+        val subCustomerFuture =
+            subCustomerServiceAsync.retrieve(
+                SubCustomerRetrieveParams.builder()
                     .refId("refId")
                     .xApiKey("X-API-KEY")
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val subCustomer = subCustomerFuture.get()
+        subCustomer.validate()
     }
 }

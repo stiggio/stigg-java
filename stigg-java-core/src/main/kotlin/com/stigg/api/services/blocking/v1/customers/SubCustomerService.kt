@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerParams
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerResponse
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveParams
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveResponse
 import java.util.function.Consumer
 
 interface SubCustomerService {
@@ -25,28 +25,26 @@ interface SubCustomerService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubCustomerService
 
     /** Get a single customer by id */
-    fun getSubCustomer(
+    fun retrieve(refId: String, params: SubCustomerRetrieveParams): SubCustomerRetrieveResponse =
+        retrieve(refId, params, RequestOptions.none())
+
+    /** @see [retrieve] */
+    fun retrieve(
         refId: String,
-        params: SubCustomerGetSubCustomerParams,
-    ): SubCustomerGetSubCustomerResponse = getSubCustomer(refId, params, RequestOptions.none())
-
-    /** @see [getSubCustomer] */
-    fun getSubCustomer(
-        refId: String,
-        params: SubCustomerGetSubCustomerParams,
+        params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SubCustomerGetSubCustomerResponse =
-        getSubCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+    ): SubCustomerRetrieveResponse =
+        retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [getSubCustomer] */
-    fun getSubCustomer(params: SubCustomerGetSubCustomerParams): SubCustomerGetSubCustomerResponse =
-        getSubCustomer(params, RequestOptions.none())
+    /** @see [retrieve] */
+    fun retrieve(params: SubCustomerRetrieveParams): SubCustomerRetrieveResponse =
+        retrieve(params, RequestOptions.none())
 
-    /** @see [getSubCustomer] */
-    fun getSubCustomer(
-        params: SubCustomerGetSubCustomerParams,
+    /** @see [retrieve] */
+    fun retrieve(
+        params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SubCustomerGetSubCustomerResponse
+    ): SubCustomerRetrieveResponse
 
     /**
      * A view of [SubCustomerService] that provides access to raw HTTP responses for each method.
@@ -64,36 +62,35 @@ interface SubCustomerService {
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{refId}`, but is otherwise the
-         * same as [SubCustomerService.getSubCustomer].
+         * same as [SubCustomerService.retrieve].
          */
         @MustBeClosed
-        fun getSubCustomer(
+        fun retrieve(
             refId: String,
-            params: SubCustomerGetSubCustomerParams,
-        ): HttpResponseFor<SubCustomerGetSubCustomerResponse> =
-            getSubCustomer(refId, params, RequestOptions.none())
+            params: SubCustomerRetrieveParams,
+        ): HttpResponseFor<SubCustomerRetrieveResponse> =
+            retrieve(refId, params, RequestOptions.none())
 
-        /** @see [getSubCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getSubCustomer(
+        fun retrieve(
             refId: String,
-            params: SubCustomerGetSubCustomerParams,
+            params: SubCustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SubCustomerGetSubCustomerResponse> =
-            getSubCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+        ): HttpResponseFor<SubCustomerRetrieveResponse> =
+            retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [getSubCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getSubCustomer(
-            params: SubCustomerGetSubCustomerParams
-        ): HttpResponseFor<SubCustomerGetSubCustomerResponse> =
-            getSubCustomer(params, RequestOptions.none())
+        fun retrieve(
+            params: SubCustomerRetrieveParams
+        ): HttpResponseFor<SubCustomerRetrieveResponse> = retrieve(params, RequestOptions.none())
 
-        /** @see [getSubCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getSubCustomer(
-            params: SubCustomerGetSubCustomerParams,
+        fun retrieve(
+            params: SubCustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SubCustomerGetSubCustomerResponse>
+        ): HttpResponseFor<SubCustomerRetrieveResponse>
     }
 }

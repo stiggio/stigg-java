@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.stigg.api.models.v1.customers
+package com.stigg.api.models.v1.customers.subcustomer
 
 import com.stigg.api.core.Params
 import com.stigg.api.core.checkRequired
@@ -11,7 +11,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Get a single customer by id */
-class CustomerGetCustomerParams
+class SubCustomerRetrieveParams
 private constructor(
     private val refId: String?,
     private val xApiKey: String,
@@ -35,7 +35,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [CustomerGetCustomerParams].
+         * Returns a mutable builder for constructing an instance of [SubCustomerRetrieveParams].
          *
          * The following fields are required:
          * ```java
@@ -46,7 +46,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [CustomerGetCustomerParams]. */
+    /** A builder for [SubCustomerRetrieveParams]. */
     class Builder internal constructor() {
 
         private var refId: String? = null
@@ -56,12 +56,12 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(customerGetCustomerParams: CustomerGetCustomerParams) = apply {
-            refId = customerGetCustomerParams.refId
-            xApiKey = customerGetCustomerParams.xApiKey
-            xEnvironmentId = customerGetCustomerParams.xEnvironmentId
-            additionalHeaders = customerGetCustomerParams.additionalHeaders.toBuilder()
-            additionalQueryParams = customerGetCustomerParams.additionalQueryParams.toBuilder()
+        internal fun from(subCustomerRetrieveParams: SubCustomerRetrieveParams) = apply {
+            refId = subCustomerRetrieveParams.refId
+            xApiKey = subCustomerRetrieveParams.xApiKey
+            xEnvironmentId = subCustomerRetrieveParams.xEnvironmentId
+            additionalHeaders = subCustomerRetrieveParams.additionalHeaders.toBuilder()
+            additionalQueryParams = subCustomerRetrieveParams.additionalQueryParams.toBuilder()
         }
 
         fun refId(refId: String?) = apply { this.refId = refId }
@@ -172,7 +172,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [CustomerGetCustomerParams].
+         * Returns an immutable instance of [SubCustomerRetrieveParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -184,8 +184,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): CustomerGetCustomerParams =
-            CustomerGetCustomerParams(
+        fun build(): SubCustomerRetrieveParams =
+            SubCustomerRetrieveParams(
                 refId,
                 checkRequired("xApiKey", xApiKey),
                 checkRequired("xEnvironmentId", xEnvironmentId),
@@ -216,11 +216,11 @@ private constructor(
             return true
         }
 
-        return /* spotless:off */ other is CustomerGetCustomerParams && refId == other.refId && xApiKey == other.xApiKey && xEnvironmentId == other.xEnvironmentId && additionalHeaders == other.additionalHeaders && additionalQueryParams == other.additionalQueryParams /* spotless:on */
+        return /* spotless:off */ other is SubCustomerRetrieveParams && refId == other.refId && xApiKey == other.xApiKey && xEnvironmentId == other.xEnvironmentId && additionalHeaders == other.additionalHeaders && additionalQueryParams == other.additionalQueryParams /* spotless:on */
     }
 
     override fun hashCode(): Int = /* spotless:off */ Objects.hash(refId, xApiKey, xEnvironmentId, additionalHeaders, additionalQueryParams) /* spotless:on */
 
     override fun toString() =
-        "CustomerGetCustomerParams{refId=$refId, xApiKey=$xApiKey, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SubCustomerRetrieveParams{refId=$refId, xApiKey=$xApiKey, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

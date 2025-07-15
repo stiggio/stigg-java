@@ -4,7 +4,7 @@ package com.stigg.api.services.blocking.v1.customers
 
 import com.stigg.api.TestServerExtension
 import com.stigg.api.client.okhttp.StiggOkHttpClient
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerParams
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,7 +14,7 @@ internal class SubCustomerServiceTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
-    fun getSubCustomer() {
+    fun retrieve() {
         val client =
             StiggOkHttpClient.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -22,15 +22,15 @@ internal class SubCustomerServiceTest {
                 .build()
         val subCustomerService = client.v1().customers().subCustomer()
 
-        val response =
-            subCustomerService.getSubCustomer(
-                SubCustomerGetSubCustomerParams.builder()
+        val subCustomer =
+            subCustomerService.retrieve(
+                SubCustomerRetrieveParams.builder()
                     .refId("refId")
                     .xApiKey("X-API-KEY")
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
-        response.validate()
+        subCustomer.validate()
     }
 }

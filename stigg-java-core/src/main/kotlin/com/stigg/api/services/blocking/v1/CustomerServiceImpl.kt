@@ -15,8 +15,8 @@ import com.stigg.api.core.http.HttpResponse.Handler
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepare
-import com.stigg.api.models.v1.customers.CustomerGetCustomerParams
-import com.stigg.api.models.v1.customers.CustomerGetCustomerResponse
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams
+import com.stigg.api.models.v1.customers.CustomerRetrieveResponse
 import com.stigg.api.services.blocking.v1.customers.SubCustomerService
 import com.stigg.api.services.blocking.v1.customers.SubCustomerServiceImpl
 import java.util.function.Consumer
@@ -38,12 +38,12 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     override fun subCustomer(): SubCustomerService = subCustomer
 
-    override fun getCustomer(
-        params: CustomerGetCustomerParams,
+    override fun retrieve(
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): CustomerGetCustomerResponse =
+    ): CustomerRetrieveResponse =
         // get /api/v1/customers/{refId}
-        withRawResponse().getCustomer(params, requestOptions).parse()
+        withRawResponse().retrieve(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerService.WithRawResponse {
@@ -63,14 +63,14 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
         override fun subCustomer(): SubCustomerService.WithRawResponse = subCustomer
 
-        private val getCustomerHandler: Handler<CustomerGetCustomerResponse> =
-            jsonHandler<CustomerGetCustomerResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerRetrieveResponse> =
+            jsonHandler<CustomerRetrieveResponse>(clientOptions.jsonMapper)
                 .withErrorHandler(errorHandler)
 
-        override fun getCustomer(
-            params: CustomerGetCustomerParams,
+        override fun retrieve(
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerGetCustomerResponse> {
+        ): HttpResponseFor<CustomerRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("refId", params.refId().getOrNull())
@@ -85,7 +85,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return response.parseable {
                 response
-                    .use { getCustomerHandler.handle(it) }
+                    .use { retrieveHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

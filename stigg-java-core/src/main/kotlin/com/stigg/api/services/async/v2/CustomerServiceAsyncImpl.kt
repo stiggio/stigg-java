@@ -15,8 +15,8 @@ import com.stigg.api.core.http.HttpResponse.Handler
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepareAsync
-import com.stigg.api.models.v2.customers.CustomerGetCustomerParams
-import com.stigg.api.models.v2.customers.CustomerGetCustomerResponse
+import com.stigg.api.models.v2.customers.CustomerRetrieveParams
+import com.stigg.api.models.v2.customers.CustomerRetrieveResponse
 import com.stigg.api.services.async.v2.customers.SubCustomerServiceAsync
 import com.stigg.api.services.async.v2.customers.SubCustomerServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -41,12 +41,12 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
     override fun subCustomer(): SubCustomerServiceAsync = subCustomer
 
-    override fun getCustomer(
-        params: CustomerGetCustomerParams,
+    override fun retrieve(
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<CustomerGetCustomerResponse> =
+    ): CompletableFuture<CustomerRetrieveResponse> =
         // get /api/v1/customers/{refId}
-        withRawResponse().getCustomer(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerServiceAsync.WithRawResponse {
@@ -66,14 +66,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
         override fun subCustomer(): SubCustomerServiceAsync.WithRawResponse = subCustomer
 
-        private val getCustomerHandler: Handler<CustomerGetCustomerResponse> =
-            jsonHandler<CustomerGetCustomerResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerRetrieveResponse> =
+            jsonHandler<CustomerRetrieveResponse>(clientOptions.jsonMapper)
                 .withErrorHandler(errorHandler)
 
-        override fun getCustomer(
-            params: CustomerGetCustomerParams,
+        override fun retrieve(
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CustomerGetCustomerResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("refId", params.refId().getOrNull())
@@ -90,7 +90,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                 .thenApply { response ->
                     response.parseable {
                         response
-                            .use { getCustomerHandler.handle(it) }
+                            .use { retrieveHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
