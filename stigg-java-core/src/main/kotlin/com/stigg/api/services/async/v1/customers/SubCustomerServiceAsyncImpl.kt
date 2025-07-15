@@ -15,8 +15,8 @@ import com.stigg.api.core.http.HttpResponse.Handler
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepareAsync
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerParams
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerResponse
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveParams
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -33,12 +33,12 @@ class SubCustomerServiceAsyncImpl internal constructor(private val clientOptions
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubCustomerServiceAsync =
         SubCustomerServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun getSubCustomer(
-        params: SubCustomerGetSubCustomerParams,
+    override fun retrieve(
+        params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubCustomerGetSubCustomerResponse> =
+    ): CompletableFuture<SubCustomerRetrieveResponse> =
         // get /api/v1/customers/{refId}
-        withRawResponse().getSubCustomer(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SubCustomerServiceAsync.WithRawResponse {
@@ -52,14 +52,14 @@ class SubCustomerServiceAsyncImpl internal constructor(private val clientOptions
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val getSubCustomerHandler: Handler<SubCustomerGetSubCustomerResponse> =
-            jsonHandler<SubCustomerGetSubCustomerResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<SubCustomerRetrieveResponse> =
+            jsonHandler<SubCustomerRetrieveResponse>(clientOptions.jsonMapper)
                 .withErrorHandler(errorHandler)
 
-        override fun getSubCustomer(
-            params: SubCustomerGetSubCustomerParams,
+        override fun retrieve(
+            params: SubCustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubCustomerGetSubCustomerResponse>> {
+        ): CompletableFuture<HttpResponseFor<SubCustomerRetrieveResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("refId", params.refId().getOrNull())
@@ -76,7 +76,7 @@ class SubCustomerServiceAsyncImpl internal constructor(private val clientOptions
                 .thenApply { response ->
                     response.parseable {
                         response
-                            .use { getSubCustomerHandler.handle(it) }
+                            .use { retrieveHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

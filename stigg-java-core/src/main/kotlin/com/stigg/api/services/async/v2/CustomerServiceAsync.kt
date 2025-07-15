@@ -5,8 +5,8 @@ package com.stigg.api.services.async.v2
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
-import com.stigg.api.models.v2.customers.CustomerGetCustomerParams
-import com.stigg.api.models.v2.customers.CustomerGetCustomerResponse
+import com.stigg.api.models.v2.customers.CustomerRetrieveParams
+import com.stigg.api.models.v2.customers.CustomerRetrieveResponse
 import com.stigg.api.services.async.v2.customers.SubCustomerServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -28,30 +28,28 @@ interface CustomerServiceAsync {
     fun subCustomer(): SubCustomerServiceAsync
 
     /** Get a single customer by id */
-    fun getCustomer(
+    fun retrieve(
         refId: String,
-        params: CustomerGetCustomerParams,
-    ): CompletableFuture<CustomerGetCustomerResponse> =
-        getCustomer(refId, params, RequestOptions.none())
+        params: CustomerRetrieveParams,
+    ): CompletableFuture<CustomerRetrieveResponse> = retrieve(refId, params, RequestOptions.none())
 
-    /** @see [getCustomer] */
-    fun getCustomer(
+    /** @see [retrieve] */
+    fun retrieve(
         refId: String,
-        params: CustomerGetCustomerParams,
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CustomerGetCustomerResponse> =
-        getCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+    ): CompletableFuture<CustomerRetrieveResponse> =
+        retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [getCustomer] */
-    fun getCustomer(
-        params: CustomerGetCustomerParams
-    ): CompletableFuture<CustomerGetCustomerResponse> = getCustomer(params, RequestOptions.none())
+    /** @see [retrieve] */
+    fun retrieve(params: CustomerRetrieveParams): CompletableFuture<CustomerRetrieveResponse> =
+        retrieve(params, RequestOptions.none())
 
-    /** @see [getCustomer] */
-    fun getCustomer(
-        params: CustomerGetCustomerParams,
+    /** @see [retrieve] */
+    fun retrieve(
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CustomerGetCustomerResponse>
+    ): CompletableFuture<CustomerRetrieveResponse>
 
     /**
      * A view of [CustomerServiceAsync] that provides access to raw HTTP responses for each method.
@@ -71,32 +69,32 @@ interface CustomerServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{refId}`, but is otherwise the
-         * same as [CustomerServiceAsync.getCustomer].
+         * same as [CustomerServiceAsync.retrieve].
          */
-        fun getCustomer(
+        fun retrieve(
             refId: String,
-            params: CustomerGetCustomerParams,
-        ): CompletableFuture<HttpResponseFor<CustomerGetCustomerResponse>> =
-            getCustomer(refId, params, RequestOptions.none())
+            params: CustomerRetrieveParams,
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveResponse>> =
+            retrieve(refId, params, RequestOptions.none())
 
-        /** @see [getCustomer] */
-        fun getCustomer(
+        /** @see [retrieve] */
+        fun retrieve(
             refId: String,
-            params: CustomerGetCustomerParams,
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CustomerGetCustomerResponse>> =
-            getCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveResponse>> =
+            retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [getCustomer] */
-        fun getCustomer(
-            params: CustomerGetCustomerParams
-        ): CompletableFuture<HttpResponseFor<CustomerGetCustomerResponse>> =
-            getCustomer(params, RequestOptions.none())
+        /** @see [retrieve] */
+        fun retrieve(
+            params: CustomerRetrieveParams
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveResponse>> =
+            retrieve(params, RequestOptions.none())
 
-        /** @see [getCustomer] */
-        fun getCustomer(
-            params: CustomerGetCustomerParams,
+        /** @see [retrieve] */
+        fun retrieve(
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CustomerGetCustomerResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveResponse>>
     }
 }

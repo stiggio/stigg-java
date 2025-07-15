@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
-import com.stigg.api.models.v2.customers.CustomerGetCustomerParams
-import com.stigg.api.models.v2.customers.CustomerGetCustomerResponse
+import com.stigg.api.models.v2.customers.CustomerRetrieveParams
+import com.stigg.api.models.v2.customers.CustomerRetrieveResponse
 import com.stigg.api.services.blocking.v2.customers.SubCustomerService
 import java.util.function.Consumer
 
@@ -28,26 +28,25 @@ interface CustomerService {
     fun subCustomer(): SubCustomerService
 
     /** Get a single customer by id */
-    fun getCustomer(refId: String, params: CustomerGetCustomerParams): CustomerGetCustomerResponse =
-        getCustomer(refId, params, RequestOptions.none())
+    fun retrieve(refId: String, params: CustomerRetrieveParams): CustomerRetrieveResponse =
+        retrieve(refId, params, RequestOptions.none())
 
-    /** @see [getCustomer] */
-    fun getCustomer(
+    /** @see [retrieve] */
+    fun retrieve(
         refId: String,
-        params: CustomerGetCustomerParams,
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerGetCustomerResponse =
-        getCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+    ): CustomerRetrieveResponse = retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [getCustomer] */
-    fun getCustomer(params: CustomerGetCustomerParams): CustomerGetCustomerResponse =
-        getCustomer(params, RequestOptions.none())
+    /** @see [retrieve] */
+    fun retrieve(params: CustomerRetrieveParams): CustomerRetrieveResponse =
+        retrieve(params, RequestOptions.none())
 
-    /** @see [getCustomer] */
-    fun getCustomer(
-        params: CustomerGetCustomerParams,
+    /** @see [retrieve] */
+    fun retrieve(
+        params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerGetCustomerResponse
+    ): CustomerRetrieveResponse
 
     /** A view of [CustomerService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -63,35 +62,34 @@ interface CustomerService {
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{refId}`, but is otherwise the
-         * same as [CustomerService.getCustomer].
+         * same as [CustomerService.retrieve].
          */
         @MustBeClosed
-        fun getCustomer(
+        fun retrieve(
             refId: String,
-            params: CustomerGetCustomerParams,
-        ): HttpResponseFor<CustomerGetCustomerResponse> =
-            getCustomer(refId, params, RequestOptions.none())
+            params: CustomerRetrieveParams,
+        ): HttpResponseFor<CustomerRetrieveResponse> =
+            retrieve(refId, params, RequestOptions.none())
 
-        /** @see [getCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getCustomer(
+        fun retrieve(
             refId: String,
-            params: CustomerGetCustomerParams,
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerGetCustomerResponse> =
-            getCustomer(params.toBuilder().refId(refId).build(), requestOptions)
+        ): HttpResponseFor<CustomerRetrieveResponse> =
+            retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [getCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getCustomer(
-            params: CustomerGetCustomerParams
-        ): HttpResponseFor<CustomerGetCustomerResponse> = getCustomer(params, RequestOptions.none())
+        fun retrieve(params: CustomerRetrieveParams): HttpResponseFor<CustomerRetrieveResponse> =
+            retrieve(params, RequestOptions.none())
 
-        /** @see [getCustomer] */
+        /** @see [retrieve] */
         @MustBeClosed
-        fun getCustomer(
-            params: CustomerGetCustomerParams,
+        fun retrieve(
+            params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerGetCustomerResponse>
+        ): HttpResponseFor<CustomerRetrieveResponse>
     }
 }

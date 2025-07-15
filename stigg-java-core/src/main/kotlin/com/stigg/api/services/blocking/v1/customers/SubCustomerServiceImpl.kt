@@ -15,8 +15,8 @@ import com.stigg.api.core.http.HttpResponse.Handler
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepare
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerParams
-import com.stigg.api.models.v1.customers.subcustomer.SubCustomerGetSubCustomerResponse
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveParams
+import com.stigg.api.models.v1.customers.subcustomer.SubCustomerRetrieveResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -32,12 +32,12 @@ class SubCustomerServiceImpl internal constructor(private val clientOptions: Cli
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubCustomerService =
         SubCustomerServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun getSubCustomer(
-        params: SubCustomerGetSubCustomerParams,
+    override fun retrieve(
+        params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): SubCustomerGetSubCustomerResponse =
+    ): SubCustomerRetrieveResponse =
         // get /api/v1/customers/{refId}
-        withRawResponse().getSubCustomer(params, requestOptions).parse()
+        withRawResponse().retrieve(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SubCustomerService.WithRawResponse {
@@ -51,14 +51,14 @@ class SubCustomerServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val getSubCustomerHandler: Handler<SubCustomerGetSubCustomerResponse> =
-            jsonHandler<SubCustomerGetSubCustomerResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<SubCustomerRetrieveResponse> =
+            jsonHandler<SubCustomerRetrieveResponse>(clientOptions.jsonMapper)
                 .withErrorHandler(errorHandler)
 
-        override fun getSubCustomer(
-            params: SubCustomerGetSubCustomerParams,
+        override fun retrieve(
+            params: SubCustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SubCustomerGetSubCustomerResponse> {
+        ): HttpResponseFor<SubCustomerRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("refId", params.refId().getOrNull())
@@ -73,7 +73,7 @@ class SubCustomerServiceImpl internal constructor(private val clientOptions: Cli
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return response.parseable {
                 response
-                    .use { getSubCustomerHandler.handle(it) }
+                    .use { retrieveHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

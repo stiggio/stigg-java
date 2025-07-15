@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.stigg.api.models.v1.customers
+package com.stigg.api.models.v2.customers.subcustomer
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -17,7 +17,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-class CustomerGetCustomerResponse
+class SubCustomerRetrieveResponse
 private constructor(
     private val id: JsonField<String>,
     private val email: JsonField<String>,
@@ -92,7 +92,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [CustomerGetCustomerResponse].
+         * Returns a mutable builder for constructing an instance of [SubCustomerRetrieveResponse].
          *
          * The following fields are required:
          * ```java
@@ -104,7 +104,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [CustomerGetCustomerResponse]. */
+    /** A builder for [SubCustomerRetrieveResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -113,11 +113,11 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(customerGetCustomerResponse: CustomerGetCustomerResponse) = apply {
-            id = customerGetCustomerResponse.id
-            email = customerGetCustomerResponse.email
-            name = customerGetCustomerResponse.name
-            additionalProperties = customerGetCustomerResponse.additionalProperties.toMutableMap()
+        internal fun from(subCustomerRetrieveResponse: SubCustomerRetrieveResponse) = apply {
+            id = subCustomerRetrieveResponse.id
+            email = subCustomerRetrieveResponse.email
+            name = subCustomerRetrieveResponse.name
+            additionalProperties = subCustomerRetrieveResponse.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for the entity */
@@ -179,7 +179,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [CustomerGetCustomerResponse].
+         * Returns an immutable instance of [SubCustomerRetrieveResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -192,8 +192,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): CustomerGetCustomerResponse =
-            CustomerGetCustomerResponse(
+        fun build(): SubCustomerRetrieveResponse =
+            SubCustomerRetrieveResponse(
                 checkRequired("id", id),
                 checkRequired("email", email),
                 checkRequired("name", name),
@@ -203,7 +203,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): CustomerGetCustomerResponse = apply {
+    fun validate(): SubCustomerRetrieveResponse = apply {
         if (validated) {
             return@apply
         }
@@ -238,7 +238,7 @@ private constructor(
             return true
         }
 
-        return /* spotless:off */ other is CustomerGetCustomerResponse && id == other.id && email == other.email && name == other.name && additionalProperties == other.additionalProperties /* spotless:on */
+        return /* spotless:off */ other is SubCustomerRetrieveResponse && id == other.id && email == other.email && name == other.name && additionalProperties == other.additionalProperties /* spotless:on */
     }
 
     /* spotless:off */
@@ -248,5 +248,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerGetCustomerResponse{id=$id, email=$email, name=$name, additionalProperties=$additionalProperties}"
+        "SubCustomerRetrieveResponse{id=$id, email=$email, name=$name, additionalProperties=$additionalProperties}"
 }

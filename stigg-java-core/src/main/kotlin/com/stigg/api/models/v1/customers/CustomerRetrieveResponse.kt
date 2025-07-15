@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.stigg.api.models.v2.customers.subcustomer
+package com.stigg.api.models.v1.customers
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -17,7 +17,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-class SubCustomerGetSubCustomerResponse
+class CustomerRetrieveResponse
 private constructor(
     private val id: JsonField<String>,
     private val email: JsonField<String>,
@@ -92,8 +92,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [SubCustomerGetSubCustomerResponse].
+         * Returns a mutable builder for constructing an instance of [CustomerRetrieveResponse].
          *
          * The following fields are required:
          * ```java
@@ -105,7 +104,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [SubCustomerGetSubCustomerResponse]. */
+    /** A builder for [CustomerRetrieveResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -114,14 +113,12 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(subCustomerGetSubCustomerResponse: SubCustomerGetSubCustomerResponse) =
-            apply {
-                id = subCustomerGetSubCustomerResponse.id
-                email = subCustomerGetSubCustomerResponse.email
-                name = subCustomerGetSubCustomerResponse.name
-                additionalProperties =
-                    subCustomerGetSubCustomerResponse.additionalProperties.toMutableMap()
-            }
+        internal fun from(customerRetrieveResponse: CustomerRetrieveResponse) = apply {
+            id = customerRetrieveResponse.id
+            email = customerRetrieveResponse.email
+            name = customerRetrieveResponse.name
+            additionalProperties = customerRetrieveResponse.additionalProperties.toMutableMap()
+        }
 
         /** Unique identifier for the entity */
         fun id(id: String) = id(JsonField.of(id))
@@ -182,7 +179,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SubCustomerGetSubCustomerResponse].
+         * Returns an immutable instance of [CustomerRetrieveResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -195,8 +192,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SubCustomerGetSubCustomerResponse =
-            SubCustomerGetSubCustomerResponse(
+        fun build(): CustomerRetrieveResponse =
+            CustomerRetrieveResponse(
                 checkRequired("id", id),
                 checkRequired("email", email),
                 checkRequired("name", name),
@@ -206,7 +203,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): SubCustomerGetSubCustomerResponse = apply {
+    fun validate(): CustomerRetrieveResponse = apply {
         if (validated) {
             return@apply
         }
@@ -241,7 +238,7 @@ private constructor(
             return true
         }
 
-        return /* spotless:off */ other is SubCustomerGetSubCustomerResponse && id == other.id && email == other.email && name == other.name && additionalProperties == other.additionalProperties /* spotless:on */
+        return /* spotless:off */ other is CustomerRetrieveResponse && id == other.id && email == other.email && name == other.name && additionalProperties == other.additionalProperties /* spotless:on */
     }
 
     /* spotless:off */
@@ -251,5 +248,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SubCustomerGetSubCustomerResponse{id=$id, email=$email, name=$name, additionalProperties=$additionalProperties}"
+        "CustomerRetrieveResponse{id=$id, email=$email, name=$name, additionalProperties=$additionalProperties}"
 }
