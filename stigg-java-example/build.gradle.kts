@@ -17,5 +17,12 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 application {
-    mainClass = "com.stigg.api.example.Main"
+    // Use `./gradlew :stigg-java-example:run` to run `Main`
+    // Use `./gradlew :stigg-java-example:run -Dexample=Something` to run `SomethingExample`
+    mainClass = "com.stigg.api.example.${
+        if (project.hasProperty("example"))
+            "${project.property("example")}Example"
+        else
+            "Main"
+    }"
 }
