@@ -3,14 +3,14 @@
 package com.stigg.api.services.async.v1
 
 import com.stigg.api.core.ClientOptions
-import com.stigg.api.core.JsonValue
 import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.checkRequired
+import com.stigg.api.core.handlers.errorBodyHandler
 import com.stigg.api.core.handlers.errorHandler
 import com.stigg.api.core.handlers.jsonHandler
-import com.stigg.api.core.handlers.withErrorHandler
 import com.stigg.api.core.http.HttpMethod
 import com.stigg.api.core.http.HttpRequest
+import com.stigg.api.core.http.HttpResponse
 import com.stigg.api.core.http.HttpResponse.Handler
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.core.http.parseable
@@ -51,7 +51,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerServiceAsync.WithRawResponse {
 
-        private val errorHandler: Handler<JsonValue> = errorHandler(clientOptions.jsonMapper)
+        private val errorHandler: Handler<HttpResponse> =
+            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         private val subCustomer: SubCustomerServiceAsync.WithRawResponse by lazy {
             SubCustomerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
@@ -68,7 +69,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
         private val retrieveHandler: Handler<CustomerRetrieveResponse> =
             jsonHandler<CustomerRetrieveResponse>(clientOptions.jsonMapper)
-                .withErrorHandler(errorHandler)
 
         override fun retrieve(
             params: CustomerRetrieveParams,
@@ -88,7 +88,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             return request
                 .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
                 .thenApply { response ->
-                    response.parseable {
+                    errorHandler.handle(response).parseable {
                         response
                             .use { retrieveHandler.handle(it) }
                             .also {
