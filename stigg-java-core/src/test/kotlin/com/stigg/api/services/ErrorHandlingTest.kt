@@ -92,8 +92,70 @@ internal class ErrorHandlingTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
+    fun permissionsCheck400WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(400).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<BadRequestException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(400)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
     fun permissionsCheck401() {
         val permissionService = client.v1().permissions()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(401).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<UnauthorizedException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(401)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun permissionsCheck401WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
         stubFor(
             post(anyUrl())
                 .willReturn(
@@ -154,8 +216,70 @@ internal class ErrorHandlingTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
+    fun permissionsCheck403WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(403).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<PermissionDeniedException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(403)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
     fun permissionsCheck404() {
         val permissionService = client.v1().permissions()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(404).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<NotFoundException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(404)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun permissionsCheck404WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
         stubFor(
             post(anyUrl())
                 .willReturn(
@@ -216,8 +340,70 @@ internal class ErrorHandlingTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
+    fun permissionsCheck422WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(422).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<UnprocessableEntityException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(422)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
     fun permissionsCheck429() {
         val permissionService = client.v1().permissions()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(429).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<RateLimitException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(429)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun permissionsCheck429WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
         stubFor(
             post(anyUrl())
                 .willReturn(
@@ -278,8 +464,70 @@ internal class ErrorHandlingTest {
 
     @Disabled("skipped: tests are disabled for the time being")
     @Test
+    fun permissionsCheck500WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(500).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<InternalServerException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(500)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
     fun permissionsCheck999() {
         val permissionService = client.v1().permissions()
+        stubFor(
+            post(anyUrl())
+                .willReturn(
+                    status(999).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
+                )
+        )
+
+        val e =
+            assertThrows<UnexpectedStatusCodeException> {
+                permissionService.check(
+                    PermissionCheckParams.builder()
+                        .userId("userId")
+                        .addResourcesAndAction(
+                            PermissionCheckParams.ResourcesAndAction.builder()
+                                .action(JsonValue.from("read"))
+                                .resource("product")
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+        assertThat(e.statusCode()).isEqualTo(999)
+        assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
+        assertThat(e.body()).isEqualTo(ERROR_JSON)
+    }
+
+    @Disabled("skipped: tests are disabled for the time being")
+    @Test
+    fun permissionsCheck999WithRawResponse() {
+        val permissionService = client.v1().permissions().withRawResponse()
         stubFor(
             post(anyUrl())
                 .willReturn(
