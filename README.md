@@ -40,7 +40,8 @@ import com.stigg.api.core.JsonValue;
 import com.stigg.api.models.v1.permissions.PermissionCheckParams;
 import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
 
-// Configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+// Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
+// Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClient client = StiggOkHttpClient.fromEnv();
 
 PermissionCheckParams params = PermissionCheckParams.builder()
@@ -55,13 +56,14 @@ PermissionCheckResponse response = client.v1().permissions().check(params);
 
 ## Client configuration
 
-Configure the client using environment variables:
+Configure the client using system properties or environment variables:
 
 ```java
 import com.stigg.api.client.StiggClient;
 import com.stigg.api.client.okhttp.StiggOkHttpClient;
 
-// Configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+// Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
+// Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClient client = StiggOkHttpClient.fromEnv();
 ```
 
@@ -83,7 +85,8 @@ import com.stigg.api.client.StiggClient;
 import com.stigg.api.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
-    // Configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+    // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
+    Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
     .fromEnv()
     .apiKey("My API Key")
     .build();
@@ -91,10 +94,12 @@ StiggClient client = StiggOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | Environment variable | Required | Default value               |
-| --------- | -------------------- | -------- | --------------------------- |
-| `apiKey`  | `STIGG_API_KEY`      | false    | -                           |
-| `baseUrl` | `STIGG_BASE_URL`     | true     | `"https://api.example.com"` |
+| Setter    | System property | Environment variable | Required | Default value               |
+| --------- | --------------- | -------------------- | -------- | --------------------------- |
+| `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | false    | -                           |
+| `baseUrl` | `stigg.baseUrl` | `STIGG_BASE_URL`     | true     | `"https://api.example.com"` |
+
+System properties take precedence over environment variables.
 
 > [!TIP]
 > Don't create more than one client in the same application. Each client has a connection pool and
@@ -141,7 +146,8 @@ import com.stigg.api.models.v1.permissions.PermissionCheckParams;
 import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
 import java.util.concurrent.CompletableFuture;
 
-// Configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+// Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
+// Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClient client = StiggOkHttpClient.fromEnv();
 
 PermissionCheckParams params = PermissionCheckParams.builder()
@@ -164,7 +170,8 @@ import com.stigg.api.models.v1.permissions.PermissionCheckParams;
 import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
 import java.util.concurrent.CompletableFuture;
 
-// Configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+// Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
+// Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClientAsync client = StiggOkHttpClientAsync.fromEnv();
 
 PermissionCheckParams params = PermissionCheckParams.builder()

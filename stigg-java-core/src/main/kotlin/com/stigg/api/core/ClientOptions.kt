@@ -224,8 +224,12 @@ private constructor(
         fun timeout(): Timeout = timeout
 
         fun fromEnv() = apply {
-            System.getenv("STIGG_BASE_URL")?.let { baseUrl(it) }
-            System.getenv("STIGG_API_KEY")?.let { apiKey(it) }
+            (System.getProperty("stigg.baseUrl") ?: System.getenv("STIGG_BASE_URL"))?.let {
+                baseUrl(it)
+            }
+            (System.getProperty("stigg.apiKey") ?: System.getenv("STIGG_API_KEY"))?.let {
+                apiKey(it)
+            }
         }
 
         /**
