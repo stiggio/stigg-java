@@ -11,6 +11,7 @@ configure<PublishingExtension> {
             pom {
                 name.set("Stigg API")
                 description.set("Stigg API")
+                url.set("https://www.github.com/stainless-sdks/stigg-java")
 
                 licenses {
                     license {
