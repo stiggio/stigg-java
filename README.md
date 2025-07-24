@@ -86,7 +86,7 @@ import com.stigg.api.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
-    Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
+    // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
     .fromEnv()
     .apiKey("My API Key")
     .build();
