@@ -28,7 +28,7 @@ interface PermissionService {
     fun check(params: PermissionCheckParams): PermissionCheckResponse =
         check(params, RequestOptions.none())
 
-    /** @see [check] */
+    /** @see check */
     fun check(
         params: PermissionCheckParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -54,7 +54,7 @@ interface PermissionService {
         fun check(params: PermissionCheckParams): HttpResponseFor<PermissionCheckResponse> =
             check(params, RequestOptions.none())
 
-        /** @see [check] */
+        /** @see check */
         @MustBeClosed
         fun check(
             params: PermissionCheckParams,

@@ -31,18 +31,18 @@ interface CustomerService {
     fun retrieve(refId: String, params: CustomerRetrieveParams): CustomerRetrieveResponse =
         retrieve(refId, params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         refId: String,
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerRetrieveResponse = retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(params: CustomerRetrieveParams): CustomerRetrieveResponse =
         retrieve(params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -71,7 +71,7 @@ interface CustomerService {
         ): HttpResponseFor<CustomerRetrieveResponse> =
             retrieve(refId, params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             refId: String,
@@ -80,12 +80,12 @@ interface CustomerService {
         ): HttpResponseFor<CustomerRetrieveResponse> =
             retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(params: CustomerRetrieveParams): HttpResponseFor<CustomerRetrieveResponse> =
             retrieve(params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: CustomerRetrieveParams,

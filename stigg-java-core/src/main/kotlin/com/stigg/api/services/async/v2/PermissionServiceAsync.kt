@@ -28,7 +28,7 @@ interface PermissionServiceAsync {
     fun check(params: PermissionCheckParams): CompletableFuture<PermissionCheckResponse> =
         check(params, RequestOptions.none())
 
-    /** @see [check] */
+    /** @see check */
     fun check(
         params: PermissionCheckParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -58,7 +58,7 @@ interface PermissionServiceAsync {
         ): CompletableFuture<HttpResponseFor<PermissionCheckResponse>> =
             check(params, RequestOptions.none())
 
-        /** @see [check] */
+        /** @see check */
         fun check(
             params: PermissionCheckParams,
             requestOptions: RequestOptions = RequestOptions.none(),
