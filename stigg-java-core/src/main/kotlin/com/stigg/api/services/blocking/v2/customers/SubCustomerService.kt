@@ -28,7 +28,7 @@ interface SubCustomerService {
     fun retrieve(refId: String, params: SubCustomerRetrieveParams): SubCustomerRetrieveResponse =
         retrieve(refId, params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         refId: String,
         params: SubCustomerRetrieveParams,
@@ -36,11 +36,11 @@ interface SubCustomerService {
     ): SubCustomerRetrieveResponse =
         retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(params: SubCustomerRetrieveParams): SubCustomerRetrieveResponse =
         retrieve(params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -71,7 +71,7 @@ interface SubCustomerService {
         ): HttpResponseFor<SubCustomerRetrieveResponse> =
             retrieve(refId, params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             refId: String,
@@ -80,13 +80,13 @@ interface SubCustomerService {
         ): HttpResponseFor<SubCustomerRetrieveResponse> =
             retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: SubCustomerRetrieveParams
         ): HttpResponseFor<SubCustomerRetrieveResponse> = retrieve(params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: SubCustomerRetrieveParams,

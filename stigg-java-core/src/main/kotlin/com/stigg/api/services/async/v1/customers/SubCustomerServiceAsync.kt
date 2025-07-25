@@ -31,7 +31,7 @@ interface SubCustomerServiceAsync {
     ): CompletableFuture<SubCustomerRetrieveResponse> =
         retrieve(refId, params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         refId: String,
         params: SubCustomerRetrieveParams,
@@ -39,12 +39,12 @@ interface SubCustomerServiceAsync {
     ): CompletableFuture<SubCustomerRetrieveResponse> =
         retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         params: SubCustomerRetrieveParams
     ): CompletableFuture<SubCustomerRetrieveResponse> = retrieve(params, RequestOptions.none())
 
-    /** @see [retrieve] */
+    /** @see retrieve */
     fun retrieve(
         params: SubCustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -75,7 +75,7 @@ interface SubCustomerServiceAsync {
         ): CompletableFuture<HttpResponseFor<SubCustomerRetrieveResponse>> =
             retrieve(refId, params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         fun retrieve(
             refId: String,
             params: SubCustomerRetrieveParams,
@@ -83,13 +83,13 @@ interface SubCustomerServiceAsync {
         ): CompletableFuture<HttpResponseFor<SubCustomerRetrieveResponse>> =
             retrieve(params.toBuilder().refId(refId).build(), requestOptions)
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         fun retrieve(
             params: SubCustomerRetrieveParams
         ): CompletableFuture<HttpResponseFor<SubCustomerRetrieveResponse>> =
             retrieve(params, RequestOptions.none())
 
-        /** @see [retrieve] */
+        /** @see retrieve */
         fun retrieve(
             params: SubCustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
