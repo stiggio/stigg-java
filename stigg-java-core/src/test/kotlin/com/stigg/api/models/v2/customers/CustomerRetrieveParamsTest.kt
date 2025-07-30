@@ -4,12 +4,10 @@ package com.stigg.api.models.v2.customers
 
 import com.stigg.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class CustomerRetrieveParamsTest {
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun create() {
         CustomerRetrieveParams.builder()
@@ -19,7 +17,6 @@ internal class CustomerRetrieveParamsTest {
             .build()
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun pathParams() {
         val params =
@@ -34,7 +31,6 @@ internal class CustomerRetrieveParamsTest {
         assertThat(params._pathParam(1)).isEqualTo("")
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun headers() {
         val params =

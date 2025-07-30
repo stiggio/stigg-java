@@ -26,7 +26,6 @@ import com.stigg.api.models.v1.permissions.PermissionCheckParams
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.parallel.ResourceLock
@@ -59,7 +58,6 @@ internal class ErrorHandlingTest {
                 .build()
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck400() {
         val permissionService = client.v1().permissions()
@@ -90,7 +88,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck400WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -121,7 +118,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck401() {
         val permissionService = client.v1().permissions()
@@ -152,7 +148,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck401WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -183,7 +178,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck403() {
         val permissionService = client.v1().permissions()
@@ -214,7 +208,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck403WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -245,7 +238,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck404() {
         val permissionService = client.v1().permissions()
@@ -276,7 +268,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck404WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -307,7 +298,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck422() {
         val permissionService = client.v1().permissions()
@@ -338,7 +328,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck422WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -369,7 +358,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck429() {
         val permissionService = client.v1().permissions()
@@ -400,7 +388,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck429WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -431,7 +418,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck500() {
         val permissionService = client.v1().permissions()
@@ -462,7 +448,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck500WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -493,7 +478,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck999() {
         val permissionService = client.v1().permissions()
@@ -524,7 +508,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheck999WithRawResponse() {
         val permissionService = client.v1().permissions().withRawResponse()
@@ -555,7 +538,6 @@ internal class ErrorHandlingTest {
         assertThat(e.body()).isEqualTo(ERROR_JSON)
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun permissionsCheckInvalidJsonBody() {
         val permissionService = client.v1().permissions()
