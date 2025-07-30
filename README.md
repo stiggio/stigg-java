@@ -239,6 +239,8 @@ The SDK throws custom unchecked exception types:
 
 - [`StiggIoException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggIoException.kt): I/O networking errors.
 
+- [`StiggRetryableException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+
 - [`StiggInvalidDataException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
 - [`StiggException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
