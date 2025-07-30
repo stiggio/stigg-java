@@ -5,12 +5,10 @@ package com.stigg.api.models.v1.permissions
 import com.stigg.api.core.JsonValue
 import com.stigg.api.core.http.QueryParams
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class PermissionCheckParamsTest {
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun create() {
         PermissionCheckParams.builder()
@@ -24,7 +22,6 @@ internal class PermissionCheckParamsTest {
             .build()
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun queryParams() {
         val params =
@@ -43,7 +40,6 @@ internal class PermissionCheckParamsTest {
         assertThat(queryParams).isEqualTo(QueryParams.builder().put("userId", "userId").build())
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
     @Test
     fun body() {
         val params =
