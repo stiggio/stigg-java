@@ -36,7 +36,7 @@ internal class ServiceParamsTest {
                 .build()
     }
 
-    @Disabled("skipped: tests are disabled for the time being")
+    @Disabled("Prism tests are disabled")
     @Test
     fun check() {
         val permissionService = client.v1().permissions()
