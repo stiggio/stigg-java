@@ -185,12 +185,12 @@ private constructor(
             return true
         }
 
-        return /* spotless:off */ other is PermissionCheckResponse && permittedList == other.permittedList && additionalProperties == other.additionalProperties /* spotless:on */
+        return other is PermissionCheckResponse &&
+            permittedList == other.permittedList &&
+            additionalProperties == other.additionalProperties
     }
 
-    /* spotless:off */
     private val hashCode: Int by lazy { Objects.hash(permittedList, additionalProperties) }
-    /* spotless:on */
 
     override fun hashCode(): Int = hashCode
 
