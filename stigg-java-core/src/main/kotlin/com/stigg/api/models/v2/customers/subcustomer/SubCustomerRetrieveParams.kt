@@ -218,10 +218,16 @@ private constructor(
             return true
         }
 
-        return /* spotless:off */ other is SubCustomerRetrieveParams && refId == other.refId && xApiKey == other.xApiKey && xEnvironmentId == other.xEnvironmentId && additionalHeaders == other.additionalHeaders && additionalQueryParams == other.additionalQueryParams /* spotless:on */
+        return other is SubCustomerRetrieveParams &&
+            refId == other.refId &&
+            xApiKey == other.xApiKey &&
+            xEnvironmentId == other.xEnvironmentId &&
+            additionalHeaders == other.additionalHeaders &&
+            additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = /* spotless:off */ Objects.hash(refId, xApiKey, xEnvironmentId, additionalHeaders, additionalQueryParams) /* spotless:on */
+    override fun hashCode(): Int =
+        Objects.hash(refId, xApiKey, xEnvironmentId, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
         "SubCustomerRetrieveParams{refId=$refId, xApiKey=$xApiKey, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
