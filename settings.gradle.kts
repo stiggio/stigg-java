@@ -1,7 +1,14 @@
 rootProject.name = "stigg-java-root"
 
-include("stigg-java")
-include("stigg-java-client-okhttp")
-include("stigg-java-core")
-include("stigg-java-proguard-test")
-include("stigg-java-example")
+val projectNames = rootDir.listFiles()
+    ?.asSequence()
+    .orEmpty()
+    .filter { file ->
+        file.isDirectory &&
+        file.name.startsWith("stigg-java") &&
+        file.listFiles()?.asSequence().orEmpty().any { it.name == "build.gradle.kts" }
+    }
+    .map { it.name }
+    .toList()
+println("projects: $projectNames")
+projectNames.forEach { include(it) }
