@@ -42,7 +42,7 @@ class StiggClientAsyncImpl(private val clientOptions: ClientOptions) : StiggClie
 
     override fun v2(): V2ServiceAsync = v2
 
-    override fun close() = clientOptions.httpClient.close()
+    override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         StiggClientAsync.WithRawResponse {
