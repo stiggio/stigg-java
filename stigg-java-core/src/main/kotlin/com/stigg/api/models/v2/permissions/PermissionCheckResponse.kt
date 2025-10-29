@@ -20,6 +20,7 @@ import kotlin.jvm.optionals.getOrNull
 
 /** Response for checking permissions */
 class PermissionCheckResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val permittedList: JsonField<List<Boolean>>,
     private val additionalProperties: MutableMap<String, JsonValue>,

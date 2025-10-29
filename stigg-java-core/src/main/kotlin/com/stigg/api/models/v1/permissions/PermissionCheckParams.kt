@@ -278,6 +278,7 @@ private constructor(
             .build()
 
     class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val resourcesAndActions: JsonField<List<ResourcesAndAction>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -465,6 +466,7 @@ private constructor(
 
     /** Data transfer object for resource and action pair */
     class ResourcesAndAction
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val action: JsonValue,
         private val resource: JsonField<String>,
