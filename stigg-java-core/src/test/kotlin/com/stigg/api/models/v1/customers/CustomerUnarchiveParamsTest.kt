@@ -5,16 +5,16 @@ package com.stigg.api.models.v1.customers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class CustomerRetrieveParamsTest {
+internal class CustomerUnarchiveParamsTest {
 
     @Test
     fun create() {
-        CustomerRetrieveParams.builder().id("x").build()
+        CustomerUnarchiveParams.builder().id("x").build()
     }
 
     @Test
     fun pathParams() {
-        val params = CustomerRetrieveParams.builder().id("x").build()
+        val params = CustomerUnarchiveParams.builder().id("x").build()
 
         assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param

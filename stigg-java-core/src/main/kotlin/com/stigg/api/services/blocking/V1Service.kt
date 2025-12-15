@@ -4,7 +4,6 @@ package com.stigg.api.services.blocking
 
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.services.blocking.v1.CustomerService
-import com.stigg.api.services.blocking.v1.PermissionService
 import java.util.function.Consumer
 
 interface V1Service {
@@ -23,8 +22,6 @@ interface V1Service {
 
     fun customers(): CustomerService
 
-    fun permissions(): PermissionService
-
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -36,7 +33,5 @@ interface V1Service {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service.WithRawResponse
 
         fun customers(): CustomerService.WithRawResponse
-
-        fun permissions(): PermissionService.WithRawResponse
     }
 }
