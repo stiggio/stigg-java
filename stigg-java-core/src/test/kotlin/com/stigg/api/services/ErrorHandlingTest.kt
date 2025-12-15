@@ -3,7 +3,7 @@
 package com.stigg.api.services
 
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
-import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.status
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
@@ -22,7 +22,6 @@ import com.stigg.api.errors.StiggException
 import com.stigg.api.errors.UnauthorizedException
 import com.stigg.api.errors.UnexpectedStatusCodeException
 import com.stigg.api.errors.UnprocessableEntityException
-import com.stigg.api.models.v1.permissions.PermissionCheckParams
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
@@ -59,29 +58,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck400() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve400() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(400).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<BadRequestException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<BadRequestException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(400)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -89,29 +75,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck400WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve400WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(400).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<BadRequestException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<BadRequestException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(400)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -119,29 +92,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck401() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve401() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(401).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnauthorizedException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnauthorizedException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(401)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -149,29 +109,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck401WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve401WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(401).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnauthorizedException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnauthorizedException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(401)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -179,29 +126,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck403() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve403() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(403).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<PermissionDeniedException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<PermissionDeniedException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(403)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -209,29 +143,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck403WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve403WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(403).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<PermissionDeniedException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<PermissionDeniedException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(403)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -239,29 +160,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck404() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve404() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(404).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<NotFoundException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<NotFoundException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(404)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -269,29 +177,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck404WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve404WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(404).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<NotFoundException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<NotFoundException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(404)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -299,29 +194,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck422() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve422() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(422).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnprocessableEntityException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnprocessableEntityException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(422)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -329,29 +211,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck422WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve422WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(422).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnprocessableEntityException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnprocessableEntityException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(422)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -359,29 +228,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck429() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve429() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(429).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<RateLimitException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<RateLimitException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(429)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -389,29 +245,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck429WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve429WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(429).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<RateLimitException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<RateLimitException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(429)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -419,29 +262,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck500() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve500() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(500).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<InternalServerException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<InternalServerException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(500)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -449,29 +279,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck500WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve500WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(500).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<InternalServerException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<InternalServerException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(500)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -479,29 +296,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck999() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieve999() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(999).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnexpectedStatusCodeException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnexpectedStatusCodeException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(999)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -509,29 +313,16 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheck999WithRawResponse() {
-        val permissionService = client.v1().permissions().withRawResponse()
+    fun customersRetrieve999WithRawResponse() {
+        val customerService = client.v1().customers().withRawResponse()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(
                     status(999).withHeader(HEADER_NAME, HEADER_VALUE).withBody(ERROR_JSON_BYTES)
                 )
         )
 
-        val e =
-            assertThrows<UnexpectedStatusCodeException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<UnexpectedStatusCodeException> { customerService.retrieve("x") }
 
         assertThat(e.statusCode()).isEqualTo(999)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -539,27 +330,14 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun permissionsCheckInvalidJsonBody() {
-        val permissionService = client.v1().permissions()
+    fun customersRetrieveInvalidJsonBody() {
+        val customerService = client.v1().customers()
         stubFor(
-            post(anyUrl())
+            get(anyUrl())
                 .willReturn(status(200).withHeader(HEADER_NAME, HEADER_VALUE).withBody(NOT_JSON))
         )
 
-        val e =
-            assertThrows<StiggException> {
-                permissionService.check(
-                    PermissionCheckParams.builder()
-                        .userId("userId")
-                        .addResourcesAndAction(
-                            PermissionCheckParams.ResourcesAndAction.builder()
-                                .action(JsonValue.from("read"))
-                                .resource("product")
-                                .build()
-                        )
-                        .build()
-                )
-            }
+        val e = assertThrows<StiggException> { customerService.retrieve("x") }
 
         assertThat(e).hasMessage("Error reading response")
     }

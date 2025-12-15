@@ -8,6 +8,7 @@ import com.stigg.api.client.StiggClientImpl
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.core.Sleeper
 import com.stigg.api.core.Timeout
+import com.stigg.api.core.http.AsyncStreamResponse
 import com.stigg.api.core.http.Headers
 import com.stigg.api.core.http.HttpClient
 import com.stigg.api.core.http.QueryParams
@@ -16,6 +17,7 @@ import java.net.Proxy
 import java.time.Clock
 import java.time.Duration
 import java.util.Optional
+import java.util.concurrent.Executor
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
@@ -122,6 +124,17 @@ class StiggOkHttpClient private constructor() {
         fun jsonMapper(jsonMapper: JsonMapper) = apply { clientOptions.jsonMapper(jsonMapper) }
 
         /**
+         * The executor to use for running [AsyncStreamResponse.Handler] callbacks.
+         *
+         * Defaults to a dedicated cached thread pool.
+         *
+         * This class takes ownership of the executor and shuts it down, if possible, when closed.
+         */
+        fun streamHandlerExecutor(streamHandlerExecutor: Executor) = apply {
+            clientOptions.streamHandlerExecutor(streamHandlerExecutor)
+        }
+
+        /**
          * The interface to use for delaying execution, like during retries.
          *
          * This is primarily useful for using fake delays in tests.
@@ -195,10 +208,7 @@ class StiggOkHttpClient private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
-        fun apiKey(apiKey: String?) = apply { clientOptions.apiKey(apiKey) }
-
-        /** Alias for calling [Builder.apiKey] with `apiKey.orElse(null)`. */
-        fun apiKey(apiKey: Optional<String>) = apiKey(apiKey.getOrNull())
+        fun apiKey(apiKey: String) = apply { clientOptions.apiKey(apiKey) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 

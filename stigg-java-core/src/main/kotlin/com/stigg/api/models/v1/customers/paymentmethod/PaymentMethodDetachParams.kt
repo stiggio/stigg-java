@@ -1,23 +1,29 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.stigg.api.models.v1.customers
+package com.stigg.api.models.v1.customers.paymentmethod
 
+import com.stigg.api.core.JsonValue
 import com.stigg.api.core.Params
 import com.stigg.api.core.http.Headers
 import com.stigg.api.core.http.QueryParams
+import com.stigg.api.core.toImmutable
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single Customer by id */
-class CustomerRetrieveParams
+/** Perform payment-method detachment on a Customer */
+class PaymentMethodDetachParams
 private constructor(
     private val id: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
+    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     fun id(): Optional<String> = Optional.ofNullable(id)
+
+    /** Additional body properties to send with the request. */
+    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -29,24 +35,29 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): CustomerRetrieveParams = builder().build()
+        @JvmStatic fun none(): PaymentMethodDetachParams = builder().build()
 
-        /** Returns a mutable builder for constructing an instance of [CustomerRetrieveParams]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [PaymentMethodDetachParams].
+         */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [CustomerRetrieveParams]. */
+    /** A builder for [PaymentMethodDetachParams]. */
     class Builder internal constructor() {
 
         private var id: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
+        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(customerRetrieveParams: CustomerRetrieveParams) = apply {
-            id = customerRetrieveParams.id
-            additionalHeaders = customerRetrieveParams.additionalHeaders.toBuilder()
-            additionalQueryParams = customerRetrieveParams.additionalQueryParams.toBuilder()
+        internal fun from(paymentMethodDetachParams: PaymentMethodDetachParams) = apply {
+            id = paymentMethodDetachParams.id
+            additionalHeaders = paymentMethodDetachParams.additionalHeaders.toBuilder()
+            additionalQueryParams = paymentMethodDetachParams.additionalQueryParams.toBuilder()
+            additionalBodyProperties =
+                paymentMethodDetachParams.additionalBodyProperties.toMutableMap()
         }
 
         fun id(id: String?) = apply { this.id = id }
@@ -152,14 +163,44 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            this.additionalBodyProperties.clear()
+            putAllAdditionalBodyProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            additionalBodyProperties.put(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                this.additionalBodyProperties.putAll(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply {
+            additionalBodyProperties.remove(key)
+        }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            keys.forEach(::removeAdditionalBodyProperty)
+        }
+
         /**
-         * Returns an immutable instance of [CustomerRetrieveParams].
+         * Returns an immutable instance of [PaymentMethodDetachParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): CustomerRetrieveParams =
-            CustomerRetrieveParams(id, additionalHeaders.build(), additionalQueryParams.build())
+        fun build(): PaymentMethodDetachParams =
+            PaymentMethodDetachParams(
+                id,
+                additionalHeaders.build(),
+                additionalQueryParams.build(),
+                additionalBodyProperties.toImmutable(),
+            )
     }
+
+    fun _body(): Optional<Map<String, JsonValue>> =
+        Optional.ofNullable(additionalBodyProperties.ifEmpty { null })
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -176,14 +217,16 @@ private constructor(
             return true
         }
 
-        return other is CustomerRetrieveParams &&
+        return other is PaymentMethodDetachParams &&
             id == other.id &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams
+            additionalQueryParams == other.additionalQueryParams &&
+            additionalBodyProperties == other.additionalBodyProperties
     }
 
-    override fun hashCode(): Int = Objects.hash(id, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(id, additionalHeaders, additionalQueryParams, additionalBodyProperties)
 
     override fun toString() =
-        "CustomerRetrieveParams{id=$id, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PaymentMethodDetachParams{id=$id, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

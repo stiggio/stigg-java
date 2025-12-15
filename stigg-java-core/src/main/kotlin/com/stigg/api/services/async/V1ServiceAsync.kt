@@ -4,7 +4,6 @@ package com.stigg.api.services.async
 
 import com.stigg.api.core.ClientOptions
 import com.stigg.api.services.async.v1.CustomerServiceAsync
-import com.stigg.api.services.async.v1.PermissionServiceAsync
 import java.util.function.Consumer
 
 interface V1ServiceAsync {
@@ -23,8 +22,6 @@ interface V1ServiceAsync {
 
     fun customers(): CustomerServiceAsync
 
-    fun permissions(): PermissionServiceAsync
-
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -36,7 +33,5 @@ interface V1ServiceAsync {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync.WithRawResponse
 
         fun customers(): CustomerServiceAsync.WithRawResponse
-
-        fun permissions(): PermissionServiceAsync.WithRawResponse
     }
 }

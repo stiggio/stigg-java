@@ -4,8 +4,10 @@ package com.stigg.api.proguard
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.stigg.api.client.okhttp.StiggOkHttpClient
+import com.stigg.api.core.JsonValue
 import com.stigg.api.core.jsonMapper
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse
+import com.stigg.api.models.v1.customers.CustomerResponse
+import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -48,21 +50,54 @@ internal class ProGuardCompatibilityTest {
 
         assertThat(client).isNotNull()
         assertThat(client.v1()).isNotNull()
-        assertThat(client.v2()).isNotNull()
     }
 
     @Test
-    fun permissionCheckResponseRoundtrip() {
+    fun customerResponseRoundtrip() {
         val jsonMapper = jsonMapper()
-        val permissionCheckResponse =
-            PermissionCheckResponse.builder().addPermittedList(true).build()
+        val customerResponse =
+            CustomerResponse.builder()
+                .data(
+                    CustomerResponse.Data.builder()
+                        .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .email("dev@stainless.com")
+                        .externalId("externalId")
+                        .name("name")
+                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .defaultPaymentMethod(
+                            CustomerResponse.Data.DefaultPaymentMethod.builder()
+                                .billingId("billingId")
+                                .cardExpiryMonth(0.0)
+                                .cardExpiryYear(0.0)
+                                .cardLast4Digits("cardLast4Digits")
+                                .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
+                                .build()
+                        )
+                        .addIntegration(
+                            CustomerResponse.Data.Integration.builder()
+                                .id("id")
+                                .syncedEntityId("syncedEntityId")
+                                .vendorIdentifier(
+                                    CustomerResponse.Data.Integration.VendorIdentifier.AUTH0
+                                )
+                                .build()
+                        )
+                        .metadata(
+                            CustomerResponse.Data.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
 
-        val roundtrippedPermissionCheckResponse =
+        val roundtrippedCustomerResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(permissionCheckResponse),
-                jacksonTypeRef<PermissionCheckResponse>(),
+                jsonMapper.writeValueAsString(customerResponse),
+                jacksonTypeRef<CustomerResponse>(),
             )
 
-        assertThat(roundtrippedPermissionCheckResponse).isEqualTo(permissionCheckResponse)
+        assertThat(roundtrippedCustomerResponse).isEqualTo(customerResponse)
     }
 }

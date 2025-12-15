@@ -36,22 +36,14 @@ This library requires Java 8 or later.
 ```java
 import com.stigg.api.client.StiggClient;
 import com.stigg.api.client.okhttp.StiggOkHttpClient;
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
 // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClient client = StiggOkHttpClient.fromEnv();
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .userId("REPLACE_ME")
-    .addResourcesAndAction(PermissionCheckParams.ResourcesAndAction.builder()
-        .action(JsonValue.from("read"))
-        .resource("product")
-        .build())
-    .build();
-PermissionCheckResponse response = client.v1().permissions().check(params);
+CustomerResponse customerResponse = client.v1().customers().retrieve("REPLACE_ME");
 ```
 
 ## Client configuration
@@ -96,7 +88,7 @@ See this table for the available options:
 
 | Setter    | System property | Environment variable | Required | Default value               |
 | --------- | --------------- | -------------------- | -------- | --------------------------- |
-| `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | false    | -                           |
+| `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | true     | -                           |
 | `baseUrl` | `stigg.baseUrl` | `STIGG_BASE_URL`     | true     | `"https://api.example.com"` |
 
 System properties take precedence over environment variables.
@@ -124,7 +116,7 @@ The `withOptions()` method does not affect the original client or service.
 
 To send a request to the Stigg API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Java class.
 
-For example, `client.v1().permissions().check(...)` should be called with an instance of `PermissionCheckParams`, and it will return an instance of `PermissionCheckResponse`.
+For example, `client.v1().customers().retrieve(...)` should be called with an instance of `CustomerRetrieveParams`, and it will return an instance of `CustomerResponse`.
 
 ## Immutability
 
@@ -141,23 +133,15 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```java
 import com.stigg.api.client.StiggClient;
 import com.stigg.api.client.okhttp.StiggOkHttpClient;
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
 // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClient client = StiggOkHttpClient.fromEnv();
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .userId("REPLACE_ME")
-    .addResourcesAndAction(PermissionCheckParams.ResourcesAndAction.builder()
-        .action(JsonValue.from("read"))
-        .resource("product")
-        .build())
-    .build();
-CompletableFuture<PermissionCheckResponse> response = client.async().v1().permissions().check(params);
+CompletableFuture<CustomerResponse> customerResponse = client.async().v1().customers().retrieve("REPLACE_ME");
 ```
 
 Or create an asynchronous client from the beginning:
@@ -165,23 +149,15 @@ Or create an asynchronous client from the beginning:
 ```java
 import com.stigg.api.client.StiggClientAsync;
 import com.stigg.api.client.okhttp.StiggOkHttpClientAsync;
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
 // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
 StiggClientAsync client = StiggOkHttpClientAsync.fromEnv();
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .userId("REPLACE_ME")
-    .addResourcesAndAction(PermissionCheckParams.ResourcesAndAction.builder()
-        .action(JsonValue.from("read"))
-        .resource("product")
-        .build())
-    .build();
-CompletableFuture<PermissionCheckResponse> response = client.v1().permissions().check(params);
+CompletableFuture<CustomerResponse> customerResponse = client.v1().customers().retrieve("REPLACE_ME");
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods return `CompletableFuture`s.
@@ -193,31 +169,23 @@ The SDK defines methods that deserialize responses into instances of Java classe
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```java
-import com.stigg.api.core.JsonValue;
 import com.stigg.api.core.http.Headers;
 import com.stigg.api.core.http.HttpResponseFor;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .userId("REPLACE_ME")
-    .addResourcesAndAction(PermissionCheckParams.ResourcesAndAction.builder()
-        .action(JsonValue.from("read"))
-        .resource("product")
-        .build())
-    .build();
-HttpResponseFor<PermissionCheckResponse> response = client.v1().permissions().withRawResponse().check(params);
+HttpResponseFor<CustomerResponse> customerResponse = client.v1().customers().withRawResponse().retrieve("REPLACE_ME");
 
-int statusCode = response.statusCode();
-Headers headers = response.headers();
+int statusCode = customerResponse.statusCode();
+Headers headers = customerResponse.headers();
 ```
 
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
 
-PermissionCheckResponse parsedResponse = response.parse();
+CustomerResponse parsedCustomerResponse = customerResponse.parse();
 ```
 
 ## Error handling
@@ -245,6 +213,106 @@ The SDK throws custom unchecked exception types:
 
 - [`StiggException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
+## Pagination
+
+The SDK defines methods that return a paginated lists of results. It provides convenient ways to access the results either one page at a time or item-by-item across all pages.
+
+### Auto-pagination
+
+To iterate through all results across all pages, use the `autoPager()` method, which automatically fetches more pages as needed.
+
+When using the synchronous client, the method returns an [`Iterable`](https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html)
+
+```java
+import com.stigg.api.models.v1.customers.CustomerListPage;
+import com.stigg.api.models.v1.customers.CustomerListResponse;
+
+CustomerListPage page = client.v1().customers().list();
+
+// Process as an Iterable
+for (CustomerListResponse customer : page.autoPager()) {
+    System.out.println(customer);
+}
+
+// Process as a Stream
+page.autoPager()
+    .stream()
+    .limit(50)
+    .forEach(customer -> System.out.println(customer));
+```
+
+When using the asynchronous client, the method returns an [`AsyncStreamResponse`](stigg-java-core/src/main/kotlin/com/stigg/api/core/http/AsyncStreamResponse.kt):
+
+```java
+import com.stigg.api.core.http.AsyncStreamResponse;
+import com.stigg.api.models.v1.customers.CustomerListPageAsync;
+import com.stigg.api.models.v1.customers.CustomerListResponse;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+CompletableFuture<CustomerListPageAsync> pageFuture = client.async().v1().customers().list();
+
+pageFuture.thenRun(page -> page.autoPager().subscribe(customer -> {
+    System.out.println(customer);
+}));
+
+// If you need to handle errors or completion of the stream
+pageFuture.thenRun(page -> page.autoPager().subscribe(new AsyncStreamResponse.Handler<>() {
+    @Override
+    public void onNext(CustomerListResponse customer) {
+        System.out.println(customer);
+    }
+
+    @Override
+    public void onComplete(Optional<Throwable> error) {
+        if (error.isPresent()) {
+            System.out.println("Something went wrong!");
+            throw new RuntimeException(error.get());
+        } else {
+            System.out.println("No more!");
+        }
+    }
+}));
+
+// Or use futures
+pageFuture.thenRun(page -> page.autoPager()
+    .subscribe(customer -> {
+        System.out.println(customer);
+    })
+    .onCompleteFuture()
+    .whenComplete((unused, error) -> {
+        if (error != null) {
+            System.out.println("Something went wrong!");
+            throw new RuntimeException(error);
+        } else {
+            System.out.println("No more!");
+        }
+    }));
+```
+
+### Manual pagination
+
+To access individual page items and manually request the next page, use the `items()`,
+`hasNextPage()`, and `nextPage()` methods:
+
+```java
+import com.stigg.api.models.v1.customers.CustomerListPage;
+import com.stigg.api.models.v1.customers.CustomerListResponse;
+
+CustomerListPage page = client.v1().customers().list();
+while (true) {
+    for (CustomerListResponse customer : page.items()) {
+        System.out.println(customer);
+    }
+
+    if (!page.hasNextPage()) {
+        break;
+    }
+
+    page = page.nextPage();
+}
+```
+
 ## Logging
 
 The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
@@ -252,13 +320,13 @@ The SDK uses the standard [OkHttp logging interceptor](https://github.com/square
 Enable logging by setting the `STIGG_LOG` environment variable to `info`:
 
 ```sh
-$ export STIGG_LOG=info
+export STIGG_LOG=info
 ```
 
 Or to `debug` for more verbose logging:
 
 ```sh
-$ export STIGG_LOG=debug
+export STIGG_LOG=debug
 ```
 
 ## ProGuard and R8
@@ -313,11 +381,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
 
-PermissionCheckResponse response = client.v1().permissions().check(
-  params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
-);
+CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
 
 Or configure the default for all method calls at the client level:
@@ -420,9 +486,9 @@ To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQu
 
 ```java
 import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 
-PermissionCheckParams params = PermissionCheckParams.builder()
+CustomerRetrieveParams params = CustomerRetrieveParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
     .putAdditionalQueryParam("secret_query_param", "42")
     .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
@@ -431,16 +497,27 @@ PermissionCheckParams params = PermissionCheckParams.builder()
 
 These can be accessed on the built object later using the `_additionalHeaders()`, `_additionalQueryParams()`, and `_additionalBodyProperties()` methods.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt) object to its setter:
+To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```java
 import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
+import com.stigg.api.models.v1.customers.CustomerCreateParams;
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .userId("REPLACE_ME")
-    .resourcesAndActions(JsonValue.from(42))
+CustomerCreateParams params = CustomerCreateParams.builder()
+    .defaultPaymentMethod(CustomerCreateParams.DefaultPaymentMethod.builder()
+        .putAdditionalProperty("secretProperty", JsonValue.from("42"))
+        .build())
     .build();
+```
+
+These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
+
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt) object to its setter:
+
+```java
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+
+CustomerRetrieveParams params = CustomerRetrieveParams.builder().build();
 ```
 
 The most straightforward way to create a [`JsonValue`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt) is using its `from(...)` method:
@@ -488,15 +565,10 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](stigg-ja
 
 ```java
 import com.stigg.api.core.JsonMissing;
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
+import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
 
-PermissionCheckParams params = PermissionCheckParams.builder()
-    .addResourcesAndAction(PermissionCheckParams.ResourcesAndAction.builder()
-        .action(JsonValue.from("read"))
-        .resource("product")
-        .build())
-    .userId(JsonMissing.of())
+CustomerRetrieveParams params = CustomerRetrieveParams.builder()
+    .id(JsonMissing.of())
     .build();
 ```
 
@@ -508,7 +580,7 @@ To access undocumented response properties, call the `_additionalProperties()` m
 import com.stigg.api.core.JsonValue;
 import java.util.Map;
 
-Map<String, JsonValue> additionalProperties = client.v1().permissions().check(params)._additionalProperties();
+Map<String, JsonValue> additionalProperties = client.v1().customers().retrieve(params)._additionalProperties();
 JsonValue secretPropertyValue = additionalProperties.get("secretProperty");
 
 String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
@@ -536,22 +608,21 @@ To access a property's raw JSON value, which may be undocumented, call its `_` p
 
 ```java
 import com.stigg.api.core.JsonField;
-import com.stigg.api.models.v1.permissions.PermissionCheckParams;
 import java.util.Optional;
 
-JsonField<List<PermissionCheckParams.ResourcesAndAction>> resourcesAndActions = client.v1().permissions().check(params)._resourcesAndActions();
+JsonField<Object> field = client.v1().customers().retrieve(params)._field();
 
-if (resourcesAndActions.isMissing()) {
+if (field.isMissing()) {
   // The property is absent from the JSON response
-} else if (resourcesAndActions.isNull()) {
+} else if (field.isNull()) {
   // The property was set to literal null
 } else {
   // Check if value was provided as a string
   // Other methods include `asNumber()`, `asBoolean()`, etc.
-  Optional<String> jsonString = resourcesAndActions.asString();
+  Optional<String> jsonString = field.asString();
 
   // Try to deserialize into a custom type
-  MyClass myObject = resourcesAndActions.asUnknown().orElseThrow().convert(MyClass.class);
+  MyClass myObject = field.asUnknown().orElseThrow().convert(MyClass.class);
 }
 ```
 
@@ -564,19 +635,17 @@ By default, the SDK will not throw an exception in this case. It will throw [`St
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
 
-PermissionCheckResponse response = client.v1().permissions().check(params).validate();
+CustomerResponse customerResponse = client.v1().customers().retrieve(params).validate();
 ```
 
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.stigg.api.models.v1.permissions.PermissionCheckResponse;
+import com.stigg.api.models.v1.customers.CustomerResponse;
 
-PermissionCheckResponse response = client.v1().permissions().check(
-  params, RequestOptions.builder().responseValidation(true).build()
-);
+CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOptions.builder().responseValidation(true).build());
 ```
 
 Or configure the default for all method calls at the client level:
