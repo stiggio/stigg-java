@@ -18,8 +18,9 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepare
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPage
+import com.stigg.api.models.v1.customers.CustomerListPageResponse
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
@@ -71,7 +72,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun list(
         params: CustomerListParams,
         requestOptions: RequestOptions,
-    ): CustomerListResponse =
+    ): CustomerListPage =
         // get /api/v1/customers
         withRawResponse().list(params, requestOptions).parse()
 
@@ -197,13 +198,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val listHandler: Handler<CustomerListResponse> =
-            jsonHandler<CustomerListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CustomerListPageResponse> =
+            jsonHandler<CustomerListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CustomerListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerListResponse> {
+        ): HttpResponseFor<CustomerListPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -220,6 +221,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        CustomerListPage.builder()
+                            .service(CustomerServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

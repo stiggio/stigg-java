@@ -31,9 +31,9 @@ internal class CustomerListParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("endingBefore", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("ending_before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("limit", "1")
-                    .put("startingAfter", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("starting_after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
