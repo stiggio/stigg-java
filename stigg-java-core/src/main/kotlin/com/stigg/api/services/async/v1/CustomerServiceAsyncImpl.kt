@@ -26,6 +26,10 @@ import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.async.v1.customers.PaymentMethodServiceAsync
 import com.stigg.api.services.async.v1.customers.PaymentMethodServiceAsyncImpl
+import com.stigg.api.services.async.v1.customers.PromotionalServiceAsync
+import com.stigg.api.services.async.v1.customers.PromotionalServiceAsyncImpl
+import com.stigg.api.services.async.v1.customers.UsageServiceAsync
+import com.stigg.api.services.async.v1.customers.UsageServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -41,12 +45,22 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         PaymentMethodServiceAsyncImpl(clientOptions)
     }
 
+    private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
+
+    private val promotional: PromotionalServiceAsync by lazy {
+        PromotionalServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
         CustomerServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun paymentMethod(): PaymentMethodServiceAsync = paymentMethod
+
+    override fun usage(): UsageServiceAsync = usage
+
+    override fun promotional(): PromotionalServiceAsync = promotional
 
     override fun create(
         params: CustomerCreateParams,
@@ -100,6 +114,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             PaymentMethodServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val usage: UsageServiceAsync.WithRawResponse by lazy {
+            UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val promotional: PromotionalServiceAsync.WithRawResponse by lazy {
+            PromotionalServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -108,6 +130,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             )
 
         override fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse = paymentMethod
+
+        override fun usage(): UsageServiceAsync.WithRawResponse = usage
+
+        override fun promotional(): PromotionalServiceAsync.WithRawResponse = promotional
 
         private val createHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
