@@ -206,9 +206,9 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                endingBefore?.let { put("ending_before", it) }
+                endingBefore?.let { put("endingBefore", it) }
                 limit?.let { put("limit", it.toString()) }
-                startingAfter?.let { put("starting_after", it) }
+                startingAfter?.let { put("startingAfter", it) }
                 putAll(additionalQueryParams)
             }
             .build()
