@@ -6,7 +6,6 @@ import com.stigg.api.TestServerExtension
 import com.stigg.api.client.okhttp.StiggOkHttpClient
 import com.stigg.api.core.JsonValue
 import com.stigg.api.models.v1.customers.CustomerCreateParams
-import com.stigg.api.models.v1.customers.CustomerListParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -121,16 +120,9 @@ internal class CustomerServiceTest {
                 .build()
         val customerService = client.v1().customers()
 
-        val customers =
-            customerService.list(
-                CustomerListParams.builder()
-                    .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .limit(1L)
-                    .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .build()
-            )
+        val page = customerService.list()
 
-        customers.validate()
+        page.response().validate()
     }
 
     @Disabled("Prism tests are disabled")
