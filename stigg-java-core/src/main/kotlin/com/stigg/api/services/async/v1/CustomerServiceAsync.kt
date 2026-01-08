@@ -14,6 +14,8 @@ import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.async.v1.customers.PaymentMethodServiceAsync
+import com.stigg.api.services.async.v1.customers.PromotionalServiceAsync
+import com.stigg.api.services.async.v1.customers.UsageServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -32,6 +34,10 @@ interface CustomerServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync
 
     fun paymentMethod(): PaymentMethodServiceAsync
+
+    fun usage(): UsageServiceAsync
+
+    fun promotional(): PromotionalServiceAsync
 
     /** Create a new Customer */
     fun create(params: CustomerCreateParams): CompletableFuture<CustomerResponse> =
@@ -204,6 +210,10 @@ interface CustomerServiceAsync {
         ): CustomerServiceAsync.WithRawResponse
 
         fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse
+
+        fun usage(): UsageServiceAsync.WithRawResponse
+
+        fun promotional(): PromotionalServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as

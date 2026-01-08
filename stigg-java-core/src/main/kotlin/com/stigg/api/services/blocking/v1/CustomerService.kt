@@ -15,6 +15,8 @@ import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.blocking.v1.customers.PaymentMethodService
+import com.stigg.api.services.blocking.v1.customers.PromotionalService
+import com.stigg.api.services.blocking.v1.customers.UsageService
 import java.util.function.Consumer
 
 interface CustomerService {
@@ -32,6 +34,10 @@ interface CustomerService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService
 
     fun paymentMethod(): PaymentMethodService
+
+    fun usage(): UsageService
+
+    fun promotional(): PromotionalService
 
     /** Create a new Customer */
     fun create(params: CustomerCreateParams): CustomerResponse =
@@ -191,6 +197,10 @@ interface CustomerService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService.WithRawResponse
 
         fun paymentMethod(): PaymentMethodService.WithRawResponse
+
+        fun usage(): UsageService.WithRawResponse
+
+        fun promotional(): PromotionalService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as
