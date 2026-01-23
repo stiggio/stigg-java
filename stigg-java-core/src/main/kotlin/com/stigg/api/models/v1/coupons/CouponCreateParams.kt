@@ -79,7 +79,14 @@ private constructor(
      */
     fun percentOff(): Optional<Double> = body.percentOff()
 
-    /** Metadata associated with the entity */
+    /**
+     * Metadata associated with the entity
+     *
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```java
+     * MyClass myObject = couponCreateParams.additionalMetaData().convert(MyClass.class);
+     * ```
+     */
     fun _additionalMetaData(): JsonValue = body._additionalMetaData()
 
     /**
@@ -535,7 +542,14 @@ private constructor(
          */
         fun percentOff(): Optional<Double> = percentOff.getOptional("percentOff")
 
-        /** Metadata associated with the entity */
+        /**
+         * Metadata associated with the entity
+         *
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```java
+         * MyClass myObject = body.additionalMetaData().convert(MyClass.class);
+         * ```
+         */
         @JsonProperty("additionalMetaData")
         @ExcludeMissing
         fun _additionalMetaData(): JsonValue = additionalMetaData
