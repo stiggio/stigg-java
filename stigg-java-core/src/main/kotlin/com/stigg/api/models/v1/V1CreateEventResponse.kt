@@ -26,6 +26,12 @@ private constructor(
         @JsonProperty("data") @ExcludeMissing data: JsonValue = JsonMissing.of()
     ) : this(data, mutableMapOf())
 
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```java
+     * MyClass myObject = v1CreateEventResponse.data().convert(MyClass.class);
+     * ```
+     */
     @JsonProperty("data") @ExcludeMissing fun _data(): JsonValue = data
 
     @JsonAnySetter
