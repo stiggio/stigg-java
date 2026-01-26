@@ -17,12 +17,10 @@ internal class CustomerListResponseTest {
             CustomerListResponse.builder()
                 .addData(
                     CustomerListResponse.Data.builder()
+                        .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .email("dev@stainless.com")
-                        .externalId("externalId")
-                        .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .defaultPaymentMethod(
                             CustomerListResponse.Data.DefaultPaymentMethod.builder()
@@ -33,6 +31,7 @@ internal class CustomerListResponseTest {
                                 .type(CustomerListResponse.Data.DefaultPaymentMethod.Type.CARD)
                                 .build()
                         )
+                        .email("dev@stainless.com")
                         .addIntegration(
                             CustomerListResponse.Data.Integration.builder()
                                 .id("id")
@@ -47,6 +46,7 @@ internal class CustomerListResponseTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .name("name")
                         .build()
                 )
                 .build()
@@ -54,12 +54,10 @@ internal class CustomerListResponseTest {
         assertThat(customerListResponse.data())
             .containsExactly(
                 CustomerListResponse.Data.builder()
+                    .id("id")
                     .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .email("dev@stainless.com")
-                    .externalId("externalId")
-                    .name("name")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .defaultPaymentMethod(
                         CustomerListResponse.Data.DefaultPaymentMethod.builder()
@@ -70,6 +68,7 @@ internal class CustomerListResponseTest {
                             .type(CustomerListResponse.Data.DefaultPaymentMethod.Type.CARD)
                             .build()
                     )
+                    .email("dev@stainless.com")
                     .addIntegration(
                         CustomerListResponse.Data.Integration.builder()
                             .id("id")
@@ -84,6 +83,7 @@ internal class CustomerListResponseTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .name("name")
                     .build()
             )
     }
@@ -95,12 +95,10 @@ internal class CustomerListResponseTest {
             CustomerListResponse.builder()
                 .addData(
                     CustomerListResponse.Data.builder()
+                        .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .email("dev@stainless.com")
-                        .externalId("externalId")
-                        .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .defaultPaymentMethod(
                             CustomerListResponse.Data.DefaultPaymentMethod.builder()
@@ -111,6 +109,7 @@ internal class CustomerListResponseTest {
                                 .type(CustomerListResponse.Data.DefaultPaymentMethod.Type.CARD)
                                 .build()
                         )
+                        .email("dev@stainless.com")
                         .addIntegration(
                             CustomerListResponse.Data.Integration.builder()
                                 .id("id")
@@ -125,6 +124,7 @@ internal class CustomerListResponseTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .name("name")
                         .build()
                 )
                 .build()

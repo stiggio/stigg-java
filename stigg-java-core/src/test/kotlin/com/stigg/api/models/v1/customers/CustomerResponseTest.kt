@@ -17,11 +17,9 @@ internal class CustomerResponseTest {
             CustomerResponse.builder()
                 .data(
                     CustomerResponse.Data.builder()
+                        .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .email("dev@stainless.com")
-                        .externalId("externalId")
-                        .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .defaultPaymentMethod(
                             CustomerResponse.Data.DefaultPaymentMethod.builder()
@@ -32,6 +30,7 @@ internal class CustomerResponseTest {
                                 .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
                                 .build()
                         )
+                        .email("dev@stainless.com")
                         .addIntegration(
                             CustomerResponse.Data.Integration.builder()
                                 .id("id")
@@ -46,6 +45,7 @@ internal class CustomerResponseTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .name("name")
                         .build()
                 )
                 .build()
@@ -53,11 +53,9 @@ internal class CustomerResponseTest {
         assertThat(customerResponse.data())
             .isEqualTo(
                 CustomerResponse.Data.builder()
+                    .id("id")
                     .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .email("dev@stainless.com")
-                    .externalId("externalId")
-                    .name("name")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .defaultPaymentMethod(
                         CustomerResponse.Data.DefaultPaymentMethod.builder()
@@ -68,6 +66,7 @@ internal class CustomerResponseTest {
                             .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
                             .build()
                     )
+                    .email("dev@stainless.com")
                     .addIntegration(
                         CustomerResponse.Data.Integration.builder()
                             .id("id")
@@ -82,6 +81,7 @@ internal class CustomerResponseTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .name("name")
                     .build()
             )
     }
@@ -93,11 +93,9 @@ internal class CustomerResponseTest {
             CustomerResponse.builder()
                 .data(
                     CustomerResponse.Data.builder()
+                        .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .email("dev@stainless.com")
-                        .externalId("externalId")
-                        .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .defaultPaymentMethod(
                             CustomerResponse.Data.DefaultPaymentMethod.builder()
@@ -108,6 +106,7 @@ internal class CustomerResponseTest {
                                 .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
                                 .build()
                         )
+                        .email("dev@stainless.com")
                         .addIntegration(
                             CustomerResponse.Data.Integration.builder()
                                 .id("id")
@@ -122,6 +121,7 @@ internal class CustomerResponseTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .name("name")
                         .build()
                 )
                 .build()

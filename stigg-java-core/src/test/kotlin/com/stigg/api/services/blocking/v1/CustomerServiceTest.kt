@@ -28,9 +28,7 @@ internal class CustomerServiceTest {
         val customerResponse =
             customerService.create(
                 CustomerCreateParams.builder()
-                    .email("dev@stainless.com")
-                    .externalId("externalId")
-                    .name("name")
+                    .id("id")
                     .defaultPaymentMethod(
                         CustomerCreateParams.DefaultPaymentMethod.builder()
                             .billingId("billingId")
@@ -40,6 +38,7 @@ internal class CustomerServiceTest {
                             .type(CustomerCreateParams.DefaultPaymentMethod.Type.CARD)
                             .build()
                     )
+                    .email("dev@stainless.com")
                     .addIntegration(
                         CustomerCreateParams.Integration.builder()
                             .id("id")
@@ -54,6 +53,7 @@ internal class CustomerServiceTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .name("name")
                     .build()
             )
 
