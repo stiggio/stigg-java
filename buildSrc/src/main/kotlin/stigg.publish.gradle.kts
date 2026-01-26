@@ -11,7 +11,7 @@ configure<PublishingExtension> {
             pom {
                 name.set("Stigg API")
                 description.set("Stigg API documentation")
-                url.set("https://www.github.com/stainless-sdks/stigg-java")
+                url.set("https://www.github.com/stiggio/stigg-java")
 
                 licenses {
                     license {
@@ -26,9 +26,9 @@ configure<PublishingExtension> {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/stainless-sdks/stigg-java.git")
-                    developerConnection.set("scm:git:git://github.com/stainless-sdks/stigg-java.git")
-                    url.set("https://github.com/stainless-sdks/stigg-java")
+                    connection.set("scm:git:git://github.com/stiggio/stigg-java.git")
+                    developerConnection.set("scm:git:git://github.com/stiggio/stigg-java.git")
+                    url.set("https://github.com/stiggio/stigg-java")
                 }
 
                 versionMapping {
