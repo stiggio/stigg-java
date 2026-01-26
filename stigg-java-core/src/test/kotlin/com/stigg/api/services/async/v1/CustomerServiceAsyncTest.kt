@@ -29,6 +29,7 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.create(
                 CustomerCreateParams.builder()
                     .id("id")
+                    .couponId("couponId")
                     .defaultPaymentMethod(
                         CustomerCreateParams.DefaultPaymentMethod.builder()
                             .billingId("billingId")
@@ -91,6 +92,7 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .couponId("couponId")
                     .email("dev@stainless.com")
                     .addIntegration(
                         CustomerUpdateParams.Integration.builder()

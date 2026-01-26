@@ -181,6 +181,7 @@ private constructor(
         private val createdAt: JsonField<OffsetDateTime>,
         private val cursorId: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
+        private val couponId: JsonField<String>,
         private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
         private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
@@ -204,6 +205,9 @@ private constructor(
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("couponId")
+            @ExcludeMissing
+            couponId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("defaultPaymentMethod")
             @ExcludeMissing
             defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of(),
@@ -221,6 +225,7 @@ private constructor(
             createdAt,
             cursorId,
             updatedAt,
+            couponId,
             defaultPaymentMethod,
             email,
             integrations,
@@ -268,6 +273,14 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+        /**
+         * Customer level coupon
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun couponId(): Optional<String> = couponId.getOptional("couponId")
 
         /**
          * The default payment method details
@@ -352,6 +365,13 @@ private constructor(
         fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
         /**
+         * Returns the raw JSON value of [couponId].
+         *
+         * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("couponId") @ExcludeMissing fun _couponId(): JsonField<String> = couponId
+
+        /**
          * Returns the raw JSON value of [defaultPaymentMethod].
          *
          * Unlike [defaultPaymentMethod], this method doesn't throw if the JSON field has an
@@ -429,6 +449,7 @@ private constructor(
             private var createdAt: JsonField<OffsetDateTime>? = null
             private var cursorId: JsonField<String>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
+            private var couponId: JsonField<String> = JsonMissing.of()
             private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
@@ -443,6 +464,7 @@ private constructor(
                 createdAt = data.createdAt
                 cursorId = data.cursorId
                 updatedAt = data.updatedAt
+                couponId = data.couponId
                 defaultPaymentMethod = data.defaultPaymentMethod
                 email = data.email
                 integrations = data.integrations.map { it.toMutableList() }
@@ -521,6 +543,21 @@ private constructor(
             fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
                 this.updatedAt = updatedAt
             }
+
+            /** Customer level coupon */
+            fun couponId(couponId: String?) = couponId(JsonField.ofNullable(couponId))
+
+            /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
+            fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+
+            /**
+             * Sets [Builder.couponId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.couponId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun couponId(couponId: JsonField<String>) = apply { this.couponId = couponId }
 
             /** The default payment method details */
             fun defaultPaymentMethod(defaultPaymentMethod: DefaultPaymentMethod?) =
@@ -656,6 +693,7 @@ private constructor(
                     checkRequired("createdAt", createdAt),
                     checkRequired("cursorId", cursorId),
                     checkRequired("updatedAt", updatedAt),
+                    couponId,
                     defaultPaymentMethod,
                     email,
                     (integrations ?: JsonMissing.of()).map { it.toImmutable() },
@@ -677,6 +715,7 @@ private constructor(
             createdAt()
             cursorId()
             updatedAt()
+            couponId()
             defaultPaymentMethod().ifPresent { it.validate() }
             email()
             integrations().ifPresent { it.forEach { it.validate() } }
@@ -706,6 +745,7 @@ private constructor(
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (if (cursorId.asKnown().isPresent) 1 else 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0) +
+                (if (couponId.asKnown().isPresent) 1 else 0) +
                 (defaultPaymentMethod.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (email.asKnown().isPresent) 1 else 0) +
                 (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -1807,6 +1847,7 @@ private constructor(
                 createdAt == other.createdAt &&
                 cursorId == other.cursorId &&
                 updatedAt == other.updatedAt &&
+                couponId == other.couponId &&
                 defaultPaymentMethod == other.defaultPaymentMethod &&
                 email == other.email &&
                 integrations == other.integrations &&
@@ -1822,6 +1863,7 @@ private constructor(
                 createdAt,
                 cursorId,
                 updatedAt,
+                couponId,
                 defaultPaymentMethod,
                 email,
                 integrations,
@@ -1834,7 +1876,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, cursorId=$cursorId, updatedAt=$updatedAt, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, cursorId=$cursorId, updatedAt=$updatedAt, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

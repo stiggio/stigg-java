@@ -22,6 +22,7 @@ internal class CustomerListResponseTest {
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .couponId("couponId")
                         .defaultPaymentMethod(
                             CustomerListResponse.Data.DefaultPaymentMethod.builder()
                                 .billingId("billingId")
@@ -59,6 +60,7 @@ internal class CustomerListResponseTest {
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .couponId("couponId")
                     .defaultPaymentMethod(
                         CustomerListResponse.Data.DefaultPaymentMethod.builder()
                             .billingId("billingId")
@@ -100,6 +102,7 @@ internal class CustomerListResponseTest {
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .couponId("couponId")
                         .defaultPaymentMethod(
                             CustomerListResponse.Data.DefaultPaymentMethod.builder()
                                 .billingId("billingId")
