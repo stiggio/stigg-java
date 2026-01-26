@@ -176,21 +176,22 @@ private constructor(
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val id: JsonField<String>,
         private val archivedAt: JsonField<OffsetDateTime>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val cursorId: JsonField<String>,
-        private val email: JsonField<String>,
-        private val externalId: JsonField<String>,
-        private val name: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
+        private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
         private val metadata: JsonField<Metadata>,
+        private val name: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
             @JsonProperty("archivedAt")
             @ExcludeMissing
             archivedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -200,36 +201,41 @@ private constructor(
             @JsonProperty("cursorId")
             @ExcludeMissing
             cursorId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("externalId")
-            @ExcludeMissing
-            externalId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("defaultPaymentMethod")
             @ExcludeMissing
             defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of(),
+            @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("integrations")
             @ExcludeMissing
             integrations: JsonField<List<Integration>> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
+            @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
         ) : this(
+            id,
             archivedAt,
             createdAt,
             cursorId,
-            email,
-            externalId,
-            name,
             updatedAt,
             defaultPaymentMethod,
+            email,
             integrations,
             metadata,
+            name,
             mutableMapOf(),
         )
+
+        /**
+         * Customer slug
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun id(): String = id.getRequired("id")
 
         /**
          * Timestamp of when the record was deleted
@@ -256,30 +262,6 @@ private constructor(
         fun cursorId(): String = cursorId.getRequired("cursorId")
 
         /**
-         * The email of the customer
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun email(): Optional<String> = email.getOptional("email")
-
-        /**
-         * Customer slug
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun externalId(): String = externalId.getRequired("externalId")
-
-        /**
-         * The name of the customer
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun name(): Optional<String> = name.getOptional("name")
-
-        /**
          * Timestamp of when the record was last updated
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
@@ -297,6 +279,14 @@ private constructor(
             defaultPaymentMethod.getOptional("defaultPaymentMethod")
 
         /**
+         * The email of the customer
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun email(): Optional<String> = email.getOptional("email")
+
+        /**
          * List of integrations
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -311,6 +301,21 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
+
+        /**
+         * The name of the customer
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun name(): Optional<String> = name.getOptional("name")
+
+        /**
+         * Returns the raw JSON value of [id].
+         *
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
          * Returns the raw JSON value of [archivedAt].
@@ -338,29 +343,6 @@ private constructor(
         @JsonProperty("cursorId") @ExcludeMissing fun _cursorId(): JsonField<String> = cursorId
 
         /**
-         * Returns the raw JSON value of [email].
-         *
-         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
-
-        /**
-         * Returns the raw JSON value of [externalId].
-         *
-         * Unlike [externalId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("externalId")
-        @ExcludeMissing
-        fun _externalId(): JsonField<String> = externalId
-
-        /**
-         * Returns the raw JSON value of [name].
-         *
-         * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
-
-        /**
          * Returns the raw JSON value of [updatedAt].
          *
          * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -380,6 +362,13 @@ private constructor(
         fun _defaultPaymentMethod(): JsonField<DefaultPaymentMethod> = defaultPaymentMethod
 
         /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+        /**
          * Returns the raw JSON value of [integrations].
          *
          * Unlike [integrations], this method doesn't throw if the JSON field has an unexpected
@@ -395,6 +384,13 @@ private constructor(
          * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
+
+        /**
+         * Returns the raw JSON value of [name].
+         *
+         * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -415,12 +411,10 @@ private constructor(
              *
              * The following fields are required:
              * ```java
+             * .id()
              * .archivedAt()
              * .createdAt()
              * .cursorId()
-             * .email()
-             * .externalId()
-             * .name()
              * .updatedAt()
              * ```
              */
@@ -430,32 +424,44 @@ private constructor(
         /** A builder for [Data]. */
         class Builder internal constructor() {
 
+            private var id: JsonField<String>? = null
             private var archivedAt: JsonField<OffsetDateTime>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
             private var cursorId: JsonField<String>? = null
-            private var email: JsonField<String>? = null
-            private var externalId: JsonField<String>? = null
-            private var name: JsonField<String>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
             private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
+            private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
             private var metadata: JsonField<Metadata> = JsonMissing.of()
+            private var name: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(data: Data) = apply {
+                id = data.id
                 archivedAt = data.archivedAt
                 createdAt = data.createdAt
                 cursorId = data.cursorId
-                email = data.email
-                externalId = data.externalId
-                name = data.name
                 updatedAt = data.updatedAt
                 defaultPaymentMethod = data.defaultPaymentMethod
+                email = data.email
                 integrations = data.integrations.map { it.toMutableList() }
                 metadata = data.metadata
+                name = data.name
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
+
+            /** Customer slug */
+            fun id(id: String) = id(JsonField.of(id))
+
+            /**
+             * Sets [Builder.id] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun id(id: JsonField<String>) = apply { this.id = id }
 
             /** Timestamp of when the record was deleted */
             fun archivedAt(archivedAt: OffsetDateTime?) =
@@ -502,48 +508,6 @@ private constructor(
              */
             fun cursorId(cursorId: JsonField<String>) = apply { this.cursorId = cursorId }
 
-            /** The email of the customer */
-            fun email(email: String?) = email(JsonField.ofNullable(email))
-
-            /** Alias for calling [Builder.email] with `email.orElse(null)`. */
-            fun email(email: Optional<String>) = email(email.getOrNull())
-
-            /**
-             * Sets [Builder.email] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.email] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun email(email: JsonField<String>) = apply { this.email = email }
-
-            /** Customer slug */
-            fun externalId(externalId: String) = externalId(JsonField.of(externalId))
-
-            /**
-             * Sets [Builder.externalId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.externalId] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun externalId(externalId: JsonField<String>) = apply { this.externalId = externalId }
-
-            /** The name of the customer */
-            fun name(name: String?) = name(JsonField.ofNullable(name))
-
-            /** Alias for calling [Builder.name] with `name.orElse(null)`. */
-            fun name(name: Optional<String>) = name(name.getOrNull())
-
-            /**
-             * Sets [Builder.name] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.name] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun name(name: JsonField<String>) = apply { this.name = name }
-
             /** Timestamp of when the record was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -580,6 +544,21 @@ private constructor(
                 apply {
                     this.defaultPaymentMethod = defaultPaymentMethod
                 }
+
+            /** The email of the customer */
+            fun email(email: String?) = email(JsonField.ofNullable(email))
+
+            /** Alias for calling [Builder.email] with `email.orElse(null)`. */
+            fun email(email: Optional<String>) = email(email.getOrNull())
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun email(email: JsonField<String>) = apply { this.email = email }
 
             /** List of integrations */
             fun integrations(integrations: List<Integration>) =
@@ -620,6 +599,21 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
+            /** The name of the customer */
+            fun name(name: String?) = name(JsonField.ofNullable(name))
+
+            /** Alias for calling [Builder.name] with `name.orElse(null)`. */
+            fun name(name: Optional<String>) = name(name.getOrNull())
+
+            /**
+             * Sets [Builder.name] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.name] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun name(name: JsonField<String>) = apply { this.name = name }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -646,12 +640,10 @@ private constructor(
              *
              * The following fields are required:
              * ```java
+             * .id()
              * .archivedAt()
              * .createdAt()
              * .cursorId()
-             * .email()
-             * .externalId()
-             * .name()
              * .updatedAt()
              * ```
              *
@@ -659,16 +651,16 @@ private constructor(
              */
             fun build(): Data =
                 Data(
+                    checkRequired("id", id),
                     checkRequired("archivedAt", archivedAt),
                     checkRequired("createdAt", createdAt),
                     checkRequired("cursorId", cursorId),
-                    checkRequired("email", email),
-                    checkRequired("externalId", externalId),
-                    checkRequired("name", name),
                     checkRequired("updatedAt", updatedAt),
                     defaultPaymentMethod,
+                    email,
                     (integrations ?: JsonMissing.of()).map { it.toImmutable() },
                     metadata,
+                    name,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -680,16 +672,16 @@ private constructor(
                 return@apply
             }
 
+            id()
             archivedAt()
             createdAt()
             cursorId()
-            email()
-            externalId()
-            name()
             updatedAt()
             defaultPaymentMethod().ifPresent { it.validate() }
+            email()
             integrations().ifPresent { it.forEach { it.validate() } }
             metadata().ifPresent { it.validate() }
+            name()
             validated = true
         }
 
@@ -709,16 +701,16 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (archivedAt.asKnown().isPresent) 1 else 0) +
+            (if (id.asKnown().isPresent) 1 else 0) +
+                (if (archivedAt.asKnown().isPresent) 1 else 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (if (cursorId.asKnown().isPresent) 1 else 0) +
-                (if (email.asKnown().isPresent) 1 else 0) +
-                (if (externalId.asKnown().isPresent) 1 else 0) +
-                (if (name.asKnown().isPresent) 1 else 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0) +
                 (defaultPaymentMethod.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (email.asKnown().isPresent) 1 else 0) +
                 (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-                (metadata.asKnown().getOrNull()?.validity() ?: 0)
+                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (name.asKnown().isPresent) 1 else 0)
 
         /** The default payment method details */
         class DefaultPaymentMethod
@@ -1810,31 +1802,31 @@ private constructor(
             }
 
             return other is Data &&
+                id == other.id &&
                 archivedAt == other.archivedAt &&
                 createdAt == other.createdAt &&
                 cursorId == other.cursorId &&
-                email == other.email &&
-                externalId == other.externalId &&
-                name == other.name &&
                 updatedAt == other.updatedAt &&
                 defaultPaymentMethod == other.defaultPaymentMethod &&
+                email == other.email &&
                 integrations == other.integrations &&
                 metadata == other.metadata &&
+                name == other.name &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
             Objects.hash(
+                id,
                 archivedAt,
                 createdAt,
                 cursorId,
-                email,
-                externalId,
-                name,
                 updatedAt,
                 defaultPaymentMethod,
+                email,
                 integrations,
                 metadata,
+                name,
                 additionalProperties,
             )
         }
@@ -1842,7 +1834,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{archivedAt=$archivedAt, createdAt=$createdAt, cursorId=$cursorId, email=$email, externalId=$externalId, name=$name, updatedAt=$updatedAt, defaultPaymentMethod=$defaultPaymentMethod, integrations=$integrations, metadata=$metadata, additionalProperties=$additionalProperties}"
+            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, cursorId=$cursorId, updatedAt=$updatedAt, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
