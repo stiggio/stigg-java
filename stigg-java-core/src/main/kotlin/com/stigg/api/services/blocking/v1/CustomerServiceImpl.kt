@@ -26,8 +26,6 @@ import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.blocking.v1.customers.PaymentMethodService
 import com.stigg.api.services.blocking.v1.customers.PaymentMethodServiceImpl
-import com.stigg.api.services.blocking.v1.customers.PromotionalService
-import com.stigg.api.services.blocking.v1.customers.PromotionalServiceImpl
 import com.stigg.api.services.blocking.v1.customers.UsageService
 import com.stigg.api.services.blocking.v1.customers.UsageServiceImpl
 import java.util.function.Consumer
@@ -46,8 +44,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
 
-    private val promotional: PromotionalService by lazy { PromotionalServiceImpl(clientOptions) }
-
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
@@ -56,8 +52,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun paymentMethod(): PaymentMethodService = paymentMethod
 
     override fun usage(): UsageService = usage
-
-    override fun promotional(): PromotionalService = promotional
 
     override fun create(
         params: CustomerCreateParams,
@@ -115,10 +109,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val promotional: PromotionalService.WithRawResponse by lazy {
-            PromotionalServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -129,8 +119,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         override fun paymentMethod(): PaymentMethodService.WithRawResponse = paymentMethod
 
         override fun usage(): UsageService.WithRawResponse = usage
-
-        override fun promotional(): PromotionalService.WithRawResponse = promotional
 
         private val createHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
