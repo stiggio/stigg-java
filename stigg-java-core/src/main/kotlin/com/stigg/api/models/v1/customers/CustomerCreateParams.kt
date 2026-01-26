@@ -40,6 +40,14 @@ private constructor(
     fun id(): String = body.id()
 
     /**
+     * Customer level coupon
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun couponId(): Optional<String> = body.couponId()
+
+    /**
      * The default payment method details
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -85,6 +93,13 @@ private constructor(
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _id(): JsonField<String> = body._id()
+
+    /**
+     * Returns the raw JSON value of [couponId].
+     *
+     * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _couponId(): JsonField<String> = body._couponId()
 
     /**
      * Returns the raw JSON value of [defaultPaymentMethod].
@@ -165,10 +180,10 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [id]
+         * - [couponId]
          * - [defaultPaymentMethod]
          * - [email]
          * - [integrations]
-         * - [metadata]
          * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
@@ -183,6 +198,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { body.id(id) }
+
+        /** Customer level coupon */
+        fun couponId(couponId: String?) = apply { body.couponId(couponId) }
+
+        /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
+        fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+
+        /**
+         * Sets [Builder.couponId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.couponId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun couponId(couponId: JsonField<String>) = apply { body.couponId(couponId) }
 
         /** The default payment method details */
         fun defaultPaymentMethod(defaultPaymentMethod: DefaultPaymentMethod?) = apply {
@@ -417,6 +446,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
+        private val couponId: JsonField<String>,
         private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
         private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
@@ -428,6 +458,9 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("couponId")
+            @ExcludeMissing
+            couponId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("defaultPaymentMethod")
             @ExcludeMissing
             defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of(),
@@ -439,7 +472,16 @@ private constructor(
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        ) : this(id, defaultPaymentMethod, email, integrations, metadata, name, mutableMapOf())
+        ) : this(
+            id,
+            couponId,
+            defaultPaymentMethod,
+            email,
+            integrations,
+            metadata,
+            name,
+            mutableMapOf(),
+        )
 
         /**
          * Customer slug
@@ -448,6 +490,14 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun id(): String = id.getRequired("id")
+
+        /**
+         * Customer level coupon
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun couponId(): Optional<String> = couponId.getOptional("couponId")
 
         /**
          * The default payment method details
@@ -496,6 +546,13 @@ private constructor(
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [couponId].
+         *
+         * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("couponId") @ExcludeMissing fun _couponId(): JsonField<String> = couponId
 
         /**
          * Returns the raw JSON value of [defaultPaymentMethod].
@@ -567,6 +624,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
+            private var couponId: JsonField<String> = JsonMissing.of()
             private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
@@ -577,6 +635,7 @@ private constructor(
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 id = body.id
+                couponId = body.couponId
                 defaultPaymentMethod = body.defaultPaymentMethod
                 email = body.email
                 integrations = body.integrations.map { it.toMutableList() }
@@ -596,6 +655,21 @@ private constructor(
              * value.
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
+
+            /** Customer level coupon */
+            fun couponId(couponId: String?) = couponId(JsonField.ofNullable(couponId))
+
+            /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
+            fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+
+            /**
+             * Sets [Builder.couponId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.couponId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun couponId(couponId: JsonField<String>) = apply { this.couponId = couponId }
 
             /** The default payment method details */
             fun defaultPaymentMethod(defaultPaymentMethod: DefaultPaymentMethod?) =
@@ -723,6 +797,7 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("id", id),
+                    couponId,
                     defaultPaymentMethod,
                     email,
                     (integrations ?: JsonMissing.of()).map { it.toImmutable() },
@@ -740,6 +815,7 @@ private constructor(
             }
 
             id()
+            couponId()
             defaultPaymentMethod().ifPresent { it.validate() }
             email()
             integrations().ifPresent { it.forEach { it.validate() } }
@@ -765,6 +841,7 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
+                (if (couponId.asKnown().isPresent) 1 else 0) +
                 (defaultPaymentMethod.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (email.asKnown().isPresent) 1 else 0) +
                 (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -778,6 +855,7 @@ private constructor(
 
             return other is Body &&
                 id == other.id &&
+                couponId == other.couponId &&
                 defaultPaymentMethod == other.defaultPaymentMethod &&
                 email == other.email &&
                 integrations == other.integrations &&
@@ -789,6 +867,7 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 id,
+                couponId,
                 defaultPaymentMethod,
                 email,
                 integrations,
@@ -801,7 +880,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{id=$id, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+            "Body{id=$id, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
     }
 
     /** The default payment method details */

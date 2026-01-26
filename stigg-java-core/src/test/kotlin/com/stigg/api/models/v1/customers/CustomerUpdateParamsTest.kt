@@ -13,6 +13,7 @@ internal class CustomerUpdateParamsTest {
     fun create() {
         CustomerUpdateParams.builder()
             .id("x")
+            .couponId("couponId")
             .email("dev@stainless.com")
             .addIntegration(
                 CustomerUpdateParams.Integration.builder()
@@ -44,6 +45,7 @@ internal class CustomerUpdateParamsTest {
         val params =
             CustomerUpdateParams.builder()
                 .id("x")
+                .couponId("couponId")
                 .email("dev@stainless.com")
                 .addIntegration(
                     CustomerUpdateParams.Integration.builder()
@@ -62,6 +64,7 @@ internal class CustomerUpdateParamsTest {
 
         val body = params._body()
 
+        assertThat(body.couponId()).contains("couponId")
         assertThat(body.email()).contains("dev@stainless.com")
         assertThat(body.integrations().getOrNull())
             .containsExactly(
