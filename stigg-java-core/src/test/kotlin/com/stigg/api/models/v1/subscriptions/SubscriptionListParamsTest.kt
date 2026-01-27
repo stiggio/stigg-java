@@ -11,10 +11,10 @@ internal class SubscriptionListParamsTest {
     @Test
     fun create() {
         SubscriptionListParams.builder()
+            .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .customerId("customerId")
-            .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .limit(1L)
-            .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .status("status")
             .build()
     }
@@ -23,10 +23,10 @@ internal class SubscriptionListParamsTest {
     fun queryParams() {
         val params =
             SubscriptionListParams.builder()
+                .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .customerId("customerId")
-                .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limit(1L)
-                .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .status("status")
                 .build()
 
@@ -35,10 +35,10 @@ internal class SubscriptionListParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("customerId", "customerId")
-                    .put("endingBefore", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("limit", "1")
-                    .put("startingAfter", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("status", "status")
                     .build()
             )

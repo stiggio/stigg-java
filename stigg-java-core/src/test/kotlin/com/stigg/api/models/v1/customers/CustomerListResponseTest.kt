@@ -20,7 +20,6 @@ internal class CustomerListResponseTest {
                         .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .couponId("couponId")
                         .defaultPaymentMethod(
@@ -50,6 +49,12 @@ internal class CustomerListResponseTest {
                         .name("name")
                         .build()
                 )
+                .pagination(
+                    CustomerListResponse.Pagination.builder()
+                        .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .build()
+                )
                 .build()
 
         assertThat(customerListResponse.data())
@@ -58,7 +63,6 @@ internal class CustomerListResponseTest {
                     .id("id")
                     .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .couponId("couponId")
                     .defaultPaymentMethod(
@@ -88,6 +92,13 @@ internal class CustomerListResponseTest {
                     .name("name")
                     .build()
             )
+        assertThat(customerListResponse.pagination())
+            .isEqualTo(
+                CustomerListResponse.Pagination.builder()
+                    .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .build()
+            )
     }
 
     @Test
@@ -100,7 +111,6 @@ internal class CustomerListResponseTest {
                         .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .couponId("couponId")
                         .defaultPaymentMethod(
@@ -128,6 +138,12 @@ internal class CustomerListResponseTest {
                                 .build()
                         )
                         .name("name")
+                        .build()
+                )
+                .pagination(
+                    CustomerListResponse.Pagination.builder()
+                        .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

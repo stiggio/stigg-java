@@ -11,9 +11,9 @@ internal class CouponListParamsTest {
     @Test
     fun create() {
         CouponListParams.builder()
-            .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .limit(1L)
-            .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .build()
     }
 
@@ -21,9 +21,9 @@ internal class CouponListParamsTest {
     fun queryParams() {
         val params =
             CouponListParams.builder()
-                .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limit(1L)
-                .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val queryParams = params._queryParams()
@@ -31,9 +31,9 @@ internal class CouponListParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("endingBefore", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("limit", "1")
-                    .put("startingAfter", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
