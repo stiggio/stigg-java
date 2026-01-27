@@ -126,9 +126,9 @@ internal class CustomerServiceTest {
         val customers =
             customerService.list(
                 CustomerListParams.builder()
-                    .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .limit(1L)
-                    .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
 

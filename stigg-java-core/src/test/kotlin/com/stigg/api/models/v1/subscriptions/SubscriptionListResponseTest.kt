@@ -20,7 +20,6 @@ internal class SubscriptionListResponseTest {
                         .id("id")
                         .billingId("billingId")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .customerId("customerId")
                         .paymentCollection(
                             SubscriptionListResponse.Data.PaymentCollection.NOT_REQUIRED
@@ -50,6 +49,12 @@ internal class SubscriptionListResponseTest {
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
+                .pagination(
+                    SubscriptionListResponse.Pagination.builder()
+                        .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .build()
+                )
                 .build()
 
         assertThat(subscriptionListResponse.data())
@@ -58,7 +63,6 @@ internal class SubscriptionListResponseTest {
                     .id("id")
                     .billingId("billingId")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .customerId("customerId")
                     .paymentCollection(SubscriptionListResponse.Data.PaymentCollection.NOT_REQUIRED)
                     .planId("planId")
@@ -84,6 +88,13 @@ internal class SubscriptionListResponseTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+        assertThat(subscriptionListResponse.pagination())
+            .isEqualTo(
+                SubscriptionListResponse.Pagination.builder()
+                    .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .build()
+            )
     }
 
     @Test
@@ -96,7 +107,6 @@ internal class SubscriptionListResponseTest {
                         .id("id")
                         .billingId("billingId")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .cursorId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .customerId("customerId")
                         .paymentCollection(
                             SubscriptionListResponse.Data.PaymentCollection.NOT_REQUIRED
@@ -124,6 +134,12 @@ internal class SubscriptionListResponseTest {
                         )
                         .resourceId("resourceId")
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .build()
+                )
+                .pagination(
+                    SubscriptionListResponse.Pagination.builder()
+                        .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
