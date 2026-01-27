@@ -35,6 +35,14 @@ private constructor(
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
+     * Customer level coupon
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun couponId(): Optional<String> = body.couponId()
+
+    /**
      * The email of the customer
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -65,6 +73,13 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun name(): Optional<String> = body.name()
+
+    /**
+     * Returns the raw JSON value of [couponId].
+     *
+     * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _couponId(): JsonField<String> = body._couponId()
 
     /**
      * Returns the raw JSON value of [email].
@@ -138,12 +153,28 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [couponId]
          * - [email]
          * - [integrations]
          * - [metadata]
          * - [name]
+         * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /** Customer level coupon */
+        fun couponId(couponId: String?) = apply { body.couponId(couponId) }
+
+        /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
+        fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+
+        /**
+         * Sets [Builder.couponId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.couponId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun couponId(couponId: JsonField<String>) = apply { body.couponId(couponId) }
 
         /** The email of the customer */
         fun email(email: String?) = apply { body.email(email) }
@@ -354,6 +385,7 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val couponId: JsonField<String>,
         private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
         private val metadata: JsonField<Metadata>,
@@ -363,6 +395,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("couponId")
+            @ExcludeMissing
+            couponId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("integrations")
             @ExcludeMissing
@@ -371,7 +406,15 @@ private constructor(
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        ) : this(email, integrations, metadata, name, mutableMapOf())
+        ) : this(couponId, email, integrations, metadata, name, mutableMapOf())
+
+        /**
+         * Customer level coupon
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun couponId(): Optional<String> = couponId.getOptional("couponId")
 
         /**
          * The email of the customer
@@ -404,6 +447,13 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun name(): Optional<String> = name.getOptional("name")
+
+        /**
+         * Returns the raw JSON value of [couponId].
+         *
+         * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("couponId") @ExcludeMissing fun _couponId(): JsonField<String> = couponId
 
         /**
          * Returns the raw JSON value of [email].
@@ -457,6 +507,7 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
+            private var couponId: JsonField<String> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
             private var metadata: JsonField<Metadata> = JsonMissing.of()
@@ -465,12 +516,28 @@ private constructor(
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
+                couponId = body.couponId
                 email = body.email
                 integrations = body.integrations.map { it.toMutableList() }
                 metadata = body.metadata
                 name = body.name
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
+
+            /** Customer level coupon */
+            fun couponId(couponId: String?) = couponId(JsonField.ofNullable(couponId))
+
+            /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
+            fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+
+            /**
+             * Sets [Builder.couponId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.couponId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun couponId(couponId: JsonField<String>) = apply { this.couponId = couponId }
 
             /** The email of the customer */
             fun email(email: String?) = email(JsonField.ofNullable(email))
@@ -567,6 +634,7 @@ private constructor(
              */
             fun build(): Body =
                 Body(
+                    couponId,
                     email,
                     (integrations ?: JsonMissing.of()).map { it.toImmutable() },
                     metadata,
@@ -582,6 +650,7 @@ private constructor(
                 return@apply
             }
 
+            couponId()
             email()
             integrations().ifPresent { it.forEach { it.validate() } }
             metadata().ifPresent { it.validate() }
@@ -605,7 +674,8 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (email.asKnown().isPresent) 1 else 0) +
+            (if (couponId.asKnown().isPresent) 1 else 0) +
+                (if (email.asKnown().isPresent) 1 else 0) +
                 (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0)
@@ -616,6 +686,7 @@ private constructor(
             }
 
             return other is Body &&
+                couponId == other.couponId &&
                 email == other.email &&
                 integrations == other.integrations &&
                 metadata == other.metadata &&
@@ -624,13 +695,13 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(email, integrations, metadata, name, additionalProperties)
+            Objects.hash(couponId, email, integrations, metadata, name, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+            "Body{couponId=$couponId, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
     }
 
     class Integration

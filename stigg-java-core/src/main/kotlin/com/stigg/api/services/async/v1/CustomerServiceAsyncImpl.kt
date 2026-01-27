@@ -18,16 +18,15 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepareAsync
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPageAsync
+import com.stigg.api.models.v1.customers.CustomerListPageResponse
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.async.v1.customers.PaymentMethodServiceAsync
 import com.stigg.api.services.async.v1.customers.PaymentMethodServiceAsyncImpl
-import com.stigg.api.services.async.v1.customers.PromotionalServiceAsync
-import com.stigg.api.services.async.v1.customers.PromotionalServiceAsyncImpl
 import com.stigg.api.services.async.v1.customers.UsageServiceAsync
 import com.stigg.api.services.async.v1.customers.UsageServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -47,10 +46,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
     private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
 
-    private val promotional: PromotionalServiceAsync by lazy {
-        PromotionalServiceAsyncImpl(clientOptions)
-    }
-
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
@@ -59,8 +54,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun paymentMethod(): PaymentMethodServiceAsync = paymentMethod
 
     override fun usage(): UsageServiceAsync = usage
-
-    override fun promotional(): PromotionalServiceAsync = promotional
 
     override fun create(
         params: CustomerCreateParams,
@@ -86,7 +79,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun list(
         params: CustomerListParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<CustomerListResponse> =
+    ): CompletableFuture<CustomerListPageAsync> =
         // get /api/v1/customers
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
@@ -118,10 +111,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val promotional: PromotionalServiceAsync.WithRawResponse by lazy {
-            PromotionalServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -132,8 +121,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         override fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse = paymentMethod
 
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
-
-        override fun promotional(): PromotionalServiceAsync.WithRawResponse = promotional
 
         private val createHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
@@ -233,13 +220,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                 }
         }
 
-        private val listHandler: Handler<CustomerListResponse> =
-            jsonHandler<CustomerListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CustomerListPageResponse> =
+            jsonHandler<CustomerListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CustomerListParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CustomerListResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerListPageAsync>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -258,6 +245,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                            .let {
+                                CustomerListPageAsync.builder()
+                                    .service(CustomerServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

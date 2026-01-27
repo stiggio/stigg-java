@@ -6,7 +6,6 @@ import com.stigg.api.TestServerExtension
 import com.stigg.api.client.okhttp.StiggOkHttpClientAsync
 import com.stigg.api.core.JsonValue
 import com.stigg.api.models.v1.customers.CustomerCreateParams
-import com.stigg.api.models.v1.customers.CustomerListParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -28,9 +27,8 @@ internal class CustomerServiceAsyncTest {
         val customerResponseFuture =
             customerServiceAsync.create(
                 CustomerCreateParams.builder()
-                    .email("dev@stainless.com")
-                    .externalId("externalId")
-                    .name("name")
+                    .id("id")
+                    .couponId("couponId")
                     .defaultPaymentMethod(
                         CustomerCreateParams.DefaultPaymentMethod.builder()
                             .billingId("billingId")
@@ -40,6 +38,7 @@ internal class CustomerServiceAsyncTest {
                             .type(CustomerCreateParams.DefaultPaymentMethod.Type.CARD)
                             .build()
                     )
+                    .email("dev@stainless.com")
                     .addIntegration(
                         CustomerCreateParams.Integration.builder()
                             .id("id")
@@ -54,6 +53,7 @@ internal class CustomerServiceAsyncTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .name("name")
                     .build()
             )
 
@@ -91,6 +91,7 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .couponId("couponId")
                     .email("dev@stainless.com")
                     .addIntegration(
                         CustomerUpdateParams.Integration.builder()
@@ -124,17 +125,10 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.v1().customers()
 
-        val customersFuture =
-            customerServiceAsync.list(
-                CustomerListParams.builder()
-                    .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .limit(1L)
-                    .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .build()
-            )
+        val pageFuture = customerServiceAsync.list()
 
-        val customers = customersFuture.get()
-        customers.validate()
+        val page = pageFuture.get()
+        page.response().validate()
     }
 
     @Disabled("Prism tests are disabled")

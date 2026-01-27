@@ -59,12 +59,11 @@ internal class ProGuardCompatibilityTest {
             CustomerResponse.builder()
                 .data(
                     CustomerResponse.Data.builder()
+                        .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .email("dev@stainless.com")
-                        .externalId("externalId")
-                        .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .couponId("couponId")
                         .defaultPaymentMethod(
                             CustomerResponse.Data.DefaultPaymentMethod.builder()
                                 .billingId("billingId")
@@ -74,6 +73,7 @@ internal class ProGuardCompatibilityTest {
                                 .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
                                 .build()
                         )
+                        .email("dev@stainless.com")
                         .addIntegration(
                             CustomerResponse.Data.Integration.builder()
                                 .id("id")
@@ -88,6 +88,7 @@ internal class ProGuardCompatibilityTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .name("name")
                         .build()
                 )
                 .build()

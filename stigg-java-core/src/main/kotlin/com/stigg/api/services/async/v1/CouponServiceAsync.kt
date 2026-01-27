@@ -7,8 +7,8 @@ import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.models.v1.coupons.CouponCreateParams
 import com.stigg.api.models.v1.coupons.CouponCreateResponse
+import com.stigg.api.models.v1.coupons.CouponListPageAsync
 import com.stigg.api.models.v1.coupons.CouponListParams
-import com.stigg.api.models.v1.coupons.CouponListResponse
 import com.stigg.api.models.v1.coupons.CouponRetrieveParams
 import com.stigg.api.models.v1.coupons.CouponRetrieveResponse
 import java.util.concurrent.CompletableFuture
@@ -74,21 +74,21 @@ interface CouponServiceAsync {
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
     /** Get a list of Coupons */
-    fun list(): CompletableFuture<CouponListResponse> = list(CouponListParams.none())
+    fun list(): CompletableFuture<CouponListPageAsync> = list(CouponListParams.none())
 
     /** @see list */
     fun list(
         params: CouponListParams = CouponListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CouponListResponse>
+    ): CompletableFuture<CouponListPageAsync>
 
     /** @see list */
     fun list(
         params: CouponListParams = CouponListParams.none()
-    ): CompletableFuture<CouponListResponse> = list(params, RequestOptions.none())
+    ): CompletableFuture<CouponListPageAsync> = list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): CompletableFuture<CouponListResponse> =
+    fun list(requestOptions: RequestOptions): CompletableFuture<CouponListPageAsync> =
         list(CouponListParams.none(), requestOptions)
 
     /**
@@ -165,25 +165,25 @@ interface CouponServiceAsync {
          * Returns a raw HTTP response for `get /api/v1/coupons`, but is otherwise the same as
          * [CouponServiceAsync.list].
          */
-        fun list(): CompletableFuture<HttpResponseFor<CouponListResponse>> =
+        fun list(): CompletableFuture<HttpResponseFor<CouponListPageAsync>> =
             list(CouponListParams.none())
 
         /** @see list */
         fun list(
             params: CouponListParams = CouponListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CouponListResponse>>
+        ): CompletableFuture<HttpResponseFor<CouponListPageAsync>>
 
         /** @see list */
         fun list(
             params: CouponListParams = CouponListParams.none()
-        ): CompletableFuture<HttpResponseFor<CouponListResponse>> =
+        ): CompletableFuture<HttpResponseFor<CouponListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
         fun list(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<CouponListResponse>> =
+        ): CompletableFuture<HttpResponseFor<CouponListPageAsync>> =
             list(CouponListParams.none(), requestOptions)
     }
 }

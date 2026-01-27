@@ -18,16 +18,15 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepare
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPage
+import com.stigg.api.models.v1.customers.CustomerListPageResponse
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
 import com.stigg.api.models.v1.customers.CustomerUpdateParams
 import com.stigg.api.services.blocking.v1.customers.PaymentMethodService
 import com.stigg.api.services.blocking.v1.customers.PaymentMethodServiceImpl
-import com.stigg.api.services.blocking.v1.customers.PromotionalService
-import com.stigg.api.services.blocking.v1.customers.PromotionalServiceImpl
 import com.stigg.api.services.blocking.v1.customers.UsageService
 import com.stigg.api.services.blocking.v1.customers.UsageServiceImpl
 import java.util.function.Consumer
@@ -46,8 +45,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
 
-    private val promotional: PromotionalService by lazy { PromotionalServiceImpl(clientOptions) }
-
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
@@ -56,8 +53,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun paymentMethod(): PaymentMethodService = paymentMethod
 
     override fun usage(): UsageService = usage
-
-    override fun promotional(): PromotionalService = promotional
 
     override fun create(
         params: CustomerCreateParams,
@@ -83,7 +78,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun list(
         params: CustomerListParams,
         requestOptions: RequestOptions,
-    ): CustomerListResponse =
+    ): CustomerListPage =
         // get /api/v1/customers
         withRawResponse().list(params, requestOptions).parse()
 
@@ -115,10 +110,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val promotional: PromotionalService.WithRawResponse by lazy {
-            PromotionalServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -129,8 +120,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         override fun paymentMethod(): PaymentMethodService.WithRawResponse = paymentMethod
 
         override fun usage(): UsageService.WithRawResponse = usage
-
-        override fun promotional(): PromotionalService.WithRawResponse = promotional
 
         private val createHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
@@ -221,13 +210,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val listHandler: Handler<CustomerListResponse> =
-            jsonHandler<CustomerListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CustomerListPageResponse> =
+            jsonHandler<CustomerListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CustomerListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerListResponse> {
+        ): HttpResponseFor<CustomerListPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -244,6 +233,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        CustomerListPage.builder()
+                            .service(CustomerServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

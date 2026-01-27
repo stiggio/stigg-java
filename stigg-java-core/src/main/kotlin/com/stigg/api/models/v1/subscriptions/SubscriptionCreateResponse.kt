@@ -754,6 +754,8 @@ private constructor(
             )
 
             /**
+             * Subscription ID
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
@@ -1201,6 +1203,7 @@ private constructor(
                     additionalProperties = subscription.additionalProperties.toMutableMap()
                 }
 
+                /** Subscription ID */
                 fun id(id: String) = id(JsonField.of(id))
 
                 /**

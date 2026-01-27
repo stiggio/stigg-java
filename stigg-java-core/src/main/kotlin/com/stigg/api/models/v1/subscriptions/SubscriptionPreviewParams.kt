@@ -2393,6 +2393,8 @@ private constructor(
                 ) : this(amount, currency, mutableMapOf())
 
                 /**
+                 * The price amount
+                 *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
                  *   unexpectedly missing or null (e.g. if the server responded with an unexpected
                  *   value).
@@ -2400,10 +2402,13 @@ private constructor(
                 fun amount(): Double = amount.getRequired("amount")
 
                 /**
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * The price currency
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun currency(): Optional<Currency> = currency.getOptional("currency")
+                fun currency(): Currency = currency.getRequired("currency")
 
                 /**
                  * Returns the raw JSON value of [amount].
@@ -2443,6 +2448,7 @@ private constructor(
                      * The following fields are required:
                      * ```java
                      * .amount()
+                     * .currency()
                      * ```
                      */
                     @JvmStatic fun builder() = Builder()
@@ -2452,7 +2458,7 @@ private constructor(
                 class Builder internal constructor() {
 
                     private var amount: JsonField<Double>? = null
-                    private var currency: JsonField<Currency> = JsonMissing.of()
+                    private var currency: JsonField<Currency>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
@@ -2462,6 +2468,7 @@ private constructor(
                         additionalProperties = amountsOff.additionalProperties.toMutableMap()
                     }
 
+                    /** The price amount */
                     fun amount(amount: Double) = amount(JsonField.of(amount))
 
                     /**
@@ -2473,6 +2480,7 @@ private constructor(
                      */
                     fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
 
+                    /** The price currency */
                     fun currency(currency: Currency) = currency(JsonField.of(currency))
 
                     /**
@@ -2514,6 +2522,7 @@ private constructor(
                      * The following fields are required:
                      * ```java
                      * .amount()
+                     * .currency()
                      * ```
                      *
                      * @throws IllegalStateException if any required field is unset.
@@ -2521,7 +2530,7 @@ private constructor(
                     fun build(): AmountsOff =
                         AmountsOff(
                             checkRequired("amount", amount),
-                            currency,
+                            checkRequired("currency", currency),
                             additionalProperties.toMutableMap(),
                         )
                 }
@@ -2534,7 +2543,7 @@ private constructor(
                     }
 
                     amount()
-                    currency().ifPresent { it.validate() }
+                    currency().validate()
                     validated = true
                 }
 
@@ -2557,6 +2566,7 @@ private constructor(
                     (if (amount.asKnown().isPresent) 1 else 0) +
                         (currency.asKnown().getOrNull()?.validity() ?: 0)
 
+                /** The price currency */
                 class Currency
                 @JsonCreator
                 private constructor(private val value: JsonField<String>) : Enum {

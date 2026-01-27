@@ -6,7 +6,6 @@ import com.stigg.api.TestServerExtension
 import com.stigg.api.client.okhttp.StiggOkHttpClient
 import com.stigg.api.core.JsonValue
 import com.stigg.api.models.v1.coupons.CouponCreateParams
-import com.stigg.api.models.v1.coupons.CouponListParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -70,15 +69,8 @@ internal class CouponServiceTest {
                 .build()
         val couponService = client.v1().coupons()
 
-        val coupons =
-            couponService.list(
-                CouponListParams.builder()
-                    .endingBefore("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .limit(1L)
-                    .startingAfter("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .build()
-            )
+        val page = couponService.list()
 
-        coupons.validate()
+        page.response().validate()
     }
 }

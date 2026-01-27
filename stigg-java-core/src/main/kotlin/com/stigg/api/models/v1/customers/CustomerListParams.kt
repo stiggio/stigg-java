@@ -12,21 +12,21 @@ import kotlin.jvm.optionals.getOrNull
 /** Get a list of Customers */
 class CustomerListParams
 private constructor(
-    private val endingBefore: String?,
+    private val after: String?,
+    private val before: String?,
     private val limit: Long?,
-    private val startingAfter: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** Starting after this UUID for pagination */
+    fun after(): Optional<String> = Optional.ofNullable(after)
+
     /** Ending before this UUID for pagination */
-    fun endingBefore(): Optional<String> = Optional.ofNullable(endingBefore)
+    fun before(): Optional<String> = Optional.ofNullable(before)
 
     /** Items per page */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
-
-    /** Starting after this UUID for pagination */
-    fun startingAfter(): Optional<String> = Optional.ofNullable(startingAfter)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -47,26 +47,32 @@ private constructor(
     /** A builder for [CustomerListParams]. */
     class Builder internal constructor() {
 
-        private var endingBefore: String? = null
+        private var after: String? = null
+        private var before: String? = null
         private var limit: Long? = null
-        private var startingAfter: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(customerListParams: CustomerListParams) = apply {
-            endingBefore = customerListParams.endingBefore
+            after = customerListParams.after
+            before = customerListParams.before
             limit = customerListParams.limit
-            startingAfter = customerListParams.startingAfter
             additionalHeaders = customerListParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerListParams.additionalQueryParams.toBuilder()
         }
 
-        /** Ending before this UUID for pagination */
-        fun endingBefore(endingBefore: String?) = apply { this.endingBefore = endingBefore }
+        /** Starting after this UUID for pagination */
+        fun after(after: String?) = apply { this.after = after }
 
-        /** Alias for calling [Builder.endingBefore] with `endingBefore.orElse(null)`. */
-        fun endingBefore(endingBefore: Optional<String>) = endingBefore(endingBefore.getOrNull())
+        /** Alias for calling [Builder.after] with `after.orElse(null)`. */
+        fun after(after: Optional<String>) = after(after.getOrNull())
+
+        /** Ending before this UUID for pagination */
+        fun before(before: String?) = apply { this.before = before }
+
+        /** Alias for calling [Builder.before] with `before.orElse(null)`. */
+        fun before(before: Optional<String>) = before(before.getOrNull())
 
         /** Items per page */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -80,13 +86,6 @@ private constructor(
 
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
-
-        /** Starting after this UUID for pagination */
-        fun startingAfter(startingAfter: String?) = apply { this.startingAfter = startingAfter }
-
-        /** Alias for calling [Builder.startingAfter] with `startingAfter.orElse(null)`. */
-        fun startingAfter(startingAfter: Optional<String>) =
-            startingAfter(startingAfter.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -193,9 +192,9 @@ private constructor(
          */
         fun build(): CustomerListParams =
             CustomerListParams(
-                endingBefore,
+                after,
+                before,
                 limit,
-                startingAfter,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -206,9 +205,9 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                endingBefore?.let { put("endingBefore", it) }
+                after?.let { put("after", it) }
+                before?.let { put("before", it) }
                 limit?.let { put("limit", it.toString()) }
-                startingAfter?.let { put("startingAfter", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -219,16 +218,16 @@ private constructor(
         }
 
         return other is CustomerListParams &&
-            endingBefore == other.endingBefore &&
+            after == other.after &&
+            before == other.before &&
             limit == other.limit &&
-            startingAfter == other.startingAfter &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(endingBefore, limit, startingAfter, additionalHeaders, additionalQueryParams)
+        Objects.hash(after, before, limit, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CustomerListParams{endingBefore=$endingBefore, limit=$limit, startingAfter=$startingAfter, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerListParams{after=$after, before=$before, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

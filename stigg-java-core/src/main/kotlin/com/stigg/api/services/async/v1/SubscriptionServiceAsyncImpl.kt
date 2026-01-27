@@ -20,8 +20,9 @@ import com.stigg.api.models.v1.subscriptions.SubscriptionCreateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionCreateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateResponse
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPageAsync
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPageResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionListParams
-import com.stigg.api.models.v1.subscriptions.SubscriptionListResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionPreviewParams
@@ -71,7 +72,7 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
     override fun list(
         params: SubscriptionListParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionListResponse> =
+    ): CompletableFuture<SubscriptionListPageAsync> =
         // get /api/v1/subscriptions
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
@@ -186,13 +187,13 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                 }
         }
 
-        private val listHandler: Handler<SubscriptionListResponse> =
-            jsonHandler<SubscriptionListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<SubscriptionListPageResponse> =
+            jsonHandler<SubscriptionListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: SubscriptionListParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionListResponse>> {
+        ): CompletableFuture<HttpResponseFor<SubscriptionListPageAsync>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -211,6 +212,14 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                            .let {
+                                SubscriptionListPageAsync.builder()
+                                    .service(SubscriptionServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

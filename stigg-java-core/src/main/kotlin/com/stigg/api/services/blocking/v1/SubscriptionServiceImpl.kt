@@ -20,8 +20,9 @@ import com.stigg.api.models.v1.subscriptions.SubscriptionCreateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionCreateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateResponse
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPage
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPageResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionListParams
-import com.stigg.api.models.v1.subscriptions.SubscriptionListResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionPreviewParams
@@ -68,7 +69,7 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
     override fun list(
         params: SubscriptionListParams,
         requestOptions: RequestOptions,
-    ): SubscriptionListResponse =
+    ): SubscriptionListPage =
         // get /api/v1/subscriptions
         withRawResponse().list(params, requestOptions).parse()
 
@@ -177,13 +178,13 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
             }
         }
 
-        private val listHandler: Handler<SubscriptionListResponse> =
-            jsonHandler<SubscriptionListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<SubscriptionListPageResponse> =
+            jsonHandler<SubscriptionListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: SubscriptionListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SubscriptionListResponse> {
+        ): HttpResponseFor<SubscriptionListPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -200,6 +201,13 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        SubscriptionListPage.builder()
+                            .service(SubscriptionServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

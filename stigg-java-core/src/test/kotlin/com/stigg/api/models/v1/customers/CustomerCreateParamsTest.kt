@@ -12,9 +12,8 @@ internal class CustomerCreateParamsTest {
     @Test
     fun create() {
         CustomerCreateParams.builder()
-            .email("dev@stainless.com")
-            .externalId("externalId")
-            .name("name")
+            .id("id")
+            .couponId("couponId")
             .defaultPaymentMethod(
                 CustomerCreateParams.DefaultPaymentMethod.builder()
                     .billingId("billingId")
@@ -24,6 +23,7 @@ internal class CustomerCreateParamsTest {
                     .type(CustomerCreateParams.DefaultPaymentMethod.Type.CARD)
                     .build()
             )
+            .email("dev@stainless.com")
             .addIntegration(
                 CustomerCreateParams.Integration.builder()
                     .id("id")
@@ -36,6 +36,7 @@ internal class CustomerCreateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+            .name("name")
             .build()
     }
 
@@ -43,9 +44,8 @@ internal class CustomerCreateParamsTest {
     fun body() {
         val params =
             CustomerCreateParams.builder()
-                .email("dev@stainless.com")
-                .externalId("externalId")
-                .name("name")
+                .id("id")
+                .couponId("couponId")
                 .defaultPaymentMethod(
                     CustomerCreateParams.DefaultPaymentMethod.builder()
                         .billingId("billingId")
@@ -55,6 +55,7 @@ internal class CustomerCreateParamsTest {
                         .type(CustomerCreateParams.DefaultPaymentMethod.Type.CARD)
                         .build()
                 )
+                .email("dev@stainless.com")
                 .addIntegration(
                     CustomerCreateParams.Integration.builder()
                         .id("id")
@@ -67,13 +68,13 @@ internal class CustomerCreateParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .name("name")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.email()).contains("dev@stainless.com")
-        assertThat(body.externalId()).isEqualTo("externalId")
-        assertThat(body.name()).contains("name")
+        assertThat(body.id()).isEqualTo("id")
+        assertThat(body.couponId()).contains("couponId")
         assertThat(body.defaultPaymentMethod())
             .contains(
                 CustomerCreateParams.DefaultPaymentMethod.builder()
@@ -84,6 +85,7 @@ internal class CustomerCreateParamsTest {
                     .type(CustomerCreateParams.DefaultPaymentMethod.Type.CARD)
                     .build()
             )
+        assertThat(body.email()).contains("dev@stainless.com")
         assertThat(body.integrations().getOrNull())
             .containsExactly(
                 CustomerCreateParams.Integration.builder()
@@ -98,21 +100,15 @@ internal class CustomerCreateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+        assertThat(body.name()).contains("name")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            CustomerCreateParams.builder()
-                .email("dev@stainless.com")
-                .externalId("externalId")
-                .name("name")
-                .build()
+        val params = CustomerCreateParams.builder().id("id").build()
 
         val body = params._body()
 
-        assertThat(body.email()).contains("dev@stainless.com")
-        assertThat(body.externalId()).isEqualTo("externalId")
-        assertThat(body.name()).contains("name")
+        assertThat(body.id()).isEqualTo("id")
     }
 }
