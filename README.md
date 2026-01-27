@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.stigg.api/stigg-java)](https://central.sonatype.com/artifact/com.stigg.api/stigg-java/0.1.0-alpha.1)
-[![javadoc](https://javadoc.io/badge2/com.stigg.api/stigg-java/0.1.0-alpha.1/javadoc.svg)](https://javadoc.io/doc/com.stigg.api/stigg-java/0.1.0-alpha.1)
+[![Maven Central](https://img.shields.io/maven-central/v/io.stigg/stigg-java)](https://central.sonatype.com/artifact/io.stigg/stigg-java/0.1.0-alpha.1)
+[![javadoc](https://javadoc.io/badge2/io.stigg/stigg-java/0.1.0-alpha.1/javadoc.svg)](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.1)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.stigg.api/stigg-java/0.1.0-alpha.1).
+Javadocs are available on [javadoc.io](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.1).
 
 <!-- x-release-please-end -->
 
@@ -24,14 +24,14 @@ Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.stigg.api/stig
 ### Gradle
 
 ```kotlin
-implementation("com.stigg.api:stigg-java:0.1.0-alpha.1")
+implementation("io.stigg:stigg-java:0.1.0-alpha.1")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.stigg.api</groupId>
+  <groupId>io.stigg</groupId>
   <artifactId>stigg-java</artifactId>
   <version>0.1.0-alpha.1</version>
 </dependency>
@@ -46,10 +46,10 @@ This library requires Java 8 or later.
 ## Usage
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
-import com.stigg.api.models.v1.customers.CustomerResponse;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
+import io.stigg.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
 // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
@@ -63,8 +63,8 @@ CustomerResponse customerResponse = client.v1().customers().retrieve("REPLACE_ME
 Configure the client using system properties or environment variables:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
 // Or configures using the `STIGG_API_KEY` and `STIGG_BASE_URL` environment variables
@@ -74,8 +74,8 @@ StiggClient client = StiggOkHttpClient.fromEnv();
 Or manually:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     .apiKey("My API Key")
@@ -85,8 +85,8 @@ StiggClient client = StiggOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
@@ -114,7 +114,7 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```java
-import com.stigg.api.client.StiggClient;
+import io.stigg.client.StiggClient;
 
 StiggClient clientWithOptions = client.withOptions(optionsBuilder -> {
     optionsBuilder.baseUrl("https://example.com");
@@ -143,10 +143,10 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
-import com.stigg.api.models.v1.customers.CustomerResponse;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
+import io.stigg.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
@@ -159,10 +159,10 @@ CompletableFuture<CustomerResponse> customerResponse = client.async().v1().custo
 Or create an asynchronous client from the beginning:
 
 ```java
-import com.stigg.api.client.StiggClientAsync;
-import com.stigg.api.client.okhttp.StiggOkHttpClientAsync;
-import com.stigg.api.models.v1.customers.CustomerResponse;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.client.StiggClientAsync;
+import io.stigg.client.okhttp.StiggOkHttpClientAsync;
+import io.stigg.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stigg.apiKey` and `stigg.baseUrl` system properties
@@ -181,10 +181,10 @@ The SDK defines methods that deserialize responses into instances of Java classe
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```java
-import com.stigg.api.core.http.Headers;
-import com.stigg.api.core.http.HttpResponseFor;
-import com.stigg.api.models.v1.customers.CustomerResponse;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.core.http.Headers;
+import io.stigg.core.http.HttpResponseFor;
+import io.stigg.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 
 HttpResponseFor<CustomerResponse> customerResponse = client.v1().customers().withRawResponse().retrieve("REPLACE_ME");
 
@@ -195,7 +195,7 @@ Headers headers = customerResponse.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerResponse;
 
 CustomerResponse parsedCustomerResponse = customerResponse.parse();
 ```
@@ -204,26 +204,26 @@ CustomerResponse parsedCustomerResponse = customerResponse.parse();
 
 The SDK throws custom unchecked exception types:
 
-- [`StiggServiceException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`StiggServiceException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                |
-  | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-  | 400    | [`BadRequestException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                           |
+  | ------ | ------------------------------------------------------------------------------------------------------------------- |
+  | 400    | [`BadRequestException`](stigg-java-core/src/main/kotlin/io/stigg/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](stigg-java-core/src/main/kotlin/io/stigg/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](stigg-java-core/src/main/kotlin/io/stigg/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](stigg-java-core/src/main/kotlin/io/stigg/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](stigg-java-core/src/main/kotlin/io/stigg/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](stigg-java-core/src/main/kotlin/io/stigg/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](stigg-java-core/src/main/kotlin/io/stigg/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](stigg-java-core/src/main/kotlin/io/stigg/errors/UnexpectedStatusCodeException.kt) |
 
-- [`StiggIoException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggIoException.kt): I/O networking errors.
+- [`StiggIoException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggIoException.kt): I/O networking errors.
 
-- [`StiggRetryableException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`StiggRetryableException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`StiggInvalidDataException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`StiggInvalidDataException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`StiggException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`StiggException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Pagination
 
@@ -236,8 +236,8 @@ To iterate through all results across all pages, use the `autoPager()` method, w
 When using the synchronous client, the method returns an [`Iterable`](https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html)
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerListPage;
-import com.stigg.api.models.v1.customers.CustomerListResponse;
+import io.stigg.models.v1.customers.CustomerListPage;
+import io.stigg.models.v1.customers.CustomerListResponse;
 
 CustomerListPage page = client.v1().customers().list();
 
@@ -253,12 +253,12 @@ page.autoPager()
     .forEach(customer -> System.out.println(customer));
 ```
 
-When using the asynchronous client, the method returns an [`AsyncStreamResponse`](stigg-java-core/src/main/kotlin/com/stigg/api/core/http/AsyncStreamResponse.kt):
+When using the asynchronous client, the method returns an [`AsyncStreamResponse`](stigg-java-core/src/main/kotlin/io/stigg/core/http/AsyncStreamResponse.kt):
 
 ```java
-import com.stigg.api.core.http.AsyncStreamResponse;
-import com.stigg.api.models.v1.customers.CustomerListPageAsync;
-import com.stigg.api.models.v1.customers.CustomerListResponse;
+import io.stigg.core.http.AsyncStreamResponse;
+import io.stigg.models.v1.customers.CustomerListPageAsync;
+import io.stigg.models.v1.customers.CustomerListResponse;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -308,8 +308,8 @@ To access individual page items and manually request the next page, use the `ite
 `hasNextPage()`, and `nextPage()` methods:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerListPage;
-import com.stigg.api.models.v1.customers.CustomerListResponse;
+import io.stigg.models.v1.customers.CustomerListPage;
+import io.stigg.models.v1.customers.CustomerListResponse;
 
 CustomerListPage page = client.v1().customers().list();
 while (true) {
@@ -353,7 +353,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -379,8 +379,8 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     .fromEnv()
@@ -395,7 +395,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerResponse;
 
 CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
@@ -403,8 +403,8 @@ CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOpti
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 import java.time.Duration;
 
 StiggClient client = StiggOkHttpClient.builder()
@@ -418,8 +418,8 @@ StiggClient client = StiggOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -442,8 +442,8 @@ StiggClient client = StiggOkHttpClient.builder()
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     .fromEnv()
@@ -461,10 +461,10 @@ The SDK consists of three artifacts:
 - `stigg-java-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`StiggClient`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClient.kt), [`StiggClientAsync`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientAsync.kt), [`StiggClientImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientImpl.kt), and [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientAsyncImpl.kt), all of which can work with any HTTP client
+  - Exposes [`StiggClient`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClient.kt), [`StiggClientAsync`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientAsync.kt), [`StiggClientImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientImpl.kt), and [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientAsyncImpl.kt), all of which can work with any HTTP client
 - `stigg-java-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClient.kt) and [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClientAsync.kt), which provide a way to construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientImpl.kt) and [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientAsyncImpl.kt), respectively, using OkHttp
+  - Exposes [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClient.kt) and [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClientAsync.kt), which provide a way to construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientImpl.kt) and [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientAsyncImpl.kt), respectively, using OkHttp
 - `stigg-java`
   - Depends on and exposes the APIs of both `stigg-java-core` and `stigg-java-client-okhttp`
   - Does not have its own logic
@@ -479,16 +479,16 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 To use a customized `OkHttpClient`:
 
 1. Replace your [`stigg-java` dependency](#installation) with `stigg-java-core`
-2. Copy `stigg-java-client-okhttp`'s [`OkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientImpl.kt) or [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientAsyncImpl.kt), similarly to [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClientAsync.kt), using your customized client
+2. Copy `stigg-java-client-okhttp`'s [`OkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientImpl.kt) or [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientAsyncImpl.kt), similarly to [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
 1. Replace your [`stigg-java` dependency](#installation) with `stigg-java-core`
-2. Write a class that implements the [`HttpClient`](stigg-java-core/src/main/kotlin/com/stigg/api/core/http/HttpClient.kt) interface
-3. Construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientImpl.kt) or [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/com/stigg/api/client/StiggClientAsyncImpl.kt), similarly to [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/com/stigg/api/client/okhttp/StiggOkHttpClientAsync.kt), using your new client class
+2. Write a class that implements the [`HttpClient`](stigg-java-core/src/main/kotlin/io/stigg/core/http/HttpClient.kt) interface
+3. Construct [`StiggClientImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientImpl.kt) or [`StiggClientAsyncImpl`](stigg-java-core/src/main/kotlin/io/stigg/client/StiggClientAsyncImpl.kt), similarly to [`StiggOkHttpClient`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClient.kt) or [`StiggOkHttpClientAsync`](stigg-java-client-okhttp/src/main/kotlin/io/stigg/client/okhttp/StiggOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -499,8 +499,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```java
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.core.JsonValue;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 
 CustomerRetrieveParams params = CustomerRetrieveParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -514,8 +514,8 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```java
-import com.stigg.api.core.JsonValue;
-import com.stigg.api.models.v1.customers.CustomerCreateParams;
+import io.stigg.core.JsonValue;
+import io.stigg.models.v1.customers.CustomerCreateParams;
 
 CustomerCreateParams params = CustomerCreateParams.builder()
     .defaultPaymentMethod(CustomerCreateParams.DefaultPaymentMethod.builder()
@@ -526,18 +526,18 @@ CustomerCreateParams params = CustomerCreateParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stigg-java-core/src/main/kotlin/io/stigg/core/Values.kt) object to its setter:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 
 CustomerRetrieveParams params = CustomerRetrieveParams.builder().build();
 ```
 
-The most straightforward way to create a [`JsonValue`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](stigg-java-core/src/main/kotlin/io/stigg/core/Values.kt) is using its `from(...)` method:
 
 ```java
-import com.stigg.api.core.JsonValue;
+import io.stigg.core.JsonValue;
 import java.util.List;
 import java.util.Map;
 
@@ -575,11 +575,11 @@ JsonValue complexValue = JsonValue.from(Map.of(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](stigg-java-core/src/main/kotlin/com/stigg/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](stigg-java-core/src/main/kotlin/io/stigg/core/Values.kt):
 
 ```java
-import com.stigg.api.core.JsonMissing;
-import com.stigg.api.models.v1.customers.CustomerRetrieveParams;
+import io.stigg.core.JsonMissing;
+import io.stigg.models.v1.customers.CustomerRetrieveParams;
 
 CustomerRetrieveParams params = CustomerRetrieveParams.builder()
     .id(JsonMissing.of())
@@ -591,7 +591,7 @@ CustomerRetrieveParams params = CustomerRetrieveParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```java
-import com.stigg.api.core.JsonValue;
+import io.stigg.core.JsonValue;
 import java.util.Map;
 
 Map<String, JsonValue> additionalProperties = client.v1().customers().retrieve(params)._additionalProperties();
@@ -621,7 +621,7 @@ String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```java
-import com.stigg.api.core.JsonField;
+import io.stigg.core.JsonField;
 import java.util.Optional;
 
 JsonField<Object> field = client.v1().customers().retrieve(params)._field();
@@ -644,12 +644,12 @@ if (field.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`StiggInvalidDataException`](stigg-java-core/src/main/kotlin/com/stigg/api/errors/StiggInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`StiggInvalidDataException`](stigg-java-core/src/main/kotlin/io/stigg/errors/StiggInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerResponse;
 
 CustomerResponse customerResponse = client.v1().customers().retrieve(params).validate();
 ```
@@ -657,7 +657,7 @@ CustomerResponse customerResponse = client.v1().customers().retrieve(params).val
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.stigg.api.models.v1.customers.CustomerResponse;
+import io.stigg.models.v1.customers.CustomerResponse;
 
 CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOptions.builder().responseValidation(true).build());
 ```
@@ -665,8 +665,8 @@ CustomerResponse customerResponse = client.v1().customers().retrieve(RequestOpti
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.stigg.api.client.StiggClient;
-import com.stigg.api.client.okhttp.StiggOkHttpClient;
+import io.stigg.client.StiggClient;
+import io.stigg.client.okhttp.StiggOkHttpClient;
 
 StiggClient client = StiggOkHttpClient.builder()
     .fromEnv()

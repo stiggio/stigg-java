@@ -7,7 +7,7 @@ repositories {
 }
 
 allprojects {
-    group = "com.stigg.api"
+    group = "io.stigg"
     version = "0.1.0-alpha.1" // x-release-please-version
 }
 
