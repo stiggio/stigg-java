@@ -8,8 +8,8 @@ import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.models.v1.coupons.CouponCreateParams
 import com.stigg.api.models.v1.coupons.CouponCreateResponse
+import com.stigg.api.models.v1.coupons.CouponListPage
 import com.stigg.api.models.v1.coupons.CouponListParams
-import com.stigg.api.models.v1.coupons.CouponListResponse
 import com.stigg.api.models.v1.coupons.CouponRetrieveParams
 import com.stigg.api.models.v1.coupons.CouponRetrieveResponse
 import java.util.function.Consumer
@@ -69,20 +69,20 @@ interface CouponService {
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
     /** Get a list of Coupons */
-    fun list(): CouponListResponse = list(CouponListParams.none())
+    fun list(): CouponListPage = list(CouponListParams.none())
 
     /** @see list */
     fun list(
         params: CouponListParams = CouponListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CouponListResponse
+    ): CouponListPage
 
     /** @see list */
-    fun list(params: CouponListParams = CouponListParams.none()): CouponListResponse =
+    fun list(params: CouponListParams = CouponListParams.none()): CouponListPage =
         list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): CouponListResponse =
+    fun list(requestOptions: RequestOptions): CouponListPage =
         list(CouponListParams.none(), requestOptions)
 
     /** A view of [CouponService] that provides access to raw HTTP responses for each method. */
@@ -158,25 +158,24 @@ interface CouponService {
          * Returns a raw HTTP response for `get /api/v1/coupons`, but is otherwise the same as
          * [CouponService.list].
          */
-        @MustBeClosed
-        fun list(): HttpResponseFor<CouponListResponse> = list(CouponListParams.none())
+        @MustBeClosed fun list(): HttpResponseFor<CouponListPage> = list(CouponListParams.none())
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: CouponListParams = CouponListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CouponListResponse>
+        ): HttpResponseFor<CouponListPage>
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: CouponListParams = CouponListParams.none()
-        ): HttpResponseFor<CouponListResponse> = list(params, RequestOptions.none())
+        ): HttpResponseFor<CouponListPage> = list(params, RequestOptions.none())
 
         /** @see list */
         @MustBeClosed
-        fun list(requestOptions: RequestOptions): HttpResponseFor<CouponListResponse> =
+        fun list(requestOptions: RequestOptions): HttpResponseFor<CouponListPage> =
             list(CouponListParams.none(), requestOptions)
     }
 }

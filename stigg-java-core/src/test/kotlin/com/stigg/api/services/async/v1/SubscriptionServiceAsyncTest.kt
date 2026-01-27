@@ -7,7 +7,6 @@ import com.stigg.api.client.okhttp.StiggOkHttpClientAsync
 import com.stigg.api.core.JsonValue
 import com.stigg.api.models.v1.subscriptions.SubscriptionCreateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateParams
-import com.stigg.api.models.v1.subscriptions.SubscriptionListParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionPreviewParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionTransferParams
@@ -98,19 +97,10 @@ internal class SubscriptionServiceAsyncTest {
                 .build()
         val subscriptionServiceAsync = client.v1().subscriptions()
 
-        val subscriptionsFuture =
-            subscriptionServiceAsync.list(
-                SubscriptionListParams.builder()
-                    .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .customerId("customerId")
-                    .limit(1L)
-                    .status("status")
-                    .build()
-            )
+        val pageFuture = subscriptionServiceAsync.list()
 
-        val subscriptions = subscriptionsFuture.get()
-        subscriptions.validate()
+        val page = pageFuture.get()
+        page.response().validate()
     }
 
     @Disabled("Prism tests are disabled")

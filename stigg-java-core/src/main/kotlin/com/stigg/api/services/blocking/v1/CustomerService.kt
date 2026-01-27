@@ -8,8 +8,8 @@ import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPage
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
@@ -107,20 +107,20 @@ interface CustomerService {
         update(id, CustomerUpdateParams.none(), requestOptions)
 
     /** Get a list of Customers */
-    fun list(): CustomerListResponse = list(CustomerListParams.none())
+    fun list(): CustomerListPage = list(CustomerListParams.none())
 
     /** @see list */
     fun list(
         params: CustomerListParams = CustomerListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerListResponse
+    ): CustomerListPage
 
     /** @see list */
-    fun list(params: CustomerListParams = CustomerListParams.none()): CustomerListResponse =
+    fun list(params: CustomerListParams = CustomerListParams.none()): CustomerListPage =
         list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): CustomerListResponse =
+    fun list(requestOptions: RequestOptions): CustomerListPage =
         list(CustomerListParams.none(), requestOptions)
 
     /** Perform archive on a Customer */
@@ -302,24 +302,24 @@ interface CustomerService {
          * [CustomerService.list].
          */
         @MustBeClosed
-        fun list(): HttpResponseFor<CustomerListResponse> = list(CustomerListParams.none())
+        fun list(): HttpResponseFor<CustomerListPage> = list(CustomerListParams.none())
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: CustomerListParams = CustomerListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerListResponse>
+        ): HttpResponseFor<CustomerListPage>
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: CustomerListParams = CustomerListParams.none()
-        ): HttpResponseFor<CustomerListResponse> = list(params, RequestOptions.none())
+        ): HttpResponseFor<CustomerListPage> = list(params, RequestOptions.none())
 
         /** @see list */
         @MustBeClosed
-        fun list(requestOptions: RequestOptions): HttpResponseFor<CustomerListResponse> =
+        fun list(requestOptions: RequestOptions): HttpResponseFor<CustomerListPage> =
             list(CustomerListParams.none(), requestOptions)
 
         /**
