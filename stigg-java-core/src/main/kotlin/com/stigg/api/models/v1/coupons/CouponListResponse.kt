@@ -933,10 +933,11 @@ private constructor(
             /**
              * The price currency
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
              */
-            fun currency(): Optional<Currency> = currency.getOptional("currency")
+            fun currency(): Currency = currency.getRequired("currency")
 
             /**
              * Returns the raw JSON value of [amount].
@@ -1008,10 +1009,7 @@ private constructor(
                 fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
 
                 /** The price currency */
-                fun currency(currency: Currency?) = currency(JsonField.ofNullable(currency))
-
-                /** Alias for calling [Builder.currency] with `currency.orElse(null)`. */
-                fun currency(currency: Optional<Currency>) = currency(currency.getOrNull())
+                fun currency(currency: Currency) = currency(JsonField.of(currency))
 
                 /**
                  * Sets [Builder.currency] to an arbitrary JSON value.
@@ -1073,7 +1071,7 @@ private constructor(
                 }
 
                 amount()
-                currency().ifPresent { it.validate() }
+                currency().validate()
                 validated = true
             }
 
