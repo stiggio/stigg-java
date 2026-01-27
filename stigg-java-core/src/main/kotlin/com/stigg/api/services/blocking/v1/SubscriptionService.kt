@@ -10,8 +10,8 @@ import com.stigg.api.models.v1.subscriptions.SubscriptionCreateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionCreateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateResponse
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPage
 import com.stigg.api.models.v1.subscriptions.SubscriptionListParams
-import com.stigg.api.models.v1.subscriptions.SubscriptionListResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionPreviewParams
@@ -81,21 +81,20 @@ interface SubscriptionService {
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
     /** Get a list of Subscriptions */
-    fun list(): SubscriptionListResponse = list(SubscriptionListParams.none())
+    fun list(): SubscriptionListPage = list(SubscriptionListParams.none())
 
     /** @see list */
     fun list(
         params: SubscriptionListParams = SubscriptionListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SubscriptionListResponse
+    ): SubscriptionListPage
 
     /** @see list */
-    fun list(
-        params: SubscriptionListParams = SubscriptionListParams.none()
-    ): SubscriptionListResponse = list(params, RequestOptions.none())
+    fun list(params: SubscriptionListParams = SubscriptionListParams.none()): SubscriptionListPage =
+        list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): SubscriptionListResponse =
+    fun list(requestOptions: RequestOptions): SubscriptionListPage =
         list(SubscriptionListParams.none(), requestOptions)
 
     /** Perform delegate on a Subscription */
@@ -263,24 +262,24 @@ interface SubscriptionService {
          * [SubscriptionService.list].
          */
         @MustBeClosed
-        fun list(): HttpResponseFor<SubscriptionListResponse> = list(SubscriptionListParams.none())
+        fun list(): HttpResponseFor<SubscriptionListPage> = list(SubscriptionListParams.none())
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: SubscriptionListParams = SubscriptionListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SubscriptionListResponse>
+        ): HttpResponseFor<SubscriptionListPage>
 
         /** @see list */
         @MustBeClosed
         fun list(
             params: SubscriptionListParams = SubscriptionListParams.none()
-        ): HttpResponseFor<SubscriptionListResponse> = list(params, RequestOptions.none())
+        ): HttpResponseFor<SubscriptionListPage> = list(params, RequestOptions.none())
 
         /** @see list */
         @MustBeClosed
-        fun list(requestOptions: RequestOptions): HttpResponseFor<SubscriptionListResponse> =
+        fun list(requestOptions: RequestOptions): HttpResponseFor<SubscriptionListPage> =
             list(SubscriptionListParams.none(), requestOptions)
 
         /**

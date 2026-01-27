@@ -7,8 +7,8 @@ import com.stigg.api.core.RequestOptions
 import com.stigg.api.core.http.HttpResponseFor
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPageAsync
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
@@ -111,21 +111,21 @@ interface CustomerServiceAsync {
         update(id, CustomerUpdateParams.none(), requestOptions)
 
     /** Get a list of Customers */
-    fun list(): CompletableFuture<CustomerListResponse> = list(CustomerListParams.none())
+    fun list(): CompletableFuture<CustomerListPageAsync> = list(CustomerListParams.none())
 
     /** @see list */
     fun list(
         params: CustomerListParams = CustomerListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CustomerListResponse>
+    ): CompletableFuture<CustomerListPageAsync>
 
     /** @see list */
     fun list(
         params: CustomerListParams = CustomerListParams.none()
-    ): CompletableFuture<CustomerListResponse> = list(params, RequestOptions.none())
+    ): CompletableFuture<CustomerListPageAsync> = list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): CompletableFuture<CustomerListResponse> =
+    fun list(requestOptions: RequestOptions): CompletableFuture<CustomerListPageAsync> =
         list(CustomerListParams.none(), requestOptions)
 
     /** Perform archive on a Customer */
@@ -311,25 +311,25 @@ interface CustomerServiceAsync {
          * Returns a raw HTTP response for `get /api/v1/customers`, but is otherwise the same as
          * [CustomerServiceAsync.list].
          */
-        fun list(): CompletableFuture<HttpResponseFor<CustomerListResponse>> =
+        fun list(): CompletableFuture<HttpResponseFor<CustomerListPageAsync>> =
             list(CustomerListParams.none())
 
         /** @see list */
         fun list(
             params: CustomerListParams = CustomerListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CustomerListResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerListPageAsync>>
 
         /** @see list */
         fun list(
             params: CustomerListParams = CustomerListParams.none()
-        ): CompletableFuture<HttpResponseFor<CustomerListResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
         fun list(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<CustomerListResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerListPageAsync>> =
             list(CustomerListParams.none(), requestOptions)
 
         /**

@@ -18,8 +18,9 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepareAsync
 import com.stigg.api.models.v1.coupons.CouponCreateParams
 import com.stigg.api.models.v1.coupons.CouponCreateResponse
+import com.stigg.api.models.v1.coupons.CouponListPageAsync
+import com.stigg.api.models.v1.coupons.CouponListPageResponse
 import com.stigg.api.models.v1.coupons.CouponListParams
-import com.stigg.api.models.v1.coupons.CouponListResponse
 import com.stigg.api.models.v1.coupons.CouponRetrieveParams
 import com.stigg.api.models.v1.coupons.CouponRetrieveResponse
 import java.util.concurrent.CompletableFuture
@@ -55,7 +56,7 @@ class CouponServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override fun list(
         params: CouponListParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<CouponListResponse> =
+    ): CompletableFuture<CouponListPageAsync> =
         // get /api/v1/coupons
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
@@ -136,13 +137,13 @@ class CouponServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 }
         }
 
-        private val listHandler: Handler<CouponListResponse> =
-            jsonHandler<CouponListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CouponListPageResponse> =
+            jsonHandler<CouponListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CouponListParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CouponListResponse>> {
+        ): CompletableFuture<HttpResponseFor<CouponListPageAsync>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -161,6 +162,14 @@ class CouponServiceAsyncImpl internal constructor(private val clientOptions: Cli
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                            .let {
+                                CouponListPageAsync.builder()
+                                    .service(CouponServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

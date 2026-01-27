@@ -9,8 +9,8 @@ import com.stigg.api.models.v1.subscriptions.SubscriptionCreateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionCreateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionDelegateResponse
+import com.stigg.api.models.v1.subscriptions.SubscriptionListPageAsync
 import com.stigg.api.models.v1.subscriptions.SubscriptionListParams
-import com.stigg.api.models.v1.subscriptions.SubscriptionListResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateParams
 import com.stigg.api.models.v1.subscriptions.SubscriptionMigrateResponse
 import com.stigg.api.models.v1.subscriptions.SubscriptionPreviewParams
@@ -86,21 +86,21 @@ interface SubscriptionServiceAsync {
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
     /** Get a list of Subscriptions */
-    fun list(): CompletableFuture<SubscriptionListResponse> = list(SubscriptionListParams.none())
+    fun list(): CompletableFuture<SubscriptionListPageAsync> = list(SubscriptionListParams.none())
 
     /** @see list */
     fun list(
         params: SubscriptionListParams = SubscriptionListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SubscriptionListResponse>
+    ): CompletableFuture<SubscriptionListPageAsync>
 
     /** @see list */
     fun list(
         params: SubscriptionListParams = SubscriptionListParams.none()
-    ): CompletableFuture<SubscriptionListResponse> = list(params, RequestOptions.none())
+    ): CompletableFuture<SubscriptionListPageAsync> = list(params, RequestOptions.none())
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): CompletableFuture<SubscriptionListResponse> =
+    fun list(requestOptions: RequestOptions): CompletableFuture<SubscriptionListPageAsync> =
         list(SubscriptionListParams.none(), requestOptions)
 
     /** Perform delegate on a Subscription */
@@ -275,25 +275,25 @@ interface SubscriptionServiceAsync {
          * Returns a raw HTTP response for `get /api/v1/subscriptions`, but is otherwise the same as
          * [SubscriptionServiceAsync.list].
          */
-        fun list(): CompletableFuture<HttpResponseFor<SubscriptionListResponse>> =
+        fun list(): CompletableFuture<HttpResponseFor<SubscriptionListPageAsync>> =
             list(SubscriptionListParams.none())
 
         /** @see list */
         fun list(
             params: SubscriptionListParams = SubscriptionListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SubscriptionListResponse>>
+        ): CompletableFuture<HttpResponseFor<SubscriptionListPageAsync>>
 
         /** @see list */
         fun list(
             params: SubscriptionListParams = SubscriptionListParams.none()
-        ): CompletableFuture<HttpResponseFor<SubscriptionListResponse>> =
+        ): CompletableFuture<HttpResponseFor<SubscriptionListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
         fun list(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<SubscriptionListResponse>> =
+        ): CompletableFuture<HttpResponseFor<SubscriptionListPageAsync>> =
             list(SubscriptionListParams.none(), requestOptions)
 
         /**

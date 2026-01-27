@@ -18,8 +18,9 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepareAsync
 import com.stigg.api.models.v1.customers.CustomerArchiveParams
 import com.stigg.api.models.v1.customers.CustomerCreateParams
+import com.stigg.api.models.v1.customers.CustomerListPageAsync
+import com.stigg.api.models.v1.customers.CustomerListPageResponse
 import com.stigg.api.models.v1.customers.CustomerListParams
-import com.stigg.api.models.v1.customers.CustomerListResponse
 import com.stigg.api.models.v1.customers.CustomerResponse
 import com.stigg.api.models.v1.customers.CustomerRetrieveParams
 import com.stigg.api.models.v1.customers.CustomerUnarchiveParams
@@ -78,7 +79,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun list(
         params: CustomerListParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<CustomerListResponse> =
+    ): CompletableFuture<CustomerListPageAsync> =
         // get /api/v1/customers
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
@@ -219,13 +220,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                 }
         }
 
-        private val listHandler: Handler<CustomerListResponse> =
-            jsonHandler<CustomerListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CustomerListPageResponse> =
+            jsonHandler<CustomerListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CustomerListParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CustomerListResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerListPageAsync>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -244,6 +245,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                            .let {
+                                CustomerListPageAsync.builder()
+                                    .service(CustomerServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

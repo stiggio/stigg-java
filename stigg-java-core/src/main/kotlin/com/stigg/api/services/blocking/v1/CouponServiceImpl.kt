@@ -18,8 +18,9 @@ import com.stigg.api.core.http.parseable
 import com.stigg.api.core.prepare
 import com.stigg.api.models.v1.coupons.CouponCreateParams
 import com.stigg.api.models.v1.coupons.CouponCreateResponse
+import com.stigg.api.models.v1.coupons.CouponListPage
+import com.stigg.api.models.v1.coupons.CouponListPageResponse
 import com.stigg.api.models.v1.coupons.CouponListParams
-import com.stigg.api.models.v1.coupons.CouponListResponse
 import com.stigg.api.models.v1.coupons.CouponRetrieveParams
 import com.stigg.api.models.v1.coupons.CouponRetrieveResponse
 import java.util.function.Consumer
@@ -51,10 +52,7 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
         // get /api/v1/coupons/{id}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override fun list(
-        params: CouponListParams,
-        requestOptions: RequestOptions,
-    ): CouponListResponse =
+    override fun list(params: CouponListParams, requestOptions: RequestOptions): CouponListPage =
         // get /api/v1/coupons
         withRawResponse().list(params, requestOptions).parse()
 
@@ -129,13 +127,13 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val listHandler: Handler<CouponListResponse> =
-            jsonHandler<CouponListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CouponListPageResponse> =
+            jsonHandler<CouponListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CouponListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CouponListResponse> {
+        ): HttpResponseFor<CouponListPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -152,6 +150,13 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        CouponListPage.builder()
+                            .service(CouponServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
