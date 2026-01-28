@@ -11,6 +11,7 @@ import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
+import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
 import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
@@ -177,8 +178,10 @@ private constructor(
         private val metadata: JsonField<Metadata>,
         private val payingCustomerId: JsonField<String>,
         private val paymentCollectionMethod: JsonField<PaymentCollectionMethod>,
+        private val prices: JsonField<List<Price>>,
         private val resourceId: JsonField<String>,
         private val trialEndDate: JsonField<OffsetDateTime>,
+        private val unitQuantity: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -232,12 +235,18 @@ private constructor(
             @JsonProperty("paymentCollectionMethod")
             @ExcludeMissing
             paymentCollectionMethod: JsonField<PaymentCollectionMethod> = JsonMissing.of(),
+            @JsonProperty("prices")
+            @ExcludeMissing
+            prices: JsonField<List<Price>> = JsonMissing.of(),
             @JsonProperty("resourceId")
             @ExcludeMissing
             resourceId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("trialEndDate")
             @ExcludeMissing
             trialEndDate: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("unitQuantity")
+            @ExcludeMissing
+            unitQuantity: JsonField<Double> = JsonMissing.of(),
         ) : this(
             id,
             billingId,
@@ -257,8 +266,10 @@ private constructor(
             metadata,
             payingCustomerId,
             paymentCollectionMethod,
+            prices,
             resourceId,
             trialEndDate,
+            unitQuantity,
             mutableMapOf(),
         )
 
@@ -413,6 +424,12 @@ private constructor(
             paymentCollectionMethod.getOptional("paymentCollectionMethod")
 
         /**
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun prices(): Optional<List<Price>> = prices.getOptional("prices")
+
+        /**
          * Resource ID
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -427,6 +444,12 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun trialEndDate(): Optional<OffsetDateTime> = trialEndDate.getOptional("trialEndDate")
+
+        /**
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun unitQuantity(): Optional<Double> = unitQuantity.getOptional("unitQuantity")
 
         /**
          * Returns the raw JSON value of [id].
@@ -587,6 +610,13 @@ private constructor(
         fun _paymentCollectionMethod(): JsonField<PaymentCollectionMethod> = paymentCollectionMethod
 
         /**
+         * Returns the raw JSON value of [prices].
+         *
+         * Unlike [prices], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("prices") @ExcludeMissing fun _prices(): JsonField<List<Price>> = prices
+
+        /**
          * Returns the raw JSON value of [resourceId].
          *
          * Unlike [resourceId], this method doesn't throw if the JSON field has an unexpected type.
@@ -604,6 +634,16 @@ private constructor(
         @JsonProperty("trialEndDate")
         @ExcludeMissing
         fun _trialEndDate(): JsonField<OffsetDateTime> = trialEndDate
+
+        /**
+         * Returns the raw JSON value of [unitQuantity].
+         *
+         * Unlike [unitQuantity], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("unitQuantity")
+        @ExcludeMissing
+        fun _unitQuantity(): JsonField<Double> = unitQuantity
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -660,8 +700,10 @@ private constructor(
             private var payingCustomerId: JsonField<String> = JsonMissing.of()
             private var paymentCollectionMethod: JsonField<PaymentCollectionMethod> =
                 JsonMissing.of()
+            private var prices: JsonField<MutableList<Price>>? = null
             private var resourceId: JsonField<String> = JsonMissing.of()
             private var trialEndDate: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var unitQuantity: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -684,8 +726,10 @@ private constructor(
                 metadata = data.metadata
                 payingCustomerId = data.payingCustomerId
                 paymentCollectionMethod = data.paymentCollectionMethod
+                prices = data.prices.map { it.toMutableList() }
                 resourceId = data.resourceId
                 trialEndDate = data.trialEndDate
+                unitQuantity = data.unitQuantity
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -987,6 +1031,31 @@ private constructor(
                 paymentCollectionMethod: JsonField<PaymentCollectionMethod>
             ) = apply { this.paymentCollectionMethod = paymentCollectionMethod }
 
+            fun prices(prices: List<Price>) = prices(JsonField.of(prices))
+
+            /**
+             * Sets [Builder.prices] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.prices] with a well-typed `List<Price>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun prices(prices: JsonField<List<Price>>) = apply {
+                this.prices = prices.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Price] to [prices].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addPrice(price: Price) = apply {
+                prices =
+                    (prices ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("prices", it).add(price)
+                    }
+            }
+
             /** Resource ID */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
@@ -1019,6 +1088,19 @@ private constructor(
              */
             fun trialEndDate(trialEndDate: JsonField<OffsetDateTime>) = apply {
                 this.trialEndDate = trialEndDate
+            }
+
+            fun unitQuantity(unitQuantity: Double) = unitQuantity(JsonField.of(unitQuantity))
+
+            /**
+             * Sets [Builder.unitQuantity] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.unitQuantity] with a well-typed [Double] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun unitQuantity(unitQuantity: JsonField<Double>) = apply {
+                this.unitQuantity = unitQuantity
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -1080,8 +1162,10 @@ private constructor(
                     metadata,
                     payingCustomerId,
                     paymentCollectionMethod,
+                    (prices ?: JsonMissing.of()).map { it.toImmutable() },
                     resourceId,
                     trialEndDate,
+                    unitQuantity,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1111,8 +1195,10 @@ private constructor(
             metadata().ifPresent { it.validate() }
             payingCustomerId()
             paymentCollectionMethod().ifPresent { it.validate() }
+            prices().ifPresent { it.forEach { it.validate() } }
             resourceId()
             trialEndDate()
+            unitQuantity()
             validated = true
         }
 
@@ -1150,8 +1236,10 @@ private constructor(
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (payingCustomerId.asKnown().isPresent) 1 else 0) +
                 (paymentCollectionMethod.asKnown().getOrNull()?.validity() ?: 0) +
+                (prices.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (resourceId.asKnown().isPresent) 1 else 0) +
-                (if (trialEndDate.asKnown().isPresent) 1 else 0)
+                (if (trialEndDate.asKnown().isPresent) 1 else 0) +
+                (if (unitQuantity.asKnown().isPresent) 1 else 0)
 
         /** Payment collection */
         class PaymentCollection
@@ -2022,6 +2110,259 @@ private constructor(
             override fun toString() = value.toString()
         }
 
+        class Price
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val id: JsonField<String>,
+            private val createdAt: JsonField<String>,
+            private val updatedAt: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("createdAt")
+                @ExcludeMissing
+                createdAt: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("updatedAt")
+                @ExcludeMissing
+                updatedAt: JsonField<String> = JsonMissing.of(),
+            ) : this(id, createdAt, updatedAt, mutableMapOf())
+
+            /**
+             * Price ID
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun id(): String = id.getRequired("id")
+
+            /**
+             * Creation timestamp
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun createdAt(): String = createdAt.getRequired("createdAt")
+
+            /**
+             * Last update timestamp
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun updatedAt(): String = updatedAt.getRequired("updatedAt")
+
+            /**
+             * Returns the raw JSON value of [id].
+             *
+             * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+            /**
+             * Returns the raw JSON value of [createdAt].
+             *
+             * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("createdAt")
+            @ExcludeMissing
+            fun _createdAt(): JsonField<String> = createdAt
+
+            /**
+             * Returns the raw JSON value of [updatedAt].
+             *
+             * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("updatedAt")
+            @ExcludeMissing
+            fun _updatedAt(): JsonField<String> = updatedAt
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Price].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .id()
+                 * .createdAt()
+                 * .updatedAt()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Price]. */
+            class Builder internal constructor() {
+
+                private var id: JsonField<String>? = null
+                private var createdAt: JsonField<String>? = null
+                private var updatedAt: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(price: Price) = apply {
+                    id = price.id
+                    createdAt = price.createdAt
+                    updatedAt = price.updatedAt
+                    additionalProperties = price.additionalProperties.toMutableMap()
+                }
+
+                /** Price ID */
+                fun id(id: String) = id(JsonField.of(id))
+
+                /**
+                 * Sets [Builder.id] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.id] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun id(id: JsonField<String>) = apply { this.id = id }
+
+                /** Creation timestamp */
+                fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
+
+                /**
+                 * Sets [Builder.createdAt] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.createdAt] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
+
+                /** Last update timestamp */
+                fun updatedAt(updatedAt: String) = updatedAt(JsonField.of(updatedAt))
+
+                /**
+                 * Sets [Builder.updatedAt] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.updatedAt] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun updatedAt(updatedAt: JsonField<String>) = apply { this.updatedAt = updatedAt }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Price].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .id()
+                 * .createdAt()
+                 * .updatedAt()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Price =
+                    Price(
+                        checkRequired("id", id),
+                        checkRequired("createdAt", createdAt),
+                        checkRequired("updatedAt", updatedAt),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Price = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                id()
+                createdAt()
+                updatedAt()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (id.asKnown().isPresent) 1 else 0) +
+                    (if (createdAt.asKnown().isPresent) 1 else 0) +
+                    (if (updatedAt.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Price &&
+                    id == other.id &&
+                    createdAt == other.createdAt &&
+                    updatedAt == other.updatedAt &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(id, createdAt, updatedAt, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Price{id=$id, createdAt=$createdAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -2046,8 +2387,10 @@ private constructor(
                 metadata == other.metadata &&
                 payingCustomerId == other.payingCustomerId &&
                 paymentCollectionMethod == other.paymentCollectionMethod &&
+                prices == other.prices &&
                 resourceId == other.resourceId &&
                 trialEndDate == other.trialEndDate &&
+                unitQuantity == other.unitQuantity &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -2071,8 +2414,10 @@ private constructor(
                 metadata,
                 payingCustomerId,
                 paymentCollectionMethod,
+                prices,
                 resourceId,
                 trialEndDate,
+                unitQuantity,
                 additionalProperties,
             )
         }
@@ -2080,7 +2425,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, resourceId=$resourceId, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
+            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, trialEndDate=$trialEndDate, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -37,8 +38,16 @@ internal class SubscriptionListResponseTest {
                 )
                 .payingCustomerId("payingCustomerId")
                 .paymentCollectionMethod(SubscriptionListResponse.PaymentCollectionMethod.CHARGE)
+                .addPrice(
+                    SubscriptionListResponse.Price.builder()
+                        .id("id")
+                        .createdAt("createdAt")
+                        .updatedAt("updatedAt")
+                        .build()
+                )
                 .resourceId("resourceId")
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .unitQuantity(1.0)
                 .build()
 
         assertThat(subscriptionListResponse.id()).isEqualTo("id")
@@ -76,9 +85,18 @@ internal class SubscriptionListResponseTest {
         assertThat(subscriptionListResponse.payingCustomerId()).contains("payingCustomerId")
         assertThat(subscriptionListResponse.paymentCollectionMethod())
             .contains(SubscriptionListResponse.PaymentCollectionMethod.CHARGE)
+        assertThat(subscriptionListResponse.prices().getOrNull())
+            .containsExactly(
+                SubscriptionListResponse.Price.builder()
+                    .id("id")
+                    .createdAt("createdAt")
+                    .updatedAt("updatedAt")
+                    .build()
+            )
         assertThat(subscriptionListResponse.resourceId()).contains("resourceId")
         assertThat(subscriptionListResponse.trialEndDate())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(subscriptionListResponse.unitQuantity()).contains(1.0)
     }
 
     @Test
@@ -108,8 +126,16 @@ internal class SubscriptionListResponseTest {
                 )
                 .payingCustomerId("payingCustomerId")
                 .paymentCollectionMethod(SubscriptionListResponse.PaymentCollectionMethod.CHARGE)
+                .addPrice(
+                    SubscriptionListResponse.Price.builder()
+                        .id("id")
+                        .createdAt("createdAt")
+                        .updatedAt("updatedAt")
+                        .build()
+                )
                 .resourceId("resourceId")
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .unitQuantity(1.0)
                 .build()
 
         val roundtrippedSubscriptionListResponse =
