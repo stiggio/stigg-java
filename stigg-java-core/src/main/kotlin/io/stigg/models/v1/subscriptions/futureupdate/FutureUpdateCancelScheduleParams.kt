@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform cancel future update on a Subscription */
+/** Cancel scheduled update */
 class FutureUpdateCancelScheduleParams
 private constructor(
     private val id: String?,

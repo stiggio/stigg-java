@@ -28,7 +28,7 @@ interface CouponService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponService
 
-    /** Create a new Coupon */
+    /** Create coupon */
     fun create(params: CouponCreateParams): CouponCreateResponse =
         create(params, RequestOptions.none())
 
@@ -38,7 +38,7 @@ interface CouponService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CouponCreateResponse
 
-    /** Get a single Coupon by id */
+    /** Get a single coupon by ID */
     fun retrieve(id: String): CouponRetrieveResponse = retrieve(id, CouponRetrieveParams.none())
 
     /** @see retrieve */
@@ -68,7 +68,7 @@ interface CouponService {
     fun retrieve(id: String, requestOptions: RequestOptions): CouponRetrieveResponse =
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
-    /** Get a list of Coupons */
+    /** Get a list of coupons */
     fun list(): CouponListPage = list(CouponListParams.none())
 
     /** @see list */

@@ -14,6 +14,7 @@ import io.stigg.errors.StiggInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/** Response object */
 class V1CreateEventResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -27,6 +28,9 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
+     * Empty success response confirming that events were successfully ingested and queued for
+     * processing by Stigg's metering system.
+     *
      * This arbitrary value can be deserialized into a custom type using the `convert` method:
      * ```java
      * MyClass myObject = v1CreateEventResponse.data().convert(MyClass.class);
@@ -71,6 +75,10 @@ private constructor(
             additionalProperties = v1CreateEventResponse.additionalProperties.toMutableMap()
         }
 
+        /**
+         * Empty success response confirming that events were successfully ingested and queued for
+         * processing by Stigg's metering system.
+         */
         fun data(data: JsonValue) = apply { this.data = data }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {

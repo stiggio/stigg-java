@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create events */
+/** Report usage events */
 class V1CreateEventParams
 private constructor(
     private val body: Body,
@@ -254,6 +254,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Report raw usage events. Batch up to 1000 events with dimensions. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -430,6 +431,7 @@ private constructor(
         override fun toString() = "Body{events=$events, additionalProperties=$additionalProperties}"
     }
 
+    /** Raw usage event */
     class Event
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

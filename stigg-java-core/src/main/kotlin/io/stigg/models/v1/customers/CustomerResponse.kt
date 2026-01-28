@@ -21,6 +21,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Response object */
 class CustomerResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -34,6 +35,8 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
+     * A customer can be either an organization or an individual
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -83,6 +86,7 @@ private constructor(
             additionalProperties = customerResponse.additionalProperties.toMutableMap()
         }
 
+        /** A customer can be either an organization or an individual */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -154,6 +158,7 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
+    /** A customer can be either an organization or an individual */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1227,6 +1232,7 @@ private constructor(
                 "DefaultPaymentMethod{billingId=$billingId, cardExpiryMonth=$cardExpiryMonth, cardExpiryYear=$cardExpiryYear, cardLast4Digits=$cardLast4Digits, type=$type, additionalProperties=$additionalProperties}"
         }
 
+        /** External billing or CRM integration link */
         class Integration
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(

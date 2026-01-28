@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform unarchive on a Customer */
+/** Unarchive customer */
 class CustomerUnarchiveParams
 private constructor(
     private val id: String?,

@@ -39,7 +39,7 @@ interface SubscriptionServiceAsync {
 
     fun futureUpdate(): FutureUpdateServiceAsync
 
-    /** Create a new Subscription */
+    /** Provision subscription */
     fun create(params: SubscriptionCreateParams): CompletableFuture<SubscriptionCreateResponse> =
         create(params, RequestOptions.none())
 
@@ -49,7 +49,7 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionCreateResponse>
 
-    /** Get a single Subscription by id */
+    /** Get a single subscription by ID */
     fun retrieve(id: String): CompletableFuture<SubscriptionRetrieveResponse> =
         retrieve(id, SubscriptionRetrieveParams.none())
 
@@ -85,7 +85,7 @@ interface SubscriptionServiceAsync {
     ): CompletableFuture<SubscriptionRetrieveResponse> =
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
-    /** Get a list of Subscriptions */
+    /** Get a list of subscriptions */
     fun list(): CompletableFuture<SubscriptionListPageAsync> = list(SubscriptionListParams.none())
 
     /** @see list */
@@ -103,7 +103,7 @@ interface SubscriptionServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<SubscriptionListPageAsync> =
         list(SubscriptionListParams.none(), requestOptions)
 
-    /** Perform delegate on a Subscription */
+    /** Delegate subscription payment to customer */
     fun delegate(
         id: String,
         params: SubscriptionDelegateParams,
@@ -128,7 +128,7 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionDelegateResponse>
 
-    /** Perform migrate to latest plan version on a Subscription */
+    /** Migrate subscription to latest plan version */
     fun migrate(id: String): CompletableFuture<SubscriptionMigrateResponse> =
         migrate(id, SubscriptionMigrateParams.none())
 
@@ -163,7 +163,7 @@ interface SubscriptionServiceAsync {
     ): CompletableFuture<SubscriptionMigrateResponse> =
         migrate(id, SubscriptionMigrateParams.none(), requestOptions)
 
-    /** Create a new Subscription Preview */
+    /** Preview subscription */
     fun preview(params: SubscriptionPreviewParams): CompletableFuture<SubscriptionPreviewResponse> =
         preview(params, RequestOptions.none())
 
@@ -173,7 +173,7 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionPreviewResponse>
 
-    /** Perform transfer to resource on a Subscription */
+    /** Transfer subscription to resource */
     fun transfer(
         id: String,
         params: SubscriptionTransferParams,

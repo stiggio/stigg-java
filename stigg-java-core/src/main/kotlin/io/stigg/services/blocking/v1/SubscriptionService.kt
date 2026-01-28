@@ -39,7 +39,7 @@ interface SubscriptionService {
 
     fun futureUpdate(): FutureUpdateService
 
-    /** Create a new Subscription */
+    /** Provision subscription */
     fun create(params: SubscriptionCreateParams): SubscriptionCreateResponse =
         create(params, RequestOptions.none())
 
@@ -49,7 +49,7 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionCreateResponse
 
-    /** Get a single Subscription by id */
+    /** Get a single subscription by ID */
     fun retrieve(id: String): SubscriptionRetrieveResponse =
         retrieve(id, SubscriptionRetrieveParams.none())
 
@@ -80,7 +80,7 @@ interface SubscriptionService {
     fun retrieve(id: String, requestOptions: RequestOptions): SubscriptionRetrieveResponse =
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
-    /** Get a list of Subscriptions */
+    /** Get a list of subscriptions */
     fun list(): SubscriptionListPage = list(SubscriptionListParams.none())
 
     /** @see list */
@@ -97,7 +97,7 @@ interface SubscriptionService {
     fun list(requestOptions: RequestOptions): SubscriptionListPage =
         list(SubscriptionListParams.none(), requestOptions)
 
-    /** Perform delegate on a Subscription */
+    /** Delegate subscription payment to customer */
     fun delegate(id: String, params: SubscriptionDelegateParams): SubscriptionDelegateResponse =
         delegate(id, params, RequestOptions.none())
 
@@ -118,7 +118,7 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionDelegateResponse
 
-    /** Perform migrate to latest plan version on a Subscription */
+    /** Migrate subscription to latest plan version */
     fun migrate(id: String): SubscriptionMigrateResponse =
         migrate(id, SubscriptionMigrateParams.none())
 
@@ -149,7 +149,7 @@ interface SubscriptionService {
     fun migrate(id: String, requestOptions: RequestOptions): SubscriptionMigrateResponse =
         migrate(id, SubscriptionMigrateParams.none(), requestOptions)
 
-    /** Create a new Subscription Preview */
+    /** Preview subscription */
     fun preview(params: SubscriptionPreviewParams): SubscriptionPreviewResponse =
         preview(params, RequestOptions.none())
 
@@ -159,7 +159,7 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionPreviewResponse
 
-    /** Perform transfer to resource on a Subscription */
+    /** Transfer subscription to resource */
     fun transfer(id: String, params: SubscriptionTransferParams): SubscriptionTransferResponse =
         transfer(id, params, RequestOptions.none())
 

@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform payment-method detachment on a Customer */
+/** Detach payment method */
 class PaymentMethodDetachParams
 private constructor(
     private val id: String?,

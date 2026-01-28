@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of Customers */
+/** Get a list of customers */
 class CustomerListParams
 private constructor(
     private val after: String?,
@@ -19,13 +19,13 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Starting after this UUID for pagination */
+    /** Return items that come after this cursor */
     fun after(): Optional<String> = Optional.ofNullable(after)
 
-    /** Ending before this UUID for pagination */
+    /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
-    /** Items per page */
+    /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
 
     /** Additional headers to send with the request. */
@@ -62,19 +62,19 @@ private constructor(
             additionalQueryParams = customerListParams.additionalQueryParams.toBuilder()
         }
 
-        /** Starting after this UUID for pagination */
+        /** Return items that come after this cursor */
         fun after(after: String?) = apply { this.after = after }
 
         /** Alias for calling [Builder.after] with `after.orElse(null)`. */
         fun after(after: Optional<String>) = after(after.getOrNull())
 
-        /** Ending before this UUID for pagination */
+        /** Return items that come before this cursor */
         fun before(before: String?) = apply { this.before = before }
 
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
 
-        /** Items per page */
+        /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
 
         /**

@@ -21,6 +21,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Response object */
 class CouponCreateResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -34,6 +35,8 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
+     * Discount instrument with percentage or fixed amount
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -83,6 +86,7 @@ private constructor(
             additionalProperties = couponCreateResponse.additionalProperties.toMutableMap()
         }
 
+        /** Discount instrument with percentage or fixed amount */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -154,6 +158,7 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
+    /** Discount instrument with percentage or fixed amount */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -844,6 +849,7 @@ private constructor(
                 (type.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0)
 
+        /** Monetary amount with currency */
         class AmountsOff
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(

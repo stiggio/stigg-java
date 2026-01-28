@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single Coupon by id */
+/** Get a single coupon by ID */
 class CouponRetrieveParams
 private constructor(
     private val id: String?,

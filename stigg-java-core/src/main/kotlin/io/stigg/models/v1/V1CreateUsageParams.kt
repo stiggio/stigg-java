@@ -24,7 +24,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a new Usage */
+/** Report usage measurements */
 class V1CreateUsageParams
 private constructor(
     private val body: Body,
@@ -255,6 +255,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Report usage for metered features. Batch up to 100 records. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -431,6 +432,7 @@ private constructor(
         override fun toString() = "Body{usages=$usages, additionalProperties=$additionalProperties}"
     }
 
+    /** Single usage measurement */
     class Usage
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
