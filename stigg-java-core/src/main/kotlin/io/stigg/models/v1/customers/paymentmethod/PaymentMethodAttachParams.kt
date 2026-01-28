@@ -21,7 +21,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform payment-method attachment on a Customer */
+/** Attach payment method */
 class PaymentMethodAttachParams
 private constructor(
     private val id: String?,
@@ -57,6 +57,8 @@ private constructor(
     fun vendorIdentifier(): VendorIdentifier = body.vendorIdentifier()
 
     /**
+     * Customers selected currency
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -195,6 +197,7 @@ private constructor(
             body.vendorIdentifier(vendorIdentifier)
         }
 
+        /** Customers selected currency */
         fun billingCurrency(billingCurrency: BillingCurrency?) = apply {
             body.billingCurrency(billingCurrency)
         }
@@ -366,6 +369,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Attach a payment method from a billing integration to a customer. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -417,6 +421,8 @@ private constructor(
         fun vendorIdentifier(): VendorIdentifier = vendorIdentifier.getRequired("vendorIdentifier")
 
         /**
+         * Customers selected currency
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -552,6 +558,7 @@ private constructor(
                 this.vendorIdentifier = vendorIdentifier
             }
 
+            /** Customers selected currency */
             fun billingCurrency(billingCurrency: BillingCurrency?) =
                 billingCurrency(JsonField.ofNullable(billingCurrency))
 
@@ -854,6 +861,7 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** Customers selected currency */
     class BillingCurrency @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 

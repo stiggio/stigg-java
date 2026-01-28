@@ -36,7 +36,7 @@ interface CustomerServiceAsync {
 
     fun usage(): UsageServiceAsync
 
-    /** Create a new Customer */
+    /** Provision customer */
     fun create(params: CustomerCreateParams): CompletableFuture<CustomerResponse> =
         create(params, RequestOptions.none())
 
@@ -46,7 +46,7 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
 
-    /** Get a single Customer by id */
+    /** Get a single customer by ID */
     fun retrieve(id: String): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none())
 
@@ -78,7 +78,7 @@ interface CustomerServiceAsync {
     fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update an existing Customer */
+    /** Update a customer */
     fun update(id: String): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none())
 
@@ -110,7 +110,7 @@ interface CustomerServiceAsync {
     fun update(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none(), requestOptions)
 
-    /** Get a list of Customers */
+    /** Get a list of customers */
     fun list(): CompletableFuture<CustomerListPageAsync> = list(CustomerListParams.none())
 
     /** @see list */
@@ -128,7 +128,7 @@ interface CustomerServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<CustomerListPageAsync> =
         list(CustomerListParams.none(), requestOptions)
 
-    /** Perform archive on a Customer */
+    /** Archive customer */
     fun archive(id: String): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none())
 
@@ -160,7 +160,7 @@ interface CustomerServiceAsync {
     fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
-    /** Perform unarchive on a Customer */
+    /** Unarchive customer */
     fun unarchive(id: String): CompletableFuture<CustomerResponse> =
         unarchive(id, CustomerUnarchiveParams.none())
 

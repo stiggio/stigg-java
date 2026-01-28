@@ -25,7 +25,7 @@ interface PaymentMethodServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PaymentMethodServiceAsync
 
-    /** Perform payment-method attachment on a Customer */
+    /** Attach payment method */
     fun attach(id: String, params: PaymentMethodAttachParams): CompletableFuture<CustomerResponse> =
         attach(id, params, RequestOptions.none())
 
@@ -47,7 +47,7 @@ interface PaymentMethodServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
 
-    /** Perform payment-method detachment on a Customer */
+    /** Detach payment method */
     fun detach(id: String): CompletableFuture<CustomerResponse> =
         detach(id, PaymentMethodDetachParams.none())
 

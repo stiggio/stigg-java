@@ -47,7 +47,6 @@ internal class SubscriptionListResponseTest {
                 )
                 .resourceId("resourceId")
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .unitQuantity(1.0)
                 .build()
 
         assertThat(subscriptionListResponse.id()).isEqualTo("id")
@@ -96,7 +95,6 @@ internal class SubscriptionListResponseTest {
         assertThat(subscriptionListResponse.resourceId()).contains("resourceId")
         assertThat(subscriptionListResponse.trialEndDate())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-        assertThat(subscriptionListResponse.unitQuantity()).contains(1.0)
     }
 
     @Test
@@ -135,7 +133,6 @@ internal class SubscriptionListResponseTest {
                 )
                 .resourceId("resourceId")
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .unitQuantity(1.0)
                 .build()
 
         val roundtrippedSubscriptionListResponse =

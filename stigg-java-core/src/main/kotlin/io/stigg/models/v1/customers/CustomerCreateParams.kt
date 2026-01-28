@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a new Customer */
+/** Provision customer */
 class CustomerCreateParams
 private constructor(
     private val body: Body,
@@ -442,6 +442,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Provisions a new customer with unique ID, optional name and email. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1392,6 +1393,7 @@ private constructor(
             "DefaultPaymentMethod{billingId=$billingId, cardExpiryMonth=$cardExpiryMonth, cardExpiryYear=$cardExpiryYear, cardLast4Digits=$cardLast4Digits, type=$type, additionalProperties=$additionalProperties}"
     }
 
+    /** External billing or CRM integration link */
     class Integration
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

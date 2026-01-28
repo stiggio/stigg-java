@@ -36,7 +36,7 @@ interface CustomerService {
 
     fun usage(): UsageService
 
-    /** Create a new Customer */
+    /** Provision customer */
     fun create(params: CustomerCreateParams): CustomerResponse =
         create(params, RequestOptions.none())
 
@@ -46,7 +46,7 @@ interface CustomerService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerResponse
 
-    /** Get a single Customer by id */
+    /** Get a single customer by ID */
     fun retrieve(id: String): CustomerResponse = retrieve(id, CustomerRetrieveParams.none())
 
     /** @see retrieve */
@@ -76,7 +76,7 @@ interface CustomerService {
     fun retrieve(id: String, requestOptions: RequestOptions): CustomerResponse =
         retrieve(id, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update an existing Customer */
+    /** Update a customer */
     fun update(id: String): CustomerResponse = update(id, CustomerUpdateParams.none())
 
     /** @see update */
@@ -106,7 +106,7 @@ interface CustomerService {
     fun update(id: String, requestOptions: RequestOptions): CustomerResponse =
         update(id, CustomerUpdateParams.none(), requestOptions)
 
-    /** Get a list of Customers */
+    /** Get a list of customers */
     fun list(): CustomerListPage = list(CustomerListParams.none())
 
     /** @see list */
@@ -123,7 +123,7 @@ interface CustomerService {
     fun list(requestOptions: RequestOptions): CustomerListPage =
         list(CustomerListParams.none(), requestOptions)
 
-    /** Perform archive on a Customer */
+    /** Archive customer */
     fun archive(id: String): CustomerResponse = archive(id, CustomerArchiveParams.none())
 
     /** @see archive */
@@ -153,7 +153,7 @@ interface CustomerService {
     fun archive(id: String, requestOptions: RequestOptions): CustomerResponse =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
-    /** Perform unarchive on a Customer */
+    /** Unarchive customer */
     fun unarchive(id: String): CustomerResponse = unarchive(id, CustomerUnarchiveParams.none())
 
     /** @see unarchive */

@@ -16,6 +16,7 @@ import java.util.Collections
 import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
+/** Response object */
 class FutureUpdateCancelScheduleResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

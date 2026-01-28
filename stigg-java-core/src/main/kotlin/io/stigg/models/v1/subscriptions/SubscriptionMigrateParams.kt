@@ -20,7 +20,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform migrate to latest plan version on a Subscription */
+/** Migrate subscription to latest plan version */
 class SubscriptionMigrateParams
 private constructor(
     private val id: String?,
@@ -32,7 +32,7 @@ private constructor(
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
-     * When to migrate the subscription: IMMEDIATE or END_OF_BILLING_PERIOD
+     * When to migrate (immediate or period end)
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -99,7 +99,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** When to migrate the subscription: IMMEDIATE or END_OF_BILLING_PERIOD */
+        /** When to migrate (immediate or period end) */
         fun subscriptionMigrationTime(subscriptionMigrationTime: SubscriptionMigrationTime) =
             apply {
                 body.subscriptionMigrationTime(subscriptionMigrationTime)
@@ -259,6 +259,11 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /**
+     * Migrate a subscription to the latest version of its plan or add-on. This updates pricing,
+     * entitlements, and features to match the currently published version while maintaining the
+     * subscription continuity.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -274,7 +279,7 @@ private constructor(
         ) : this(subscriptionMigrationTime, mutableMapOf())
 
         /**
-         * When to migrate the subscription: IMMEDIATE or END_OF_BILLING_PERIOD
+         * When to migrate (immediate or period end)
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -324,7 +329,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** When to migrate the subscription: IMMEDIATE or END_OF_BILLING_PERIOD */
+            /** When to migrate (immediate or period end) */
             fun subscriptionMigrationTime(subscriptionMigrationTime: SubscriptionMigrationTime) =
                 subscriptionMigrationTime(JsonField.of(subscriptionMigrationTime))
 
@@ -415,7 +420,7 @@ private constructor(
             "Body{subscriptionMigrationTime=$subscriptionMigrationTime, additionalProperties=$additionalProperties}"
     }
 
-    /** When to migrate the subscription: IMMEDIATE or END_OF_BILLING_PERIOD */
+    /** When to migrate (immediate or period end) */
     class SubscriptionMigrationTime
     @JsonCreator
     private constructor(private val value: JsonField<String>) : Enum {

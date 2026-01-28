@@ -26,7 +26,7 @@ interface FutureUpdateServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FutureUpdateServiceAsync
 
-    /** Perform cancel future update on a Subscription */
+    /** Cancel pending payment update */
     fun cancelPendingPayment(
         id: String
     ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
@@ -68,7 +68,7 @@ interface FutureUpdateServiceAsync {
     ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
         cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none(), requestOptions)
 
-    /** Perform cancel future update on a Subscription */
+    /** Cancel scheduled update */
     fun cancelSchedule(id: String): CompletableFuture<FutureUpdateCancelScheduleResponse> =
         cancelSchedule(id, FutureUpdateCancelScheduleParams.none())
 

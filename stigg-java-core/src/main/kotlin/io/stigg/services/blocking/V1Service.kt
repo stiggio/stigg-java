@@ -35,7 +35,7 @@ interface V1Service {
 
     fun coupons(): CouponService
 
-    /** Create events */
+    /** Report usage events */
     fun createEvent(params: V1CreateEventParams): V1CreateEventResponse =
         createEvent(params, RequestOptions.none())
 
@@ -45,7 +45,7 @@ interface V1Service {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): V1CreateEventResponse
 
-    /** Create a new Usage */
+    /** Report usage measurements */
     fun createUsage(params: V1CreateUsageParams): V1CreateUsageResponse =
         createUsage(params, RequestOptions.none())
 

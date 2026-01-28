@@ -35,7 +35,7 @@ interface V1ServiceAsync {
 
     fun coupons(): CouponServiceAsync
 
-    /** Create events */
+    /** Report usage events */
     fun createEvent(params: V1CreateEventParams): CompletableFuture<V1CreateEventResponse> =
         createEvent(params, RequestOptions.none())
 
@@ -45,7 +45,7 @@ interface V1ServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<V1CreateEventResponse>
 
-    /** Create a new Usage */
+    /** Report usage measurements */
     fun createUsage(params: V1CreateUsageParams): CompletableFuture<V1CreateUsageResponse> =
         createUsage(params, RequestOptions.none())
 
