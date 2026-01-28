@@ -18,6 +18,29 @@ internal class SubscriptionCreateResponseTest {
                 .data(
                     SubscriptionCreateResponse.Data.builder()
                         .id("id")
+                        .addEntitlement(
+                            SubscriptionCreateResponse.Data.Entitlement.builder()
+                                .accessDeniedReason("accessDeniedReason")
+                                .currentUsage(0.0)
+                                .entitlementUpdatedAt(
+                                    OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                )
+                                .feature(
+                                    SubscriptionCreateResponse.Data.Entitlement.Feature.builder()
+                                        .refId("refId")
+                                        .build()
+                                )
+                                .hasUnlimitedUsage(true)
+                                .isGranted(true)
+                                .resetPeriod(
+                                    SubscriptionCreateResponse.Data.Entitlement.ResetPeriod.YEAR
+                                )
+                                .usageLimit(0.0)
+                                .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
                         .status(SubscriptionCreateResponse.Data.Status.SUCCESS)
                         .checkoutBillingId("checkoutBillingId")
                         .checkoutUrl("checkoutUrl")
@@ -65,8 +88,76 @@ internal class SubscriptionCreateResponseTest {
                                         .PaymentCollectionMethod
                                         .CHARGE
                                 )
+                                .addPrice(
+                                    SubscriptionCreateResponse.Data.Subscription.Price.builder()
+                                        .addonId("addonId")
+                                        .baseCharge(true)
+                                        .blockSize(0.0)
+                                        .featureId("featureId")
+                                        .price(
+                                            SubscriptionCreateResponse.Data.Subscription.Price
+                                                .InnerPrice
+                                                .builder()
+                                                .amount(0.0)
+                                                .billingCountryCode("billingCountryCode")
+                                                .currency(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .InnerPrice
+                                                        .Currency
+                                                        .USD
+                                                )
+                                                .build()
+                                        )
+                                        .addTier(
+                                            SubscriptionCreateResponse.Data.Subscription.Price.Tier
+                                                .builder()
+                                                .flatPrice(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .Tier
+                                                        .FlatPrice
+                                                        .builder()
+                                                        .amount(0.0)
+                                                        .billingCountryCode("billingCountryCode")
+                                                        .currency(
+                                                            SubscriptionCreateResponse.Data
+                                                                .Subscription
+                                                                .Price
+                                                                .Tier
+                                                                .FlatPrice
+                                                                .Currency
+                                                                .USD
+                                                        )
+                                                        .build()
+                                                )
+                                                .unitPrice(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .Tier
+                                                        .UnitPrice
+                                                        .builder()
+                                                        .amount(0.0)
+                                                        .billingCountryCode("billingCountryCode")
+                                                        .currency(
+                                                            SubscriptionCreateResponse.Data
+                                                                .Subscription
+                                                                .Price
+                                                                .Tier
+                                                                .UnitPrice
+                                                                .Currency
+                                                                .USD
+                                                        )
+                                                        .build()
+                                                )
+                                                .upTo(0.0)
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .resourceId("resourceId")
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .unitQuantity(1.0)
                                 .build()
                         )
                         .build()
@@ -77,6 +168,27 @@ internal class SubscriptionCreateResponseTest {
             .isEqualTo(
                 SubscriptionCreateResponse.Data.builder()
                     .id("id")
+                    .addEntitlement(
+                        SubscriptionCreateResponse.Data.Entitlement.builder()
+                            .accessDeniedReason("accessDeniedReason")
+                            .currentUsage(0.0)
+                            .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .feature(
+                                SubscriptionCreateResponse.Data.Entitlement.Feature.builder()
+                                    .refId("refId")
+                                    .build()
+                            )
+                            .hasUnlimitedUsage(true)
+                            .isGranted(true)
+                            .resetPeriod(
+                                SubscriptionCreateResponse.Data.Entitlement.ResetPeriod.YEAR
+                            )
+                            .usageLimit(0.0)
+                            .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
                     .status(SubscriptionCreateResponse.Data.Status.SUCCESS)
                     .checkoutBillingId("checkoutBillingId")
                     .checkoutUrl("checkoutUrl")
@@ -122,8 +234,71 @@ internal class SubscriptionCreateResponseTest {
                                 SubscriptionCreateResponse.Data.Subscription.PaymentCollectionMethod
                                     .CHARGE
                             )
+                            .addPrice(
+                                SubscriptionCreateResponse.Data.Subscription.Price.builder()
+                                    .addonId("addonId")
+                                    .baseCharge(true)
+                                    .blockSize(0.0)
+                                    .featureId("featureId")
+                                    .price(
+                                        SubscriptionCreateResponse.Data.Subscription.Price
+                                            .InnerPrice
+                                            .builder()
+                                            .amount(0.0)
+                                            .billingCountryCode("billingCountryCode")
+                                            .currency(
+                                                SubscriptionCreateResponse.Data.Subscription.Price
+                                                    .InnerPrice
+                                                    .Currency
+                                                    .USD
+                                            )
+                                            .build()
+                                    )
+                                    .addTier(
+                                        SubscriptionCreateResponse.Data.Subscription.Price.Tier
+                                            .builder()
+                                            .flatPrice(
+                                                SubscriptionCreateResponse.Data.Subscription.Price
+                                                    .Tier
+                                                    .FlatPrice
+                                                    .builder()
+                                                    .amount(0.0)
+                                                    .billingCountryCode("billingCountryCode")
+                                                    .currency(
+                                                        SubscriptionCreateResponse.Data.Subscription
+                                                            .Price
+                                                            .Tier
+                                                            .FlatPrice
+                                                            .Currency
+                                                            .USD
+                                                    )
+                                                    .build()
+                                            )
+                                            .unitPrice(
+                                                SubscriptionCreateResponse.Data.Subscription.Price
+                                                    .Tier
+                                                    .UnitPrice
+                                                    .builder()
+                                                    .amount(0.0)
+                                                    .billingCountryCode("billingCountryCode")
+                                                    .currency(
+                                                        SubscriptionCreateResponse.Data.Subscription
+                                                            .Price
+                                                            .Tier
+                                                            .UnitPrice
+                                                            .Currency
+                                                            .USD
+                                                    )
+                                                    .build()
+                                            )
+                                            .upTo(0.0)
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .resourceId("resourceId")
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .unitQuantity(1.0)
                             .build()
                     )
                     .build()
@@ -138,6 +313,29 @@ internal class SubscriptionCreateResponseTest {
                 .data(
                     SubscriptionCreateResponse.Data.builder()
                         .id("id")
+                        .addEntitlement(
+                            SubscriptionCreateResponse.Data.Entitlement.builder()
+                                .accessDeniedReason("accessDeniedReason")
+                                .currentUsage(0.0)
+                                .entitlementUpdatedAt(
+                                    OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                )
+                                .feature(
+                                    SubscriptionCreateResponse.Data.Entitlement.Feature.builder()
+                                        .refId("refId")
+                                        .build()
+                                )
+                                .hasUnlimitedUsage(true)
+                                .isGranted(true)
+                                .resetPeriod(
+                                    SubscriptionCreateResponse.Data.Entitlement.ResetPeriod.YEAR
+                                )
+                                .usageLimit(0.0)
+                                .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
                         .status(SubscriptionCreateResponse.Data.Status.SUCCESS)
                         .checkoutBillingId("checkoutBillingId")
                         .checkoutUrl("checkoutUrl")
@@ -185,8 +383,76 @@ internal class SubscriptionCreateResponseTest {
                                         .PaymentCollectionMethod
                                         .CHARGE
                                 )
+                                .addPrice(
+                                    SubscriptionCreateResponse.Data.Subscription.Price.builder()
+                                        .addonId("addonId")
+                                        .baseCharge(true)
+                                        .blockSize(0.0)
+                                        .featureId("featureId")
+                                        .price(
+                                            SubscriptionCreateResponse.Data.Subscription.Price
+                                                .InnerPrice
+                                                .builder()
+                                                .amount(0.0)
+                                                .billingCountryCode("billingCountryCode")
+                                                .currency(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .InnerPrice
+                                                        .Currency
+                                                        .USD
+                                                )
+                                                .build()
+                                        )
+                                        .addTier(
+                                            SubscriptionCreateResponse.Data.Subscription.Price.Tier
+                                                .builder()
+                                                .flatPrice(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .Tier
+                                                        .FlatPrice
+                                                        .builder()
+                                                        .amount(0.0)
+                                                        .billingCountryCode("billingCountryCode")
+                                                        .currency(
+                                                            SubscriptionCreateResponse.Data
+                                                                .Subscription
+                                                                .Price
+                                                                .Tier
+                                                                .FlatPrice
+                                                                .Currency
+                                                                .USD
+                                                        )
+                                                        .build()
+                                                )
+                                                .unitPrice(
+                                                    SubscriptionCreateResponse.Data.Subscription
+                                                        .Price
+                                                        .Tier
+                                                        .UnitPrice
+                                                        .builder()
+                                                        .amount(0.0)
+                                                        .billingCountryCode("billingCountryCode")
+                                                        .currency(
+                                                            SubscriptionCreateResponse.Data
+                                                                .Subscription
+                                                                .Price
+                                                                .Tier
+                                                                .UnitPrice
+                                                                .Currency
+                                                                .USD
+                                                        )
+                                                        .build()
+                                                )
+                                                .upTo(0.0)
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .resourceId("resourceId")
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .unitQuantity(1.0)
                                 .build()
                         )
                         .build()

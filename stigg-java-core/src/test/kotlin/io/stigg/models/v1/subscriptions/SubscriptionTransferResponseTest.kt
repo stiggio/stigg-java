@@ -45,8 +45,16 @@ internal class SubscriptionTransferResponseTest {
                         .paymentCollectionMethod(
                             SubscriptionTransferResponse.Data.PaymentCollectionMethod.CHARGE
                         )
+                        .addPrice(
+                            SubscriptionTransferResponse.Data.Price.builder()
+                                .id("id")
+                                .createdAt("createdAt")
+                                .updatedAt("updatedAt")
+                                .build()
+                        )
                         .resourceId("resourceId")
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .unitQuantity(1.0)
                         .build()
                 )
                 .build()
@@ -82,8 +90,16 @@ internal class SubscriptionTransferResponseTest {
                     .paymentCollectionMethod(
                         SubscriptionTransferResponse.Data.PaymentCollectionMethod.CHARGE
                     )
+                    .addPrice(
+                        SubscriptionTransferResponse.Data.Price.builder()
+                            .id("id")
+                            .createdAt("createdAt")
+                            .updatedAt("updatedAt")
+                            .build()
+                    )
                     .resourceId("resourceId")
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .unitQuantity(1.0)
                     .build()
             )
     }
@@ -123,8 +139,16 @@ internal class SubscriptionTransferResponseTest {
                         .paymentCollectionMethod(
                             SubscriptionTransferResponse.Data.PaymentCollectionMethod.CHARGE
                         )
+                        .addPrice(
+                            SubscriptionTransferResponse.Data.Price.builder()
+                                .id("id")
+                                .createdAt("createdAt")
+                                .updatedAt("updatedAt")
+                                .build()
+                        )
                         .resourceId("resourceId")
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .unitQuantity(1.0)
                         .build()
                 )
                 .build()

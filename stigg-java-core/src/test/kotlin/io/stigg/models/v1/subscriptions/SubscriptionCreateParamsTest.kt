@@ -4,6 +4,7 @@ package io.stigg.models.v1.subscriptions
 
 import io.stigg.core.JsonValue
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,8 +16,87 @@ internal class SubscriptionCreateParamsTest {
             .customerId("customerId")
             .planId("planId")
             .id("id")
+            .addAddon(
+                SubscriptionCreateParams.Addon.builder().addonId("addonId").quantity(1L).build()
+            )
+            .appliedCoupon(
+                SubscriptionCreateParams.AppliedCoupon.builder()
+                    .billingCouponId("billingCouponId")
+                    .configuration(
+                        SubscriptionCreateParams.AppliedCoupon.Configuration.builder()
+                            .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
+                    .couponId("couponId")
+                    .discount(
+                        SubscriptionCreateParams.AppliedCoupon.Discount.builder()
+                            .addAmountsOff(
+                                SubscriptionCreateParams.AppliedCoupon.Discount.AmountsOff.builder()
+                                    .amount(0.0)
+                                    .currency(
+                                        SubscriptionCreateParams.AppliedCoupon.Discount.AmountsOff
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .description("description")
+                            .durationInMonths(1.0)
+                            .name("name")
+                            .percentOff(1.0)
+                            .build()
+                    )
+                    .promotionCode("promotionCode")
+                    .build()
+            )
             .awaitPaymentConfirmation(true)
+            .billingCountryCode("billingCountryCode")
+            .billingId("billingId")
+            .billingInformation(
+                SubscriptionCreateParams.BillingInformation.builder()
+                    .billingAddress(
+                        SubscriptionCreateParams.BillingInformation.BillingAddress.builder()
+                            .city("city")
+                            .country("country")
+                            .line1("line1")
+                            .line2("line2")
+                            .postalCode("postalCode")
+                            .state("state")
+                            .build()
+                    )
+                    .chargeOnBehalfOfAccount("chargeOnBehalfOfAccount")
+                    .integrationId("integrationId")
+                    .invoiceDaysUntilDue(0.0)
+                    .isBackdated(true)
+                    .isInvoicePaid(true)
+                    .metadata(
+                        SubscriptionCreateParams.BillingInformation.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .prorationBehavior(
+                        SubscriptionCreateParams.BillingInformation.ProrationBehavior
+                            .INVOICE_IMMEDIATELY
+                    )
+                    .addTaxId(
+                        SubscriptionCreateParams.BillingInformation.TaxId.builder()
+                            .type("type")
+                            .value("value")
+                            .build()
+                    )
+                    .taxPercentage(0.0)
+                    .addTaxRateId("string")
+                    .build()
+            )
             .billingPeriod(SubscriptionCreateParams.BillingPeriod.MONTHLY)
+            .budget(SubscriptionCreateParams.Budget.builder().hasSoftLimit(true).limit(0.0).build())
+            .addCharge(
+                SubscriptionCreateParams.Charge.builder()
+                    .id("id")
+                    .quantity(1.0)
+                    .type(SubscriptionCreateParams.Charge.Type.FEATURE)
+                    .build()
+            )
             .checkoutOptions(
                 SubscriptionCreateParams.CheckoutOptions.builder()
                     .cancelUrl("https://example.com")
@@ -33,8 +113,83 @@ internal class SubscriptionCreateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+            .minimumSpend(
+                SubscriptionCreateParams.MinimumSpend.builder()
+                    .minimum(
+                        SubscriptionCreateParams.MinimumSpend.Minimum.builder()
+                            .amount(0.0)
+                            .billingCountryCode("billingCountryCode")
+                            .currency(SubscriptionCreateParams.MinimumSpend.Minimum.Currency.USD)
+                            .build()
+                    )
+                    .build()
+            )
             .payingCustomerId("payingCustomerId")
+            .paymentCollectionMethod(SubscriptionCreateParams.PaymentCollectionMethod.CHARGE)
+            .addPriceOverride(
+                SubscriptionCreateParams.PriceOverride.builder()
+                    .addonId("addonId")
+                    .baseCharge(true)
+                    .blockSize(0.0)
+                    .creditGrantCadence(
+                        SubscriptionCreateParams.PriceOverride.CreditGrantCadence
+                            .BEGINNING_OF_BILLING_PERIOD
+                    )
+                    .creditRate(
+                        SubscriptionCreateParams.PriceOverride.CreditRate.builder()
+                            .amount(1.0)
+                            .currencyId("currencyId")
+                            .costFormula("costFormula")
+                            .build()
+                    )
+                    .featureId("featureId")
+                    .price(
+                        SubscriptionCreateParams.PriceOverride.Price.builder()
+                            .amount(0.0)
+                            .billingCountryCode("billingCountryCode")
+                            .currency(SubscriptionCreateParams.PriceOverride.Price.Currency.USD)
+                            .build()
+                    )
+                    .addTier(
+                        SubscriptionCreateParams.PriceOverride.Tier.builder()
+                            .flatPrice(
+                                SubscriptionCreateParams.PriceOverride.Tier.FlatPrice.builder()
+                                    .amount(0.0)
+                                    .billingCountryCode("billingCountryCode")
+                                    .currency(
+                                        SubscriptionCreateParams.PriceOverride.Tier.FlatPrice
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .unitPrice(
+                                SubscriptionCreateParams.PriceOverride.Tier.UnitPrice.builder()
+                                    .amount(0.0)
+                                    .billingCountryCode("billingCountryCode")
+                                    .currency(
+                                        SubscriptionCreateParams.PriceOverride.Tier.UnitPrice
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .upTo(0.0)
+                            .build()
+                    )
+                    .build()
+            )
             .resourceId("resourceId")
+            .salesforceId("salesforceId")
+            .scheduleStrategy(SubscriptionCreateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
+            .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+            .addSubscriptionEntitlement(
+                SubscriptionCreateParams.SubscriptionEntitlement.builder()
+                    .featureId("featureId")
+                    .usageLimit(0.0)
+                    .isGranted(true)
+                    .build()
+            )
             .trialOverrideConfiguration(
                 SubscriptionCreateParams.TrialOverrideConfiguration.builder()
                     .isTrial(true)
@@ -45,6 +200,7 @@ internal class SubscriptionCreateParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+            .unitQuantity(1.0)
             .build()
     }
 
@@ -55,8 +211,91 @@ internal class SubscriptionCreateParamsTest {
                 .customerId("customerId")
                 .planId("planId")
                 .id("id")
+                .addAddon(
+                    SubscriptionCreateParams.Addon.builder().addonId("addonId").quantity(1L).build()
+                )
+                .appliedCoupon(
+                    SubscriptionCreateParams.AppliedCoupon.builder()
+                        .billingCouponId("billingCouponId")
+                        .configuration(
+                            SubscriptionCreateParams.AppliedCoupon.Configuration.builder()
+                                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .couponId("couponId")
+                        .discount(
+                            SubscriptionCreateParams.AppliedCoupon.Discount.builder()
+                                .addAmountsOff(
+                                    SubscriptionCreateParams.AppliedCoupon.Discount.AmountsOff
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionCreateParams.AppliedCoupon.Discount
+                                                .AmountsOff
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .description("description")
+                                .durationInMonths(1.0)
+                                .name("name")
+                                .percentOff(1.0)
+                                .build()
+                        )
+                        .promotionCode("promotionCode")
+                        .build()
+                )
                 .awaitPaymentConfirmation(true)
+                .billingCountryCode("billingCountryCode")
+                .billingId("billingId")
+                .billingInformation(
+                    SubscriptionCreateParams.BillingInformation.builder()
+                        .billingAddress(
+                            SubscriptionCreateParams.BillingInformation.BillingAddress.builder()
+                                .city("city")
+                                .country("country")
+                                .line1("line1")
+                                .line2("line2")
+                                .postalCode("postalCode")
+                                .state("state")
+                                .build()
+                        )
+                        .chargeOnBehalfOfAccount("chargeOnBehalfOfAccount")
+                        .integrationId("integrationId")
+                        .invoiceDaysUntilDue(0.0)
+                        .isBackdated(true)
+                        .isInvoicePaid(true)
+                        .metadata(
+                            SubscriptionCreateParams.BillingInformation.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .prorationBehavior(
+                            SubscriptionCreateParams.BillingInformation.ProrationBehavior
+                                .INVOICE_IMMEDIATELY
+                        )
+                        .addTaxId(
+                            SubscriptionCreateParams.BillingInformation.TaxId.builder()
+                                .type("type")
+                                .value("value")
+                                .build()
+                        )
+                        .taxPercentage(0.0)
+                        .addTaxRateId("string")
+                        .build()
+                )
                 .billingPeriod(SubscriptionCreateParams.BillingPeriod.MONTHLY)
+                .budget(
+                    SubscriptionCreateParams.Budget.builder().hasSoftLimit(true).limit(0.0).build()
+                )
+                .addCharge(
+                    SubscriptionCreateParams.Charge.builder()
+                        .id("id")
+                        .quantity(1.0)
+                        .type(SubscriptionCreateParams.Charge.Type.FEATURE)
+                        .build()
+                )
                 .checkoutOptions(
                     SubscriptionCreateParams.CheckoutOptions.builder()
                         .cancelUrl("https://example.com")
@@ -73,8 +312,85 @@ internal class SubscriptionCreateParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .minimumSpend(
+                    SubscriptionCreateParams.MinimumSpend.builder()
+                        .minimum(
+                            SubscriptionCreateParams.MinimumSpend.Minimum.builder()
+                                .amount(0.0)
+                                .billingCountryCode("billingCountryCode")
+                                .currency(
+                                    SubscriptionCreateParams.MinimumSpend.Minimum.Currency.USD
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .payingCustomerId("payingCustomerId")
+                .paymentCollectionMethod(SubscriptionCreateParams.PaymentCollectionMethod.CHARGE)
+                .addPriceOverride(
+                    SubscriptionCreateParams.PriceOverride.builder()
+                        .addonId("addonId")
+                        .baseCharge(true)
+                        .blockSize(0.0)
+                        .creditGrantCadence(
+                            SubscriptionCreateParams.PriceOverride.CreditGrantCadence
+                                .BEGINNING_OF_BILLING_PERIOD
+                        )
+                        .creditRate(
+                            SubscriptionCreateParams.PriceOverride.CreditRate.builder()
+                                .amount(1.0)
+                                .currencyId("currencyId")
+                                .costFormula("costFormula")
+                                .build()
+                        )
+                        .featureId("featureId")
+                        .price(
+                            SubscriptionCreateParams.PriceOverride.Price.builder()
+                                .amount(0.0)
+                                .billingCountryCode("billingCountryCode")
+                                .currency(SubscriptionCreateParams.PriceOverride.Price.Currency.USD)
+                                .build()
+                        )
+                        .addTier(
+                            SubscriptionCreateParams.PriceOverride.Tier.builder()
+                                .flatPrice(
+                                    SubscriptionCreateParams.PriceOverride.Tier.FlatPrice.builder()
+                                        .amount(0.0)
+                                        .billingCountryCode("billingCountryCode")
+                                        .currency(
+                                            SubscriptionCreateParams.PriceOverride.Tier.FlatPrice
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .unitPrice(
+                                    SubscriptionCreateParams.PriceOverride.Tier.UnitPrice.builder()
+                                        .amount(0.0)
+                                        .billingCountryCode("billingCountryCode")
+                                        .currency(
+                                            SubscriptionCreateParams.PriceOverride.Tier.UnitPrice
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .upTo(0.0)
+                                .build()
+                        )
+                        .build()
+                )
                 .resourceId("resourceId")
+                .salesforceId("salesforceId")
+                .scheduleStrategy(SubscriptionCreateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .addSubscriptionEntitlement(
+                    SubscriptionCreateParams.SubscriptionEntitlement.builder()
+                        .featureId("featureId")
+                        .usageLimit(0.0)
+                        .isGranted(true)
+                        .build()
+                )
                 .trialOverrideConfiguration(
                     SubscriptionCreateParams.TrialOverrideConfiguration.builder()
                         .isTrial(true)
@@ -85,6 +401,7 @@ internal class SubscriptionCreateParamsTest {
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
+                .unitQuantity(1.0)
                 .build()
 
         val body = params._body()
@@ -92,8 +409,94 @@ internal class SubscriptionCreateParamsTest {
         assertThat(body.customerId()).isEqualTo("customerId")
         assertThat(body.planId()).isEqualTo("planId")
         assertThat(body.id()).contains("id")
+        assertThat(body.addons().getOrNull())
+            .containsExactly(
+                SubscriptionCreateParams.Addon.builder().addonId("addonId").quantity(1L).build()
+            )
+        assertThat(body.appliedCoupon())
+            .contains(
+                SubscriptionCreateParams.AppliedCoupon.builder()
+                    .billingCouponId("billingCouponId")
+                    .configuration(
+                        SubscriptionCreateParams.AppliedCoupon.Configuration.builder()
+                            .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
+                    .couponId("couponId")
+                    .discount(
+                        SubscriptionCreateParams.AppliedCoupon.Discount.builder()
+                            .addAmountsOff(
+                                SubscriptionCreateParams.AppliedCoupon.Discount.AmountsOff.builder()
+                                    .amount(0.0)
+                                    .currency(
+                                        SubscriptionCreateParams.AppliedCoupon.Discount.AmountsOff
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .description("description")
+                            .durationInMonths(1.0)
+                            .name("name")
+                            .percentOff(1.0)
+                            .build()
+                    )
+                    .promotionCode("promotionCode")
+                    .build()
+            )
         assertThat(body.awaitPaymentConfirmation()).contains(true)
+        assertThat(body.billingCountryCode()).contains("billingCountryCode")
+        assertThat(body.billingId()).contains("billingId")
+        assertThat(body.billingInformation())
+            .contains(
+                SubscriptionCreateParams.BillingInformation.builder()
+                    .billingAddress(
+                        SubscriptionCreateParams.BillingInformation.BillingAddress.builder()
+                            .city("city")
+                            .country("country")
+                            .line1("line1")
+                            .line2("line2")
+                            .postalCode("postalCode")
+                            .state("state")
+                            .build()
+                    )
+                    .chargeOnBehalfOfAccount("chargeOnBehalfOfAccount")
+                    .integrationId("integrationId")
+                    .invoiceDaysUntilDue(0.0)
+                    .isBackdated(true)
+                    .isInvoicePaid(true)
+                    .metadata(
+                        SubscriptionCreateParams.BillingInformation.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .prorationBehavior(
+                        SubscriptionCreateParams.BillingInformation.ProrationBehavior
+                            .INVOICE_IMMEDIATELY
+                    )
+                    .addTaxId(
+                        SubscriptionCreateParams.BillingInformation.TaxId.builder()
+                            .type("type")
+                            .value("value")
+                            .build()
+                    )
+                    .taxPercentage(0.0)
+                    .addTaxRateId("string")
+                    .build()
+            )
         assertThat(body.billingPeriod()).contains(SubscriptionCreateParams.BillingPeriod.MONTHLY)
+        assertThat(body.budget())
+            .contains(
+                SubscriptionCreateParams.Budget.builder().hasSoftLimit(true).limit(0.0).build()
+            )
+        assertThat(body.charges().getOrNull())
+            .containsExactly(
+                SubscriptionCreateParams.Charge.builder()
+                    .id("id")
+                    .quantity(1.0)
+                    .type(SubscriptionCreateParams.Charge.Type.FEATURE)
+                    .build()
+            )
         assertThat(body.checkoutOptions())
             .contains(
                 SubscriptionCreateParams.CheckoutOptions.builder()
@@ -112,8 +515,88 @@ internal class SubscriptionCreateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+        assertThat(body.minimumSpend())
+            .contains(
+                SubscriptionCreateParams.MinimumSpend.builder()
+                    .minimum(
+                        SubscriptionCreateParams.MinimumSpend.Minimum.builder()
+                            .amount(0.0)
+                            .billingCountryCode("billingCountryCode")
+                            .currency(SubscriptionCreateParams.MinimumSpend.Minimum.Currency.USD)
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(body.payingCustomerId()).contains("payingCustomerId")
+        assertThat(body.paymentCollectionMethod())
+            .contains(SubscriptionCreateParams.PaymentCollectionMethod.CHARGE)
+        assertThat(body.priceOverrides().getOrNull())
+            .containsExactly(
+                SubscriptionCreateParams.PriceOverride.builder()
+                    .addonId("addonId")
+                    .baseCharge(true)
+                    .blockSize(0.0)
+                    .creditGrantCadence(
+                        SubscriptionCreateParams.PriceOverride.CreditGrantCadence
+                            .BEGINNING_OF_BILLING_PERIOD
+                    )
+                    .creditRate(
+                        SubscriptionCreateParams.PriceOverride.CreditRate.builder()
+                            .amount(1.0)
+                            .currencyId("currencyId")
+                            .costFormula("costFormula")
+                            .build()
+                    )
+                    .featureId("featureId")
+                    .price(
+                        SubscriptionCreateParams.PriceOverride.Price.builder()
+                            .amount(0.0)
+                            .billingCountryCode("billingCountryCode")
+                            .currency(SubscriptionCreateParams.PriceOverride.Price.Currency.USD)
+                            .build()
+                    )
+                    .addTier(
+                        SubscriptionCreateParams.PriceOverride.Tier.builder()
+                            .flatPrice(
+                                SubscriptionCreateParams.PriceOverride.Tier.FlatPrice.builder()
+                                    .amount(0.0)
+                                    .billingCountryCode("billingCountryCode")
+                                    .currency(
+                                        SubscriptionCreateParams.PriceOverride.Tier.FlatPrice
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .unitPrice(
+                                SubscriptionCreateParams.PriceOverride.Tier.UnitPrice.builder()
+                                    .amount(0.0)
+                                    .billingCountryCode("billingCountryCode")
+                                    .currency(
+                                        SubscriptionCreateParams.PriceOverride.Tier.UnitPrice
+                                            .Currency
+                                            .USD
+                                    )
+                                    .build()
+                            )
+                            .upTo(0.0)
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(body.resourceId()).contains("resourceId")
+        assertThat(body.salesforceId()).contains("salesforceId")
+        assertThat(body.scheduleStrategy())
+            .contains(SubscriptionCreateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
+        assertThat(body.startDate()).contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(body.subscriptionEntitlements().getOrNull())
+            .containsExactly(
+                SubscriptionCreateParams.SubscriptionEntitlement.builder()
+                    .featureId("featureId")
+                    .usageLimit(0.0)
+                    .isGranted(true)
+                    .build()
+            )
         assertThat(body.trialOverrideConfiguration())
             .contains(
                 SubscriptionCreateParams.TrialOverrideConfiguration.builder()
@@ -125,6 +608,7 @@ internal class SubscriptionCreateParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+        assertThat(body.unitQuantity()).contains(1.0)
     }
 
     @Test
