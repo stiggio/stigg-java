@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update an existing Customer */
+/** Update a customer */
 class CustomerUpdateParams
 private constructor(
     private val id: String?,
@@ -382,6 +382,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Partially update an existing customer. Only provided fields are updated. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -704,6 +705,7 @@ private constructor(
             "Body{couponId=$couponId, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
     }
 
+    /** External billing or CRM integration link */
     class Integration
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

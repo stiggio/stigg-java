@@ -21,6 +21,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Response object */
 class SubscriptionMigrateResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -34,6 +35,8 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
+     * Customer subscription to a plan
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -83,6 +86,7 @@ private constructor(
             additionalProperties = subscriptionMigrateResponse.additionalProperties.toMutableMap()
         }
 
+        /** Customer subscription to a plan */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -157,6 +161,7 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
+    /** Customer subscription to a plan */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -181,7 +186,6 @@ private constructor(
         private val prices: JsonField<List<Price>>,
         private val resourceId: JsonField<String>,
         private val trialEndDate: JsonField<OffsetDateTime>,
-        private val unitQuantity: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -244,9 +248,6 @@ private constructor(
             @JsonProperty("trialEndDate")
             @ExcludeMissing
             trialEndDate: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("unitQuantity")
-            @ExcludeMissing
-            unitQuantity: JsonField<Double> = JsonMissing.of(),
         ) : this(
             id,
             billingId,
@@ -269,7 +270,6 @@ private constructor(
             prices,
             resourceId,
             trialEndDate,
-            unitQuantity,
             mutableMapOf(),
         )
 
@@ -444,12 +444,6 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun trialEndDate(): Optional<OffsetDateTime> = trialEndDate.getOptional("trialEndDate")
-
-        /**
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun unitQuantity(): Optional<Double> = unitQuantity.getOptional("unitQuantity")
 
         /**
          * Returns the raw JSON value of [id].
@@ -635,16 +629,6 @@ private constructor(
         @ExcludeMissing
         fun _trialEndDate(): JsonField<OffsetDateTime> = trialEndDate
 
-        /**
-         * Returns the raw JSON value of [unitQuantity].
-         *
-         * Unlike [unitQuantity], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("unitQuantity")
-        @ExcludeMissing
-        fun _unitQuantity(): JsonField<Double> = unitQuantity
-
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -703,7 +687,6 @@ private constructor(
             private var prices: JsonField<MutableList<Price>>? = null
             private var resourceId: JsonField<String> = JsonMissing.of()
             private var trialEndDate: JsonField<OffsetDateTime> = JsonMissing.of()
-            private var unitQuantity: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -729,7 +712,6 @@ private constructor(
                 prices = data.prices.map { it.toMutableList() }
                 resourceId = data.resourceId
                 trialEndDate = data.trialEndDate
-                unitQuantity = data.unitQuantity
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -1090,19 +1072,6 @@ private constructor(
                 this.trialEndDate = trialEndDate
             }
 
-            fun unitQuantity(unitQuantity: Double) = unitQuantity(JsonField.of(unitQuantity))
-
-            /**
-             * Sets [Builder.unitQuantity] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.unitQuantity] with a well-typed [Double] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun unitQuantity(unitQuantity: JsonField<Double>) = apply {
-                this.unitQuantity = unitQuantity
-            }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1165,7 +1134,6 @@ private constructor(
                     (prices ?: JsonMissing.of()).map { it.toImmutable() },
                     resourceId,
                     trialEndDate,
-                    unitQuantity,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1198,7 +1166,6 @@ private constructor(
             prices().ifPresent { it.forEach { it.validate() } }
             resourceId()
             trialEndDate()
-            unitQuantity()
             validated = true
         }
 
@@ -1238,8 +1205,7 @@ private constructor(
                 (paymentCollectionMethod.asKnown().getOrNull()?.validity() ?: 0) +
                 (prices.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (resourceId.asKnown().isPresent) 1 else 0) +
-                (if (trialEndDate.asKnown().isPresent) 1 else 0) +
-                (if (unitQuantity.asKnown().isPresent) 1 else 0)
+                (if (trialEndDate.asKnown().isPresent) 1 else 0)
 
         /** Payment collection */
         class PaymentCollection
@@ -2390,7 +2356,6 @@ private constructor(
                 prices == other.prices &&
                 resourceId == other.resourceId &&
                 trialEndDate == other.trialEndDate &&
-                unitQuantity == other.unitQuantity &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -2417,7 +2382,6 @@ private constructor(
                 prices,
                 resourceId,
                 trialEndDate,
-                unitQuantity,
                 additionalProperties,
             )
         }
@@ -2425,7 +2389,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, trialEndDate=$trialEndDate, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
+            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

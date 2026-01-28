@@ -20,6 +20,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/**
+ * Response containing reported usage measurements with current usage values, period information,
+ * and reset dates for each measurement.
+ */
 class V1CreateUsageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -33,6 +37,8 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
+     * Array of usage measurements with current values and period info
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -82,6 +88,7 @@ private constructor(
             additionalProperties = v1CreateUsageResponse.additionalProperties.toMutableMap()
         }
 
+        /** Array of usage measurements with current values and period info */
         fun data(data: List<Data>) = data(JsonField.of(data))
 
         /**
@@ -172,6 +179,7 @@ private constructor(
     internal fun validity(): Int =
         (data.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
+    /** Recorded usage with period info */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

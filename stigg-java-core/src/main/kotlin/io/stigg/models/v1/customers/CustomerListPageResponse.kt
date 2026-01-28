@@ -19,6 +19,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Response list object */
 class CustomerListPageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -44,7 +45,7 @@ private constructor(
     fun data(): List<CustomerListResponse> = data.getRequired("data")
 
     /**
-     * Pagination information including cursors for navigation
+     * Pagination metadata including cursors for navigating through results
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -132,7 +133,7 @@ private constructor(
                 }
         }
 
-        /** Pagination information including cursors for navigation */
+        /** Pagination metadata including cursors for navigating through results */
         fun pagination(pagination: Pagination) = pagination(JsonField.of(pagination))
 
         /**
@@ -214,7 +215,7 @@ private constructor(
         (data.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (pagination.asKnown().getOrNull()?.validity() ?: 0)
 
-    /** Pagination information including cursors for navigation */
+    /** Pagination metadata including cursors for navigating through results */
     class Pagination
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -230,7 +231,7 @@ private constructor(
         ) : this(next, prev, mutableMapOf())
 
         /**
-         * Cursor to fetch the next page (use with after parameter), null if no more pages
+         * Cursor for fetching the next page of results, or null if no additional pages exist
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -238,7 +239,7 @@ private constructor(
         fun next(): Optional<String> = next.getOptional("next")
 
         /**
-         * Cursor to fetch the previous page (use with before parameter), null if no previous pages
+         * Cursor for fetching the previous page of results, or null if at the beginning
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -299,7 +300,9 @@ private constructor(
                 additionalProperties = pagination.additionalProperties.toMutableMap()
             }
 
-            /** Cursor to fetch the next page (use with after parameter), null if no more pages */
+            /**
+             * Cursor for fetching the next page of results, or null if no additional pages exist
+             */
             fun next(next: String?) = next(JsonField.ofNullable(next))
 
             /** Alias for calling [Builder.next] with `next.orElse(null)`. */
@@ -314,10 +317,7 @@ private constructor(
              */
             fun next(next: JsonField<String>) = apply { this.next = next }
 
-            /**
-             * Cursor to fetch the previous page (use with before parameter), null if no previous
-             * pages
-             */
+            /** Cursor for fetching the previous page of results, or null if at the beginning */
             fun prev(prev: String?) = prev(JsonField.ofNullable(prev))
 
             /** Alias for calling [Builder.prev] with `prev.orElse(null)`. */

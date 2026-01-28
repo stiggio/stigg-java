@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single Subscription by id */
+/** Get a single subscription by ID */
 class SubscriptionRetrieveParams
 private constructor(
     private val id: String?,

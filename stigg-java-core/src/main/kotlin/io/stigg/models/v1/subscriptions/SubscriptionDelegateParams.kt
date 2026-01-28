@@ -20,7 +20,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform delegate on a Subscription */
+/** Delegate subscription payment to customer */
 class SubscriptionDelegateParams
 private constructor(
     private val id: String?,
@@ -32,7 +32,9 @@ private constructor(
     fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
-     * The customer ID to delegate the subscription to
+     * The unique identifier of the customer who will assume payment responsibility for this
+     * subscription. This customer must already exist in your Stigg account and have a valid payment
+     * method if the subscription requires payment.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -100,7 +102,11 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** The customer ID to delegate the subscription to */
+        /**
+         * The unique identifier of the customer who will assume payment responsibility for this
+         * subscription. This customer must already exist in your Stigg account and have a valid
+         * payment method if the subscription requires payment.
+         */
         fun targetCustomerId(targetCustomerId: String) = apply {
             body.targetCustomerId(targetCustomerId)
         }
@@ -266,6 +272,12 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /**
+     * Delegate the payment responsibility for a subscription to a different customer. The
+     * subscription remains associated with the original customer, but billing and payment
+     * obligations are transferred to the target customer. This is useful for B2B scenarios where
+     * one entity consumes the service while another handles payment.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -281,7 +293,9 @@ private constructor(
         ) : this(targetCustomerId, mutableMapOf())
 
         /**
-         * The customer ID to delegate the subscription to
+         * The unique identifier of the customer who will assume payment responsibility for this
+         * subscription. This customer must already exist in your Stigg account and have a valid
+         * payment method if the subscription requires payment.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -335,7 +349,11 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** The customer ID to delegate the subscription to */
+            /**
+             * The unique identifier of the customer who will assume payment responsibility for this
+             * subscription. This customer must already exist in your Stigg account and have a valid
+             * payment method if the subscription requires payment.
+             */
             fun targetCustomerId(targetCustomerId: String) =
                 targetCustomerId(JsonField.of(targetCustomerId))
 

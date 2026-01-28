@@ -24,7 +24,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a new Subscription */
+/** Provision subscription */
 class SubscriptionCreateParams
 private constructor(
     private val body: Body,
@@ -63,6 +63,8 @@ private constructor(
     fun addons(): Optional<List<Addon>> = body.addons()
 
     /**
+     * Coupon configuration
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -99,6 +101,8 @@ private constructor(
     fun billingInformation(): Optional<BillingInformation> = body.billingInformation()
 
     /**
+     * Billing period (MONTHLY or ANNUALLY)
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -117,6 +121,8 @@ private constructor(
     fun charges(): Optional<List<Charge>> = body.charges()
 
     /**
+     * Checkout page configuration for payment collection
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -199,6 +205,8 @@ private constructor(
         body.subscriptionEntitlements()
 
     /**
+     * Trial period override settings
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -473,10 +481,7 @@ private constructor(
         fun planId(planId: JsonField<String>) = apply { body.planId(planId) }
 
         /** Unique identifier for the subscription */
-        fun id(id: String?) = apply { body.id(id) }
-
-        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
-        fun id(id: Optional<String>) = id(id.getOrNull())
+        fun id(id: String) = apply { body.id(id) }
 
         /**
          * Sets [Builder.id] to an arbitrary JSON value.
@@ -504,6 +509,7 @@ private constructor(
          */
         fun addAddon(addon: Addon) = apply { body.addAddon(addon) }
 
+        /** Coupon configuration */
         fun appliedCoupon(appliedCoupon: AppliedCoupon) = apply {
             body.appliedCoupon(appliedCoupon)
         }
@@ -587,6 +593,7 @@ private constructor(
             body.billingInformation(billingInformation)
         }
 
+        /** Billing period (MONTHLY or ANNUALLY) */
         fun billingPeriod(billingPeriod: BillingPeriod) = apply {
             body.billingPeriod(billingPeriod)
         }
@@ -633,6 +640,7 @@ private constructor(
          */
         fun addCharge(charge: Charge) = apply { body.addCharge(charge) }
 
+        /** Checkout page configuration for payment collection */
         fun checkoutOptions(checkoutOptions: CheckoutOptions) = apply {
             body.checkoutOptions(checkoutOptions)
         }
@@ -823,6 +831,7 @@ private constructor(
             body.addSubscriptionEntitlement(subscriptionEntitlement)
         }
 
+        /** Trial period override settings */
         fun trialOverrideConfiguration(trialOverrideConfiguration: TrialOverrideConfiguration) =
             apply {
                 body.trialOverrideConfiguration(trialOverrideConfiguration)
@@ -996,6 +1005,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Provision a subscription. Returns subscription or checkout URL. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1158,6 +1168,8 @@ private constructor(
         fun addons(): Optional<List<Addon>> = addons.getOptional("addons")
 
         /**
+         * Coupon configuration
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1197,6 +1209,8 @@ private constructor(
             billingInformation.getOptional("billingInformation")
 
         /**
+         * Billing period (MONTHLY or ANNUALLY)
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1215,6 +1229,8 @@ private constructor(
         fun charges(): Optional<List<Charge>> = charges.getOptional("charges")
 
         /**
+         * Checkout page configuration for payment collection
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1300,6 +1316,8 @@ private constructor(
             subscriptionEntitlements.getOptional("subscriptionEntitlements")
 
         /**
+         * Trial period override settings
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1654,10 +1672,7 @@ private constructor(
             fun planId(planId: JsonField<String>) = apply { this.planId = planId }
 
             /** Unique identifier for the subscription */
-            fun id(id: String?) = id(JsonField.ofNullable(id))
-
-            /** Alias for calling [Builder.id] with `id.orElse(null)`. */
-            fun id(id: Optional<String>) = id(id.getOrNull())
+            fun id(id: String) = id(JsonField.of(id))
 
             /**
              * Sets [Builder.id] to an arbitrary JSON value.
@@ -1693,6 +1708,7 @@ private constructor(
                     }
             }
 
+            /** Coupon configuration */
             fun appliedCoupon(appliedCoupon: AppliedCoupon) =
                 appliedCoupon(JsonField.of(appliedCoupon))
 
@@ -1773,6 +1789,7 @@ private constructor(
                 this.billingInformation = billingInformation
             }
 
+            /** Billing period (MONTHLY or ANNUALLY) */
             fun billingPeriod(billingPeriod: BillingPeriod) =
                 billingPeriod(JsonField.of(billingPeriod))
 
@@ -1826,6 +1843,7 @@ private constructor(
                     }
             }
 
+            /** Checkout page configuration for payment collection */
             fun checkoutOptions(checkoutOptions: CheckoutOptions) =
                 checkoutOptions(JsonField.of(checkoutOptions))
 
@@ -2024,6 +2042,7 @@ private constructor(
                         }
                 }
 
+            /** Trial period override settings */
             fun trialOverrideConfiguration(trialOverrideConfiguration: TrialOverrideConfiguration) =
                 trialOverrideConfiguration(JsonField.of(trialOverrideConfiguration))
 
@@ -2459,6 +2478,7 @@ private constructor(
             "Addon{addonId=$addonId, quantity=$quantity, additionalProperties=$additionalProperties}"
     }
 
+    /** Coupon configuration */
     class AppliedCoupon
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -2490,30 +2510,40 @@ private constructor(
         ) : this(billingCouponId, configuration, couponId, discount, promotionCode, mutableMapOf())
 
         /**
+         * Billing provider coupon ID
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun billingCouponId(): Optional<String> = billingCouponId.getOptional("billingCouponId")
 
         /**
+         * Coupon timing configuration
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun configuration(): Optional<Configuration> = configuration.getOptional("configuration")
 
         /**
+         * Stigg coupon ID
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun couponId(): Optional<String> = couponId.getOptional("couponId")
 
         /**
+         * Ad-hoc discount configuration
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun discount(): Optional<Discount> = discount.getOptional("discount")
 
         /**
+         * Promotion code to apply
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -2601,6 +2631,7 @@ private constructor(
                 additionalProperties = appliedCoupon.additionalProperties.toMutableMap()
             }
 
+            /** Billing provider coupon ID */
             fun billingCouponId(billingCouponId: String) =
                 billingCouponId(JsonField.of(billingCouponId))
 
@@ -2615,6 +2646,7 @@ private constructor(
                 this.billingCouponId = billingCouponId
             }
 
+            /** Coupon timing configuration */
             fun configuration(configuration: Configuration) =
                 configuration(JsonField.of(configuration))
 
@@ -2629,6 +2661,7 @@ private constructor(
                 this.configuration = configuration
             }
 
+            /** Stigg coupon ID */
             fun couponId(couponId: String) = couponId(JsonField.of(couponId))
 
             /**
@@ -2640,6 +2673,7 @@ private constructor(
              */
             fun couponId(couponId: JsonField<String>) = apply { this.couponId = couponId }
 
+            /** Ad-hoc discount configuration */
             fun discount(discount: Discount) = discount(JsonField.of(discount))
 
             /**
@@ -2651,6 +2685,7 @@ private constructor(
              */
             fun discount(discount: JsonField<Discount>) = apply { this.discount = discount }
 
+            /** Promotion code to apply */
             fun promotionCode(promotionCode: String) = promotionCode(JsonField.of(promotionCode))
 
             /**
@@ -2736,6 +2771,7 @@ private constructor(
                 (discount.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (promotionCode.asKnown().isPresent) 1 else 0)
 
+        /** Coupon timing configuration */
         class Configuration
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -2889,6 +2925,7 @@ private constructor(
                 "Configuration{startDate=$startDate, additionalProperties=$additionalProperties}"
         }
 
+        /** Ad-hoc discount configuration */
         class Discount
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -2918,18 +2955,24 @@ private constructor(
             ) : this(amountsOff, description, durationInMonths, name, percentOff, mutableMapOf())
 
             /**
+             * Fixed amounts off by currency
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
             fun amountsOff(): Optional<List<AmountsOff>> = amountsOff.getOptional("amountsOff")
 
             /**
+             * Ad-hoc discount
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
             fun description(): Optional<String> = description.getOptional("description")
 
             /**
+             * Duration in months
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
@@ -2937,12 +2980,16 @@ private constructor(
                 durationInMonths.getOptional("durationInMonths")
 
             /**
+             * Discount name
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
             fun name(): Optional<String> = name.getOptional("name")
 
             /**
+             * Percentage discount
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
@@ -3033,6 +3080,7 @@ private constructor(
                     additionalProperties = discount.additionalProperties.toMutableMap()
                 }
 
+                /** Fixed amounts off by currency */
                 fun amountsOff(amountsOff: List<AmountsOff>?) =
                     amountsOff(JsonField.ofNullable(amountsOff))
 
@@ -3063,6 +3111,7 @@ private constructor(
                         }
                 }
 
+                /** Ad-hoc discount */
                 fun description(description: String) = description(JsonField.of(description))
 
                 /**
@@ -3076,6 +3125,7 @@ private constructor(
                     this.description = description
                 }
 
+                /** Duration in months */
                 fun durationInMonths(durationInMonths: Double) =
                     durationInMonths(JsonField.of(durationInMonths))
 
@@ -3090,6 +3140,7 @@ private constructor(
                     this.durationInMonths = durationInMonths
                 }
 
+                /** Discount name */
                 fun name(name: String) = name(JsonField.of(name))
 
                 /**
@@ -3101,6 +3152,7 @@ private constructor(
                  */
                 fun name(name: JsonField<String>) = apply { this.name = name }
 
+                /** Percentage discount */
                 fun percentOff(percentOff: Double) = percentOff(JsonField.of(percentOff))
 
                 /**
@@ -3208,6 +3260,8 @@ private constructor(
                 ) : this(amount, currency, mutableMapOf())
 
                 /**
+                 * The price amount
+                 *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
                  *   unexpectedly missing or null (e.g. if the server responded with an unexpected
                  *   value).
@@ -3215,10 +3269,13 @@ private constructor(
                 fun amount(): Double = amount.getRequired("amount")
 
                 /**
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * The price currency
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun currency(): Optional<Currency> = currency.getOptional("currency")
+                fun currency(): Currency = currency.getRequired("currency")
 
                 /**
                  * Returns the raw JSON value of [amount].
@@ -3258,6 +3315,7 @@ private constructor(
                      * The following fields are required:
                      * ```java
                      * .amount()
+                     * .currency()
                      * ```
                      */
                     @JvmStatic fun builder() = Builder()
@@ -3267,7 +3325,7 @@ private constructor(
                 class Builder internal constructor() {
 
                     private var amount: JsonField<Double>? = null
-                    private var currency: JsonField<Currency> = JsonMissing.of()
+                    private var currency: JsonField<Currency>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
@@ -3277,6 +3335,7 @@ private constructor(
                         additionalProperties = amountsOff.additionalProperties.toMutableMap()
                     }
 
+                    /** The price amount */
                     fun amount(amount: Double) = amount(JsonField.of(amount))
 
                     /**
@@ -3288,6 +3347,7 @@ private constructor(
                      */
                     fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
 
+                    /** The price currency */
                     fun currency(currency: Currency) = currency(JsonField.of(currency))
 
                     /**
@@ -3329,6 +3389,7 @@ private constructor(
                      * The following fields are required:
                      * ```java
                      * .amount()
+                     * .currency()
                      * ```
                      *
                      * @throws IllegalStateException if any required field is unset.
@@ -3336,7 +3397,7 @@ private constructor(
                     fun build(): AmountsOff =
                         AmountsOff(
                             checkRequired("amount", amount),
-                            currency,
+                            checkRequired("currency", currency),
                             additionalProperties.toMutableMap(),
                         )
                 }
@@ -3349,7 +3410,7 @@ private constructor(
                     }
 
                     amount()
-                    currency().ifPresent { it.validate() }
+                    currency().validate()
                     validated = true
                 }
 
@@ -3372,6 +3433,7 @@ private constructor(
                     (if (amount.asKnown().isPresent) 1 else 0) +
                         (currency.asKnown().getOrNull()?.validity() ?: 0)
 
+                /** The price currency */
                 class Currency
                 @JsonCreator
                 private constructor(private val value: JsonField<String>) : Enum {
@@ -5674,6 +5736,7 @@ private constructor(
             "BillingInformation{billingAddress=$billingAddress, chargeOnBehalfOfAccount=$chargeOnBehalfOfAccount, integrationId=$integrationId, invoiceDaysUntilDue=$invoiceDaysUntilDue, isBackdated=$isBackdated, isInvoicePaid=$isInvoicePaid, metadata=$metadata, prorationBehavior=$prorationBehavior, taxIds=$taxIds, taxPercentage=$taxPercentage, taxRateIds=$taxRateIds, additionalProperties=$additionalProperties}"
     }
 
+    /** Billing period (MONTHLY or ANNUALLY) */
     class BillingPeriod @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -6009,6 +6072,7 @@ private constructor(
             "Budget{hasSoftLimit=$hasSoftLimit, limit=$limit, additionalProperties=$additionalProperties}"
     }
 
+    /** Charge item */
     class Charge
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -6374,6 +6438,7 @@ private constructor(
             "Charge{id=$id, quantity=$quantity, type=$type, additionalProperties=$additionalProperties}"
     }
 
+    /** Checkout page configuration for payment collection */
     class CheckoutOptions
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -12688,6 +12753,8 @@ private constructor(
         ) : this(featureId, usageLimit, isGranted, mutableMapOf())
 
         /**
+         * Feature ID
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -12770,6 +12837,7 @@ private constructor(
                 additionalProperties = subscriptionEntitlement.additionalProperties.toMutableMap()
             }
 
+            /** Feature ID */
             fun featureId(featureId: String) = featureId(JsonField.of(featureId))
 
             /**
@@ -12899,6 +12967,7 @@ private constructor(
             "SubscriptionEntitlement{featureId=$featureId, usageLimit=$usageLimit, isGranted=$isGranted, additionalProperties=$additionalProperties}"
     }
 
+    /** Trial period override settings */
     class TrialOverrideConfiguration
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

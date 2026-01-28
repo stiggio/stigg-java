@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of Subscriptions */
+/** Get a list of subscriptions */
 class SubscriptionListParams
 private constructor(
     private val after: String?,
@@ -21,21 +21,19 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Starting after this UUID for pagination */
+    /** Return items that come after this cursor */
     fun after(): Optional<String> = Optional.ofNullable(after)
 
-    /** Ending before this UUID for pagination */
+    /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
     /** Filter by customer ID */
     fun customerId(): Optional<String> = Optional.ofNullable(customerId)
 
-    /** Items per page */
+    /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
 
-    /**
-     * Filter by subscription status (comma-separated for multiple statuses, e.g., ACTIVE,IN_TRIAL)
-     */
+    /** Filter by status (comma-separated) */
     fun status(): Optional<String> = Optional.ofNullable(status)
 
     /** Additional headers to send with the request. */
@@ -76,13 +74,13 @@ private constructor(
             additionalQueryParams = subscriptionListParams.additionalQueryParams.toBuilder()
         }
 
-        /** Starting after this UUID for pagination */
+        /** Return items that come after this cursor */
         fun after(after: String?) = apply { this.after = after }
 
         /** Alias for calling [Builder.after] with `after.orElse(null)`. */
         fun after(after: Optional<String>) = after(after.getOrNull())
 
-        /** Ending before this UUID for pagination */
+        /** Return items that come before this cursor */
         fun before(before: String?) = apply { this.before = before }
 
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
@@ -94,7 +92,7 @@ private constructor(
         /** Alias for calling [Builder.customerId] with `customerId.orElse(null)`. */
         fun customerId(customerId: Optional<String>) = customerId(customerId.getOrNull())
 
-        /** Items per page */
+        /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
 
         /**
@@ -107,10 +105,7 @@ private constructor(
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
 
-        /**
-         * Filter by subscription status (comma-separated for multiple statuses, e.g.,
-         * ACTIVE,IN_TRIAL)
-         */
+        /** Filter by status (comma-separated) */
         fun status(status: String?) = apply { this.status = status }
 
         /** Alias for calling [Builder.status] with `status.orElse(null)`. */

@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Perform archive on a Customer */
+/** Archive customer */
 class CustomerArchiveParams
 private constructor(
     private val id: String?,

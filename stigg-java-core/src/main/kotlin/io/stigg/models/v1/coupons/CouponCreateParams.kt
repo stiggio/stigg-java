@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a new Coupon */
+/** Create coupon */
 class CouponCreateParams
 private constructor(
     private val body: Body,
@@ -451,6 +451,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /** Create a coupon with percentage or fixed-amount discount. */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -910,6 +911,7 @@ private constructor(
             "Body{id=$id, amountsOff=$amountsOff, description=$description, durationInMonths=$durationInMonths, name=$name, percentOff=$percentOff, additionalMetaData=$additionalMetaData, additionalProperties=$additionalProperties}"
     }
 
+    /** Monetary amount with currency */
     class AmountsOff
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

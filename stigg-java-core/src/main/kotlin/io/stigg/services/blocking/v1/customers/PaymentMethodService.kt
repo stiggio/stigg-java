@@ -25,7 +25,7 @@ interface PaymentMethodService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PaymentMethodService
 
-    /** Perform payment-method attachment on a Customer */
+    /** Attach payment method */
     fun attach(id: String, params: PaymentMethodAttachParams): CustomerResponse =
         attach(id, params, RequestOptions.none())
 
@@ -46,7 +46,7 @@ interface PaymentMethodService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerResponse
 
-    /** Perform payment-method detachment on a Customer */
+    /** Detach payment method */
     fun detach(id: String): CustomerResponse = detach(id, PaymentMethodDetachParams.none())
 
     /** @see detach */

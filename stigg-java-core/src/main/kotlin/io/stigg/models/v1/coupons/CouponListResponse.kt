@@ -21,6 +21,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Discount instrument with percentage or fixed amount */
 class CouponListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -688,6 +689,7 @@ private constructor(
             (type.asKnown().getOrNull()?.validity() ?: 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
 
+    /** Monetary amount with currency */
     class AmountsOff
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
