@@ -16,13 +16,12 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.coupons.Coupon
 import io.stigg.models.v1.coupons.CouponCreateParams
-import io.stigg.models.v1.coupons.CouponCreateResponse
 import io.stigg.models.v1.coupons.CouponListPage
 import io.stigg.models.v1.coupons.CouponListPageResponse
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
-import io.stigg.models.v1.coupons.CouponRetrieveResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -38,17 +37,11 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponService =
         CouponServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun create(
-        params: CouponCreateParams,
-        requestOptions: RequestOptions,
-    ): CouponCreateResponse =
+    override fun create(params: CouponCreateParams, requestOptions: RequestOptions): Coupon =
         // post /api/v1/coupons
         withRawResponse().create(params, requestOptions).parse()
 
-    override fun retrieve(
-        params: CouponRetrieveParams,
-        requestOptions: RequestOptions,
-    ): CouponRetrieveResponse =
+    override fun retrieve(params: CouponRetrieveParams, requestOptions: RequestOptions): Coupon =
         // get /api/v1/coupons/{id}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -69,13 +62,12 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val createHandler: Handler<CouponCreateResponse> =
-            jsonHandler<CouponCreateResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<Coupon> = jsonHandler<Coupon>(clientOptions.jsonMapper)
 
         override fun create(
             params: CouponCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CouponCreateResponse> {
+        ): HttpResponseFor<Coupon> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -97,13 +89,12 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val retrieveHandler: Handler<CouponRetrieveResponse> =
-            jsonHandler<CouponRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Coupon> = jsonHandler<Coupon>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: CouponRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CouponRetrieveResponse> {
+        ): HttpResponseFor<Coupon> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

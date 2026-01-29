@@ -5,12 +5,11 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.coupons.Coupon
 import io.stigg.models.v1.coupons.CouponCreateParams
-import io.stigg.models.v1.coupons.CouponCreateResponse
 import io.stigg.models.v1.coupons.CouponListPageAsync
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
-import io.stigg.models.v1.coupons.CouponRetrieveResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -29,48 +28,43 @@ interface CouponServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponServiceAsync
 
     /** Create coupon */
-    fun create(params: CouponCreateParams): CompletableFuture<CouponCreateResponse> =
+    fun create(params: CouponCreateParams): CompletableFuture<Coupon> =
         create(params, RequestOptions.none())
 
     /** @see create */
     fun create(
         params: CouponCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CouponCreateResponse>
+    ): CompletableFuture<Coupon>
 
     /** Get a single coupon by ID */
-    fun retrieve(id: String): CompletableFuture<CouponRetrieveResponse> =
-        retrieve(id, CouponRetrieveParams.none())
+    fun retrieve(id: String): CompletableFuture<Coupon> = retrieve(id, CouponRetrieveParams.none())
 
     /** @see retrieve */
     fun retrieve(
         id: String,
         params: CouponRetrieveParams = CouponRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CouponRetrieveResponse> =
-        retrieve(params.toBuilder().id(id).build(), requestOptions)
+    ): CompletableFuture<Coupon> = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         id: String,
         params: CouponRetrieveParams = CouponRetrieveParams.none(),
-    ): CompletableFuture<CouponRetrieveResponse> = retrieve(id, params, RequestOptions.none())
+    ): CompletableFuture<Coupon> = retrieve(id, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: CouponRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CouponRetrieveResponse>
+    ): CompletableFuture<Coupon>
 
     /** @see retrieve */
-    fun retrieve(params: CouponRetrieveParams): CompletableFuture<CouponRetrieveResponse> =
+    fun retrieve(params: CouponRetrieveParams): CompletableFuture<Coupon> =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    fun retrieve(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<CouponRetrieveResponse> =
+    fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<Coupon> =
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
     /** Get a list of coupons */
@@ -109,22 +103,20 @@ interface CouponServiceAsync {
          * Returns a raw HTTP response for `post /api/v1/coupons`, but is otherwise the same as
          * [CouponServiceAsync.create].
          */
-        fun create(
-            params: CouponCreateParams
-        ): CompletableFuture<HttpResponseFor<CouponCreateResponse>> =
+        fun create(params: CouponCreateParams): CompletableFuture<HttpResponseFor<Coupon>> =
             create(params, RequestOptions.none())
 
         /** @see create */
         fun create(
             params: CouponCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CouponCreateResponse>>
+        ): CompletableFuture<HttpResponseFor<Coupon>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/coupons/{id}`, but is otherwise the same as
          * [CouponServiceAsync.retrieve].
          */
-        fun retrieve(id: String): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>> =
+        fun retrieve(id: String): CompletableFuture<HttpResponseFor<Coupon>> =
             retrieve(id, CouponRetrieveParams.none())
 
         /** @see retrieve */
@@ -132,33 +124,30 @@ interface CouponServiceAsync {
             id: String,
             params: CouponRetrieveParams = CouponRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
             retrieve(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieve */
         fun retrieve(
             id: String,
             params: CouponRetrieveParams = CouponRetrieveParams.none(),
-        ): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>> =
-            retrieve(id, params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<Coupon>> = retrieve(id, params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
             params: CouponRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>>
+        ): CompletableFuture<HttpResponseFor<Coupon>>
 
         /** @see retrieve */
-        fun retrieve(
-            params: CouponRetrieveParams
-        ): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>> =
+        fun retrieve(params: CouponRetrieveParams): CompletableFuture<HttpResponseFor<Coupon>> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CouponRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
             retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
         /**

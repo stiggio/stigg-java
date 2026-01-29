@@ -17,18 +17,20 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.customers.CustomerArchiveParams
-import io.stigg.models.v1.customers.CustomerCreateParams
+import io.stigg.models.v1.customers.CustomerImportParams
+import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
 import io.stigg.services.blocking.v1.customers.PaymentMethodServiceImpl
-import io.stigg.services.blocking.v1.customers.UsageService
-import io.stigg.services.blocking.v1.customers.UsageServiceImpl
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -43,7 +45,9 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         PaymentMethodServiceImpl(clientOptions)
     }
 
-    private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
+    private val promotionalEntitlements: PromotionalEntitlementService by lazy {
+        PromotionalEntitlementServiceImpl(clientOptions)
+    }
 
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
@@ -52,14 +56,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     override fun paymentMethod(): PaymentMethodService = paymentMethod
 
-    override fun usage(): UsageService = usage
-
-    override fun create(
-        params: CustomerCreateParams,
-        requestOptions: RequestOptions,
-    ): CustomerResponse =
-        // post /api/v1/customers
-        withRawResponse().create(params, requestOptions).parse()
+    override fun promotionalEntitlements(): PromotionalEntitlementService = promotionalEntitlements
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -89,6 +86,20 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         // post /api/v1/customers/{id}/archive
         withRawResponse().archive(params, requestOptions).parse()
 
+    override fun import_(
+        params: CustomerImportParams,
+        requestOptions: RequestOptions,
+    ): CustomerImportResponse =
+        // post /api/v1/customers/import
+        withRawResponse().import_(params, requestOptions).parse()
+
+    override fun provision(
+        params: CustomerProvisionParams,
+        requestOptions: RequestOptions,
+    ): CustomerResponse =
+        // post /api/v1/customers
+        withRawResponse().provision(params, requestOptions).parse()
+
     override fun unarchive(
         params: CustomerUnarchiveParams,
         requestOptions: RequestOptions,
@@ -106,8 +117,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             PaymentMethodServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val usage: UsageService.WithRawResponse by lazy {
-            UsageServiceImpl.WithRawResponseImpl(clientOptions)
+        private val promotionalEntitlements: PromotionalEntitlementService.WithRawResponse by lazy {
+            PromotionalEntitlementServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -119,35 +130,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
         override fun paymentMethod(): PaymentMethodService.WithRawResponse = paymentMethod
 
-        override fun usage(): UsageService.WithRawResponse = usage
-
-        private val createHandler: Handler<CustomerResponse> =
-            jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
-
-        override fun create(
-            params: CustomerCreateParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "customers")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
+        override fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse =
+            promotionalEntitlements
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
@@ -267,6 +251,62 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             return errorHandler.handle(response).parseable {
                 response
                     .use { archiveHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val importHandler: Handler<CustomerImportResponse> =
+            jsonHandler<CustomerImportResponse>(clientOptions.jsonMapper)
+
+        override fun import_(
+            params: CustomerImportParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerImportResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", "import")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { importHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val provisionHandler: Handler<CustomerResponse> =
+            jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
+
+        override fun provision(
+            params: CustomerProvisionParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { provisionHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

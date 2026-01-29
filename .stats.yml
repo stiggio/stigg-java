@@ -1,4 +1,4 @@
-configured_endpoints: 22
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/stigg%2Fstigg-10b9013df82a5471ead321e33a73005082477c31d0fb49d058c51f9f24a4be08.yml
-openapi_spec_hash: 816d077ec196d689e99469275bc4e997
-config_hash: a722f560660890fb86f857808d039231
+configured_endpoints: 29
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/stigg%2Fstigg-c0d7fd6e1f5cdebb8061ec24c1432a08320ba334a2be1dee05da0196d655eb93.yml
+openapi_spec_hash: 57e4614eab7c948e1844c6e629721dc5
+config_hash: 9ed39470163a5bdaf0df2f46bddeba7e

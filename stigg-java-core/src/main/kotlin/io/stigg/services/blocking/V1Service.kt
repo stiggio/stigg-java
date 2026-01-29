@@ -2,17 +2,12 @@
 
 package io.stigg.services.blocking
 
-import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
-import io.stigg.core.RequestOptions
-import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.V1CreateEventParams
-import io.stigg.models.v1.V1CreateEventResponse
-import io.stigg.models.v1.V1CreateUsageParams
-import io.stigg.models.v1.V1CreateUsageResponse
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CustomerService
+import io.stigg.services.blocking.v1.EventService
 import io.stigg.services.blocking.v1.SubscriptionService
+import io.stigg.services.blocking.v1.UsageService
 import java.util.function.Consumer
 
 interface V1Service {
@@ -35,25 +30,9 @@ interface V1Service {
 
     fun coupons(): CouponService
 
-    /** Report usage events */
-    fun createEvent(params: V1CreateEventParams): V1CreateEventResponse =
-        createEvent(params, RequestOptions.none())
+    fun events(): EventService
 
-    /** @see createEvent */
-    fun createEvent(
-        params: V1CreateEventParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): V1CreateEventResponse
-
-    /** Report usage measurements */
-    fun createUsage(params: V1CreateUsageParams): V1CreateUsageResponse =
-        createUsage(params, RequestOptions.none())
-
-    /** @see createUsage */
-    fun createUsage(
-        params: V1CreateUsageParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): V1CreateUsageResponse
+    fun usage(): UsageService
 
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -71,34 +50,8 @@ interface V1Service {
 
         fun coupons(): CouponService.WithRawResponse
 
-        /**
-         * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
-         * [V1Service.createEvent].
-         */
-        @MustBeClosed
-        fun createEvent(params: V1CreateEventParams): HttpResponseFor<V1CreateEventResponse> =
-            createEvent(params, RequestOptions.none())
+        fun events(): EventService.WithRawResponse
 
-        /** @see createEvent */
-        @MustBeClosed
-        fun createEvent(
-            params: V1CreateEventParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<V1CreateEventResponse>
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/usage`, but is otherwise the same as
-         * [V1Service.createUsage].
-         */
-        @MustBeClosed
-        fun createUsage(params: V1CreateUsageParams): HttpResponseFor<V1CreateUsageResponse> =
-            createUsage(params, RequestOptions.none())
-
-        /** @see createUsage */
-        @MustBeClosed
-        fun createUsage(
-            params: V1CreateUsageParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<V1CreateUsageResponse>
+        fun usage(): UsageService.WithRawResponse
     }
 }
