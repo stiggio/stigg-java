@@ -16,21 +16,22 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.subscriptions.SubscriptionCreateParams
-import io.stigg.models.v1.subscriptions.SubscriptionCreateResponse
+import io.stigg.models.v1.subscriptions.Subscription
+import io.stigg.models.v1.subscriptions.SubscriptionCancelParams
 import io.stigg.models.v1.subscriptions.SubscriptionDelegateParams
-import io.stigg.models.v1.subscriptions.SubscriptionDelegateResponse
+import io.stigg.models.v1.subscriptions.SubscriptionImportParams
+import io.stigg.models.v1.subscriptions.SubscriptionImportResponse
 import io.stigg.models.v1.subscriptions.SubscriptionListPageAsync
 import io.stigg.models.v1.subscriptions.SubscriptionListPageResponse
 import io.stigg.models.v1.subscriptions.SubscriptionListParams
 import io.stigg.models.v1.subscriptions.SubscriptionMigrateParams
-import io.stigg.models.v1.subscriptions.SubscriptionMigrateResponse
 import io.stigg.models.v1.subscriptions.SubscriptionPreviewParams
 import io.stigg.models.v1.subscriptions.SubscriptionPreviewResponse
+import io.stigg.models.v1.subscriptions.SubscriptionProvisionParams
+import io.stigg.models.v1.subscriptions.SubscriptionProvisionResponse
 import io.stigg.models.v1.subscriptions.SubscriptionRetrieveParams
-import io.stigg.models.v1.subscriptions.SubscriptionRetrieveResponse
 import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
-import io.stigg.models.v1.subscriptions.SubscriptionTransferResponse
+import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import io.stigg.services.async.v1.subscriptions.FutureUpdateServiceAsync
 import io.stigg.services.async.v1.subscriptions.FutureUpdateServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -55,19 +56,19 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
 
     override fun futureUpdate(): FutureUpdateServiceAsync = futureUpdate
 
-    override fun create(
-        params: SubscriptionCreateParams,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionCreateResponse> =
-        // post /api/v1/subscriptions
-        withRawResponse().create(params, requestOptions).thenApply { it.parse() }
-
     override fun retrieve(
         params: SubscriptionRetrieveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionRetrieveResponse> =
+    ): CompletableFuture<Subscription> =
         // get /api/v1/subscriptions/{id}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
+
+    override fun update(
+        params: SubscriptionUpdateParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<Subscription> =
+        // patch /api/v1/subscriptions/{id}
+        withRawResponse().update(params, requestOptions).thenApply { it.parse() }
 
     override fun list(
         params: SubscriptionListParams,
@@ -76,17 +77,31 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
         // get /api/v1/subscriptions
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
+    override fun cancel(
+        params: SubscriptionCancelParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<Subscription> =
+        // post /api/v1/subscriptions/{id}/cancel
+        withRawResponse().cancel(params, requestOptions).thenApply { it.parse() }
+
     override fun delegate(
         params: SubscriptionDelegateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionDelegateResponse> =
+    ): CompletableFuture<Subscription> =
         // post /api/v1/subscriptions/{id}/delegate
         withRawResponse().delegate(params, requestOptions).thenApply { it.parse() }
+
+    override fun import_(
+        params: SubscriptionImportParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<SubscriptionImportResponse> =
+        // post /api/v1/subscriptions/import
+        withRawResponse().import_(params, requestOptions).thenApply { it.parse() }
 
     override fun migrate(
         params: SubscriptionMigrateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionMigrateResponse> =
+    ): CompletableFuture<Subscription> =
         // post /api/v1/subscriptions/{id}/migrate
         withRawResponse().migrate(params, requestOptions).thenApply { it.parse() }
 
@@ -97,10 +112,17 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
         // post /api/v1/subscriptions/preview
         withRawResponse().preview(params, requestOptions).thenApply { it.parse() }
 
+    override fun provision(
+        params: SubscriptionProvisionParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<SubscriptionProvisionResponse> =
+        // post /api/v1/subscriptions
+        withRawResponse().provision(params, requestOptions).thenApply { it.parse() }
+
     override fun transfer(
         params: SubscriptionTransferParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SubscriptionTransferResponse> =
+    ): CompletableFuture<Subscription> =
         // post /api/v1/subscriptions/{id}/transfer
         withRawResponse().transfer(params, requestOptions).thenApply { it.parse() }
 
@@ -123,44 +145,13 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
 
         override fun futureUpdate(): FutureUpdateServiceAsync.WithRawResponse = futureUpdate
 
-        private val createHandler: Handler<SubscriptionCreateResponse> =
-            jsonHandler<SubscriptionCreateResponse>(clientOptions.jsonMapper)
-
-        override fun create(
-            params: SubscriptionCreateParams,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionCreateResponse>> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "subscriptions")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            return request
-                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
-                .thenApply { response ->
-                    errorHandler.handle(response).parseable {
-                        response
-                            .use { createHandler.handle(it) }
-                            .also {
-                                if (requestOptions.responseValidation!!) {
-                                    it.validate()
-                                }
-                            }
-                    }
-                }
-        }
-
-        private val retrieveHandler: Handler<SubscriptionRetrieveResponse> =
-            jsonHandler<SubscriptionRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: SubscriptionRetrieveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionRetrieveResponse>> {
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -178,6 +169,40 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                     errorHandler.handle(response).parseable {
                         response
                             .use { retrieveHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val updateHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
+
+        override fun update(
+            params: SubscriptionUpdateParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "subscriptions", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { updateHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
@@ -225,13 +250,47 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                 }
         }
 
-        private val delegateHandler: Handler<SubscriptionDelegateResponse> =
-            jsonHandler<SubscriptionDelegateResponse>(clientOptions.jsonMapper)
+        private val cancelHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
+
+        override fun cancel(
+            params: SubscriptionCancelParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "subscriptions", params._pathParam(0), "cancel")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { cancelHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val delegateHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
 
         override fun delegate(
             params: SubscriptionDelegateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionDelegateResponse>> {
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -259,13 +318,44 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                 }
         }
 
-        private val migrateHandler: Handler<SubscriptionMigrateResponse> =
-            jsonHandler<SubscriptionMigrateResponse>(clientOptions.jsonMapper)
+        private val importHandler: Handler<SubscriptionImportResponse> =
+            jsonHandler<SubscriptionImportResponse>(clientOptions.jsonMapper)
+
+        override fun import_(
+            params: SubscriptionImportParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SubscriptionImportResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "subscriptions", "import")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { importHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val migrateHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
 
         override fun migrate(
             params: SubscriptionMigrateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionMigrateResponse>> {
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -324,13 +414,44 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                 }
         }
 
-        private val transferHandler: Handler<SubscriptionTransferResponse> =
-            jsonHandler<SubscriptionTransferResponse>(clientOptions.jsonMapper)
+        private val provisionHandler: Handler<SubscriptionProvisionResponse> =
+            jsonHandler<SubscriptionProvisionResponse>(clientOptions.jsonMapper)
+
+        override fun provision(
+            params: SubscriptionProvisionParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SubscriptionProvisionResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "subscriptions")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { provisionHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val transferHandler: Handler<Subscription> =
+            jsonHandler<Subscription>(clientOptions.jsonMapper)
 
         override fun transfer(
             params: SubscriptionTransferParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SubscriptionTransferResponse>> {
+        ): CompletableFuture<HttpResponseFor<Subscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

@@ -17,18 +17,20 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1.customers.CustomerArchiveParams
-import io.stigg.models.v1.customers.CustomerCreateParams
+import io.stigg.models.v1.customers.CustomerImportParams
+import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsyncImpl
-import io.stigg.services.async.v1.customers.UsageServiceAsync
-import io.stigg.services.async.v1.customers.UsageServiceAsyncImpl
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -44,7 +46,9 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         PaymentMethodServiceAsyncImpl(clientOptions)
     }
 
-    private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
+    private val promotionalEntitlements: PromotionalEntitlementServiceAsync by lazy {
+        PromotionalEntitlementServiceAsyncImpl(clientOptions)
+    }
 
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
@@ -53,14 +57,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
     override fun paymentMethod(): PaymentMethodServiceAsync = paymentMethod
 
-    override fun usage(): UsageServiceAsync = usage
-
-    override fun create(
-        params: CustomerCreateParams,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<CustomerResponse> =
-        // post /api/v1/customers
-        withRawResponse().create(params, requestOptions).thenApply { it.parse() }
+    override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync =
+        promotionalEntitlements
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -90,6 +88,20 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         // post /api/v1/customers/{id}/archive
         withRawResponse().archive(params, requestOptions).thenApply { it.parse() }
 
+    override fun import_(
+        params: CustomerImportParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerImportResponse> =
+        // post /api/v1/customers/import
+        withRawResponse().import_(params, requestOptions).thenApply { it.parse() }
+
+    override fun provision(
+        params: CustomerProvisionParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerResponse> =
+        // post /api/v1/customers
+        withRawResponse().provision(params, requestOptions).thenApply { it.parse() }
+
     override fun unarchive(
         params: CustomerUnarchiveParams,
         requestOptions: RequestOptions,
@@ -107,8 +119,9 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             PaymentMethodServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val usage: UsageServiceAsync.WithRawResponse by lazy {
-            UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val promotionalEntitlements:
+            PromotionalEntitlementServiceAsync.WithRawResponse by lazy {
+            PromotionalEntitlementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -120,38 +133,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
 
         override fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse = paymentMethod
 
-        override fun usage(): UsageServiceAsync.WithRawResponse = usage
-
-        private val createHandler: Handler<CustomerResponse> =
-            jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
-
-        override fun create(
-            params: CustomerCreateParams,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<CustomerResponse>> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "customers")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            return request
-                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
-                .thenApply { response ->
-                    errorHandler.handle(response).parseable {
-                        response
-                            .use { createHandler.handle(it) }
-                            .also {
-                                if (requestOptions.responseValidation!!) {
-                                    it.validate()
-                                }
-                            }
-                    }
-                }
-        }
+        override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse =
+            promotionalEntitlements
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
@@ -283,6 +266,68 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                     errorHandler.handle(response).parseable {
                         response
                             .use { archiveHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val importHandler: Handler<CustomerImportResponse> =
+            jsonHandler<CustomerImportResponse>(clientOptions.jsonMapper)
+
+        override fun import_(
+            params: CustomerImportParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerImportResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", "import")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { importHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val provisionHandler: Handler<CustomerResponse> =
+            jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
+
+        override fun provision(
+            params: CustomerProvisionParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { provisionHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

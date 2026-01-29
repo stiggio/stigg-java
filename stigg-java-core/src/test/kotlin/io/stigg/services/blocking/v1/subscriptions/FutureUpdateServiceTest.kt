@@ -21,9 +21,9 @@ internal class FutureUpdateServiceTest {
                 .build()
         val futureUpdateService = client.v1().subscriptions().futureUpdate()
 
-        val response = futureUpdateService.cancelPendingPayment("x")
+        val cancelSubscription = futureUpdateService.cancelPendingPayment("x")
 
-        response.validate()
+        cancelSubscription.validate()
     }
 
     @Disabled("Prism tests are disabled")
@@ -36,8 +36,8 @@ internal class FutureUpdateServiceTest {
                 .build()
         val futureUpdateService = client.v1().subscriptions().futureUpdate()
 
-        val response = futureUpdateService.cancelSchedule("x")
+        val cancelSubscription = futureUpdateService.cancelSchedule("x")
 
-        response.validate()
+        cancelSubscription.validate()
     }
 }

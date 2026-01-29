@@ -5,10 +5,9 @@ package io.stigg.services.async.v1.subscriptions
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.subscriptions.futureupdate.CancelSubscription
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentResponse
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -27,9 +26,7 @@ interface FutureUpdateServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FutureUpdateServiceAsync
 
     /** Cancel pending payment update */
-    fun cancelPendingPayment(
-        id: String
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
+    fun cancelPendingPayment(id: String): CompletableFuture<CancelSubscription> =
         cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none())
 
     /** @see cancelPendingPayment */
@@ -38,7 +35,7 @@ interface FutureUpdateServiceAsync {
         params: FutureUpdateCancelPendingPaymentParams =
             FutureUpdateCancelPendingPaymentParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
+    ): CompletableFuture<CancelSubscription> =
         cancelPendingPayment(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see cancelPendingPayment */
@@ -46,30 +43,29 @@ interface FutureUpdateServiceAsync {
         id: String,
         params: FutureUpdateCancelPendingPaymentParams =
             FutureUpdateCancelPendingPaymentParams.none(),
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
+    ): CompletableFuture<CancelSubscription> =
         cancelPendingPayment(id, params, RequestOptions.none())
 
     /** @see cancelPendingPayment */
     fun cancelPendingPayment(
         params: FutureUpdateCancelPendingPaymentParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse>
+    ): CompletableFuture<CancelSubscription>
 
     /** @see cancelPendingPayment */
     fun cancelPendingPayment(
         params: FutureUpdateCancelPendingPaymentParams
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
-        cancelPendingPayment(params, RequestOptions.none())
+    ): CompletableFuture<CancelSubscription> = cancelPendingPayment(params, RequestOptions.none())
 
     /** @see cancelPendingPayment */
     fun cancelPendingPayment(
         id: String,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
+    ): CompletableFuture<CancelSubscription> =
         cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none(), requestOptions)
 
     /** Cancel scheduled update */
-    fun cancelSchedule(id: String): CompletableFuture<FutureUpdateCancelScheduleResponse> =
+    fun cancelSchedule(id: String): CompletableFuture<CancelSubscription> =
         cancelSchedule(id, FutureUpdateCancelScheduleParams.none())
 
     /** @see cancelSchedule */
@@ -77,33 +73,31 @@ interface FutureUpdateServiceAsync {
         id: String,
         params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse> =
+    ): CompletableFuture<CancelSubscription> =
         cancelSchedule(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         id: String,
         params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse> =
-        cancelSchedule(id, params, RequestOptions.none())
+    ): CompletableFuture<CancelSubscription> = cancelSchedule(id, params, RequestOptions.none())
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         params: FutureUpdateCancelScheduleParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse>
+    ): CompletableFuture<CancelSubscription>
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         params: FutureUpdateCancelScheduleParams
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse> =
-        cancelSchedule(params, RequestOptions.none())
+    ): CompletableFuture<CancelSubscription> = cancelSchedule(params, RequestOptions.none())
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         id: String,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse> =
+    ): CompletableFuture<CancelSubscription> =
         cancelSchedule(id, FutureUpdateCancelScheduleParams.none(), requestOptions)
 
     /**
@@ -128,7 +122,7 @@ interface FutureUpdateServiceAsync {
          */
         fun cancelPendingPayment(
             id: String
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none())
 
         /** @see cancelPendingPayment */
@@ -137,7 +131,7 @@ interface FutureUpdateServiceAsync {
             params: FutureUpdateCancelPendingPaymentParams =
                 FutureUpdateCancelPendingPaymentParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelPendingPayment(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see cancelPendingPayment */
@@ -145,26 +139,26 @@ interface FutureUpdateServiceAsync {
             id: String,
             params: FutureUpdateCancelPendingPaymentParams =
                 FutureUpdateCancelPendingPaymentParams.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelPendingPayment(id, params, RequestOptions.none())
 
         /** @see cancelPendingPayment */
         fun cancelPendingPayment(
             params: FutureUpdateCancelPendingPaymentParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>>
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>>
 
         /** @see cancelPendingPayment */
         fun cancelPendingPayment(
             params: FutureUpdateCancelPendingPaymentParams
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelPendingPayment(params, RequestOptions.none())
 
         /** @see cancelPendingPayment */
         fun cancelPendingPayment(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none(), requestOptions)
 
         /**
@@ -172,9 +166,7 @@ interface FutureUpdateServiceAsync {
          * /api/v1/subscriptions/{id}/future-update/schedule`, but is otherwise the same as
          * [FutureUpdateServiceAsync.cancelSchedule].
          */
-        fun cancelSchedule(
-            id: String
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> =
+        fun cancelSchedule(id: String): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelSchedule(id, FutureUpdateCancelScheduleParams.none())
 
         /** @see cancelSchedule */
@@ -182,33 +174,33 @@ interface FutureUpdateServiceAsync {
             id: String,
             params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelSchedule(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see cancelSchedule */
         fun cancelSchedule(
             id: String,
             params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelSchedule(id, params, RequestOptions.none())
 
         /** @see cancelSchedule */
         fun cancelSchedule(
             params: FutureUpdateCancelScheduleParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>>
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>>
 
         /** @see cancelSchedule */
         fun cancelSchedule(
             params: FutureUpdateCancelScheduleParams
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelSchedule(params, RequestOptions.none())
 
         /** @see cancelSchedule */
         fun cancelSchedule(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> =
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> =
             cancelSchedule(id, FutureUpdateCancelScheduleParams.none(), requestOptions)
     }
 }
