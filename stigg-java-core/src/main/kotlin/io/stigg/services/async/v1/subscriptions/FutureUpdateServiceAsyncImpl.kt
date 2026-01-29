@@ -16,10 +16,9 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
+import io.stigg.models.v1.subscriptions.futureupdate.CancelSubscription
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentResponse
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -39,14 +38,14 @@ class FutureUpdateServiceAsyncImpl internal constructor(private val clientOption
     override fun cancelPendingPayment(
         params: FutureUpdateCancelPendingPaymentParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FutureUpdateCancelPendingPaymentResponse> =
+    ): CompletableFuture<CancelSubscription> =
         // delete /api/v1/subscriptions/{id}/future-update/pending-payment
         withRawResponse().cancelPendingPayment(params, requestOptions).thenApply { it.parse() }
 
     override fun cancelSchedule(
         params: FutureUpdateCancelScheduleParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FutureUpdateCancelScheduleResponse> =
+    ): CompletableFuture<CancelSubscription> =
         // delete /api/v1/subscriptions/{id}/future-update/schedule
         withRawResponse().cancelSchedule(params, requestOptions).thenApply { it.parse() }
 
@@ -63,13 +62,13 @@ class FutureUpdateServiceAsyncImpl internal constructor(private val clientOption
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val cancelPendingPaymentHandler: Handler<FutureUpdateCancelPendingPaymentResponse> =
-            jsonHandler<FutureUpdateCancelPendingPaymentResponse>(clientOptions.jsonMapper)
+        private val cancelPendingPaymentHandler: Handler<CancelSubscription> =
+            jsonHandler<CancelSubscription>(clientOptions.jsonMapper)
 
         override fun cancelPendingPayment(
             params: FutureUpdateCancelPendingPaymentParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>> {
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -104,13 +103,13 @@ class FutureUpdateServiceAsyncImpl internal constructor(private val clientOption
                 }
         }
 
-        private val cancelScheduleHandler: Handler<FutureUpdateCancelScheduleResponse> =
-            jsonHandler<FutureUpdateCancelScheduleResponse>(clientOptions.jsonMapper)
+        private val cancelScheduleHandler: Handler<CancelSubscription> =
+            jsonHandler<CancelSubscription>(clientOptions.jsonMapper)
 
         override fun cancelSchedule(
             params: FutureUpdateCancelScheduleParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FutureUpdateCancelScheduleResponse>> {
+        ): CompletableFuture<HttpResponseFor<CancelSubscription>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

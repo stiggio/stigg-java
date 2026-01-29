@@ -3,16 +3,11 @@
 package io.stigg.services.async
 
 import io.stigg.core.ClientOptions
-import io.stigg.core.RequestOptions
-import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.V1CreateEventParams
-import io.stigg.models.v1.V1CreateEventResponse
-import io.stigg.models.v1.V1CreateUsageParams
-import io.stigg.models.v1.V1CreateUsageResponse
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsync
+import io.stigg.services.async.v1.EventServiceAsync
 import io.stigg.services.async.v1.SubscriptionServiceAsync
-import java.util.concurrent.CompletableFuture
+import io.stigg.services.async.v1.UsageServiceAsync
 import java.util.function.Consumer
 
 interface V1ServiceAsync {
@@ -35,25 +30,9 @@ interface V1ServiceAsync {
 
     fun coupons(): CouponServiceAsync
 
-    /** Report usage events */
-    fun createEvent(params: V1CreateEventParams): CompletableFuture<V1CreateEventResponse> =
-        createEvent(params, RequestOptions.none())
+    fun events(): EventServiceAsync
 
-    /** @see createEvent */
-    fun createEvent(
-        params: V1CreateEventParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<V1CreateEventResponse>
-
-    /** Report usage measurements */
-    fun createUsage(params: V1CreateUsageParams): CompletableFuture<V1CreateUsageResponse> =
-        createUsage(params, RequestOptions.none())
-
-    /** @see createUsage */
-    fun createUsage(
-        params: V1CreateUsageParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<V1CreateUsageResponse>
+    fun usage(): UsageServiceAsync
 
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -71,34 +50,8 @@ interface V1ServiceAsync {
 
         fun coupons(): CouponServiceAsync.WithRawResponse
 
-        /**
-         * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
-         * [V1ServiceAsync.createEvent].
-         */
-        fun createEvent(
-            params: V1CreateEventParams
-        ): CompletableFuture<HttpResponseFor<V1CreateEventResponse>> =
-            createEvent(params, RequestOptions.none())
+        fun events(): EventServiceAsync.WithRawResponse
 
-        /** @see createEvent */
-        fun createEvent(
-            params: V1CreateEventParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<V1CreateEventResponse>>
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/usage`, but is otherwise the same as
-         * [V1ServiceAsync.createUsage].
-         */
-        fun createUsage(
-            params: V1CreateUsageParams
-        ): CompletableFuture<HttpResponseFor<V1CreateUsageResponse>> =
-            createUsage(params, RequestOptions.none())
-
-        /** @see createUsage */
-        fun createUsage(
-            params: V1CreateUsageParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<V1CreateUsageResponse>>
+        fun usage(): UsageServiceAsync.WithRawResponse
     }
 }

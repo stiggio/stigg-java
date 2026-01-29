@@ -6,15 +6,17 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.customers.CustomerArchiveParams
-import io.stigg.models.v1.customers.CustomerCreateParams
+import io.stigg.models.v1.customers.CustomerImportParams
+import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
-import io.stigg.services.async.v1.customers.UsageServiceAsync
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -34,17 +36,7 @@ interface CustomerServiceAsync {
 
     fun paymentMethod(): PaymentMethodServiceAsync
 
-    fun usage(): UsageServiceAsync
-
-    /** Provision customer */
-    fun create(params: CustomerCreateParams): CompletableFuture<CustomerResponse> =
-        create(params, RequestOptions.none())
-
-    /** @see create */
-    fun create(
-        params: CustomerCreateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CustomerResponse>
+    fun promotionalEntitlements(): PromotionalEntitlementServiceAsync
 
     /** Get a single customer by ID */
     fun retrieve(id: String): CompletableFuture<CustomerResponse> =
@@ -160,6 +152,26 @@ interface CustomerServiceAsync {
     fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
+    /** Bulk import customers */
+    fun import_(params: CustomerImportParams): CompletableFuture<CustomerImportResponse> =
+        import_(params, RequestOptions.none())
+
+    /** @see import_ */
+    fun import_(
+        params: CustomerImportParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerImportResponse>
+
+    /** Provision customer */
+    fun provision(params: CustomerProvisionParams): CompletableFuture<CustomerResponse> =
+        provision(params, RequestOptions.none())
+
+    /** @see provision */
+    fun provision(
+        params: CustomerProvisionParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerResponse>
+
     /** Unarchive customer */
     fun unarchive(id: String): CompletableFuture<CustomerResponse> =
         unarchive(id, CustomerUnarchiveParams.none())
@@ -208,22 +220,7 @@ interface CustomerServiceAsync {
 
         fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse
 
-        fun usage(): UsageServiceAsync.WithRawResponse
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as
-         * [CustomerServiceAsync.create].
-         */
-        fun create(
-            params: CustomerCreateParams
-        ): CompletableFuture<HttpResponseFor<CustomerResponse>> =
-            create(params, RequestOptions.none())
-
-        /** @see create */
-        fun create(
-            params: CustomerCreateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CustomerResponse>>
+        fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}`, but is otherwise the same
@@ -372,6 +369,36 @@ interface CustomerServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<CustomerResponse>> =
             archive(id, CustomerArchiveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/customers/import`, but is otherwise the
+         * same as [CustomerServiceAsync.import_].
+         */
+        fun import_(
+            params: CustomerImportParams
+        ): CompletableFuture<HttpResponseFor<CustomerImportResponse>> =
+            import_(params, RequestOptions.none())
+
+        /** @see import_ */
+        fun import_(
+            params: CustomerImportParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerImportResponse>>
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as
+         * [CustomerServiceAsync.provision].
+         */
+        fun provision(
+            params: CustomerProvisionParams
+        ): CompletableFuture<HttpResponseFor<CustomerResponse>> =
+            provision(params, RequestOptions.none())
+
+        /** @see provision */
+        fun provision(
+            params: CustomerProvisionParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerResponse>>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/{id}/unarchive`, but is otherwise

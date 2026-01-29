@@ -6,12 +6,11 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.coupons.Coupon
 import io.stigg.models.v1.coupons.CouponCreateParams
-import io.stigg.models.v1.coupons.CouponCreateResponse
 import io.stigg.models.v1.coupons.CouponListPage
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
-import io.stigg.models.v1.coupons.CouponRetrieveResponse
 import java.util.function.Consumer
 
 interface CouponService {
@@ -29,43 +28,39 @@ interface CouponService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponService
 
     /** Create coupon */
-    fun create(params: CouponCreateParams): CouponCreateResponse =
-        create(params, RequestOptions.none())
+    fun create(params: CouponCreateParams): Coupon = create(params, RequestOptions.none())
 
     /** @see create */
     fun create(
         params: CouponCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CouponCreateResponse
+    ): Coupon
 
     /** Get a single coupon by ID */
-    fun retrieve(id: String): CouponRetrieveResponse = retrieve(id, CouponRetrieveParams.none())
+    fun retrieve(id: String): Coupon = retrieve(id, CouponRetrieveParams.none())
 
     /** @see retrieve */
     fun retrieve(
         id: String,
         params: CouponRetrieveParams = CouponRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CouponRetrieveResponse = retrieve(params.toBuilder().id(id).build(), requestOptions)
+    ): Coupon = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieve */
-    fun retrieve(
-        id: String,
-        params: CouponRetrieveParams = CouponRetrieveParams.none(),
-    ): CouponRetrieveResponse = retrieve(id, params, RequestOptions.none())
+    fun retrieve(id: String, params: CouponRetrieveParams = CouponRetrieveParams.none()): Coupon =
+        retrieve(id, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: CouponRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CouponRetrieveResponse
+    ): Coupon
 
     /** @see retrieve */
-    fun retrieve(params: CouponRetrieveParams): CouponRetrieveResponse =
-        retrieve(params, RequestOptions.none())
+    fun retrieve(params: CouponRetrieveParams): Coupon = retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    fun retrieve(id: String, requestOptions: RequestOptions): CouponRetrieveResponse =
+    fun retrieve(id: String, requestOptions: RequestOptions): Coupon =
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
     /** Get a list of coupons */
@@ -100,7 +95,7 @@ interface CouponService {
          * [CouponService.create].
          */
         @MustBeClosed
-        fun create(params: CouponCreateParams): HttpResponseFor<CouponCreateResponse> =
+        fun create(params: CouponCreateParams): HttpResponseFor<Coupon> =
             create(params, RequestOptions.none())
 
         /** @see create */
@@ -108,14 +103,14 @@ interface CouponService {
         fun create(
             params: CouponCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CouponCreateResponse>
+        ): HttpResponseFor<Coupon>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/coupons/{id}`, but is otherwise the same as
          * [CouponService.retrieve].
          */
         @MustBeClosed
-        fun retrieve(id: String): HttpResponseFor<CouponRetrieveResponse> =
+        fun retrieve(id: String): HttpResponseFor<Coupon> =
             retrieve(id, CouponRetrieveParams.none())
 
         /** @see retrieve */
@@ -124,34 +119,30 @@ interface CouponService {
             id: String,
             params: CouponRetrieveParams = CouponRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CouponRetrieveResponse> =
-            retrieve(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Coupon> = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             id: String,
             params: CouponRetrieveParams = CouponRetrieveParams.none(),
-        ): HttpResponseFor<CouponRetrieveResponse> = retrieve(id, params, RequestOptions.none())
+        ): HttpResponseFor<Coupon> = retrieve(id, params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: CouponRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CouponRetrieveResponse>
+        ): HttpResponseFor<Coupon>
 
         /** @see retrieve */
         @MustBeClosed
-        fun retrieve(params: CouponRetrieveParams): HttpResponseFor<CouponRetrieveResponse> =
+        fun retrieve(params: CouponRetrieveParams): HttpResponseFor<Coupon> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
-        fun retrieve(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CouponRetrieveResponse> =
+        fun retrieve(id: String, requestOptions: RequestOptions): HttpResponseFor<Coupon> =
             retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
         /**

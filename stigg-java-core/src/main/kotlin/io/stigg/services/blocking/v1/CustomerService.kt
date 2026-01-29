@@ -7,15 +7,17 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.customers.CustomerArchiveParams
-import io.stigg.models.v1.customers.CustomerCreateParams
+import io.stigg.models.v1.customers.CustomerImportParams
+import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
-import io.stigg.services.blocking.v1.customers.UsageService
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
 import java.util.function.Consumer
 
 interface CustomerService {
@@ -34,17 +36,7 @@ interface CustomerService {
 
     fun paymentMethod(): PaymentMethodService
 
-    fun usage(): UsageService
-
-    /** Provision customer */
-    fun create(params: CustomerCreateParams): CustomerResponse =
-        create(params, RequestOptions.none())
-
-    /** @see create */
-    fun create(
-        params: CustomerCreateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerResponse
+    fun promotionalEntitlements(): PromotionalEntitlementService
 
     /** Get a single customer by ID */
     fun retrieve(id: String): CustomerResponse = retrieve(id, CustomerRetrieveParams.none())
@@ -153,6 +145,26 @@ interface CustomerService {
     fun archive(id: String, requestOptions: RequestOptions): CustomerResponse =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
+    /** Bulk import customers */
+    fun import_(params: CustomerImportParams): CustomerImportResponse =
+        import_(params, RequestOptions.none())
+
+    /** @see import_ */
+    fun import_(
+        params: CustomerImportParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerImportResponse
+
+    /** Provision customer */
+    fun provision(params: CustomerProvisionParams): CustomerResponse =
+        provision(params, RequestOptions.none())
+
+    /** @see provision */
+    fun provision(
+        params: CustomerProvisionParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerResponse
+
     /** Unarchive customer */
     fun unarchive(id: String): CustomerResponse = unarchive(id, CustomerUnarchiveParams.none())
 
@@ -195,22 +207,7 @@ interface CustomerService {
 
         fun paymentMethod(): PaymentMethodService.WithRawResponse
 
-        fun usage(): UsageService.WithRawResponse
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as
-         * [CustomerService.create].
-         */
-        @MustBeClosed
-        fun create(params: CustomerCreateParams): HttpResponseFor<CustomerResponse> =
-            create(params, RequestOptions.none())
-
-        /** @see create */
-        @MustBeClosed
-        fun create(
-            params: CustomerCreateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerResponse>
+        fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}`, but is otherwise the same
@@ -362,6 +359,36 @@ interface CustomerService {
         @MustBeClosed
         fun archive(id: String, requestOptions: RequestOptions): HttpResponseFor<CustomerResponse> =
             archive(id, CustomerArchiveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/customers/import`, but is otherwise the
+         * same as [CustomerService.import_].
+         */
+        @MustBeClosed
+        fun import_(params: CustomerImportParams): HttpResponseFor<CustomerImportResponse> =
+            import_(params, RequestOptions.none())
+
+        /** @see import_ */
+        @MustBeClosed
+        fun import_(
+            params: CustomerImportParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerImportResponse>
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as
+         * [CustomerService.provision].
+         */
+        @MustBeClosed
+        fun provision(params: CustomerProvisionParams): HttpResponseFor<CustomerResponse> =
+            provision(params, RequestOptions.none())
+
+        /** @see provision */
+        @MustBeClosed
+        fun provision(
+            params: CustomerProvisionParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerResponse>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/{id}/unarchive`, but is otherwise

@@ -3,28 +3,16 @@
 package io.stigg.services.blocking
 
 import io.stigg.core.ClientOptions
-import io.stigg.core.RequestOptions
-import io.stigg.core.handlers.errorBodyHandler
-import io.stigg.core.handlers.errorHandler
-import io.stigg.core.handlers.jsonHandler
-import io.stigg.core.http.HttpMethod
-import io.stigg.core.http.HttpRequest
-import io.stigg.core.http.HttpResponse
-import io.stigg.core.http.HttpResponse.Handler
-import io.stigg.core.http.HttpResponseFor
-import io.stigg.core.http.json
-import io.stigg.core.http.parseable
-import io.stigg.core.prepare
-import io.stigg.models.v1.V1CreateEventParams
-import io.stigg.models.v1.V1CreateEventResponse
-import io.stigg.models.v1.V1CreateUsageParams
-import io.stigg.models.v1.V1CreateUsageResponse
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CouponServiceImpl
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.CustomerServiceImpl
+import io.stigg.services.blocking.v1.EventService
+import io.stigg.services.blocking.v1.EventServiceImpl
 import io.stigg.services.blocking.v1.SubscriptionService
 import io.stigg.services.blocking.v1.SubscriptionServiceImpl
+import io.stigg.services.blocking.v1.UsageService
+import io.stigg.services.blocking.v1.UsageServiceImpl
 import java.util.function.Consumer
 
 class V1ServiceImpl internal constructor(private val clientOptions: ClientOptions) : V1Service {
@@ -41,6 +29,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val coupons: CouponService by lazy { CouponServiceImpl(clientOptions) }
 
+    private val events: EventService by lazy { EventServiceImpl(clientOptions) }
+
+    private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
+
     override fun withRawResponse(): V1Service.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service =
@@ -52,25 +44,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     override fun coupons(): CouponService = coupons
 
-    override fun createEvent(
-        params: V1CreateEventParams,
-        requestOptions: RequestOptions,
-    ): V1CreateEventResponse =
-        // post /api/v1/events
-        withRawResponse().createEvent(params, requestOptions).parse()
+    override fun events(): EventService = events
 
-    override fun createUsage(
-        params: V1CreateUsageParams,
-        requestOptions: RequestOptions,
-    ): V1CreateUsageResponse =
-        // post /api/v1/usage
-        withRawResponse().createUsage(params, requestOptions).parse()
+    override fun usage(): UsageService = usage
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1Service.WithRawResponse {
-
-        private val errorHandler: Handler<HttpResponse> =
-            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         private val customers: CustomerService.WithRawResponse by lazy {
             CustomerServiceImpl.WithRawResponseImpl(clientOptions)
@@ -82,6 +61,14 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val coupons: CouponService.WithRawResponse by lazy {
             CouponServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val events: EventService.WithRawResponse by lazy {
+            EventServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val usage: UsageService.WithRawResponse by lazy {
+            UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -97,60 +84,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         override fun coupons(): CouponService.WithRawResponse = coupons
 
-        private val createEventHandler: Handler<V1CreateEventResponse> =
-            jsonHandler<V1CreateEventResponse>(clientOptions.jsonMapper)
+        override fun events(): EventService.WithRawResponse = events
 
-        override fun createEvent(
-            params: V1CreateEventParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<V1CreateEventResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "events")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createEventHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val createUsageHandler: Handler<V1CreateUsageResponse> =
-            jsonHandler<V1CreateUsageResponse>(clientOptions.jsonMapper)
-
-        override fun createUsage(
-            params: V1CreateUsageParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<V1CreateUsageResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "usage")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createUsageHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
+        override fun usage(): UsageService.WithRawResponse = usage
     }
 }

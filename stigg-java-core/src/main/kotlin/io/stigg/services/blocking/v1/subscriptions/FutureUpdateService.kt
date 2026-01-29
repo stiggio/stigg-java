@@ -6,10 +6,9 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.subscriptions.futureupdate.CancelSubscription
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPaymentResponse
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleParams
-import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleResponse
 import java.util.function.Consumer
 
 interface FutureUpdateService {
@@ -27,7 +26,7 @@ interface FutureUpdateService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FutureUpdateService
 
     /** Cancel pending payment update */
-    fun cancelPendingPayment(id: String): FutureUpdateCancelPendingPaymentResponse =
+    fun cancelPendingPayment(id: String): CancelSubscription =
         cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none())
 
     /** @see cancelPendingPayment */
@@ -36,38 +35,31 @@ interface FutureUpdateService {
         params: FutureUpdateCancelPendingPaymentParams =
             FutureUpdateCancelPendingPaymentParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FutureUpdateCancelPendingPaymentResponse =
-        cancelPendingPayment(params.toBuilder().id(id).build(), requestOptions)
+    ): CancelSubscription = cancelPendingPayment(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see cancelPendingPayment */
     fun cancelPendingPayment(
         id: String,
         params: FutureUpdateCancelPendingPaymentParams =
             FutureUpdateCancelPendingPaymentParams.none(),
-    ): FutureUpdateCancelPendingPaymentResponse =
-        cancelPendingPayment(id, params, RequestOptions.none())
+    ): CancelSubscription = cancelPendingPayment(id, params, RequestOptions.none())
 
     /** @see cancelPendingPayment */
     fun cancelPendingPayment(
         params: FutureUpdateCancelPendingPaymentParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FutureUpdateCancelPendingPaymentResponse
+    ): CancelSubscription
 
     /** @see cancelPendingPayment */
-    fun cancelPendingPayment(
-        params: FutureUpdateCancelPendingPaymentParams
-    ): FutureUpdateCancelPendingPaymentResponse =
+    fun cancelPendingPayment(params: FutureUpdateCancelPendingPaymentParams): CancelSubscription =
         cancelPendingPayment(params, RequestOptions.none())
 
     /** @see cancelPendingPayment */
-    fun cancelPendingPayment(
-        id: String,
-        requestOptions: RequestOptions,
-    ): FutureUpdateCancelPendingPaymentResponse =
+    fun cancelPendingPayment(id: String, requestOptions: RequestOptions): CancelSubscription =
         cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none(), requestOptions)
 
     /** Cancel scheduled update */
-    fun cancelSchedule(id: String): FutureUpdateCancelScheduleResponse =
+    fun cancelSchedule(id: String): CancelSubscription =
         cancelSchedule(id, FutureUpdateCancelScheduleParams.none())
 
     /** @see cancelSchedule */
@@ -75,31 +67,26 @@ interface FutureUpdateService {
         id: String,
         params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FutureUpdateCancelScheduleResponse =
-        cancelSchedule(params.toBuilder().id(id).build(), requestOptions)
+    ): CancelSubscription = cancelSchedule(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         id: String,
         params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
-    ): FutureUpdateCancelScheduleResponse = cancelSchedule(id, params, RequestOptions.none())
+    ): CancelSubscription = cancelSchedule(id, params, RequestOptions.none())
 
     /** @see cancelSchedule */
     fun cancelSchedule(
         params: FutureUpdateCancelScheduleParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FutureUpdateCancelScheduleResponse
+    ): CancelSubscription
 
     /** @see cancelSchedule */
-    fun cancelSchedule(
-        params: FutureUpdateCancelScheduleParams
-    ): FutureUpdateCancelScheduleResponse = cancelSchedule(params, RequestOptions.none())
+    fun cancelSchedule(params: FutureUpdateCancelScheduleParams): CancelSubscription =
+        cancelSchedule(params, RequestOptions.none())
 
     /** @see cancelSchedule */
-    fun cancelSchedule(
-        id: String,
-        requestOptions: RequestOptions,
-    ): FutureUpdateCancelScheduleResponse =
+    fun cancelSchedule(id: String, requestOptions: RequestOptions): CancelSubscription =
         cancelSchedule(id, FutureUpdateCancelScheduleParams.none(), requestOptions)
 
     /**
@@ -122,9 +109,7 @@ interface FutureUpdateService {
          * [FutureUpdateService.cancelPendingPayment].
          */
         @MustBeClosed
-        fun cancelPendingPayment(
-            id: String
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse> =
+        fun cancelPendingPayment(id: String): HttpResponseFor<CancelSubscription> =
             cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none())
 
         /** @see cancelPendingPayment */
@@ -134,7 +119,7 @@ interface FutureUpdateService {
             params: FutureUpdateCancelPendingPaymentParams =
                 FutureUpdateCancelPendingPaymentParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse> =
+        ): HttpResponseFor<CancelSubscription> =
             cancelPendingPayment(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see cancelPendingPayment */
@@ -143,7 +128,7 @@ interface FutureUpdateService {
             id: String,
             params: FutureUpdateCancelPendingPaymentParams =
                 FutureUpdateCancelPendingPaymentParams.none(),
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse> =
+        ): HttpResponseFor<CancelSubscription> =
             cancelPendingPayment(id, params, RequestOptions.none())
 
         /** @see cancelPendingPayment */
@@ -151,21 +136,20 @@ interface FutureUpdateService {
         fun cancelPendingPayment(
             params: FutureUpdateCancelPendingPaymentParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse>
+        ): HttpResponseFor<CancelSubscription>
 
         /** @see cancelPendingPayment */
         @MustBeClosed
         fun cancelPendingPayment(
             params: FutureUpdateCancelPendingPaymentParams
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse> =
-            cancelPendingPayment(params, RequestOptions.none())
+        ): HttpResponseFor<CancelSubscription> = cancelPendingPayment(params, RequestOptions.none())
 
         /** @see cancelPendingPayment */
         @MustBeClosed
         fun cancelPendingPayment(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FutureUpdateCancelPendingPaymentResponse> =
+        ): HttpResponseFor<CancelSubscription> =
             cancelPendingPayment(id, FutureUpdateCancelPendingPaymentParams.none(), requestOptions)
 
         /**
@@ -174,7 +158,7 @@ interface FutureUpdateService {
          * [FutureUpdateService.cancelSchedule].
          */
         @MustBeClosed
-        fun cancelSchedule(id: String): HttpResponseFor<FutureUpdateCancelScheduleResponse> =
+        fun cancelSchedule(id: String): HttpResponseFor<CancelSubscription> =
             cancelSchedule(id, FutureUpdateCancelScheduleParams.none())
 
         /** @see cancelSchedule */
@@ -183,7 +167,7 @@ interface FutureUpdateService {
             id: String,
             params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FutureUpdateCancelScheduleResponse> =
+        ): HttpResponseFor<CancelSubscription> =
             cancelSchedule(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see cancelSchedule */
@@ -191,29 +175,27 @@ interface FutureUpdateService {
         fun cancelSchedule(
             id: String,
             params: FutureUpdateCancelScheduleParams = FutureUpdateCancelScheduleParams.none(),
-        ): HttpResponseFor<FutureUpdateCancelScheduleResponse> =
-            cancelSchedule(id, params, RequestOptions.none())
+        ): HttpResponseFor<CancelSubscription> = cancelSchedule(id, params, RequestOptions.none())
 
         /** @see cancelSchedule */
         @MustBeClosed
         fun cancelSchedule(
             params: FutureUpdateCancelScheduleParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FutureUpdateCancelScheduleResponse>
+        ): HttpResponseFor<CancelSubscription>
 
         /** @see cancelSchedule */
         @MustBeClosed
         fun cancelSchedule(
             params: FutureUpdateCancelScheduleParams
-        ): HttpResponseFor<FutureUpdateCancelScheduleResponse> =
-            cancelSchedule(params, RequestOptions.none())
+        ): HttpResponseFor<CancelSubscription> = cancelSchedule(params, RequestOptions.none())
 
         /** @see cancelSchedule */
         @MustBeClosed
         fun cancelSchedule(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FutureUpdateCancelScheduleResponse> =
+        ): HttpResponseFor<CancelSubscription> =
             cancelSchedule(id, FutureUpdateCancelScheduleParams.none(), requestOptions)
     }
 }
