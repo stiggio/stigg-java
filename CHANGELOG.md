@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.4 (2026-01-29)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Features
+
+* **api:** update stainless config ([c5a9227](https://github.com/stiggio/stigg-java/commit/c5a922787184a32f90b2dc70b981eb1fcf54c986))
+
 ## 0.1.0-alpha.3 (2026-01-29)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
