@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2026-01-31)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Chores
+
+* **internal:** allow passing args to `./scripts/test` ([a8f7255](https://github.com/stiggio/stigg-java/commit/a8f7255ebf2cecf396eba8d9d3331d3a862c0a0c))
+
 ## 0.1.0-alpha.4 (2026-01-29)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
