@@ -6,13 +6,24 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.stigg.core.BaseDeserializer
+import io.stigg.core.BaseSerializer
 import io.stigg.core.Enum
 import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
+import io.stigg.core.allMaxBy
 import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
+import io.stigg.core.getOrThrow
 import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
 import java.time.OffsetDateTime
@@ -169,10 +180,10 @@ private constructor(
         private val id: JsonField<String>,
         private val entitlements: JsonField<List<Entitlement>>,
         private val status: JsonField<Status>,
+        private val subscription: JsonField<Subscription>,
         private val checkoutBillingId: JsonField<String>,
         private val checkoutUrl: JsonField<String>,
         private val isScheduled: JsonField<Boolean>,
-        private val subscription: JsonField<Subscription>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -183,6 +194,9 @@ private constructor(
             @ExcludeMissing
             entitlements: JsonField<List<Entitlement>> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+            @JsonProperty("subscription")
+            @ExcludeMissing
+            subscription: JsonField<Subscription> = JsonMissing.of(),
             @JsonProperty("checkoutBillingId")
             @ExcludeMissing
             checkoutBillingId: JsonField<String> = JsonMissing.of(),
@@ -192,17 +206,14 @@ private constructor(
             @JsonProperty("isScheduled")
             @ExcludeMissing
             isScheduled: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("subscription")
-            @ExcludeMissing
-            subscription: JsonField<Subscription> = JsonMissing.of(),
         ) : this(
             id,
             entitlements,
             status,
+            subscription,
             checkoutBillingId,
             checkoutUrl,
             isScheduled,
-            subscription,
             mutableMapOf(),
         )
 
@@ -215,10 +226,10 @@ private constructor(
         fun id(): String = id.getRequired("id")
 
         /**
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        fun entitlements(): List<Entitlement> = entitlements.getRequired("entitlements")
+        fun entitlements(): Optional<List<Entitlement>> = entitlements.getOptional("entitlements")
 
         /**
          * Provision status: SUCCESS or PAYMENT_REQUIRED
@@ -227,6 +238,14 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun status(): Status = status.getRequired("status")
+
+        /**
+         * Created subscription (when status is SUCCESS)
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun subscription(): Optional<Subscription> = subscription.getOptional("subscription")
 
         /**
          * Checkout billing ID when payment is required
@@ -254,14 +273,6 @@ private constructor(
         fun isScheduled(): Optional<Boolean> = isScheduled.getOptional("isScheduled")
 
         /**
-         * Created subscription (when status is SUCCESS)
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun subscription(): Optional<Subscription> = subscription.getOptional("subscription")
-
-        /**
          * Returns the raw JSON value of [id].
          *
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -284,6 +295,16 @@ private constructor(
          * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+        /**
+         * Returns the raw JSON value of [subscription].
+         *
+         * Unlike [subscription], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("subscription")
+        @ExcludeMissing
+        fun _subscription(): JsonField<Subscription> = subscription
 
         /**
          * Returns the raw JSON value of [checkoutBillingId].
@@ -313,16 +334,6 @@ private constructor(
         @ExcludeMissing
         fun _isScheduled(): JsonField<Boolean> = isScheduled
 
-        /**
-         * Returns the raw JSON value of [subscription].
-         *
-         * Unlike [subscription], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("subscription")
-        @ExcludeMissing
-        fun _subscription(): JsonField<Subscription> = subscription
-
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -345,6 +356,7 @@ private constructor(
              * .id()
              * .entitlements()
              * .status()
+             * .subscription()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -356,10 +368,10 @@ private constructor(
             private var id: JsonField<String>? = null
             private var entitlements: JsonField<MutableList<Entitlement>>? = null
             private var status: JsonField<Status>? = null
+            private var subscription: JsonField<Subscription>? = null
             private var checkoutBillingId: JsonField<String> = JsonMissing.of()
             private var checkoutUrl: JsonField<String> = JsonMissing.of()
             private var isScheduled: JsonField<Boolean> = JsonMissing.of()
-            private var subscription: JsonField<Subscription> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -367,10 +379,10 @@ private constructor(
                 id = data.id
                 entitlements = data.entitlements.map { it.toMutableList() }
                 status = data.status
+                subscription = data.subscription
                 checkoutBillingId = data.checkoutBillingId
                 checkoutUrl = data.checkoutUrl
                 isScheduled = data.isScheduled
-                subscription = data.subscription
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -386,8 +398,12 @@ private constructor(
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
 
-            fun entitlements(entitlements: List<Entitlement>) =
-                entitlements(JsonField.of(entitlements))
+            fun entitlements(entitlements: List<Entitlement>?) =
+                entitlements(JsonField.ofNullable(entitlements))
+
+            /** Alias for calling [Builder.entitlements] with `entitlements.orElse(null)`. */
+            fun entitlements(entitlements: Optional<List<Entitlement>>) =
+                entitlements(entitlements.getOrNull())
 
             /**
              * Sets [Builder.entitlements] to an arbitrary JSON value.
@@ -412,6 +428,18 @@ private constructor(
                     }
             }
 
+            /**
+             * Alias for calling [addEntitlement] with `Entitlement.ofUnionMember0(unionMember0)`.
+             */
+            fun addEntitlement(unionMember0: Entitlement.UnionMember0) =
+                addEntitlement(Entitlement.ofUnionMember0(unionMember0))
+
+            /**
+             * Alias for calling [addEntitlement] with `Entitlement.ofUnionMember1(unionMember1)`.
+             */
+            fun addEntitlement(unionMember1: Entitlement.UnionMember1) =
+                addEntitlement(Entitlement.ofUnionMember1(unionMember1))
+
             /** Provision status: SUCCESS or PAYMENT_REQUIRED */
             fun status(status: Status) = status(JsonField.of(status))
 
@@ -424,15 +452,28 @@ private constructor(
              */
             fun status(status: JsonField<Status>) = apply { this.status = status }
 
-            /** Checkout billing ID when payment is required */
-            fun checkoutBillingId(checkoutBillingId: String?) =
-                checkoutBillingId(JsonField.ofNullable(checkoutBillingId))
+            /** Created subscription (when status is SUCCESS) */
+            fun subscription(subscription: Subscription?) =
+                subscription(JsonField.ofNullable(subscription))
+
+            /** Alias for calling [Builder.subscription] with `subscription.orElse(null)`. */
+            fun subscription(subscription: Optional<Subscription>) =
+                subscription(subscription.getOrNull())
 
             /**
-             * Alias for calling [Builder.checkoutBillingId] with `checkoutBillingId.orElse(null)`.
+             * Sets [Builder.subscription] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.subscription] with a well-typed [Subscription] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
              */
-            fun checkoutBillingId(checkoutBillingId: Optional<String>) =
-                checkoutBillingId(checkoutBillingId.getOrNull())
+            fun subscription(subscription: JsonField<Subscription>) = apply {
+                this.subscription = subscription
+            }
+
+            /** Checkout billing ID when payment is required */
+            fun checkoutBillingId(checkoutBillingId: String) =
+                checkoutBillingId(JsonField.of(checkoutBillingId))
 
             /**
              * Sets [Builder.checkoutBillingId] to an arbitrary JSON value.
@@ -446,10 +487,7 @@ private constructor(
             }
 
             /** URL to complete payment when PAYMENT_REQUIRED */
-            fun checkoutUrl(checkoutUrl: String?) = checkoutUrl(JsonField.ofNullable(checkoutUrl))
-
-            /** Alias for calling [Builder.checkoutUrl] with `checkoutUrl.orElse(null)`. */
-            fun checkoutUrl(checkoutUrl: Optional<String>) = checkoutUrl(checkoutUrl.getOrNull())
+            fun checkoutUrl(checkoutUrl: String) = checkoutUrl(JsonField.of(checkoutUrl))
 
             /**
              * Sets [Builder.checkoutUrl] to an arbitrary JSON value.
@@ -474,20 +512,6 @@ private constructor(
              */
             fun isScheduled(isScheduled: JsonField<Boolean>) = apply {
                 this.isScheduled = isScheduled
-            }
-
-            /** Created subscription (when status is SUCCESS) */
-            fun subscription(subscription: Subscription) = subscription(JsonField.of(subscription))
-
-            /**
-             * Sets [Builder.subscription] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.subscription] with a well-typed [Subscription] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun subscription(subscription: JsonField<Subscription>) = apply {
-                this.subscription = subscription
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -519,6 +543,7 @@ private constructor(
              * .id()
              * .entitlements()
              * .status()
+             * .subscription()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -528,10 +553,10 @@ private constructor(
                     checkRequired("id", id),
                     checkRequired("entitlements", entitlements).map { it.toImmutable() },
                     checkRequired("status", status),
+                    checkRequired("subscription", subscription),
                     checkoutBillingId,
                     checkoutUrl,
                     isScheduled,
-                    subscription,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -544,12 +569,12 @@ private constructor(
             }
 
             id()
-            entitlements().forEach { it.validate() }
+            entitlements().ifPresent { it.forEach { it.validate() } }
             status().validate()
+            subscription().ifPresent { it.validate() }
             checkoutBillingId()
             checkoutUrl()
             isScheduled()
-            subscription().ifPresent { it.validate() }
             validated = true
         }
 
@@ -572,574 +597,40 @@ private constructor(
             (if (id.asKnown().isPresent) 1 else 0) +
                 (entitlements.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (status.asKnown().getOrNull()?.validity() ?: 0) +
+                (subscription.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (checkoutBillingId.asKnown().isPresent) 1 else 0) +
                 (if (checkoutUrl.asKnown().isPresent) 1 else 0) +
-                (if (isScheduled.asKnown().isPresent) 1 else 0) +
-                (subscription.asKnown().getOrNull()?.validity() ?: 0)
+                (if (isScheduled.asKnown().isPresent) 1 else 0)
 
+        @JsonDeserialize(using = Entitlement.Deserializer::class)
+        @JsonSerialize(using = Entitlement.Serializer::class)
         class Entitlement
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
-            private val accessDeniedReason: JsonField<String>,
-            private val currentUsage: JsonField<Double>,
-            private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
-            private val feature: JsonField<Feature>,
-            private val hasUnlimitedUsage: JsonField<Boolean>,
-            private val isGranted: JsonField<Boolean>,
-            private val resetPeriod: JsonField<ResetPeriod>,
-            private val usageLimit: JsonField<Double>,
-            private val usagePeriodAnchor: JsonField<OffsetDateTime>,
-            private val usagePeriodEnd: JsonField<OffsetDateTime>,
-            private val usagePeriodStart: JsonField<OffsetDateTime>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
+            private val unionMember0: UnionMember0? = null,
+            private val unionMember1: UnionMember1? = null,
+            private val _json: JsonValue? = null,
         ) {
 
-            @JsonCreator
-            private constructor(
-                @JsonProperty("accessDeniedReason")
-                @ExcludeMissing
-                accessDeniedReason: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("currentUsage")
-                @ExcludeMissing
-                currentUsage: JsonField<Double> = JsonMissing.of(),
-                @JsonProperty("entitlementUpdatedAt")
-                @ExcludeMissing
-                entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-                @JsonProperty("feature")
-                @ExcludeMissing
-                feature: JsonField<Feature> = JsonMissing.of(),
-                @JsonProperty("hasUnlimitedUsage")
-                @ExcludeMissing
-                hasUnlimitedUsage: JsonField<Boolean> = JsonMissing.of(),
-                @JsonProperty("isGranted")
-                @ExcludeMissing
-                isGranted: JsonField<Boolean> = JsonMissing.of(),
-                @JsonProperty("resetPeriod")
-                @ExcludeMissing
-                resetPeriod: JsonField<ResetPeriod> = JsonMissing.of(),
-                @JsonProperty("usageLimit")
-                @ExcludeMissing
-                usageLimit: JsonField<Double> = JsonMissing.of(),
-                @JsonProperty("usagePeriodAnchor")
-                @ExcludeMissing
-                usagePeriodAnchor: JsonField<OffsetDateTime> = JsonMissing.of(),
-                @JsonProperty("usagePeriodEnd")
-                @ExcludeMissing
-                usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
-                @JsonProperty("usagePeriodStart")
-                @ExcludeMissing
-                usagePeriodStart: JsonField<OffsetDateTime> = JsonMissing.of(),
-            ) : this(
-                accessDeniedReason,
-                currentUsage,
-                entitlementUpdatedAt,
-                feature,
-                hasUnlimitedUsage,
-                isGranted,
-                resetPeriod,
-                usageLimit,
-                usagePeriodAnchor,
-                usagePeriodEnd,
-                usagePeriodStart,
-                mutableMapOf(),
-            )
+            fun unionMember0(): Optional<UnionMember0> = Optional.ofNullable(unionMember0)
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun accessDeniedReason(): Optional<String> =
-                accessDeniedReason.getOptional("accessDeniedReason")
+            fun unionMember1(): Optional<UnionMember1> = Optional.ofNullable(unionMember1)
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun currentUsage(): Optional<Double> = currentUsage.getOptional("currentUsage")
+            fun isUnionMember0(): Boolean = unionMember0 != null
 
-            /**
-             * entitlement updated at
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
-                entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+            fun isUnionMember1(): Boolean = unionMember1 != null
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun feature(): Optional<Feature> = feature.getOptional("feature")
+            fun asUnionMember0(): UnionMember0 = unionMember0.getOrThrow("unionMember0")
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun hasUnlimitedUsage(): Optional<Boolean> =
-                hasUnlimitedUsage.getOptional("hasUnlimitedUsage")
+            fun asUnionMember1(): UnionMember1 = unionMember1.getOrThrow("unionMember1")
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun isGranted(): Optional<Boolean> = isGranted.getOptional("isGranted")
+            fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun resetPeriod(): Optional<ResetPeriod> = resetPeriod.getOptional("resetPeriod")
-
-            /**
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun usageLimit(): Optional<Double> = usageLimit.getOptional("usageLimit")
-
-            /**
-             * usage period anchor
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun usagePeriodAnchor(): Optional<OffsetDateTime> =
-                usagePeriodAnchor.getOptional("usagePeriodAnchor")
-
-            /**
-             * usage period end
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun usagePeriodEnd(): Optional<OffsetDateTime> =
-                usagePeriodEnd.getOptional("usagePeriodEnd")
-
-            /**
-             * usage period start
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun usagePeriodStart(): Optional<OffsetDateTime> =
-                usagePeriodStart.getOptional("usagePeriodStart")
-
-            /**
-             * Returns the raw JSON value of [accessDeniedReason].
-             *
-             * Unlike [accessDeniedReason], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("accessDeniedReason")
-            @ExcludeMissing
-            fun _accessDeniedReason(): JsonField<String> = accessDeniedReason
-
-            /**
-             * Returns the raw JSON value of [currentUsage].
-             *
-             * Unlike [currentUsage], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("currentUsage")
-            @ExcludeMissing
-            fun _currentUsage(): JsonField<Double> = currentUsage
-
-            /**
-             * Returns the raw JSON value of [entitlementUpdatedAt].
-             *
-             * Unlike [entitlementUpdatedAt], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("entitlementUpdatedAt")
-            @ExcludeMissing
-            fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
-
-            /**
-             * Returns the raw JSON value of [feature].
-             *
-             * Unlike [feature], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("feature") @ExcludeMissing fun _feature(): JsonField<Feature> = feature
-
-            /**
-             * Returns the raw JSON value of [hasUnlimitedUsage].
-             *
-             * Unlike [hasUnlimitedUsage], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("hasUnlimitedUsage")
-            @ExcludeMissing
-            fun _hasUnlimitedUsage(): JsonField<Boolean> = hasUnlimitedUsage
-
-            /**
-             * Returns the raw JSON value of [isGranted].
-             *
-             * Unlike [isGranted], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("isGranted")
-            @ExcludeMissing
-            fun _isGranted(): JsonField<Boolean> = isGranted
-
-            /**
-             * Returns the raw JSON value of [resetPeriod].
-             *
-             * Unlike [resetPeriod], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("resetPeriod")
-            @ExcludeMissing
-            fun _resetPeriod(): JsonField<ResetPeriod> = resetPeriod
-
-            /**
-             * Returns the raw JSON value of [usageLimit].
-             *
-             * Unlike [usageLimit], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("usageLimit")
-            @ExcludeMissing
-            fun _usageLimit(): JsonField<Double> = usageLimit
-
-            /**
-             * Returns the raw JSON value of [usagePeriodAnchor].
-             *
-             * Unlike [usagePeriodAnchor], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("usagePeriodAnchor")
-            @ExcludeMissing
-            fun _usagePeriodAnchor(): JsonField<OffsetDateTime> = usagePeriodAnchor
-
-            /**
-             * Returns the raw JSON value of [usagePeriodEnd].
-             *
-             * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("usagePeriodEnd")
-            @ExcludeMissing
-            fun _usagePeriodEnd(): JsonField<OffsetDateTime> = usagePeriodEnd
-
-            /**
-             * Returns the raw JSON value of [usagePeriodStart].
-             *
-             * Unlike [usagePeriodStart], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("usagePeriodStart")
-            @ExcludeMissing
-            fun _usagePeriodStart(): JsonField<OffsetDateTime> = usagePeriodStart
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /** Returns a mutable builder for constructing an instance of [Entitlement]. */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Entitlement]. */
-            class Builder internal constructor() {
-
-                private var accessDeniedReason: JsonField<String> = JsonMissing.of()
-                private var currentUsage: JsonField<Double> = JsonMissing.of()
-                private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
-                private var feature: JsonField<Feature> = JsonMissing.of()
-                private var hasUnlimitedUsage: JsonField<Boolean> = JsonMissing.of()
-                private var isGranted: JsonField<Boolean> = JsonMissing.of()
-                private var resetPeriod: JsonField<ResetPeriod> = JsonMissing.of()
-                private var usageLimit: JsonField<Double> = JsonMissing.of()
-                private var usagePeriodAnchor: JsonField<OffsetDateTime> = JsonMissing.of()
-                private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
-                private var usagePeriodStart: JsonField<OffsetDateTime> = JsonMissing.of()
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(entitlement: Entitlement) = apply {
-                    accessDeniedReason = entitlement.accessDeniedReason
-                    currentUsage = entitlement.currentUsage
-                    entitlementUpdatedAt = entitlement.entitlementUpdatedAt
-                    feature = entitlement.feature
-                    hasUnlimitedUsage = entitlement.hasUnlimitedUsage
-                    isGranted = entitlement.isGranted
-                    resetPeriod = entitlement.resetPeriod
-                    usageLimit = entitlement.usageLimit
-                    usagePeriodAnchor = entitlement.usagePeriodAnchor
-                    usagePeriodEnd = entitlement.usagePeriodEnd
-                    usagePeriodStart = entitlement.usagePeriodStart
-                    additionalProperties = entitlement.additionalProperties.toMutableMap()
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    unionMember0 != null -> visitor.visitUnionMember0(unionMember0)
+                    unionMember1 != null -> visitor.visitUnionMember1(unionMember1)
+                    else -> visitor.unknown(_json)
                 }
-
-                fun accessDeniedReason(accessDeniedReason: String?) =
-                    accessDeniedReason(JsonField.ofNullable(accessDeniedReason))
-
-                /**
-                 * Alias for calling [Builder.accessDeniedReason] with
-                 * `accessDeniedReason.orElse(null)`.
-                 */
-                fun accessDeniedReason(accessDeniedReason: Optional<String>) =
-                    accessDeniedReason(accessDeniedReason.getOrNull())
-
-                /**
-                 * Sets [Builder.accessDeniedReason] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.accessDeniedReason] with a well-typed [String]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun accessDeniedReason(accessDeniedReason: JsonField<String>) = apply {
-                    this.accessDeniedReason = accessDeniedReason
-                }
-
-                fun currentUsage(currentUsage: Double) = currentUsage(JsonField.of(currentUsage))
-
-                /**
-                 * Sets [Builder.currentUsage] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.currentUsage] with a well-typed [Double] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun currentUsage(currentUsage: JsonField<Double>) = apply {
-                    this.currentUsage = currentUsage
-                }
-
-                /** entitlement updated at */
-                fun entitlementUpdatedAt(entitlementUpdatedAt: OffsetDateTime?) =
-                    entitlementUpdatedAt(JsonField.ofNullable(entitlementUpdatedAt))
-
-                /**
-                 * Alias for calling [Builder.entitlementUpdatedAt] with
-                 * `entitlementUpdatedAt.orElse(null)`.
-                 */
-                fun entitlementUpdatedAt(entitlementUpdatedAt: Optional<OffsetDateTime>) =
-                    entitlementUpdatedAt(entitlementUpdatedAt.getOrNull())
-
-                /**
-                 * Sets [Builder.entitlementUpdatedAt] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.entitlementUpdatedAt] with a well-typed
-                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
-                 * an undocumented or not yet supported value.
-                 */
-                fun entitlementUpdatedAt(entitlementUpdatedAt: JsonField<OffsetDateTime>) = apply {
-                    this.entitlementUpdatedAt = entitlementUpdatedAt
-                }
-
-                fun feature(feature: Feature?) = feature(JsonField.ofNullable(feature))
-
-                /** Alias for calling [Builder.feature] with `feature.orElse(null)`. */
-                fun feature(feature: Optional<Feature>) = feature(feature.getOrNull())
-
-                /**
-                 * Sets [Builder.feature] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.feature] with a well-typed [Feature] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun feature(feature: JsonField<Feature>) = apply { this.feature = feature }
-
-                fun hasUnlimitedUsage(hasUnlimitedUsage: Boolean?) =
-                    hasUnlimitedUsage(JsonField.ofNullable(hasUnlimitedUsage))
-
-                /**
-                 * Alias for [Builder.hasUnlimitedUsage].
-                 *
-                 * This unboxed primitive overload exists for backwards compatibility.
-                 */
-                fun hasUnlimitedUsage(hasUnlimitedUsage: Boolean) =
-                    hasUnlimitedUsage(hasUnlimitedUsage as Boolean?)
-
-                /**
-                 * Alias for calling [Builder.hasUnlimitedUsage] with
-                 * `hasUnlimitedUsage.orElse(null)`.
-                 */
-                fun hasUnlimitedUsage(hasUnlimitedUsage: Optional<Boolean>) =
-                    hasUnlimitedUsage(hasUnlimitedUsage.getOrNull())
-
-                /**
-                 * Sets [Builder.hasUnlimitedUsage] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.hasUnlimitedUsage] with a well-typed [Boolean]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun hasUnlimitedUsage(hasUnlimitedUsage: JsonField<Boolean>) = apply {
-                    this.hasUnlimitedUsage = hasUnlimitedUsage
-                }
-
-                fun isGranted(isGranted: Boolean) = isGranted(JsonField.of(isGranted))
-
-                /**
-                 * Sets [Builder.isGranted] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.isGranted] with a well-typed [Boolean] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun isGranted(isGranted: JsonField<Boolean>) = apply { this.isGranted = isGranted }
-
-                fun resetPeriod(resetPeriod: ResetPeriod?) =
-                    resetPeriod(JsonField.ofNullable(resetPeriod))
-
-                /** Alias for calling [Builder.resetPeriod] with `resetPeriod.orElse(null)`. */
-                fun resetPeriod(resetPeriod: Optional<ResetPeriod>) =
-                    resetPeriod(resetPeriod.getOrNull())
-
-                /**
-                 * Sets [Builder.resetPeriod] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.resetPeriod] with a well-typed [ResetPeriod]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun resetPeriod(resetPeriod: JsonField<ResetPeriod>) = apply {
-                    this.resetPeriod = resetPeriod
-                }
-
-                fun usageLimit(usageLimit: Double?) = usageLimit(JsonField.ofNullable(usageLimit))
-
-                /**
-                 * Alias for [Builder.usageLimit].
-                 *
-                 * This unboxed primitive overload exists for backwards compatibility.
-                 */
-                fun usageLimit(usageLimit: Double) = usageLimit(usageLimit as Double?)
-
-                /** Alias for calling [Builder.usageLimit] with `usageLimit.orElse(null)`. */
-                fun usageLimit(usageLimit: Optional<Double>) = usageLimit(usageLimit.getOrNull())
-
-                /**
-                 * Sets [Builder.usageLimit] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.usageLimit] with a well-typed [Double] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun usageLimit(usageLimit: JsonField<Double>) = apply {
-                    this.usageLimit = usageLimit
-                }
-
-                /** usage period anchor */
-                fun usagePeriodAnchor(usagePeriodAnchor: OffsetDateTime?) =
-                    usagePeriodAnchor(JsonField.ofNullable(usagePeriodAnchor))
-
-                /**
-                 * Alias for calling [Builder.usagePeriodAnchor] with
-                 * `usagePeriodAnchor.orElse(null)`.
-                 */
-                fun usagePeriodAnchor(usagePeriodAnchor: Optional<OffsetDateTime>) =
-                    usagePeriodAnchor(usagePeriodAnchor.getOrNull())
-
-                /**
-                 * Sets [Builder.usagePeriodAnchor] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.usagePeriodAnchor] with a well-typed
-                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
-                 * an undocumented or not yet supported value.
-                 */
-                fun usagePeriodAnchor(usagePeriodAnchor: JsonField<OffsetDateTime>) = apply {
-                    this.usagePeriodAnchor = usagePeriodAnchor
-                }
-
-                /** usage period end */
-                fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime?) =
-                    usagePeriodEnd(JsonField.ofNullable(usagePeriodEnd))
-
-                /**
-                 * Alias for calling [Builder.usagePeriodEnd] with `usagePeriodEnd.orElse(null)`.
-                 */
-                fun usagePeriodEnd(usagePeriodEnd: Optional<OffsetDateTime>) =
-                    usagePeriodEnd(usagePeriodEnd.getOrNull())
-
-                /**
-                 * Sets [Builder.usagePeriodEnd] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.usagePeriodEnd] with a well-typed
-                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
-                 * an undocumented or not yet supported value.
-                 */
-                fun usagePeriodEnd(usagePeriodEnd: JsonField<OffsetDateTime>) = apply {
-                    this.usagePeriodEnd = usagePeriodEnd
-                }
-
-                /** usage period start */
-                fun usagePeriodStart(usagePeriodStart: OffsetDateTime?) =
-                    usagePeriodStart(JsonField.ofNullable(usagePeriodStart))
-
-                /**
-                 * Alias for calling [Builder.usagePeriodStart] with
-                 * `usagePeriodStart.orElse(null)`.
-                 */
-                fun usagePeriodStart(usagePeriodStart: Optional<OffsetDateTime>) =
-                    usagePeriodStart(usagePeriodStart.getOrNull())
-
-                /**
-                 * Sets [Builder.usagePeriodStart] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.usagePeriodStart] with a well-typed
-                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
-                 * an undocumented or not yet supported value.
-                 */
-                fun usagePeriodStart(usagePeriodStart: JsonField<OffsetDateTime>) = apply {
-                    this.usagePeriodStart = usagePeriodStart
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Entitlement].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Entitlement =
-                    Entitlement(
-                        accessDeniedReason,
-                        currentUsage,
-                        entitlementUpdatedAt,
-                        feature,
-                        hasUnlimitedUsage,
-                        isGranted,
-                        resetPeriod,
-                        usageLimit,
-                        usagePeriodAnchor,
-                        usagePeriodEnd,
-                        usagePeriodStart,
-                        additionalProperties.toMutableMap(),
-                    )
-            }
 
             private var validated: Boolean = false
 
@@ -1148,17 +639,17 @@ private constructor(
                     return@apply
                 }
 
-                accessDeniedReason()
-                currentUsage()
-                entitlementUpdatedAt()
-                feature().ifPresent { it.validate() }
-                hasUnlimitedUsage()
-                isGranted()
-                resetPeriod().ifPresent { it.validate() }
-                usageLimit()
-                usagePeriodAnchor()
-                usagePeriodEnd()
-                usagePeriodStart()
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitUnionMember0(unionMember0: UnionMember0) {
+                            unionMember0.validate()
+                        }
+
+                        override fun visitUnionMember1(unionMember1: UnionMember1) {
+                            unionMember1.validate()
+                        }
+                    }
+                )
                 validated = true
             }
 
@@ -1178,48 +669,421 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (if (accessDeniedReason.asKnown().isPresent) 1 else 0) +
-                    (if (currentUsage.asKnown().isPresent) 1 else 0) +
-                    (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
-                    (feature.asKnown().getOrNull()?.validity() ?: 0) +
-                    (if (hasUnlimitedUsage.asKnown().isPresent) 1 else 0) +
-                    (if (isGranted.asKnown().isPresent) 1 else 0) +
-                    (resetPeriod.asKnown().getOrNull()?.validity() ?: 0) +
-                    (if (usageLimit.asKnown().isPresent) 1 else 0) +
-                    (if (usagePeriodAnchor.asKnown().isPresent) 1 else 0) +
-                    (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
-                    (if (usagePeriodStart.asKnown().isPresent) 1 else 0)
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitUnionMember0(unionMember0: UnionMember0) =
+                            unionMember0.validity()
 
-            class Feature
+                        override fun visitUnionMember1(unionMember1: UnionMember1) =
+                            unionMember1.validity()
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Entitlement &&
+                    unionMember0 == other.unionMember0 &&
+                    unionMember1 == other.unionMember1
+            }
+
+            override fun hashCode(): Int = Objects.hash(unionMember0, unionMember1)
+
+            override fun toString(): String =
+                when {
+                    unionMember0 != null -> "Entitlement{unionMember0=$unionMember0}"
+                    unionMember1 != null -> "Entitlement{unionMember1=$unionMember1}"
+                    _json != null -> "Entitlement{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid Entitlement")
+                }
+
+            companion object {
+
+                @JvmStatic
+                fun ofUnionMember0(unionMember0: UnionMember0) =
+                    Entitlement(unionMember0 = unionMember0)
+
+                @JvmStatic
+                fun ofUnionMember1(unionMember1: UnionMember1) =
+                    Entitlement(unionMember1 = unionMember1)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [Entitlement] to a value of type
+             * [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitUnionMember0(unionMember0: UnionMember0): T
+
+                fun visitUnionMember1(unionMember1: UnionMember1): T
+
+                /**
+                 * Maps an unknown variant of [Entitlement] to a value of type [T].
+                 *
+                 * An instance of [Entitlement] can contain an unknown variant if it was
+                 * deserialized from data that doesn't match any known variant. For example, if the
+                 * SDK is on an older version than the API, then the API may respond with new
+                 * variants that the SDK is unaware of.
+                 *
+                 * @throws StiggInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw StiggInvalidDataException("Unknown Entitlement: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<Entitlement>(Entitlement::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): Entitlement {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<UnionMember0>())?.let {
+                                    Entitlement(unionMember0 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<UnionMember1>())?.let {
+                                    Entitlement(unionMember1 = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants (e.g. deserializing from boolean).
+                        0 -> Entitlement(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<Entitlement>(Entitlement::class) {
+
+                override fun serialize(
+                    value: Entitlement,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.unionMember0 != null -> generator.writeObject(value.unionMember0)
+                        value.unionMember1 != null -> generator.writeObject(value.unionMember1)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid Entitlement")
+                    }
+                }
+            }
+
+            class UnionMember0
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
-                private val refId: JsonField<String>,
+                private val accessDeniedReason: JsonField<AccessDeniedReason>,
+                private val isGranted: JsonField<Boolean>,
+                private val type: JsonField<Type>,
+                private val currentUsage: JsonField<Double>,
+                private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
+                private val feature: JsonField<Feature>,
+                private val hasUnlimitedUsage: JsonField<Boolean>,
+                private val resetPeriod: JsonField<ResetPeriod>,
+                private val usageLimit: JsonField<Double>,
+                private val usagePeriodAnchor: JsonField<OffsetDateTime>,
+                private val usagePeriodEnd: JsonField<OffsetDateTime>,
+                private val usagePeriodStart: JsonField<OffsetDateTime>,
+                private val validUntil: JsonField<OffsetDateTime>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
 
                 @JsonCreator
                 private constructor(
-                    @JsonProperty("refId")
+                    @JsonProperty("accessDeniedReason")
                     @ExcludeMissing
-                    refId: JsonField<String> = JsonMissing.of()
-                ) : this(refId, mutableMapOf())
+                    accessDeniedReason: JsonField<AccessDeniedReason> = JsonMissing.of(),
+                    @JsonProperty("isGranted")
+                    @ExcludeMissing
+                    isGranted: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+                    @JsonProperty("currentUsage")
+                    @ExcludeMissing
+                    currentUsage: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("entitlementUpdatedAt")
+                    @ExcludeMissing
+                    entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("feature")
+                    @ExcludeMissing
+                    feature: JsonField<Feature> = JsonMissing.of(),
+                    @JsonProperty("hasUnlimitedUsage")
+                    @ExcludeMissing
+                    hasUnlimitedUsage: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("resetPeriod")
+                    @ExcludeMissing
+                    resetPeriod: JsonField<ResetPeriod> = JsonMissing.of(),
+                    @JsonProperty("usageLimit")
+                    @ExcludeMissing
+                    usageLimit: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("usagePeriodAnchor")
+                    @ExcludeMissing
+                    usagePeriodAnchor: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("usagePeriodEnd")
+                    @ExcludeMissing
+                    usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("usagePeriodStart")
+                    @ExcludeMissing
+                    usagePeriodStart: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("validUntil")
+                    @ExcludeMissing
+                    validUntil: JsonField<OffsetDateTime> = JsonMissing.of(),
+                ) : this(
+                    accessDeniedReason,
+                    isGranted,
+                    type,
+                    currentUsage,
+                    entitlementUpdatedAt,
+                    feature,
+                    hasUnlimitedUsage,
+                    resetPeriod,
+                    usageLimit,
+                    usagePeriodAnchor,
+                    usagePeriodEnd,
+                    usagePeriodStart,
+                    validUntil,
+                    mutableMapOf(),
+                )
 
                 /**
-                 * Feature ID
-                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun accessDeniedReason(): Optional<AccessDeniedReason> =
+                    accessDeniedReason.getOptional("accessDeniedReason")
+
+                /**
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
                  *   unexpectedly missing or null (e.g. if the server responded with an unexpected
                  *   value).
                  */
-                fun refId(): String = refId.getRequired("refId")
+                fun isGranted(): Boolean = isGranted.getRequired("isGranted")
 
                 /**
-                 * Returns the raw JSON value of [refId].
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun type(): Type = type.getRequired("type")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun currentUsage(): Optional<Double> = currentUsage.getOptional("currentUsage")
+
+                /**
+                 * Timestamp of the last update to the entitlement grant or configuration.
                  *
-                 * Unlike [refId], this method doesn't throw if the JSON field has an unexpected
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
+                    entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun feature(): Optional<Feature> = feature.getOptional("feature")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun hasUnlimitedUsage(): Optional<Boolean> =
+                    hasUnlimitedUsage.getOptional("hasUnlimitedUsage")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun resetPeriod(): Optional<ResetPeriod> = resetPeriod.getOptional("resetPeriod")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usageLimit(): Optional<Double> = usageLimit.getOptional("usageLimit")
+
+                /**
+                 * The anchor for calculating the usage period for metered entitlements with a reset
+                 * period configured
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usagePeriodAnchor(): Optional<OffsetDateTime> =
+                    usagePeriodAnchor.getOptional("usagePeriodAnchor")
+
+                /**
+                 * The end date of the usage period for metered entitlements with a reset period
+                 * configured
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usagePeriodEnd(): Optional<OffsetDateTime> =
+                    usagePeriodEnd.getOptional("usagePeriodEnd")
+
+                /**
+                 * The start date of the usage period for metered entitlements with a reset period
+                 * configured
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usagePeriodStart(): Optional<OffsetDateTime> =
+                    usagePeriodStart.getOptional("usagePeriodStart")
+
+                /**
+                 * The next time the entitlement should be recalculated
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun validUntil(): Optional<OffsetDateTime> = validUntil.getOptional("validUntil")
+
+                /**
+                 * Returns the raw JSON value of [accessDeniedReason].
+                 *
+                 * Unlike [accessDeniedReason], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("accessDeniedReason")
+                @ExcludeMissing
+                fun _accessDeniedReason(): JsonField<AccessDeniedReason> = accessDeniedReason
+
+                /**
+                 * Returns the raw JSON value of [isGranted].
+                 *
+                 * Unlike [isGranted], this method doesn't throw if the JSON field has an unexpected
                  * type.
                  */
-                @JsonProperty("refId") @ExcludeMissing fun _refId(): JsonField<String> = refId
+                @JsonProperty("isGranted")
+                @ExcludeMissing
+                fun _isGranted(): JsonField<Boolean> = isGranted
+
+                /**
+                 * Returns the raw JSON value of [type].
+                 *
+                 * Unlike [type], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+                /**
+                 * Returns the raw JSON value of [currentUsage].
+                 *
+                 * Unlike [currentUsage], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("currentUsage")
+                @ExcludeMissing
+                fun _currentUsage(): JsonField<Double> = currentUsage
+
+                /**
+                 * Returns the raw JSON value of [entitlementUpdatedAt].
+                 *
+                 * Unlike [entitlementUpdatedAt], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("entitlementUpdatedAt")
+                @ExcludeMissing
+                fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
+
+                /**
+                 * Returns the raw JSON value of [feature].
+                 *
+                 * Unlike [feature], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("feature")
+                @ExcludeMissing
+                fun _feature(): JsonField<Feature> = feature
+
+                /**
+                 * Returns the raw JSON value of [hasUnlimitedUsage].
+                 *
+                 * Unlike [hasUnlimitedUsage], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("hasUnlimitedUsage")
+                @ExcludeMissing
+                fun _hasUnlimitedUsage(): JsonField<Boolean> = hasUnlimitedUsage
+
+                /**
+                 * Returns the raw JSON value of [resetPeriod].
+                 *
+                 * Unlike [resetPeriod], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("resetPeriod")
+                @ExcludeMissing
+                fun _resetPeriod(): JsonField<ResetPeriod> = resetPeriod
+
+                /**
+                 * Returns the raw JSON value of [usageLimit].
+                 *
+                 * Unlike [usageLimit], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usageLimit")
+                @ExcludeMissing
+                fun _usageLimit(): JsonField<Double> = usageLimit
+
+                /**
+                 * Returns the raw JSON value of [usagePeriodAnchor].
+                 *
+                 * Unlike [usagePeriodAnchor], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usagePeriodAnchor")
+                @ExcludeMissing
+                fun _usagePeriodAnchor(): JsonField<OffsetDateTime> = usagePeriodAnchor
+
+                /**
+                 * Returns the raw JSON value of [usagePeriodEnd].
+                 *
+                 * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usagePeriodEnd")
+                @ExcludeMissing
+                fun _usagePeriodEnd(): JsonField<OffsetDateTime> = usagePeriodEnd
+
+                /**
+                 * Returns the raw JSON value of [usagePeriodStart].
+                 *
+                 * Unlike [usagePeriodStart], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usagePeriodStart")
+                @ExcludeMissing
+                fun _usagePeriodStart(): JsonField<OffsetDateTime> = usagePeriodStart
+
+                /**
+                 * Returns the raw JSON value of [validUntil].
+                 *
+                 * Unlike [validUntil], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("validUntil")
+                @ExcludeMissing
+                fun _validUntil(): JsonField<OffsetDateTime> = validUntil
 
                 @JsonAnySetter
                 private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1236,39 +1100,266 @@ private constructor(
                 companion object {
 
                     /**
-                     * Returns a mutable builder for constructing an instance of [Feature].
+                     * Returns a mutable builder for constructing an instance of [UnionMember0].
                      *
                      * The following fields are required:
                      * ```java
-                     * .refId()
+                     * .accessDeniedReason()
+                     * .isGranted()
+                     * .type()
                      * ```
                      */
                     @JvmStatic fun builder() = Builder()
                 }
 
-                /** A builder for [Feature]. */
+                /** A builder for [UnionMember0]. */
                 class Builder internal constructor() {
 
-                    private var refId: JsonField<String>? = null
+                    private var accessDeniedReason: JsonField<AccessDeniedReason>? = null
+                    private var isGranted: JsonField<Boolean>? = null
+                    private var type: JsonField<Type>? = null
+                    private var currentUsage: JsonField<Double> = JsonMissing.of()
+                    private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var feature: JsonField<Feature> = JsonMissing.of()
+                    private var hasUnlimitedUsage: JsonField<Boolean> = JsonMissing.of()
+                    private var resetPeriod: JsonField<ResetPeriod> = JsonMissing.of()
+                    private var usageLimit: JsonField<Double> = JsonMissing.of()
+                    private var usagePeriodAnchor: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var usagePeriodStart: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var validUntil: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
-                    internal fun from(feature: Feature) = apply {
-                        refId = feature.refId
-                        additionalProperties = feature.additionalProperties.toMutableMap()
+                    internal fun from(unionMember0: UnionMember0) = apply {
+                        accessDeniedReason = unionMember0.accessDeniedReason
+                        isGranted = unionMember0.isGranted
+                        type = unionMember0.type
+                        currentUsage = unionMember0.currentUsage
+                        entitlementUpdatedAt = unionMember0.entitlementUpdatedAt
+                        feature = unionMember0.feature
+                        hasUnlimitedUsage = unionMember0.hasUnlimitedUsage
+                        resetPeriod = unionMember0.resetPeriod
+                        usageLimit = unionMember0.usageLimit
+                        usagePeriodAnchor = unionMember0.usagePeriodAnchor
+                        usagePeriodEnd = unionMember0.usagePeriodEnd
+                        usagePeriodStart = unionMember0.usagePeriodStart
+                        validUntil = unionMember0.validUntil
+                        additionalProperties = unionMember0.additionalProperties.toMutableMap()
                     }
 
-                    /** Feature ID */
-                    fun refId(refId: String) = refId(JsonField.of(refId))
+                    fun accessDeniedReason(accessDeniedReason: AccessDeniedReason?) =
+                        accessDeniedReason(JsonField.ofNullable(accessDeniedReason))
 
                     /**
-                     * Sets [Builder.refId] to an arbitrary JSON value.
+                     * Alias for calling [Builder.accessDeniedReason] with
+                     * `accessDeniedReason.orElse(null)`.
+                     */
+                    fun accessDeniedReason(accessDeniedReason: Optional<AccessDeniedReason>) =
+                        accessDeniedReason(accessDeniedReason.getOrNull())
+
+                    /**
+                     * Sets [Builder.accessDeniedReason] to an arbitrary JSON value.
                      *
-                     * You should usually call [Builder.refId] with a well-typed [String] value
+                     * You should usually call [Builder.accessDeniedReason] with a well-typed
+                     * [AccessDeniedReason] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun accessDeniedReason(accessDeniedReason: JsonField<AccessDeniedReason>) =
+                        apply {
+                            this.accessDeniedReason = accessDeniedReason
+                        }
+
+                    fun isGranted(isGranted: Boolean) = isGranted(JsonField.of(isGranted))
+
+                    /**
+                     * Sets [Builder.isGranted] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.isGranted] with a well-typed [Boolean] value
                      * instead. This method is primarily for setting the field to an undocumented or
                      * not yet supported value.
                      */
-                    fun refId(refId: JsonField<String>) = apply { this.refId = refId }
+                    fun isGranted(isGranted: JsonField<Boolean>) = apply {
+                        this.isGranted = isGranted
+                    }
+
+                    fun type(type: Type) = type(JsonField.of(type))
+
+                    /**
+                     * Sets [Builder.type] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.type] with a well-typed [Type] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun type(type: JsonField<Type>) = apply { this.type = type }
+
+                    fun currentUsage(currentUsage: Double) =
+                        currentUsage(JsonField.of(currentUsage))
+
+                    /**
+                     * Sets [Builder.currentUsage] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.currentUsage] with a well-typed [Double]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun currentUsage(currentUsage: JsonField<Double>) = apply {
+                        this.currentUsage = currentUsage
+                    }
+
+                    /** Timestamp of the last update to the entitlement grant or configuration. */
+                    fun entitlementUpdatedAt(entitlementUpdatedAt: OffsetDateTime) =
+                        entitlementUpdatedAt(JsonField.of(entitlementUpdatedAt))
+
+                    /**
+                     * Sets [Builder.entitlementUpdatedAt] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.entitlementUpdatedAt] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun entitlementUpdatedAt(entitlementUpdatedAt: JsonField<OffsetDateTime>) =
+                        apply {
+                            this.entitlementUpdatedAt = entitlementUpdatedAt
+                        }
+
+                    fun feature(feature: Feature) = feature(JsonField.of(feature))
+
+                    /**
+                     * Sets [Builder.feature] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.feature] with a well-typed [Feature] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun feature(feature: JsonField<Feature>) = apply { this.feature = feature }
+
+                    fun hasUnlimitedUsage(hasUnlimitedUsage: Boolean) =
+                        hasUnlimitedUsage(JsonField.of(hasUnlimitedUsage))
+
+                    /**
+                     * Sets [Builder.hasUnlimitedUsage] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.hasUnlimitedUsage] with a well-typed
+                     * [Boolean] value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun hasUnlimitedUsage(hasUnlimitedUsage: JsonField<Boolean>) = apply {
+                        this.hasUnlimitedUsage = hasUnlimitedUsage
+                    }
+
+                    fun resetPeriod(resetPeriod: ResetPeriod?) =
+                        resetPeriod(JsonField.ofNullable(resetPeriod))
+
+                    /** Alias for calling [Builder.resetPeriod] with `resetPeriod.orElse(null)`. */
+                    fun resetPeriod(resetPeriod: Optional<ResetPeriod>) =
+                        resetPeriod(resetPeriod.getOrNull())
+
+                    /**
+                     * Sets [Builder.resetPeriod] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.resetPeriod] with a well-typed [ResetPeriod]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun resetPeriod(resetPeriod: JsonField<ResetPeriod>) = apply {
+                        this.resetPeriod = resetPeriod
+                    }
+
+                    fun usageLimit(usageLimit: Double?) =
+                        usageLimit(JsonField.ofNullable(usageLimit))
+
+                    /**
+                     * Alias for [Builder.usageLimit].
+                     *
+                     * This unboxed primitive overload exists for backwards compatibility.
+                     */
+                    fun usageLimit(usageLimit: Double) = usageLimit(usageLimit as Double?)
+
+                    /** Alias for calling [Builder.usageLimit] with `usageLimit.orElse(null)`. */
+                    fun usageLimit(usageLimit: Optional<Double>) =
+                        usageLimit(usageLimit.getOrNull())
+
+                    /**
+                     * Sets [Builder.usageLimit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usageLimit] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun usageLimit(usageLimit: JsonField<Double>) = apply {
+                        this.usageLimit = usageLimit
+                    }
+
+                    /**
+                     * The anchor for calculating the usage period for metered entitlements with a
+                     * reset period configured
+                     */
+                    fun usagePeriodAnchor(usagePeriodAnchor: OffsetDateTime) =
+                        usagePeriodAnchor(JsonField.of(usagePeriodAnchor))
+
+                    /**
+                     * Sets [Builder.usagePeriodAnchor] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usagePeriodAnchor] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usagePeriodAnchor(usagePeriodAnchor: JsonField<OffsetDateTime>) = apply {
+                        this.usagePeriodAnchor = usagePeriodAnchor
+                    }
+
+                    /**
+                     * The end date of the usage period for metered entitlements with a reset period
+                     * configured
+                     */
+                    fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime) =
+                        usagePeriodEnd(JsonField.of(usagePeriodEnd))
+
+                    /**
+                     * Sets [Builder.usagePeriodEnd] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usagePeriodEnd] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usagePeriodEnd(usagePeriodEnd: JsonField<OffsetDateTime>) = apply {
+                        this.usagePeriodEnd = usagePeriodEnd
+                    }
+
+                    /**
+                     * The start date of the usage period for metered entitlements with a reset
+                     * period configured
+                     */
+                    fun usagePeriodStart(usagePeriodStart: OffsetDateTime) =
+                        usagePeriodStart(JsonField.of(usagePeriodStart))
+
+                    /**
+                     * Sets [Builder.usagePeriodStart] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usagePeriodStart] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usagePeriodStart(usagePeriodStart: JsonField<OffsetDateTime>) = apply {
+                        this.usagePeriodStart = usagePeriodStart
+                    }
+
+                    /** The next time the entitlement should be recalculated */
+                    fun validUntil(validUntil: OffsetDateTime) =
+                        validUntil(JsonField.of(validUntil))
+
+                    /**
+                     * Sets [Builder.validUntil] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.validUntil] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun validUntil(validUntil: JsonField<OffsetDateTime>) = apply {
+                        this.validUntil = validUntil
+                    }
 
                     fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                         this.additionalProperties.clear()
@@ -1293,29 +1384,58 @@ private constructor(
                     }
 
                     /**
-                     * Returns an immutable instance of [Feature].
+                     * Returns an immutable instance of [UnionMember0].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
                      *
                      * The following fields are required:
                      * ```java
-                     * .refId()
+                     * .accessDeniedReason()
+                     * .isGranted()
+                     * .type()
                      * ```
                      *
                      * @throws IllegalStateException if any required field is unset.
                      */
-                    fun build(): Feature =
-                        Feature(checkRequired("refId", refId), additionalProperties.toMutableMap())
+                    fun build(): UnionMember0 =
+                        UnionMember0(
+                            checkRequired("accessDeniedReason", accessDeniedReason),
+                            checkRequired("isGranted", isGranted),
+                            checkRequired("type", type),
+                            currentUsage,
+                            entitlementUpdatedAt,
+                            feature,
+                            hasUnlimitedUsage,
+                            resetPeriod,
+                            usageLimit,
+                            usagePeriodAnchor,
+                            usagePeriodEnd,
+                            usagePeriodStart,
+                            validUntil,
+                            additionalProperties.toMutableMap(),
+                        )
                 }
 
                 private var validated: Boolean = false
 
-                fun validate(): Feature = apply {
+                fun validate(): UnionMember0 = apply {
                     if (validated) {
                         return@apply
                     }
 
-                    refId()
+                    accessDeniedReason().ifPresent { it.validate() }
+                    isGranted()
+                    type().validate()
+                    currentUsage()
+                    entitlementUpdatedAt()
+                    feature().ifPresent { it.validate() }
+                    hasUnlimitedUsage()
+                    resetPeriod().ifPresent { it.validate() }
+                    usageLimit()
+                    usagePeriodAnchor()
+                    usagePeriodEnd()
+                    usagePeriodStart()
+                    validUntil()
                     validated = true
                 }
 
@@ -1334,144 +1454,1642 @@ private constructor(
                  * Used for best match union deserialization.
                  */
                 @JvmSynthetic
-                internal fun validity(): Int = (if (refId.asKnown().isPresent) 1 else 0)
+                internal fun validity(): Int =
+                    (accessDeniedReason.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (isGranted.asKnown().isPresent) 1 else 0) +
+                        (type.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                        (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (feature.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (hasUnlimitedUsage.asKnown().isPresent) 1 else 0) +
+                        (resetPeriod.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (usageLimit.asKnown().isPresent) 1 else 0) +
+                        (if (usagePeriodAnchor.asKnown().isPresent) 1 else 0) +
+                        (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
+                        (if (usagePeriodStart.asKnown().isPresent) 1 else 0) +
+                        (if (validUntil.asKnown().isPresent) 1 else 0)
+
+                class AccessDeniedReason
+                @JsonCreator
+                private constructor(private val value: JsonField<String>) : Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val FEATURE_NOT_FOUND = of("FeatureNotFound")
+
+                        @JvmField val CUSTOMER_NOT_FOUND = of("CustomerNotFound")
+
+                        @JvmField val CUSTOMER_IS_ARCHIVED = of("CustomerIsArchived")
+
+                        @JvmField val CUSTOMER_RESOURCE_NOT_FOUND = of("CustomerResourceNotFound")
+
+                        @JvmField val NO_ACTIVE_SUBSCRIPTION = of("NoActiveSubscription")
+
+                        @JvmField
+                        val NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION =
+                            of("NoFeatureEntitlementInSubscription")
+
+                        @JvmField
+                        val REQUESTED_USAGE_EXCEEDING_LIMIT = of("RequestedUsageExceedingLimit")
+
+                        @JvmField val REQUESTED_VALUES_MISMATCH = of("RequestedValuesMismatch")
+
+                        @JvmField val BUDGET_EXCEEDED = of("BudgetExceeded")
+
+                        @JvmField val UNKNOWN = of("Unknown")
+
+                        @JvmField val FEATURE_TYPE_MISMATCH = of("FeatureTypeMismatch")
+
+                        @JvmField val REVOKED = of("Revoked")
+
+                        @JvmField val INSUFFICIENT_CREDITS = of("InsufficientCredits")
+
+                        @JvmField val ENTITLEMENT_NOT_FOUND = of("EntitlementNotFound")
+
+                        @JvmStatic fun of(value: String) = AccessDeniedReason(JsonField.of(value))
+                    }
+
+                    /** An enum containing [AccessDeniedReason]'s known values. */
+                    enum class Known {
+                        FEATURE_NOT_FOUND,
+                        CUSTOMER_NOT_FOUND,
+                        CUSTOMER_IS_ARCHIVED,
+                        CUSTOMER_RESOURCE_NOT_FOUND,
+                        NO_ACTIVE_SUBSCRIPTION,
+                        NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION,
+                        REQUESTED_USAGE_EXCEEDING_LIMIT,
+                        REQUESTED_VALUES_MISMATCH,
+                        BUDGET_EXCEEDED,
+                        UNKNOWN,
+                        FEATURE_TYPE_MISMATCH,
+                        REVOKED,
+                        INSUFFICIENT_CREDITS,
+                        ENTITLEMENT_NOT_FOUND,
+                    }
+
+                    /**
+                     * An enum containing [AccessDeniedReason]'s known values, as well as an
+                     * [_UNKNOWN] member.
+                     *
+                     * An instance of [AccessDeniedReason] can contain an unknown value in a couple
+                     * of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        FEATURE_NOT_FOUND,
+                        CUSTOMER_NOT_FOUND,
+                        CUSTOMER_IS_ARCHIVED,
+                        CUSTOMER_RESOURCE_NOT_FOUND,
+                        NO_ACTIVE_SUBSCRIPTION,
+                        NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION,
+                        REQUESTED_USAGE_EXCEEDING_LIMIT,
+                        REQUESTED_VALUES_MISMATCH,
+                        BUDGET_EXCEEDED,
+                        UNKNOWN,
+                        FEATURE_TYPE_MISMATCH,
+                        REVOKED,
+                        INSUFFICIENT_CREDITS,
+                        ENTITLEMENT_NOT_FOUND,
+                        /**
+                         * An enum member indicating that [AccessDeniedReason] was instantiated with
+                         * an unknown value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            FEATURE_NOT_FOUND -> Value.FEATURE_NOT_FOUND
+                            CUSTOMER_NOT_FOUND -> Value.CUSTOMER_NOT_FOUND
+                            CUSTOMER_IS_ARCHIVED -> Value.CUSTOMER_IS_ARCHIVED
+                            CUSTOMER_RESOURCE_NOT_FOUND -> Value.CUSTOMER_RESOURCE_NOT_FOUND
+                            NO_ACTIVE_SUBSCRIPTION -> Value.NO_ACTIVE_SUBSCRIPTION
+                            NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION ->
+                                Value.NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION
+                            REQUESTED_USAGE_EXCEEDING_LIMIT -> Value.REQUESTED_USAGE_EXCEEDING_LIMIT
+                            REQUESTED_VALUES_MISMATCH -> Value.REQUESTED_VALUES_MISMATCH
+                            BUDGET_EXCEEDED -> Value.BUDGET_EXCEEDED
+                            UNKNOWN -> Value.UNKNOWN
+                            FEATURE_TYPE_MISMATCH -> Value.FEATURE_TYPE_MISMATCH
+                            REVOKED -> Value.REVOKED
+                            INSUFFICIENT_CREDITS -> Value.INSUFFICIENT_CREDITS
+                            ENTITLEMENT_NOT_FOUND -> Value.ENTITLEMENT_NOT_FOUND
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            FEATURE_NOT_FOUND -> Known.FEATURE_NOT_FOUND
+                            CUSTOMER_NOT_FOUND -> Known.CUSTOMER_NOT_FOUND
+                            CUSTOMER_IS_ARCHIVED -> Known.CUSTOMER_IS_ARCHIVED
+                            CUSTOMER_RESOURCE_NOT_FOUND -> Known.CUSTOMER_RESOURCE_NOT_FOUND
+                            NO_ACTIVE_SUBSCRIPTION -> Known.NO_ACTIVE_SUBSCRIPTION
+                            NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION ->
+                                Known.NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION
+                            REQUESTED_USAGE_EXCEEDING_LIMIT -> Known.REQUESTED_USAGE_EXCEEDING_LIMIT
+                            REQUESTED_VALUES_MISMATCH -> Known.REQUESTED_VALUES_MISMATCH
+                            BUDGET_EXCEEDED -> Known.BUDGET_EXCEEDED
+                            UNKNOWN -> Known.UNKNOWN
+                            FEATURE_TYPE_MISMATCH -> Known.FEATURE_TYPE_MISMATCH
+                            REVOKED -> Known.REVOKED
+                            INSUFFICIENT_CREDITS -> Known.INSUFFICIENT_CREDITS
+                            ENTITLEMENT_NOT_FOUND -> Known.ENTITLEMENT_NOT_FOUND
+                            else ->
+                                throw StiggInvalidDataException(
+                                    "Unknown AccessDeniedReason: $value"
+                                )
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): AccessDeniedReason = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is AccessDeniedReason && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
+
+                class Type @JsonCreator private constructor(private val value: JsonField<String>) :
+                    Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val FEATURE = of("FEATURE")
+
+                        @JvmStatic fun of(value: String) = Type(JsonField.of(value))
+                    }
+
+                    /** An enum containing [Type]'s known values. */
+                    enum class Known {
+                        FEATURE
+                    }
+
+                    /**
+                     * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+                     *
+                     * An instance of [Type] can contain an unknown value in a couple of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        FEATURE,
+                        /**
+                         * An enum member indicating that [Type] was instantiated with an unknown
+                         * value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            FEATURE -> Value.FEATURE
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            FEATURE -> Known.FEATURE
+                            else -> throw StiggInvalidDataException("Unknown Type: $value")
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): Type = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Type && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
+
+                class Feature
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val displayName: JsonField<String>,
+                    private val featureStatus: JsonField<FeatureStatus>,
+                    private val featureType: JsonField<FeatureType>,
+                    private val refId: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("displayName")
+                        @ExcludeMissing
+                        displayName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("featureStatus")
+                        @ExcludeMissing
+                        featureStatus: JsonField<FeatureStatus> = JsonMissing.of(),
+                        @JsonProperty("featureType")
+                        @ExcludeMissing
+                        featureType: JsonField<FeatureType> = JsonMissing.of(),
+                        @JsonProperty("refId")
+                        @ExcludeMissing
+                        refId: JsonField<String> = JsonMissing.of(),
+                    ) : this(displayName, featureStatus, featureType, refId, mutableMapOf())
+
+                    /**
+                     * The human-readable name of the entitlement, shown in UI elements.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun displayName(): String = displayName.getRequired("displayName")
+
+                    /**
+                     * The current status of the feature.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun featureStatus(): FeatureStatus = featureStatus.getRequired("featureStatus")
+
+                    /**
+                     * The type of feature associated with the entitlement.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun featureType(): FeatureType = featureType.getRequired("featureType")
+
+                    /**
+                     * The unique reference ID of the entitlement.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun refId(): String = refId.getRequired("refId")
+
+                    /**
+                     * Returns the raw JSON value of [displayName].
+                     *
+                     * Unlike [displayName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("displayName")
+                    @ExcludeMissing
+                    fun _displayName(): JsonField<String> = displayName
+
+                    /**
+                     * Returns the raw JSON value of [featureStatus].
+                     *
+                     * Unlike [featureStatus], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("featureStatus")
+                    @ExcludeMissing
+                    fun _featureStatus(): JsonField<FeatureStatus> = featureStatus
+
+                    /**
+                     * Returns the raw JSON value of [featureType].
+                     *
+                     * Unlike [featureType], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("featureType")
+                    @ExcludeMissing
+                    fun _featureType(): JsonField<FeatureType> = featureType
+
+                    /**
+                     * Returns the raw JSON value of [refId].
+                     *
+                     * Unlike [refId], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("refId") @ExcludeMissing fun _refId(): JsonField<String> = refId
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Feature].
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .displayName()
+                         * .featureStatus()
+                         * .featureType()
+                         * .refId()
+                         * ```
+                         */
+                        @JvmStatic fun builder() = Builder()
+                    }
+
+                    /** A builder for [Feature]. */
+                    class Builder internal constructor() {
+
+                        private var displayName: JsonField<String>? = null
+                        private var featureStatus: JsonField<FeatureStatus>? = null
+                        private var featureType: JsonField<FeatureType>? = null
+                        private var refId: JsonField<String>? = null
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        @JvmSynthetic
+                        internal fun from(feature: Feature) = apply {
+                            displayName = feature.displayName
+                            featureStatus = feature.featureStatus
+                            featureType = feature.featureType
+                            refId = feature.refId
+                            additionalProperties = feature.additionalProperties.toMutableMap()
+                        }
+
+                        /** The human-readable name of the entitlement, shown in UI elements. */
+                        fun displayName(displayName: String) =
+                            displayName(JsonField.of(displayName))
+
+                        /**
+                         * Sets [Builder.displayName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.displayName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun displayName(displayName: JsonField<String>) = apply {
+                            this.displayName = displayName
+                        }
+
+                        /** The current status of the feature. */
+                        fun featureStatus(featureStatus: FeatureStatus) =
+                            featureStatus(JsonField.of(featureStatus))
+
+                        /**
+                         * Sets [Builder.featureStatus] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.featureStatus] with a well-typed
+                         * [FeatureStatus] value instead. This method is primarily for setting the
+                         * field to an undocumented or not yet supported value.
+                         */
+                        fun featureStatus(featureStatus: JsonField<FeatureStatus>) = apply {
+                            this.featureStatus = featureStatus
+                        }
+
+                        /** The type of feature associated with the entitlement. */
+                        fun featureType(featureType: FeatureType) =
+                            featureType(JsonField.of(featureType))
+
+                        /**
+                         * Sets [Builder.featureType] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.featureType] with a well-typed
+                         * [FeatureType] value instead. This method is primarily for setting the
+                         * field to an undocumented or not yet supported value.
+                         */
+                        fun featureType(featureType: JsonField<FeatureType>) = apply {
+                            this.featureType = featureType
+                        }
+
+                        /** The unique reference ID of the entitlement. */
+                        fun refId(refId: String) = refId(JsonField.of(refId))
+
+                        /**
+                         * Sets [Builder.refId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.refId] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun refId(refId: JsonField<String>) = apply { this.refId = refId }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Feature].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .displayName()
+                         * .featureStatus()
+                         * .featureType()
+                         * .refId()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Feature =
+                            Feature(
+                                checkRequired("displayName", displayName),
+                                checkRequired("featureStatus", featureStatus),
+                                checkRequired("featureType", featureType),
+                                checkRequired("refId", refId),
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): Feature = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        displayName()
+                        featureStatus().validate()
+                        featureType().validate()
+                        refId()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int =
+                        (if (displayName.asKnown().isPresent) 1 else 0) +
+                            (featureStatus.asKnown().getOrNull()?.validity() ?: 0) +
+                            (featureType.asKnown().getOrNull()?.validity() ?: 0) +
+                            (if (refId.asKnown().isPresent) 1 else 0)
+
+                    /** The current status of the feature. */
+                    class FeatureStatus
+                    @JsonCreator
+                    private constructor(private val value: JsonField<String>) : Enum {
+
+                        /**
+                         * Returns this class instance's raw value.
+                         *
+                         * This is usually only useful if this instance was deserialized from data
+                         * that doesn't match any known member, and you want to know that value. For
+                         * example, if the SDK is on an older version than the API, then the API may
+                         * respond with new members that the SDK is unaware of.
+                         */
+                        @com.fasterxml.jackson.annotation.JsonValue
+                        fun _value(): JsonField<String> = value
+
+                        companion object {
+
+                            @JvmField val NEW = of("NEW")
+
+                            @JvmField val SUSPENDED = of("SUSPENDED")
+
+                            @JvmField val ACTIVE = of("ACTIVE")
+
+                            @JvmStatic fun of(value: String) = FeatureStatus(JsonField.of(value))
+                        }
+
+                        /** An enum containing [FeatureStatus]'s known values. */
+                        enum class Known {
+                            NEW,
+                            SUSPENDED,
+                            ACTIVE,
+                        }
+
+                        /**
+                         * An enum containing [FeatureStatus]'s known values, as well as an
+                         * [_UNKNOWN] member.
+                         *
+                         * An instance of [FeatureStatus] can contain an unknown value in a couple
+                         * of cases:
+                         * - It was deserialized from data that doesn't match any known member. For
+                         *   example, if the SDK is on an older version than the API, then the API
+                         *   may respond with new members that the SDK is unaware of.
+                         * - It was constructed with an arbitrary value using the [of] method.
+                         */
+                        enum class Value {
+                            NEW,
+                            SUSPENDED,
+                            ACTIVE,
+                            /**
+                             * An enum member indicating that [FeatureStatus] was instantiated with
+                             * an unknown value.
+                             */
+                            _UNKNOWN,
+                        }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value, or
+                         * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                         *
+                         * Use the [known] method instead if you're certain the value is always
+                         * known or if you want to throw for the unknown case.
+                         */
+                        fun value(): Value =
+                            when (this) {
+                                NEW -> Value.NEW
+                                SUSPENDED -> Value.SUSPENDED
+                                ACTIVE -> Value.ACTIVE
+                                else -> Value._UNKNOWN
+                            }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value.
+                         *
+                         * Use the [value] method instead if you're uncertain the value is always
+                         * known and don't want to throw for the unknown case.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value is a not
+                         *   a known member.
+                         */
+                        fun known(): Known =
+                            when (this) {
+                                NEW -> Known.NEW
+                                SUSPENDED -> Known.SUSPENDED
+                                ACTIVE -> Known.ACTIVE
+                                else ->
+                                    throw StiggInvalidDataException("Unknown FeatureStatus: $value")
+                            }
+
+                        /**
+                         * Returns this class instance's primitive wire representation.
+                         *
+                         * This differs from the [toString] method because that method is primarily
+                         * for debugging and generally doesn't throw.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value does not
+                         *   have the expected primitive type.
+                         */
+                        fun asString(): String =
+                            _value().asString().orElseThrow {
+                                StiggInvalidDataException("Value is not a String")
+                            }
+
+                        private var validated: Boolean = false
+
+                        fun validate(): FeatureStatus = apply {
+                            if (validated) {
+                                return@apply
+                            }
+
+                            known()
+                            validated = true
+                        }
+
+                        fun isValid(): Boolean =
+                            try {
+                                validate()
+                                true
+                            } catch (e: StiggInvalidDataException) {
+                                false
+                            }
+
+                        /**
+                         * Returns a score indicating how many valid values are contained in this
+                         * object recursively.
+                         *
+                         * Used for best match union deserialization.
+                         */
+                        @JvmSynthetic
+                        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                        override fun equals(other: Any?): Boolean {
+                            if (this === other) {
+                                return true
+                            }
+
+                            return other is FeatureStatus && value == other.value
+                        }
+
+                        override fun hashCode() = value.hashCode()
+
+                        override fun toString() = value.toString()
+                    }
+
+                    /** The type of feature associated with the entitlement. */
+                    class FeatureType
+                    @JsonCreator
+                    private constructor(private val value: JsonField<String>) : Enum {
+
+                        /**
+                         * Returns this class instance's raw value.
+                         *
+                         * This is usually only useful if this instance was deserialized from data
+                         * that doesn't match any known member, and you want to know that value. For
+                         * example, if the SDK is on an older version than the API, then the API may
+                         * respond with new members that the SDK is unaware of.
+                         */
+                        @com.fasterxml.jackson.annotation.JsonValue
+                        fun _value(): JsonField<String> = value
+
+                        companion object {
+
+                            @JvmField val BOOLEAN = of("BOOLEAN")
+
+                            @JvmField val NUMBER = of("NUMBER")
+
+                            @JvmField val ENUM = of("ENUM")
+
+                            @JvmStatic fun of(value: String) = FeatureType(JsonField.of(value))
+                        }
+
+                        /** An enum containing [FeatureType]'s known values. */
+                        enum class Known {
+                            BOOLEAN,
+                            NUMBER,
+                            ENUM,
+                        }
+
+                        /**
+                         * An enum containing [FeatureType]'s known values, as well as an [_UNKNOWN]
+                         * member.
+                         *
+                         * An instance of [FeatureType] can contain an unknown value in a couple of
+                         * cases:
+                         * - It was deserialized from data that doesn't match any known member. For
+                         *   example, if the SDK is on an older version than the API, then the API
+                         *   may respond with new members that the SDK is unaware of.
+                         * - It was constructed with an arbitrary value using the [of] method.
+                         */
+                        enum class Value {
+                            BOOLEAN,
+                            NUMBER,
+                            ENUM,
+                            /**
+                             * An enum member indicating that [FeatureType] was instantiated with an
+                             * unknown value.
+                             */
+                            _UNKNOWN,
+                        }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value, or
+                         * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                         *
+                         * Use the [known] method instead if you're certain the value is always
+                         * known or if you want to throw for the unknown case.
+                         */
+                        fun value(): Value =
+                            when (this) {
+                                BOOLEAN -> Value.BOOLEAN
+                                NUMBER -> Value.NUMBER
+                                ENUM -> Value.ENUM
+                                else -> Value._UNKNOWN
+                            }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value.
+                         *
+                         * Use the [value] method instead if you're uncertain the value is always
+                         * known and don't want to throw for the unknown case.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value is a not
+                         *   a known member.
+                         */
+                        fun known(): Known =
+                            when (this) {
+                                BOOLEAN -> Known.BOOLEAN
+                                NUMBER -> Known.NUMBER
+                                ENUM -> Known.ENUM
+                                else ->
+                                    throw StiggInvalidDataException("Unknown FeatureType: $value")
+                            }
+
+                        /**
+                         * Returns this class instance's primitive wire representation.
+                         *
+                         * This differs from the [toString] method because that method is primarily
+                         * for debugging and generally doesn't throw.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value does not
+                         *   have the expected primitive type.
+                         */
+                        fun asString(): String =
+                            _value().asString().orElseThrow {
+                                StiggInvalidDataException("Value is not a String")
+                            }
+
+                        private var validated: Boolean = false
+
+                        fun validate(): FeatureType = apply {
+                            if (validated) {
+                                return@apply
+                            }
+
+                            known()
+                            validated = true
+                        }
+
+                        fun isValid(): Boolean =
+                            try {
+                                validate()
+                                true
+                            } catch (e: StiggInvalidDataException) {
+                                false
+                            }
+
+                        /**
+                         * Returns a score indicating how many valid values are contained in this
+                         * object recursively.
+                         *
+                         * Used for best match union deserialization.
+                         */
+                        @JvmSynthetic
+                        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                        override fun equals(other: Any?): Boolean {
+                            if (this === other) {
+                                return true
+                            }
+
+                            return other is FeatureType && value == other.value
+                        }
+
+                        override fun hashCode() = value.hashCode()
+
+                        override fun toString() = value.toString()
+                    }
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Feature &&
+                            displayName == other.displayName &&
+                            featureStatus == other.featureStatus &&
+                            featureType == other.featureType &&
+                            refId == other.refId &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            displayName,
+                            featureStatus,
+                            featureType,
+                            refId,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Feature{displayName=$displayName, featureStatus=$featureStatus, featureType=$featureType, refId=$refId, additionalProperties=$additionalProperties}"
+                }
+
+                class ResetPeriod
+                @JsonCreator
+                private constructor(private val value: JsonField<String>) : Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val YEAR = of("YEAR")
+
+                        @JvmField val MONTH = of("MONTH")
+
+                        @JvmField val WEEK = of("WEEK")
+
+                        @JvmField val DAY = of("DAY")
+
+                        @JvmField val HOUR = of("HOUR")
+
+                        @JvmStatic fun of(value: String) = ResetPeriod(JsonField.of(value))
+                    }
+
+                    /** An enum containing [ResetPeriod]'s known values. */
+                    enum class Known {
+                        YEAR,
+                        MONTH,
+                        WEEK,
+                        DAY,
+                        HOUR,
+                    }
+
+                    /**
+                     * An enum containing [ResetPeriod]'s known values, as well as an [_UNKNOWN]
+                     * member.
+                     *
+                     * An instance of [ResetPeriod] can contain an unknown value in a couple of
+                     * cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        YEAR,
+                        MONTH,
+                        WEEK,
+                        DAY,
+                        HOUR,
+                        /**
+                         * An enum member indicating that [ResetPeriod] was instantiated with an
+                         * unknown value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            YEAR -> Value.YEAR
+                            MONTH -> Value.MONTH
+                            WEEK -> Value.WEEK
+                            DAY -> Value.DAY
+                            HOUR -> Value.HOUR
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            YEAR -> Known.YEAR
+                            MONTH -> Known.MONTH
+                            WEEK -> Known.WEEK
+                            DAY -> Known.DAY
+                            HOUR -> Known.HOUR
+                            else -> throw StiggInvalidDataException("Unknown ResetPeriod: $value")
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): ResetPeriod = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is ResetPeriod && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
 
                 override fun equals(other: Any?): Boolean {
                     if (this === other) {
                         return true
                     }
 
-                    return other is Feature &&
-                        refId == other.refId &&
+                    return other is UnionMember0 &&
+                        accessDeniedReason == other.accessDeniedReason &&
+                        isGranted == other.isGranted &&
+                        type == other.type &&
+                        currentUsage == other.currentUsage &&
+                        entitlementUpdatedAt == other.entitlementUpdatedAt &&
+                        feature == other.feature &&
+                        hasUnlimitedUsage == other.hasUnlimitedUsage &&
+                        resetPeriod == other.resetPeriod &&
+                        usageLimit == other.usageLimit &&
+                        usagePeriodAnchor == other.usagePeriodAnchor &&
+                        usagePeriodEnd == other.usagePeriodEnd &&
+                        usagePeriodStart == other.usagePeriodStart &&
+                        validUntil == other.validUntil &&
                         additionalProperties == other.additionalProperties
                 }
 
-                private val hashCode: Int by lazy { Objects.hash(refId, additionalProperties) }
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        accessDeniedReason,
+                        isGranted,
+                        type,
+                        currentUsage,
+                        entitlementUpdatedAt,
+                        feature,
+                        hasUnlimitedUsage,
+                        resetPeriod,
+                        usageLimit,
+                        usagePeriodAnchor,
+                        usagePeriodEnd,
+                        usagePeriodStart,
+                        validUntil,
+                        additionalProperties,
+                    )
+                }
 
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "Feature{refId=$refId, additionalProperties=$additionalProperties}"
+                    "UnionMember0{accessDeniedReason=$accessDeniedReason, isGranted=$isGranted, type=$type, currentUsage=$currentUsage, entitlementUpdatedAt=$entitlementUpdatedAt, feature=$feature, hasUnlimitedUsage=$hasUnlimitedUsage, resetPeriod=$resetPeriod, usageLimit=$usageLimit, usagePeriodAnchor=$usagePeriodAnchor, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
 
-            class ResetPeriod
-            @JsonCreator
-            private constructor(private val value: JsonField<String>) : Enum {
+            class UnionMember1
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val accessDeniedReason: JsonField<AccessDeniedReason>,
+                private val currency: JsonField<Currency>,
+                private val currentUsage: JsonField<Double>,
+                private val isGranted: JsonField<Boolean>,
+                private val type: JsonField<Type>,
+                private val usageLimit: JsonField<Double>,
+                private val usageUpdatedAt: JsonField<OffsetDateTime>,
+                private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
+                private val validUntil: JsonField<OffsetDateTime>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("accessDeniedReason")
+                    @ExcludeMissing
+                    accessDeniedReason: JsonField<AccessDeniedReason> = JsonMissing.of(),
+                    @JsonProperty("currency")
+                    @ExcludeMissing
+                    currency: JsonField<Currency> = JsonMissing.of(),
+                    @JsonProperty("currentUsage")
+                    @ExcludeMissing
+                    currentUsage: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("isGranted")
+                    @ExcludeMissing
+                    isGranted: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+                    @JsonProperty("usageLimit")
+                    @ExcludeMissing
+                    usageLimit: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("usageUpdatedAt")
+                    @ExcludeMissing
+                    usageUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("entitlementUpdatedAt")
+                    @ExcludeMissing
+                    entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("validUntil")
+                    @ExcludeMissing
+                    validUntil: JsonField<OffsetDateTime> = JsonMissing.of(),
+                ) : this(
+                    accessDeniedReason,
+                    currency,
+                    currentUsage,
+                    isGranted,
+                    type,
+                    usageLimit,
+                    usageUpdatedAt,
+                    entitlementUpdatedAt,
+                    validUntil,
+                    mutableMapOf(),
+                )
 
                 /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
                  */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+                fun accessDeniedReason(): Optional<AccessDeniedReason> =
+                    accessDeniedReason.getOptional("accessDeniedReason")
+
+                /**
+                 * The currency associated with a credit entitlement.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun currency(): Currency = currency.getRequired("currency")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun currentUsage(): Double = currentUsage.getRequired("currentUsage")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun isGranted(): Boolean = isGranted.getRequired("isGranted")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun type(): Type = type.getRequired("type")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun usageLimit(): Double = usageLimit.getRequired("usageLimit")
+
+                /**
+                 * Timestamp of the last update to the credit usage.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun usageUpdatedAt(): OffsetDateTime = usageUpdatedAt.getRequired("usageUpdatedAt")
+
+                /**
+                 * Timestamp of the last update to the entitlement grant or configuration.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
+                    entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+
+                /**
+                 * The next time the entitlement should be recalculated
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun validUntil(): Optional<OffsetDateTime> = validUntil.getOptional("validUntil")
+
+                /**
+                 * Returns the raw JSON value of [accessDeniedReason].
+                 *
+                 * Unlike [accessDeniedReason], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("accessDeniedReason")
+                @ExcludeMissing
+                fun _accessDeniedReason(): JsonField<AccessDeniedReason> = accessDeniedReason
+
+                /**
+                 * Returns the raw JSON value of [currency].
+                 *
+                 * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("currency")
+                @ExcludeMissing
+                fun _currency(): JsonField<Currency> = currency
+
+                /**
+                 * Returns the raw JSON value of [currentUsage].
+                 *
+                 * Unlike [currentUsage], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("currentUsage")
+                @ExcludeMissing
+                fun _currentUsage(): JsonField<Double> = currentUsage
+
+                /**
+                 * Returns the raw JSON value of [isGranted].
+                 *
+                 * Unlike [isGranted], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("isGranted")
+                @ExcludeMissing
+                fun _isGranted(): JsonField<Boolean> = isGranted
+
+                /**
+                 * Returns the raw JSON value of [type].
+                 *
+                 * Unlike [type], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+                /**
+                 * Returns the raw JSON value of [usageLimit].
+                 *
+                 * Unlike [usageLimit], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usageLimit")
+                @ExcludeMissing
+                fun _usageLimit(): JsonField<Double> = usageLimit
+
+                /**
+                 * Returns the raw JSON value of [usageUpdatedAt].
+                 *
+                 * Unlike [usageUpdatedAt], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usageUpdatedAt")
+                @ExcludeMissing
+                fun _usageUpdatedAt(): JsonField<OffsetDateTime> = usageUpdatedAt
+
+                /**
+                 * Returns the raw JSON value of [entitlementUpdatedAt].
+                 *
+                 * Unlike [entitlementUpdatedAt], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("entitlementUpdatedAt")
+                @ExcludeMissing
+                fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
+
+                /**
+                 * Returns the raw JSON value of [validUntil].
+                 *
+                 * Unlike [validUntil], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("validUntil")
+                @ExcludeMissing
+                fun _validUntil(): JsonField<OffsetDateTime> = validUntil
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
 
                 companion object {
 
-                    @JvmField val YEAR = of("YEAR")
-
-                    @JvmField val MONTH = of("MONTH")
-
-                    @JvmField val WEEK = of("WEEK")
-
-                    @JvmField val DAY = of("DAY")
-
-                    @JvmField val HOUR = of("HOUR")
-
-                    @JvmStatic fun of(value: String) = ResetPeriod(JsonField.of(value))
-                }
-
-                /** An enum containing [ResetPeriod]'s known values. */
-                enum class Known {
-                    YEAR,
-                    MONTH,
-                    WEEK,
-                    DAY,
-                    HOUR,
-                }
-
-                /**
-                 * An enum containing [ResetPeriod]'s known values, as well as an [_UNKNOWN] member.
-                 *
-                 * An instance of [ResetPeriod] can contain an unknown value in a couple of cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    YEAR,
-                    MONTH,
-                    WEEK,
-                    DAY,
-                    HOUR,
                     /**
-                     * An enum member indicating that [ResetPeriod] was instantiated with an unknown
-                     * value.
+                     * Returns a mutable builder for constructing an instance of [UnionMember1].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .accessDeniedReason()
+                     * .currency()
+                     * .currentUsage()
+                     * .isGranted()
+                     * .type()
+                     * .usageLimit()
+                     * .usageUpdatedAt()
+                     * ```
                      */
-                    _UNKNOWN,
+                    @JvmStatic fun builder() = Builder()
                 }
 
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        YEAR -> Value.YEAR
-                        MONTH -> Value.MONTH
-                        WEEK -> Value.WEEK
-                        DAY -> Value.DAY
-                        HOUR -> Value.HOUR
-                        else -> Value._UNKNOWN
+                /** A builder for [UnionMember1]. */
+                class Builder internal constructor() {
+
+                    private var accessDeniedReason: JsonField<AccessDeniedReason>? = null
+                    private var currency: JsonField<Currency>? = null
+                    private var currentUsage: JsonField<Double>? = null
+                    private var isGranted: JsonField<Boolean>? = null
+                    private var type: JsonField<Type>? = null
+                    private var usageLimit: JsonField<Double>? = null
+                    private var usageUpdatedAt: JsonField<OffsetDateTime>? = null
+                    private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var validUntil: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(unionMember1: UnionMember1) = apply {
+                        accessDeniedReason = unionMember1.accessDeniedReason
+                        currency = unionMember1.currency
+                        currentUsage = unionMember1.currentUsage
+                        isGranted = unionMember1.isGranted
+                        type = unionMember1.type
+                        usageLimit = unionMember1.usageLimit
+                        usageUpdatedAt = unionMember1.usageUpdatedAt
+                        entitlementUpdatedAt = unionMember1.entitlementUpdatedAt
+                        validUntil = unionMember1.validUntil
+                        additionalProperties = unionMember1.additionalProperties.toMutableMap()
                     }
 
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        YEAR -> Known.YEAR
-                        MONTH -> Known.MONTH
-                        WEEK -> Known.WEEK
-                        DAY -> Known.DAY
-                        HOUR -> Known.HOUR
-                        else -> throw StiggInvalidDataException("Unknown ResetPeriod: $value")
+                    fun accessDeniedReason(accessDeniedReason: AccessDeniedReason?) =
+                        accessDeniedReason(JsonField.ofNullable(accessDeniedReason))
+
+                    /**
+                     * Alias for calling [Builder.accessDeniedReason] with
+                     * `accessDeniedReason.orElse(null)`.
+                     */
+                    fun accessDeniedReason(accessDeniedReason: Optional<AccessDeniedReason>) =
+                        accessDeniedReason(accessDeniedReason.getOrNull())
+
+                    /**
+                     * Sets [Builder.accessDeniedReason] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.accessDeniedReason] with a well-typed
+                     * [AccessDeniedReason] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun accessDeniedReason(accessDeniedReason: JsonField<AccessDeniedReason>) =
+                        apply {
+                            this.accessDeniedReason = accessDeniedReason
+                        }
+
+                    /** The currency associated with a credit entitlement. */
+                    fun currency(currency: Currency) = currency(JsonField.of(currency))
+
+                    /**
+                     * Sets [Builder.currency] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.currency] with a well-typed [Currency] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
+
+                    fun currentUsage(currentUsage: Double) =
+                        currentUsage(JsonField.of(currentUsage))
+
+                    /**
+                     * Sets [Builder.currentUsage] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.currentUsage] with a well-typed [Double]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun currentUsage(currentUsage: JsonField<Double>) = apply {
+                        this.currentUsage = currentUsage
                     }
 
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
+                    fun isGranted(isGranted: Boolean) = isGranted(JsonField.of(isGranted))
+
+                    /**
+                     * Sets [Builder.isGranted] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.isGranted] with a well-typed [Boolean] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun isGranted(isGranted: JsonField<Boolean>) = apply {
+                        this.isGranted = isGranted
                     }
+
+                    fun type(type: Type) = type(JsonField.of(type))
+
+                    /**
+                     * Sets [Builder.type] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.type] with a well-typed [Type] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun type(type: JsonField<Type>) = apply { this.type = type }
+
+                    fun usageLimit(usageLimit: Double) = usageLimit(JsonField.of(usageLimit))
+
+                    /**
+                     * Sets [Builder.usageLimit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usageLimit] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun usageLimit(usageLimit: JsonField<Double>) = apply {
+                        this.usageLimit = usageLimit
+                    }
+
+                    /** Timestamp of the last update to the credit usage. */
+                    fun usageUpdatedAt(usageUpdatedAt: OffsetDateTime) =
+                        usageUpdatedAt(JsonField.of(usageUpdatedAt))
+
+                    /**
+                     * Sets [Builder.usageUpdatedAt] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usageUpdatedAt] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usageUpdatedAt(usageUpdatedAt: JsonField<OffsetDateTime>) = apply {
+                        this.usageUpdatedAt = usageUpdatedAt
+                    }
+
+                    /** Timestamp of the last update to the entitlement grant or configuration. */
+                    fun entitlementUpdatedAt(entitlementUpdatedAt: OffsetDateTime) =
+                        entitlementUpdatedAt(JsonField.of(entitlementUpdatedAt))
+
+                    /**
+                     * Sets [Builder.entitlementUpdatedAt] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.entitlementUpdatedAt] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun entitlementUpdatedAt(entitlementUpdatedAt: JsonField<OffsetDateTime>) =
+                        apply {
+                            this.entitlementUpdatedAt = entitlementUpdatedAt
+                        }
+
+                    /** The next time the entitlement should be recalculated */
+                    fun validUntil(validUntil: OffsetDateTime) =
+                        validUntil(JsonField.of(validUntil))
+
+                    /**
+                     * Sets [Builder.validUntil] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.validUntil] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun validUntil(validUntil: JsonField<OffsetDateTime>) = apply {
+                        this.validUntil = validUntil
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [UnionMember1].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .accessDeniedReason()
+                     * .currency()
+                     * .currentUsage()
+                     * .isGranted()
+                     * .type()
+                     * .usageLimit()
+                     * .usageUpdatedAt()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): UnionMember1 =
+                        UnionMember1(
+                            checkRequired("accessDeniedReason", accessDeniedReason),
+                            checkRequired("currency", currency),
+                            checkRequired("currentUsage", currentUsage),
+                            checkRequired("isGranted", isGranted),
+                            checkRequired("type", type),
+                            checkRequired("usageLimit", usageLimit),
+                            checkRequired("usageUpdatedAt", usageUpdatedAt),
+                            entitlementUpdatedAt,
+                            validUntil,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
 
                 private var validated: Boolean = false
 
-                fun validate(): ResetPeriod = apply {
+                fun validate(): UnionMember1 = apply {
                     if (validated) {
                         return@apply
                     }
 
-                    known()
+                    accessDeniedReason().ifPresent { it.validate() }
+                    currency().validate()
+                    currentUsage()
+                    isGranted()
+                    type().validate()
+                    usageLimit()
+                    usageUpdatedAt()
+                    entitlementUpdatedAt()
+                    validUntil()
                     validated = true
                 }
 
@@ -1489,62 +3107,574 @@ private constructor(
                  *
                  * Used for best match union deserialization.
                  */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (accessDeniedReason.asKnown().getOrNull()?.validity() ?: 0) +
+                        (currency.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                        (if (isGranted.asKnown().isPresent) 1 else 0) +
+                        (type.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (usageLimit.asKnown().isPresent) 1 else 0) +
+                        (if (usageUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (if (validUntil.asKnown().isPresent) 1 else 0)
+
+                class AccessDeniedReason
+                @JsonCreator
+                private constructor(private val value: JsonField<String>) : Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val FEATURE_NOT_FOUND = of("FeatureNotFound")
+
+                        @JvmField val CUSTOMER_NOT_FOUND = of("CustomerNotFound")
+
+                        @JvmField val CUSTOMER_IS_ARCHIVED = of("CustomerIsArchived")
+
+                        @JvmField val CUSTOMER_RESOURCE_NOT_FOUND = of("CustomerResourceNotFound")
+
+                        @JvmField val NO_ACTIVE_SUBSCRIPTION = of("NoActiveSubscription")
+
+                        @JvmField
+                        val NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION =
+                            of("NoFeatureEntitlementInSubscription")
+
+                        @JvmField
+                        val REQUESTED_USAGE_EXCEEDING_LIMIT = of("RequestedUsageExceedingLimit")
+
+                        @JvmField val REQUESTED_VALUES_MISMATCH = of("RequestedValuesMismatch")
+
+                        @JvmField val BUDGET_EXCEEDED = of("BudgetExceeded")
+
+                        @JvmField val UNKNOWN = of("Unknown")
+
+                        @JvmField val FEATURE_TYPE_MISMATCH = of("FeatureTypeMismatch")
+
+                        @JvmField val REVOKED = of("Revoked")
+
+                        @JvmField val INSUFFICIENT_CREDITS = of("InsufficientCredits")
+
+                        @JvmField val ENTITLEMENT_NOT_FOUND = of("EntitlementNotFound")
+
+                        @JvmStatic fun of(value: String) = AccessDeniedReason(JsonField.of(value))
+                    }
+
+                    /** An enum containing [AccessDeniedReason]'s known values. */
+                    enum class Known {
+                        FEATURE_NOT_FOUND,
+                        CUSTOMER_NOT_FOUND,
+                        CUSTOMER_IS_ARCHIVED,
+                        CUSTOMER_RESOURCE_NOT_FOUND,
+                        NO_ACTIVE_SUBSCRIPTION,
+                        NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION,
+                        REQUESTED_USAGE_EXCEEDING_LIMIT,
+                        REQUESTED_VALUES_MISMATCH,
+                        BUDGET_EXCEEDED,
+                        UNKNOWN,
+                        FEATURE_TYPE_MISMATCH,
+                        REVOKED,
+                        INSUFFICIENT_CREDITS,
+                        ENTITLEMENT_NOT_FOUND,
+                    }
+
+                    /**
+                     * An enum containing [AccessDeniedReason]'s known values, as well as an
+                     * [_UNKNOWN] member.
+                     *
+                     * An instance of [AccessDeniedReason] can contain an unknown value in a couple
+                     * of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        FEATURE_NOT_FOUND,
+                        CUSTOMER_NOT_FOUND,
+                        CUSTOMER_IS_ARCHIVED,
+                        CUSTOMER_RESOURCE_NOT_FOUND,
+                        NO_ACTIVE_SUBSCRIPTION,
+                        NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION,
+                        REQUESTED_USAGE_EXCEEDING_LIMIT,
+                        REQUESTED_VALUES_MISMATCH,
+                        BUDGET_EXCEEDED,
+                        UNKNOWN,
+                        FEATURE_TYPE_MISMATCH,
+                        REVOKED,
+                        INSUFFICIENT_CREDITS,
+                        ENTITLEMENT_NOT_FOUND,
+                        /**
+                         * An enum member indicating that [AccessDeniedReason] was instantiated with
+                         * an unknown value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            FEATURE_NOT_FOUND -> Value.FEATURE_NOT_FOUND
+                            CUSTOMER_NOT_FOUND -> Value.CUSTOMER_NOT_FOUND
+                            CUSTOMER_IS_ARCHIVED -> Value.CUSTOMER_IS_ARCHIVED
+                            CUSTOMER_RESOURCE_NOT_FOUND -> Value.CUSTOMER_RESOURCE_NOT_FOUND
+                            NO_ACTIVE_SUBSCRIPTION -> Value.NO_ACTIVE_SUBSCRIPTION
+                            NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION ->
+                                Value.NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION
+                            REQUESTED_USAGE_EXCEEDING_LIMIT -> Value.REQUESTED_USAGE_EXCEEDING_LIMIT
+                            REQUESTED_VALUES_MISMATCH -> Value.REQUESTED_VALUES_MISMATCH
+                            BUDGET_EXCEEDED -> Value.BUDGET_EXCEEDED
+                            UNKNOWN -> Value.UNKNOWN
+                            FEATURE_TYPE_MISMATCH -> Value.FEATURE_TYPE_MISMATCH
+                            REVOKED -> Value.REVOKED
+                            INSUFFICIENT_CREDITS -> Value.INSUFFICIENT_CREDITS
+                            ENTITLEMENT_NOT_FOUND -> Value.ENTITLEMENT_NOT_FOUND
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            FEATURE_NOT_FOUND -> Known.FEATURE_NOT_FOUND
+                            CUSTOMER_NOT_FOUND -> Known.CUSTOMER_NOT_FOUND
+                            CUSTOMER_IS_ARCHIVED -> Known.CUSTOMER_IS_ARCHIVED
+                            CUSTOMER_RESOURCE_NOT_FOUND -> Known.CUSTOMER_RESOURCE_NOT_FOUND
+                            NO_ACTIVE_SUBSCRIPTION -> Known.NO_ACTIVE_SUBSCRIPTION
+                            NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION ->
+                                Known.NO_FEATURE_ENTITLEMENT_IN_SUBSCRIPTION
+                            REQUESTED_USAGE_EXCEEDING_LIMIT -> Known.REQUESTED_USAGE_EXCEEDING_LIMIT
+                            REQUESTED_VALUES_MISMATCH -> Known.REQUESTED_VALUES_MISMATCH
+                            BUDGET_EXCEEDED -> Known.BUDGET_EXCEEDED
+                            UNKNOWN -> Known.UNKNOWN
+                            FEATURE_TYPE_MISMATCH -> Known.FEATURE_TYPE_MISMATCH
+                            REVOKED -> Known.REVOKED
+                            INSUFFICIENT_CREDITS -> Known.INSUFFICIENT_CREDITS
+                            ENTITLEMENT_NOT_FOUND -> Known.ENTITLEMENT_NOT_FOUND
+                            else ->
+                                throw StiggInvalidDataException(
+                                    "Unknown AccessDeniedReason: $value"
+                                )
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): AccessDeniedReason = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is AccessDeniedReason && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
+
+                /** The currency associated with a credit entitlement. */
+                class Currency
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val currencyId: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("currencyId")
+                        @ExcludeMissing
+                        currencyId: JsonField<String> = JsonMissing.of()
+                    ) : this(currencyId, mutableMapOf())
+
+                    /**
+                     * The unique identifier of the custom currency.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun currencyId(): String = currencyId.getRequired("currencyId")
+
+                    /**
+                     * Returns the raw JSON value of [currencyId].
+                     *
+                     * Unlike [currencyId], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("currencyId")
+                    @ExcludeMissing
+                    fun _currencyId(): JsonField<String> = currencyId
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Currency].
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .currencyId()
+                         * ```
+                         */
+                        @JvmStatic fun builder() = Builder()
+                    }
+
+                    /** A builder for [Currency]. */
+                    class Builder internal constructor() {
+
+                        private var currencyId: JsonField<String>? = null
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        @JvmSynthetic
+                        internal fun from(currency: Currency) = apply {
+                            currencyId = currency.currencyId
+                            additionalProperties = currency.additionalProperties.toMutableMap()
+                        }
+
+                        /** The unique identifier of the custom currency. */
+                        fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
+
+                        /**
+                         * Sets [Builder.currencyId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.currencyId] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun currencyId(currencyId: JsonField<String>) = apply {
+                            this.currencyId = currencyId
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Currency].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .currencyId()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Currency =
+                            Currency(
+                                checkRequired("currencyId", currencyId),
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): Currency = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        currencyId()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = (if (currencyId.asKnown().isPresent) 1 else 0)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Currency &&
+                            currencyId == other.currencyId &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(currencyId, additionalProperties)
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Currency{currencyId=$currencyId, additionalProperties=$additionalProperties}"
+                }
+
+                class Type @JsonCreator private constructor(private val value: JsonField<String>) :
+                    Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val CREDIT = of("CREDIT")
+
+                        @JvmStatic fun of(value: String) = Type(JsonField.of(value))
+                    }
+
+                    /** An enum containing [Type]'s known values. */
+                    enum class Known {
+                        CREDIT
+                    }
+
+                    /**
+                     * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+                     *
+                     * An instance of [Type] can contain an unknown value in a couple of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        CREDIT,
+                        /**
+                         * An enum member indicating that [Type] was instantiated with an unknown
+                         * value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            CREDIT -> Value.CREDIT
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            CREDIT -> Known.CREDIT
+                            else -> throw StiggInvalidDataException("Unknown Type: $value")
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    fun validate(): Type = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Type && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
 
                 override fun equals(other: Any?): Boolean {
                     if (this === other) {
                         return true
                     }
 
-                    return other is ResetPeriod && value == other.value
+                    return other is UnionMember1 &&
+                        accessDeniedReason == other.accessDeniedReason &&
+                        currency == other.currency &&
+                        currentUsage == other.currentUsage &&
+                        isGranted == other.isGranted &&
+                        type == other.type &&
+                        usageLimit == other.usageLimit &&
+                        usageUpdatedAt == other.usageUpdatedAt &&
+                        entitlementUpdatedAt == other.entitlementUpdatedAt &&
+                        validUntil == other.validUntil &&
+                        additionalProperties == other.additionalProperties
                 }
 
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        accessDeniedReason,
+                        currency,
+                        currentUsage,
+                        isGranted,
+                        type,
+                        usageLimit,
+                        usageUpdatedAt,
+                        entitlementUpdatedAt,
+                        validUntil,
+                        additionalProperties,
+                    )
                 }
 
-                return other is Entitlement &&
-                    accessDeniedReason == other.accessDeniedReason &&
-                    currentUsage == other.currentUsage &&
-                    entitlementUpdatedAt == other.entitlementUpdatedAt &&
-                    feature == other.feature &&
-                    hasUnlimitedUsage == other.hasUnlimitedUsage &&
-                    isGranted == other.isGranted &&
-                    resetPeriod == other.resetPeriod &&
-                    usageLimit == other.usageLimit &&
-                    usagePeriodAnchor == other.usagePeriodAnchor &&
-                    usagePeriodEnd == other.usagePeriodEnd &&
-                    usagePeriodStart == other.usagePeriodStart &&
-                    additionalProperties == other.additionalProperties
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "UnionMember1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(
-                    accessDeniedReason,
-                    currentUsage,
-                    entitlementUpdatedAt,
-                    feature,
-                    hasUnlimitedUsage,
-                    isGranted,
-                    resetPeriod,
-                    usageLimit,
-                    usagePeriodAnchor,
-                    usagePeriodEnd,
-                    usagePeriodStart,
-                    additionalProperties,
-                )
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "Entitlement{accessDeniedReason=$accessDeniedReason, currentUsage=$currentUsage, entitlementUpdatedAt=$entitlementUpdatedAt, feature=$feature, hasUnlimitedUsage=$hasUnlimitedUsage, isGranted=$isGranted, resetPeriod=$resetPeriod, usageLimit=$usageLimit, usagePeriodAnchor=$usagePeriodAnchor, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, additionalProperties=$additionalProperties}"
         }
 
         /** Provision status: SUCCESS or PAYMENT_REQUIRED */
@@ -7563,10 +9693,10 @@ private constructor(
                 id == other.id &&
                 entitlements == other.entitlements &&
                 status == other.status &&
+                subscription == other.subscription &&
                 checkoutBillingId == other.checkoutBillingId &&
                 checkoutUrl == other.checkoutUrl &&
                 isScheduled == other.isScheduled &&
-                subscription == other.subscription &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -7575,10 +9705,10 @@ private constructor(
                 id,
                 entitlements,
                 status,
+                subscription,
                 checkoutBillingId,
                 checkoutUrl,
                 isScheduled,
-                subscription,
                 additionalProperties,
             )
         }
@@ -7586,7 +9716,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, entitlements=$entitlements, status=$status, checkoutBillingId=$checkoutBillingId, checkoutUrl=$checkoutUrl, isScheduled=$isScheduled, subscription=$subscription, additionalProperties=$additionalProperties}"
+            "Data{id=$id, entitlements=$entitlements, status=$status, subscription=$subscription, checkoutBillingId=$checkoutBillingId, checkoutUrl=$checkoutUrl, isScheduled=$isScheduled, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
