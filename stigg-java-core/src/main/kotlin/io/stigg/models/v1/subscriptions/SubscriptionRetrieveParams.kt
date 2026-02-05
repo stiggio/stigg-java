@@ -9,7 +9,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single subscription by ID */
+/**
+ * Retrieves a subscription by its unique identifier, including plan details, billing period,
+ * status, and add-ons.
+ */
 class SubscriptionRetrieveParams
 private constructor(
     private val id: String?,

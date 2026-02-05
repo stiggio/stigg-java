@@ -24,7 +24,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Report usage measurements */
+/**
+ * Reports usage measurements for metered features. The reported usage is used to track, limit, and
+ * bill customer consumption.
+ */
 class UsageReportParams
 private constructor(
     private val body: Body,

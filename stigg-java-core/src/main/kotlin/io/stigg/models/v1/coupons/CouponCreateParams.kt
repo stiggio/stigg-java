@@ -23,7 +23,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create coupon */
+/**
+ * Creates a new discount coupon with percentage or fixed amount off, applicable to customer
+ * subscriptions.
+ */
 class CouponCreateParams
 private constructor(
     private val body: Body,

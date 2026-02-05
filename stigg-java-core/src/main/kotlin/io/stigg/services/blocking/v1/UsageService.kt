@@ -26,7 +26,7 @@ interface UsageService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageService
 
-    /** Get usage history */
+    /** Retrieves historical usage data for a customer's metered feature over time. */
     fun history(featureId: String, params: UsageHistoryParams): UsageHistoryResponse =
         history(featureId, params, RequestOptions.none())
 
@@ -48,7 +48,10 @@ interface UsageService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): UsageHistoryResponse
 
-    /** Report usage measurements */
+    /**
+     * Reports usage measurements for metered features. The reported usage is used to track, limit,
+     * and bill customer consumption.
+     */
     fun report(params: UsageReportParams): UsageReportResponse =
         report(params, RequestOptions.none())
 

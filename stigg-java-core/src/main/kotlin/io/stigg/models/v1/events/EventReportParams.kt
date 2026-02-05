@@ -23,7 +23,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Report usage events */
+/**
+ * Reports raw usage events for event-based metering. Events are ingested asynchronously and
+ * aggregated into usage totals.
+ */
 class EventReportParams
 private constructor(
     private val body: Body,

@@ -38,7 +38,10 @@ interface CustomerServiceAsync {
 
     fun promotionalEntitlements(): PromotionalEntitlementServiceAsync
 
-    /** Get a single customer by ID */
+    /**
+     * Retrieves a customer by their unique identifier, including billing information and
+     * subscription status.
+     */
     fun retrieve(id: String): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none())
 
@@ -70,7 +73,7 @@ interface CustomerServiceAsync {
     fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update a customer */
+    /** Updates an existing customer's properties such as name, email, and billing information. */
     fun update(id: String): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none())
 
@@ -102,7 +105,7 @@ interface CustomerServiceAsync {
     fun update(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none(), requestOptions)
 
-    /** Get a list of customers */
+    /** Retrieves a paginated list of customers in the environment. */
     fun list(): CompletableFuture<CustomerListPageAsync> = list(CustomerListParams.none())
 
     /** @see list */
@@ -120,7 +123,9 @@ interface CustomerServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<CustomerListPageAsync> =
         list(CustomerListParams.none(), requestOptions)
 
-    /** Archive customer */
+    /**
+     * Archives a customer, preventing new subscriptions. Optionally cancels existing subscriptions.
+     */
     fun archive(id: String): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none())
 
@@ -152,7 +157,9 @@ interface CustomerServiceAsync {
     fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
-    /** Bulk import customers */
+    /**
+     * Imports multiple customers in bulk. Used for migrating customer data from external systems.
+     */
     fun import_(params: CustomerImportParams): CompletableFuture<CustomerImportResponse> =
         import_(params, RequestOptions.none())
 
@@ -162,7 +169,10 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerImportResponse>
 
-    /** Provision customer */
+    /**
+     * Creates a new customer and optionally provisions an initial subscription in a single
+     * operation.
+     */
     fun provision(params: CustomerProvisionParams): CompletableFuture<CustomerResponse> =
         provision(params, RequestOptions.none())
 
@@ -172,7 +182,7 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
 
-    /** Unarchive customer */
+    /** Restores an archived customer, allowing them to create new subscriptions again. */
     fun unarchive(id: String): CompletableFuture<CustomerResponse> =
         unarchive(id, CustomerUnarchiveParams.none())
 
