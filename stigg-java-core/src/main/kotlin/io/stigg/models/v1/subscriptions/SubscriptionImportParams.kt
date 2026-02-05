@@ -40,11 +40,26 @@ private constructor(
     fun subscriptions(): List<Subscription> = body.subscriptions()
 
     /**
+     * Integration ID to use for importing subscriptions
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun integrationId(): Optional<String> = body.integrationId()
+
+    /**
      * Returns the raw JSON value of [subscriptions].
      *
      * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _subscriptions(): JsonField<List<Subscription>> = body._subscriptions()
+
+    /**
+     * Returns the raw JSON value of [integrationId].
+     *
+     * Unlike [integrationId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _integrationId(): JsonField<String> = body._integrationId()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -89,6 +104,7 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [subscriptions]
+         * - [integrationId]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -115,6 +131,24 @@ private constructor(
          */
         fun addSubscription(subscription: Subscription) = apply {
             body.addSubscription(subscription)
+        }
+
+        /** Integration ID to use for importing subscriptions */
+        fun integrationId(integrationId: String?) = apply { body.integrationId(integrationId) }
+
+        /** Alias for calling [Builder.integrationId] with `integrationId.orElse(null)`. */
+        fun integrationId(integrationId: Optional<String>) =
+            integrationId(integrationId.getOrNull())
+
+        /**
+         * Sets [Builder.integrationId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.integrationId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun integrationId(integrationId: JsonField<String>) = apply {
+            body.integrationId(integrationId)
         }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
@@ -268,6 +302,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val subscriptions: JsonField<List<Subscription>>,
+        private val integrationId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -275,8 +310,11 @@ private constructor(
         private constructor(
             @JsonProperty("subscriptions")
             @ExcludeMissing
-            subscriptions: JsonField<List<Subscription>> = JsonMissing.of()
-        ) : this(subscriptions, mutableMapOf())
+            subscriptions: JsonField<List<Subscription>> = JsonMissing.of(),
+            @JsonProperty("integrationId")
+            @ExcludeMissing
+            integrationId: JsonField<String> = JsonMissing.of(),
+        ) : this(subscriptions, integrationId, mutableMapOf())
 
         /**
          * List of subscription objects to import
@@ -287,6 +325,14 @@ private constructor(
         fun subscriptions(): List<Subscription> = subscriptions.getRequired("subscriptions")
 
         /**
+         * Integration ID to use for importing subscriptions
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun integrationId(): Optional<String> = integrationId.getOptional("integrationId")
+
+        /**
          * Returns the raw JSON value of [subscriptions].
          *
          * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected
@@ -295,6 +341,16 @@ private constructor(
         @JsonProperty("subscriptions")
         @ExcludeMissing
         fun _subscriptions(): JsonField<List<Subscription>> = subscriptions
+
+        /**
+         * Returns the raw JSON value of [integrationId].
+         *
+         * Unlike [integrationId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("integrationId")
+        @ExcludeMissing
+        fun _integrationId(): JsonField<String> = integrationId
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -325,11 +381,13 @@ private constructor(
         class Builder internal constructor() {
 
             private var subscriptions: JsonField<MutableList<Subscription>>? = null
+            private var integrationId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 subscriptions = body.subscriptions.map { it.toMutableList() }
+                integrationId = body.integrationId
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -358,6 +416,25 @@ private constructor(
                     (subscriptions ?: JsonField.of(mutableListOf())).also {
                         checkKnown("subscriptions", it).add(subscription)
                     }
+            }
+
+            /** Integration ID to use for importing subscriptions */
+            fun integrationId(integrationId: String?) =
+                integrationId(JsonField.ofNullable(integrationId))
+
+            /** Alias for calling [Builder.integrationId] with `integrationId.orElse(null)`. */
+            fun integrationId(integrationId: Optional<String>) =
+                integrationId(integrationId.getOrNull())
+
+            /**
+             * Sets [Builder.integrationId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.integrationId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun integrationId(integrationId: JsonField<String>) = apply {
+                this.integrationId = integrationId
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -394,6 +471,7 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("subscriptions", subscriptions).map { it.toImmutable() },
+                    integrationId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -406,6 +484,7 @@ private constructor(
             }
 
             subscriptions().forEach { it.validate() }
+            integrationId()
             validated = true
         }
 
@@ -425,7 +504,8 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (subscriptions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (subscriptions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (integrationId.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -434,15 +514,18 @@ private constructor(
 
             return other is Body &&
                 subscriptions == other.subscriptions &&
+                integrationId == other.integrationId &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(subscriptions, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(subscriptions, integrationId, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{subscriptions=$subscriptions, additionalProperties=$additionalProperties}"
+            "Body{subscriptions=$subscriptions, integrationId=$integrationId, additionalProperties=$additionalProperties}"
     }
 
     class Subscription
