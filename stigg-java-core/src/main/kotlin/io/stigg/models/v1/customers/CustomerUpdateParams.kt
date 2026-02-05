@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update a customer */
+/** Updates an existing customer's properties such as name, email, and billing information. */
 class CustomerUpdateParams
 private constructor(
     private val id: String?,

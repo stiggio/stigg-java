@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Cancel scheduled update */
+/** Cancels a scheduled subscription update, such as a future downgrade or plan change. */
 class FutureUpdateCancelScheduleParams
 private constructor(
     private val id: String?,

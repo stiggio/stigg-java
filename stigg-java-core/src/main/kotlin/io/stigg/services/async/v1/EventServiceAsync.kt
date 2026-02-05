@@ -24,7 +24,10 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** Report usage events */
+    /**
+     * Reports raw usage events for event-based metering. Events are ingested asynchronously and
+     * aggregated into usage totals.
+     */
     fun report(params: EventReportParams): CompletableFuture<EventReportResponse> =
         report(params, RequestOptions.none())
 

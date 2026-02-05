@@ -27,7 +27,10 @@ interface CouponService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponService
 
-    /** Create coupon */
+    /**
+     * Creates a new discount coupon with percentage or fixed amount off, applicable to customer
+     * subscriptions.
+     */
     fun create(params: CouponCreateParams): Coupon = create(params, RequestOptions.none())
 
     /** @see create */
@@ -36,7 +39,7 @@ interface CouponService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Coupon
 
-    /** Get a single coupon by ID */
+    /** Retrieves a coupon by its unique identifier. */
     fun retrieve(id: String): Coupon = retrieve(id, CouponRetrieveParams.none())
 
     /** @see retrieve */
@@ -63,7 +66,7 @@ interface CouponService {
     fun retrieve(id: String, requestOptions: RequestOptions): Coupon =
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
-    /** Get a list of coupons */
+    /** Retrieves a paginated list of coupons in the environment. */
     fun list(): CouponListPage = list(CouponListParams.none())
 
     /** @see list */

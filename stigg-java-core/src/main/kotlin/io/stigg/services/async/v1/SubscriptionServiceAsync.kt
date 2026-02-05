@@ -40,7 +40,10 @@ interface SubscriptionServiceAsync {
 
     fun futureUpdate(): FutureUpdateServiceAsync
 
-    /** Get a single subscription by ID */
+    /**
+     * Retrieves a subscription by its unique identifier, including plan details, billing period,
+     * status, and add-ons.
+     */
     fun retrieve(id: String): CompletableFuture<Subscription> =
         retrieve(id, SubscriptionRetrieveParams.none())
 
@@ -71,7 +74,10 @@ interface SubscriptionServiceAsync {
     fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<Subscription> =
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
-    /** Update a subscription */
+    /**
+     * Updates an active subscription's properties including billing period, add-ons, unit
+     * quantities, and discounts.
+     */
     fun update(id: String): CompletableFuture<Subscription> =
         update(id, SubscriptionUpdateParams.none())
 
@@ -102,7 +108,10 @@ interface SubscriptionServiceAsync {
     fun update(id: String, requestOptions: RequestOptions): CompletableFuture<Subscription> =
         update(id, SubscriptionUpdateParams.none(), requestOptions)
 
-    /** Get a list of subscriptions */
+    /**
+     * Retrieves a paginated list of subscriptions, with optional filters for customer, status, and
+     * plan.
+     */
     fun list(): CompletableFuture<SubscriptionListPageAsync> = list(SubscriptionListParams.none())
 
     /** @see list */
@@ -120,7 +129,10 @@ interface SubscriptionServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<SubscriptionListPageAsync> =
         list(SubscriptionListParams.none(), requestOptions)
 
-    /** Cancel subscription */
+    /**
+     * Cancels an active subscription, either immediately or at a specified time such as end of
+     * billing period.
+     */
     fun cancel(id: String): CompletableFuture<Subscription> =
         cancel(id, SubscriptionCancelParams.none())
 
@@ -151,7 +163,10 @@ interface SubscriptionServiceAsync {
     fun cancel(id: String, requestOptions: RequestOptions): CompletableFuture<Subscription> =
         cancel(id, SubscriptionCancelParams.none(), requestOptions)
 
-    /** Delegate subscription payment to customer */
+    /**
+     * Delegates the payment responsibility of a subscription to a different customer. The delegated
+     * customer will be billed for this subscription.
+     */
     fun delegate(id: String, params: SubscriptionDelegateParams): CompletableFuture<Subscription> =
         delegate(id, params, RequestOptions.none())
 
@@ -172,7 +187,10 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<Subscription>
 
-    /** Bulk import subscriptions */
+    /**
+     * Imports multiple subscriptions in bulk. Used for migrating subscription data from external
+     * systems.
+     */
     fun import_(params: SubscriptionImportParams): CompletableFuture<SubscriptionImportResponse> =
         import_(params, RequestOptions.none())
 
@@ -182,7 +200,10 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionImportResponse>
 
-    /** Migrate subscription to latest plan version */
+    /**
+     * Migrates a subscription to the latest published version of its plan or add-ons. Handles
+     * prorated charges or credits automatically.
+     */
     fun migrate(id: String): CompletableFuture<Subscription> =
         migrate(id, SubscriptionMigrateParams.none())
 
@@ -213,7 +234,10 @@ interface SubscriptionServiceAsync {
     fun migrate(id: String, requestOptions: RequestOptions): CompletableFuture<Subscription> =
         migrate(id, SubscriptionMigrateParams.none(), requestOptions)
 
-    /** Preview subscription */
+    /**
+     * Previews the pricing impact of creating or updating a subscription without making changes.
+     * Returns estimated costs, taxes, and proration details.
+     */
     fun preview(params: SubscriptionPreviewParams): CompletableFuture<SubscriptionPreviewResponse> =
         preview(params, RequestOptions.none())
 
@@ -223,7 +247,10 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionPreviewResponse>
 
-    /** Provision subscription */
+    /**
+     * Creates a new subscription for an existing customer. When payment is required and no payment
+     * method exists, returns a checkout URL.
+     */
     fun provision(
         params: SubscriptionProvisionParams
     ): CompletableFuture<SubscriptionProvisionResponse> = provision(params, RequestOptions.none())
@@ -234,7 +261,10 @@ interface SubscriptionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SubscriptionProvisionResponse>
 
-    /** Transfer subscription to resource */
+    /**
+     * Transfers a subscription to a different resource ID. Used for multi-resource products where
+     * subscriptions apply to specific entities like websites or apps.
+     */
     fun transfer(id: String, params: SubscriptionTransferParams): CompletableFuture<Subscription> =
         transfer(id, params, RequestOptions.none())
 

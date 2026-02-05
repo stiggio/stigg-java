@@ -21,7 +21,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Cancel subscription */
+/**
+ * Cancels an active subscription, either immediately or at a specified time such as end of billing
+ * period.
+ */
 class SubscriptionCancelParams
 private constructor(
     private val id: String?,

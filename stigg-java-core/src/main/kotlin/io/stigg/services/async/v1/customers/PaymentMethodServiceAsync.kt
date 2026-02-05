@@ -25,7 +25,10 @@ interface PaymentMethodServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PaymentMethodServiceAsync
 
-    /** Attach payment method */
+    /**
+     * Attaches a payment method to a customer for billing. Required for paid subscriptions when
+     * integrated with a billing provider.
+     */
     fun attach(id: String, params: PaymentMethodAttachParams): CompletableFuture<CustomerResponse> =
         attach(id, params, RequestOptions.none())
 
@@ -47,7 +50,10 @@ interface PaymentMethodServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
 
-    /** Detach payment method */
+    /**
+     * Removes the payment method from a customer. Ensure active paid subscriptions have an
+     * alternative payment method.
+     */
     fun detach(id: String): CompletableFuture<CustomerResponse> =
         detach(id, PaymentMethodDetachParams.none())
 

@@ -27,7 +27,10 @@ interface CouponServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CouponServiceAsync
 
-    /** Create coupon */
+    /**
+     * Creates a new discount coupon with percentage or fixed amount off, applicable to customer
+     * subscriptions.
+     */
     fun create(params: CouponCreateParams): CompletableFuture<Coupon> =
         create(params, RequestOptions.none())
 
@@ -37,7 +40,7 @@ interface CouponServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<Coupon>
 
-    /** Get a single coupon by ID */
+    /** Retrieves a coupon by its unique identifier. */
     fun retrieve(id: String): CompletableFuture<Coupon> = retrieve(id, CouponRetrieveParams.none())
 
     /** @see retrieve */
@@ -67,7 +70,7 @@ interface CouponServiceAsync {
     fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<Coupon> =
         retrieve(id, CouponRetrieveParams.none(), requestOptions)
 
-    /** Get a list of coupons */
+    /** Retrieves a paginated list of coupons in the environment. */
     fun list(): CompletableFuture<CouponListPageAsync> = list(CouponListParams.none())
 
     /** @see list */

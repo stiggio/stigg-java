@@ -23,7 +23,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Bulk import subscriptions */
+/**
+ * Imports multiple subscriptions in bulk. Used for migrating subscription data from external
+ * systems.
+ */
 class SubscriptionImportParams
 private constructor(
     private val body: Body,

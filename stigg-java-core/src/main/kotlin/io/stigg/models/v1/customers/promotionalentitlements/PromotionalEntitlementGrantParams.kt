@@ -24,7 +24,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Create a promotional entitlements */
+/**
+ * Grants promotional entitlements to a customer, providing feature access outside their
+ * subscription. Entitlements can be time-limited or permanent.
+ */
 class PromotionalEntitlementGrantParams
 private constructor(
     private val customerId: String?,

@@ -24,7 +24,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Preview subscription */
+/**
+ * Previews the pricing impact of creating or updating a subscription without making changes.
+ * Returns estimated costs, taxes, and proration details.
+ */
 class SubscriptionPreviewParams
 private constructor(
     private val body: Body,

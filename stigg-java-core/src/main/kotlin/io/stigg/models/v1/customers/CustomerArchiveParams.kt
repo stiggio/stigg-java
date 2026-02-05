@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Archive customer */
+/** Archives a customer, preventing new subscriptions. Optionally cancels existing subscriptions. */
 class CustomerArchiveParams
 private constructor(
     private val id: String?,
