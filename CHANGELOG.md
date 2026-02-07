@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2026-02-07)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Features
+
+* **api:** api update ([5a8412b](https://github.com/stiggio/stigg-java/commit/5a8412be5f61c2f1071c15b40d7ef6e6ab8ec518))
+* **api:** api update ([f924a7a](https://github.com/stiggio/stigg-java/commit/f924a7a21ded6060533eade5f19f9ceee5e641da))
+* **api:** api update ([5eddb33](https://github.com/stiggio/stigg-java/commit/5eddb3304f4ae7ebc48b847f5dbdf2279d5d6cd6))
+
+
+### Chores
+
+* **internal:** allow passing args to `./scripts/test` ([a8f7255](https://github.com/stiggio/stigg-java/commit/a8f7255ebf2cecf396eba8d9d3331d3a862c0a0c))
+* **internal:** upgrade AssertJ ([3d57674](https://github.com/stiggio/stigg-java/commit/3d5767409773fd810a78fb510293c5c35f8fc7b4))
+
 ## 0.1.0-alpha.4 (2026-01-29)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
