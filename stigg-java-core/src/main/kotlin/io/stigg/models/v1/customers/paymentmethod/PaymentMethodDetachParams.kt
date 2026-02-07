@@ -11,7 +11,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Detach payment method */
+/**
+ * Removes the payment method from a customer. Ensure active paid subscriptions have an alternative
+ * payment method.
+ */
 class PaymentMethodDetachParams
 private constructor(
     private val id: String?,

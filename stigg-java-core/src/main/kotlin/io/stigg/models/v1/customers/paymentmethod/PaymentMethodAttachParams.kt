@@ -21,7 +21,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Attach payment method */
+/**
+ * Attaches a payment method to a customer for billing. Required for paid subscriptions when
+ * integrated with a billing provider.
+ */
 class PaymentMethodAttachParams
 private constructor(
     private val id: String?,

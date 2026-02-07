@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Unarchive customer */
+/** Restores an archived customer, allowing them to create new subscriptions again. */
 class CustomerUnarchiveParams
 private constructor(
     private val id: String?,

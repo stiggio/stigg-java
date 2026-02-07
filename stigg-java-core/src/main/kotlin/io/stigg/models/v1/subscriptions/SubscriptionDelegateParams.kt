@@ -20,7 +20,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Delegate subscription payment to customer */
+/**
+ * Delegates the payment responsibility of a subscription to a different customer. The delegated
+ * customer will be billed for this subscription.
+ */
 class SubscriptionDelegateParams
 private constructor(
     private val id: String?,

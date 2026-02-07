@@ -9,7 +9,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single customer by ID */
+/**
+ * Retrieves a customer by their unique identifier, including billing information and subscription
+ * status.
+ */
 class CustomerRetrieveParams
 private constructor(
     private val id: String?,

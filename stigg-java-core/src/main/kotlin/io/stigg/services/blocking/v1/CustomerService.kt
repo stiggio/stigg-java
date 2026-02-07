@@ -38,7 +38,10 @@ interface CustomerService {
 
     fun promotionalEntitlements(): PromotionalEntitlementService
 
-    /** Get a single customer by ID */
+    /**
+     * Retrieves a customer by their unique identifier, including billing information and
+     * subscription status.
+     */
     fun retrieve(id: String): CustomerResponse = retrieve(id, CustomerRetrieveParams.none())
 
     /** @see retrieve */
@@ -68,7 +71,7 @@ interface CustomerService {
     fun retrieve(id: String, requestOptions: RequestOptions): CustomerResponse =
         retrieve(id, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update a customer */
+    /** Updates an existing customer's properties such as name, email, and billing information. */
     fun update(id: String): CustomerResponse = update(id, CustomerUpdateParams.none())
 
     /** @see update */
@@ -98,7 +101,7 @@ interface CustomerService {
     fun update(id: String, requestOptions: RequestOptions): CustomerResponse =
         update(id, CustomerUpdateParams.none(), requestOptions)
 
-    /** Get a list of customers */
+    /** Retrieves a paginated list of customers in the environment. */
     fun list(): CustomerListPage = list(CustomerListParams.none())
 
     /** @see list */
@@ -115,7 +118,9 @@ interface CustomerService {
     fun list(requestOptions: RequestOptions): CustomerListPage =
         list(CustomerListParams.none(), requestOptions)
 
-    /** Archive customer */
+    /**
+     * Archives a customer, preventing new subscriptions. Optionally cancels existing subscriptions.
+     */
     fun archive(id: String): CustomerResponse = archive(id, CustomerArchiveParams.none())
 
     /** @see archive */
@@ -145,7 +150,9 @@ interface CustomerService {
     fun archive(id: String, requestOptions: RequestOptions): CustomerResponse =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
-    /** Bulk import customers */
+    /**
+     * Imports multiple customers in bulk. Used for migrating customer data from external systems.
+     */
     fun import_(params: CustomerImportParams): CustomerImportResponse =
         import_(params, RequestOptions.none())
 
@@ -155,7 +162,10 @@ interface CustomerService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerImportResponse
 
-    /** Provision customer */
+    /**
+     * Creates a new customer and optionally provisions an initial subscription in a single
+     * operation.
+     */
     fun provision(params: CustomerProvisionParams): CustomerResponse =
         provision(params, RequestOptions.none())
 
@@ -165,7 +175,7 @@ interface CustomerService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerResponse
 
-    /** Unarchive customer */
+    /** Restores an archived customer, allowing them to create new subscriptions again. */
     fun unarchive(id: String): CustomerResponse = unarchive(id, CustomerUnarchiveParams.none())
 
     /** @see unarchive */

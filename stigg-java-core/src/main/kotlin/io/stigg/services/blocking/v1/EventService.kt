@@ -24,7 +24,10 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** Report usage events */
+    /**
+     * Reports raw usage events for event-based metering. Events are ingested asynchronously and
+     * aggregated into usage totals.
+     */
     fun report(params: EventReportParams): EventReportResponse =
         report(params, RequestOptions.none())
 

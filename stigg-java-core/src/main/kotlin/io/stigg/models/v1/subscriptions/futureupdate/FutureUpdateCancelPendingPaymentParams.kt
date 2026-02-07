@@ -11,7 +11,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Cancel pending payment update */
+/** Cancels a subscription update that is pending payment completion. */
 class FutureUpdateCancelPendingPaymentParams
 private constructor(
     private val id: String?,
