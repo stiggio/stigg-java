@@ -9,6 +9,8 @@ import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.CustomerServiceImpl
 import io.stigg.services.blocking.v1.EventService
 import io.stigg.services.blocking.v1.EventServiceImpl
+import io.stigg.services.blocking.v1.ProductService
+import io.stigg.services.blocking.v1.ProductServiceImpl
 import io.stigg.services.blocking.v1.SubscriptionService
 import io.stigg.services.blocking.v1.SubscriptionServiceImpl
 import io.stigg.services.blocking.v1.UsageService
@@ -33,6 +35,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
 
+    private val products: ProductService by lazy { ProductServiceImpl(clientOptions) }
+
     override fun withRawResponse(): V1Service.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service =
@@ -47,6 +51,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     override fun events(): EventService = events
 
     override fun usage(): UsageService = usage
+
+    override fun products(): ProductService = products
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1Service.WithRawResponse {
@@ -71,6 +77,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val products: ProductService.WithRawResponse by lazy {
+            ProductServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1Service.WithRawResponse =
@@ -87,5 +97,7 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         override fun events(): EventService.WithRawResponse = events
 
         override fun usage(): UsageService.WithRawResponse = usage
+
+        override fun products(): ProductService.WithRawResponse = products
     }
 }
