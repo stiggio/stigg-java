@@ -22,6 +22,9 @@ import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerListResourcesPageAsync
+import io.stigg.models.v1.customers.CustomerListResourcesPageResponse
+import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
@@ -94,6 +97,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CompletableFuture<CustomerImportResponse> =
         // post /api/v1/customers/import
         withRawResponse().import_(params, requestOptions).thenApply { it.parse() }
+
+    override fun listResources(
+        params: CustomerListResourcesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListResourcesPageAsync> =
+        // get /api/v1/customers/{id}/resources
+        withRawResponse().listResources(params, requestOptions).thenApply { it.parse() }
 
     override fun provision(
         params: CustomerProvisionParams,
@@ -301,6 +311,47 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                    }
+                }
+        }
+
+        private val listResourcesHandler: Handler<CustomerListResourcesPageResponse> =
+            jsonHandler<CustomerListResourcesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listResources(
+            params: CustomerListResourcesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "resources")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listResourcesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                CustomerListResourcesPageAsync.builder()
+                                    .service(CustomerServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

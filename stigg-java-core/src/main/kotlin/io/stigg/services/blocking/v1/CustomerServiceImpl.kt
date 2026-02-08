@@ -22,6 +22,9 @@ import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerListResourcesPage
+import io.stigg.models.v1.customers.CustomerListResourcesPageResponse
+import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
@@ -92,6 +95,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     ): CustomerImportResponse =
         // post /api/v1/customers/import
         withRawResponse().import_(params, requestOptions).parse()
+
+    override fun listResources(
+        params: CustomerListResourcesParams,
+        requestOptions: RequestOptions,
+    ): CustomerListResourcesPage =
+        // get /api/v1/customers/{id}/resources
+        withRawResponse().listResources(params, requestOptions).parse()
 
     override fun provision(
         params: CustomerProvisionParams,
@@ -283,6 +293,43 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listResourcesHandler: Handler<CustomerListResourcesPageResponse> =
+            jsonHandler<CustomerListResourcesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listResources(
+            params: CustomerListResourcesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListResourcesPage> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "resources")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listResourcesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        CustomerListResourcesPage.builder()
+                            .service(CustomerServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

@@ -11,6 +11,8 @@ import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerListResourcesPage
+import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
@@ -161,6 +163,37 @@ interface CustomerService {
         params: CustomerImportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerImportResponse
+
+    /** Get a list of customerresources */
+    fun listResources(id: String): CustomerListResourcesPage =
+        listResources(id, CustomerListResourcesParams.none())
+
+    /** @see listResources */
+    fun listResources(
+        id: String,
+        params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListResourcesPage = listResources(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listResources */
+    fun listResources(
+        id: String,
+        params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+    ): CustomerListResourcesPage = listResources(id, params, RequestOptions.none())
+
+    /** @see listResources */
+    fun listResources(
+        params: CustomerListResourcesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListResourcesPage
+
+    /** @see listResources */
+    fun listResources(params: CustomerListResourcesParams): CustomerListResourcesPage =
+        listResources(params, RequestOptions.none())
+
+    /** @see listResources */
+    fun listResources(id: String, requestOptions: RequestOptions): CustomerListResourcesPage =
+        listResources(id, CustomerListResourcesParams.none(), requestOptions)
 
     /**
      * Creates a new customer and optionally provisions an initial subscription in a single
@@ -384,6 +417,52 @@ interface CustomerService {
             params: CustomerImportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerImportResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/resources`, but is otherwise
+         * the same as [CustomerService.listResources].
+         */
+        @MustBeClosed
+        fun listResources(id: String): HttpResponseFor<CustomerListResourcesPage> =
+            listResources(id, CustomerListResourcesParams.none())
+
+        /** @see listResources */
+        @MustBeClosed
+        fun listResources(
+            id: String,
+            params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListResourcesPage> =
+            listResources(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listResources */
+        @MustBeClosed
+        fun listResources(
+            id: String,
+            params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+        ): HttpResponseFor<CustomerListResourcesPage> =
+            listResources(id, params, RequestOptions.none())
+
+        /** @see listResources */
+        @MustBeClosed
+        fun listResources(
+            params: CustomerListResourcesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListResourcesPage>
+
+        /** @see listResources */
+        @MustBeClosed
+        fun listResources(
+            params: CustomerListResourcesParams
+        ): HttpResponseFor<CustomerListResourcesPage> = listResources(params, RequestOptions.none())
+
+        /** @see listResources */
+        @MustBeClosed
+        fun listResources(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListResourcesPage> =
+            listResources(id, CustomerListResourcesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as

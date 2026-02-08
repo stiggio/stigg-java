@@ -6,6 +6,7 @@ import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.EventServiceAsync
+import io.stigg.services.async.v1.ProductServiceAsync
 import io.stigg.services.async.v1.SubscriptionServiceAsync
 import io.stigg.services.async.v1.UsageServiceAsync
 import java.util.function.Consumer
@@ -34,6 +35,8 @@ interface V1ServiceAsync {
 
     fun usage(): UsageServiceAsync
 
+    fun products(): ProductServiceAsync
+
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -53,5 +56,7 @@ interface V1ServiceAsync {
         fun events(): EventServiceAsync.WithRawResponse
 
         fun usage(): UsageServiceAsync.WithRawResponse
+
+        fun products(): ProductServiceAsync.WithRawResponse
     }
 }
