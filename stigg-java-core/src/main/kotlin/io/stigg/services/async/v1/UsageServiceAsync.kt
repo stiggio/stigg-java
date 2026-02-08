@@ -26,7 +26,7 @@ interface UsageServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageServiceAsync
 
-    /** Get usage history */
+    /** Retrieves historical usage data for a customer's metered feature over time. */
     fun history(
         featureId: String,
         params: UsageHistoryParams,
@@ -50,7 +50,10 @@ interface UsageServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<UsageHistoryResponse>
 
-    /** Report usage measurements */
+    /**
+     * Reports usage measurements for metered features. The reported usage is used to track, limit,
+     * and bill customer consumption.
+     */
     fun report(params: UsageReportParams): CompletableFuture<UsageReportResponse> =
         report(params, RequestOptions.none())
 

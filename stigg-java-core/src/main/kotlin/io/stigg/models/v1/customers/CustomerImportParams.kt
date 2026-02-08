@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Bulk import customers */
+/** Imports multiple customers in bulk. Used for migrating customer data from external systems. */
 class CustomerImportParams
 private constructor(
     private val body: Body,

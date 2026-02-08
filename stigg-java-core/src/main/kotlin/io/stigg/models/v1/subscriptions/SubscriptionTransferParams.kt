@@ -20,7 +20,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Transfer subscription to resource */
+/**
+ * Transfers a subscription to a different resource ID. Used for multi-resource products where
+ * subscriptions apply to specific entities like websites or apps.
+ */
 class SubscriptionTransferParams
 private constructor(
     private val id: String?,

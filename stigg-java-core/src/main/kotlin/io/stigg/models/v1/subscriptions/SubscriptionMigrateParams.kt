@@ -20,7 +20,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Migrate subscription to latest plan version */
+/**
+ * Migrates a subscription to the latest published version of its plan or add-ons. Handles prorated
+ * charges or credits automatically.
+ */
 class SubscriptionMigrateParams
 private constructor(
     private val id: String?,

@@ -40,7 +40,10 @@ interface SubscriptionService {
 
     fun futureUpdate(): FutureUpdateService
 
-    /** Get a single subscription by ID */
+    /**
+     * Retrieves a subscription by its unique identifier, including plan details, billing period,
+     * status, and add-ons.
+     */
     fun retrieve(id: String): Subscription = retrieve(id, SubscriptionRetrieveParams.none())
 
     /** @see retrieve */
@@ -70,7 +73,10 @@ interface SubscriptionService {
     fun retrieve(id: String, requestOptions: RequestOptions): Subscription =
         retrieve(id, SubscriptionRetrieveParams.none(), requestOptions)
 
-    /** Update a subscription */
+    /**
+     * Updates an active subscription's properties including billing period, add-ons, unit
+     * quantities, and discounts.
+     */
     fun update(id: String): Subscription = update(id, SubscriptionUpdateParams.none())
 
     /** @see update */
@@ -100,7 +106,10 @@ interface SubscriptionService {
     fun update(id: String, requestOptions: RequestOptions): Subscription =
         update(id, SubscriptionUpdateParams.none(), requestOptions)
 
-    /** Get a list of subscriptions */
+    /**
+     * Retrieves a paginated list of subscriptions, with optional filters for customer, status, and
+     * plan.
+     */
     fun list(): SubscriptionListPage = list(SubscriptionListParams.none())
 
     /** @see list */
@@ -117,7 +126,10 @@ interface SubscriptionService {
     fun list(requestOptions: RequestOptions): SubscriptionListPage =
         list(SubscriptionListParams.none(), requestOptions)
 
-    /** Cancel subscription */
+    /**
+     * Cancels an active subscription, either immediately or at a specified time such as end of
+     * billing period.
+     */
     fun cancel(id: String): Subscription = cancel(id, SubscriptionCancelParams.none())
 
     /** @see cancel */
@@ -147,7 +159,10 @@ interface SubscriptionService {
     fun cancel(id: String, requestOptions: RequestOptions): Subscription =
         cancel(id, SubscriptionCancelParams.none(), requestOptions)
 
-    /** Delegate subscription payment to customer */
+    /**
+     * Delegates the payment responsibility of a subscription to a different customer. The delegated
+     * customer will be billed for this subscription.
+     */
     fun delegate(id: String, params: SubscriptionDelegateParams): Subscription =
         delegate(id, params, RequestOptions.none())
 
@@ -168,7 +183,10 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Subscription
 
-    /** Bulk import subscriptions */
+    /**
+     * Imports multiple subscriptions in bulk. Used for migrating subscription data from external
+     * systems.
+     */
     fun import_(params: SubscriptionImportParams): SubscriptionImportResponse =
         import_(params, RequestOptions.none())
 
@@ -178,7 +196,10 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionImportResponse
 
-    /** Migrate subscription to latest plan version */
+    /**
+     * Migrates a subscription to the latest published version of its plan or add-ons. Handles
+     * prorated charges or credits automatically.
+     */
     fun migrate(id: String): Subscription = migrate(id, SubscriptionMigrateParams.none())
 
     /** @see migrate */
@@ -208,7 +229,10 @@ interface SubscriptionService {
     fun migrate(id: String, requestOptions: RequestOptions): Subscription =
         migrate(id, SubscriptionMigrateParams.none(), requestOptions)
 
-    /** Preview subscription */
+    /**
+     * Previews the pricing impact of creating or updating a subscription without making changes.
+     * Returns estimated costs, taxes, and proration details.
+     */
     fun preview(params: SubscriptionPreviewParams): SubscriptionPreviewResponse =
         preview(params, RequestOptions.none())
 
@@ -218,7 +242,10 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionPreviewResponse
 
-    /** Provision subscription */
+    /**
+     * Creates a new subscription for an existing customer. When payment is required and no payment
+     * method exists, returns a checkout URL.
+     */
     fun provision(params: SubscriptionProvisionParams): SubscriptionProvisionResponse =
         provision(params, RequestOptions.none())
 
@@ -228,7 +255,10 @@ interface SubscriptionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SubscriptionProvisionResponse
 
-    /** Transfer subscription to resource */
+    /**
+     * Transfers a subscription to a different resource ID. Used for multi-resource products where
+     * subscriptions apply to specific entities like websites or apps.
+     */
     fun transfer(id: String, params: SubscriptionTransferParams): Subscription =
         transfer(id, params, RequestOptions.none())
 

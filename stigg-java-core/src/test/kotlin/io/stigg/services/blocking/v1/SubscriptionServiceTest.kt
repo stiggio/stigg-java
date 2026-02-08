@@ -320,6 +320,7 @@ internal class SubscriptionServiceTest {
                             .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
+                    .integrationId("integrationId")
                     .build()
             )
 

@@ -10,6 +10,8 @@ import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListParams
+import io.stigg.models.v1.customers.CustomerListResourcesPageAsync
+import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
@@ -38,7 +40,10 @@ interface CustomerServiceAsync {
 
     fun promotionalEntitlements(): PromotionalEntitlementServiceAsync
 
-    /** Get a single customer by ID */
+    /**
+     * Retrieves a customer by their unique identifier, including billing information and
+     * subscription status.
+     */
     fun retrieve(id: String): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none())
 
@@ -70,7 +75,7 @@ interface CustomerServiceAsync {
     fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         retrieve(id, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update a customer */
+    /** Updates an existing customer's properties such as name, email, and billing information. */
     fun update(id: String): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none())
 
@@ -102,7 +107,7 @@ interface CustomerServiceAsync {
     fun update(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         update(id, CustomerUpdateParams.none(), requestOptions)
 
-    /** Get a list of customers */
+    /** Retrieves a paginated list of customers in the environment. */
     fun list(): CompletableFuture<CustomerListPageAsync> = list(CustomerListParams.none())
 
     /** @see list */
@@ -120,7 +125,9 @@ interface CustomerServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<CustomerListPageAsync> =
         list(CustomerListParams.none(), requestOptions)
 
-    /** Archive customer */
+    /**
+     * Archives a customer, preventing new subscriptions. Optionally cancels existing subscriptions.
+     */
     fun archive(id: String): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none())
 
@@ -152,7 +159,9 @@ interface CustomerServiceAsync {
     fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none(), requestOptions)
 
-    /** Bulk import customers */
+    /**
+     * Imports multiple customers in bulk. Used for migrating customer data from external systems.
+     */
     fun import_(params: CustomerImportParams): CompletableFuture<CustomerImportResponse> =
         import_(params, RequestOptions.none())
 
@@ -162,7 +171,48 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerImportResponse>
 
-    /** Provision customer */
+    /** Get a list of customerresources */
+    fun listResources(id: String): CompletableFuture<CustomerListResourcesPageAsync> =
+        listResources(id, CustomerListResourcesParams.none())
+
+    /** @see listResources */
+    fun listResources(
+        id: String,
+        params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListResourcesPageAsync> =
+        listResources(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listResources */
+    fun listResources(
+        id: String,
+        params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+    ): CompletableFuture<CustomerListResourcesPageAsync> =
+        listResources(id, params, RequestOptions.none())
+
+    /** @see listResources */
+    fun listResources(
+        params: CustomerListResourcesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListResourcesPageAsync>
+
+    /** @see listResources */
+    fun listResources(
+        params: CustomerListResourcesParams
+    ): CompletableFuture<CustomerListResourcesPageAsync> =
+        listResources(params, RequestOptions.none())
+
+    /** @see listResources */
+    fun listResources(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListResourcesPageAsync> =
+        listResources(id, CustomerListResourcesParams.none(), requestOptions)
+
+    /**
+     * Creates a new customer and optionally provisions an initial subscription in a single
+     * operation.
+     */
     fun provision(params: CustomerProvisionParams): CompletableFuture<CustomerResponse> =
         provision(params, RequestOptions.none())
 
@@ -172,7 +222,7 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
 
-    /** Unarchive customer */
+    /** Restores an archived customer, allowing them to create new subscriptions again. */
     fun unarchive(id: String): CompletableFuture<CustomerResponse> =
         unarchive(id, CustomerUnarchiveParams.none())
 
@@ -384,6 +434,49 @@ interface CustomerServiceAsync {
             params: CustomerImportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<CustomerImportResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/resources`, but is otherwise
+         * the same as [CustomerServiceAsync.listResources].
+         */
+        fun listResources(
+            id: String
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> =
+            listResources(id, CustomerListResourcesParams.none())
+
+        /** @see listResources */
+        fun listResources(
+            id: String,
+            params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> =
+            listResources(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listResources */
+        fun listResources(
+            id: String,
+            params: CustomerListResourcesParams = CustomerListResourcesParams.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> =
+            listResources(id, params, RequestOptions.none())
+
+        /** @see listResources */
+        fun listResources(
+            params: CustomerListResourcesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>>
+
+        /** @see listResources */
+        fun listResources(
+            params: CustomerListResourcesParams
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> =
+            listResources(params, RequestOptions.none())
+
+        /** @see listResources */
+        fun listResources(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListResourcesPageAsync>> =
+            listResources(id, CustomerListResourcesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers`, but is otherwise the same as

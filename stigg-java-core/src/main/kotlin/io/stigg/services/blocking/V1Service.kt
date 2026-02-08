@@ -6,6 +6,7 @@ import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.EventService
+import io.stigg.services.blocking.v1.ProductService
 import io.stigg.services.blocking.v1.SubscriptionService
 import io.stigg.services.blocking.v1.UsageService
 import java.util.function.Consumer
@@ -34,6 +35,8 @@ interface V1Service {
 
     fun usage(): UsageService
 
+    fun products(): ProductService
+
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -53,5 +56,7 @@ interface V1Service {
         fun events(): EventService.WithRawResponse
 
         fun usage(): UsageService.WithRawResponse
+
+        fun products(): ProductService.WithRawResponse
     }
 }

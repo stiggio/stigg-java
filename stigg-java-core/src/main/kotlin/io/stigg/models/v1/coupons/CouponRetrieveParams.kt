@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a single coupon by ID */
+/** Retrieves a coupon by its unique identifier. */
 class CouponRetrieveParams
 private constructor(
     private val id: String?,

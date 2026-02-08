@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of customers */
+/** Retrieves a paginated list of customers in the environment. */
 class CustomerListParams
 private constructor(
     private val after: String?,

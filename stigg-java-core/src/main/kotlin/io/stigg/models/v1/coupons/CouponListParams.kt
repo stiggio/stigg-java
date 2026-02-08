@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of coupons */
+/** Retrieves a paginated list of coupons in the environment. */
 class CouponListParams
 private constructor(
     private val after: String?,

@@ -12,7 +12,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get usage history */
+/** Retrieves historical usage data for a customer's metered feature over time. */
 class UsageHistoryParams
 private constructor(
     private val customerId: String,

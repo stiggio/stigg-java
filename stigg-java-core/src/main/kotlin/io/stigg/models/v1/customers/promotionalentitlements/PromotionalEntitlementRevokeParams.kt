@@ -12,7 +12,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Revoke promotional entitlement */
+/** Revokes a previously granted promotional entitlement from a customer for a specific feature. */
 class PromotionalEntitlementRevokeParams
 private constructor(
     private val customerId: String,

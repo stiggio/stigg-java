@@ -26,7 +26,10 @@ interface PromotionalEntitlementService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PromotionalEntitlementService
 
-    /** Create a promotional entitlements */
+    /**
+     * Grants promotional entitlements to a customer, providing feature access outside their
+     * subscription. Entitlements can be time-limited or permanent.
+     */
     fun grant(
         customerId: String,
         params: PromotionalEntitlementGrantParams,
@@ -50,7 +53,9 @@ interface PromotionalEntitlementService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): PromotionalEntitlementGrantResponse
 
-    /** Revoke promotional entitlement */
+    /**
+     * Revokes a previously granted promotional entitlement from a customer for a specific feature.
+     */
     fun revoke(
         featureId: String,
         params: PromotionalEntitlementRevokeParams,

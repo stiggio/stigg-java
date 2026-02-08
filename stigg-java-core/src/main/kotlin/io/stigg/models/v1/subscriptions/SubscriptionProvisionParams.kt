@@ -24,7 +24,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Provision subscription */
+/**
+ * Creates a new subscription for an existing customer. When payment is required and no payment
+ * method exists, returns a checkout URL.
+ */
 class SubscriptionProvisionParams
 private constructor(
     private val body: Body,

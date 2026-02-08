@@ -9,7 +9,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of subscriptions */
+/**
+ * Retrieves a paginated list of subscriptions, with optional filters for customer, status, and
+ * plan.
+ */
 class SubscriptionListParams
 private constructor(
     private val after: String?,

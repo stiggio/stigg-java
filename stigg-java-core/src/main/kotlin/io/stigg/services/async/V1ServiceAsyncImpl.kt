@@ -9,6 +9,8 @@ import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsyncImpl
 import io.stigg.services.async.v1.EventServiceAsync
 import io.stigg.services.async.v1.EventServiceAsyncImpl
+import io.stigg.services.async.v1.ProductServiceAsync
+import io.stigg.services.async.v1.ProductServiceAsyncImpl
 import io.stigg.services.async.v1.SubscriptionServiceAsync
 import io.stigg.services.async.v1.SubscriptionServiceAsyncImpl
 import io.stigg.services.async.v1.UsageServiceAsync
@@ -34,6 +36,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
 
+    private val products: ProductServiceAsync by lazy { ProductServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): V1ServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync =
@@ -48,6 +52,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun events(): EventServiceAsync = events
 
     override fun usage(): UsageServiceAsync = usage
+
+    override fun products(): ProductServiceAsync = products
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
@@ -72,6 +78,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val products: ProductServiceAsync.WithRawResponse by lazy {
+            ProductServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1ServiceAsync.WithRawResponse =
@@ -88,5 +98,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         override fun events(): EventServiceAsync.WithRawResponse = events
 
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
+
+        override fun products(): ProductServiceAsync.WithRawResponse = products
     }
 }

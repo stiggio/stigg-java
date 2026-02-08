@@ -28,6 +28,7 @@ internal class SubscriptionImportParamsTest {
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+            .integrationId("integrationId")
             .build()
     }
 
@@ -51,6 +52,7 @@ internal class SubscriptionImportParamsTest {
                         .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
+                .integrationId("integrationId")
                 .build()
 
         val body = params._body()
@@ -72,6 +74,7 @@ internal class SubscriptionImportParamsTest {
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+        assertThat(body.integrationId()).contains("integrationId")
     }
 
     @Test

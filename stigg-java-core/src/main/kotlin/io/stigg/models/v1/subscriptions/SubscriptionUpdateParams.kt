@@ -24,7 +24,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Update a subscription */
+/**
+ * Updates an active subscription's properties including billing period, add-ons, unit quantities,
+ * and discounts.
+ */
 class SubscriptionUpdateParams
 private constructor(
     private val id: String?,

@@ -19,32 +19,64 @@ internal class SubscriptionProvisionResponseTest {
                     SubscriptionProvisionResponse.Data.builder()
                         .id("id")
                         .addEntitlement(
-                            SubscriptionProvisionResponse.Data.Entitlement.builder()
-                                .accessDeniedReason("accessDeniedReason")
+                            SubscriptionProvisionResponse.Data.Entitlement
+                                .SubscriptionFeatureEntitlement
+                                .builder()
+                                .accessDeniedReason(
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .AccessDeniedReason
+                                        .FEATURE_NOT_FOUND
+                                )
+                                .isGranted(true)
+                                .type(
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .Type
+                                        .FEATURE
+                                )
                                 .currentUsage(0.0)
                                 .entitlementUpdatedAt(
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
                                 )
                                 .feature(
-                                    SubscriptionProvisionResponse.Data.Entitlement.Feature.builder()
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .Feature
+                                        .builder()
+                                        .displayName("displayName")
+                                        .featureStatus(
+                                            SubscriptionProvisionResponse.Data.Entitlement
+                                                .SubscriptionFeatureEntitlement
+                                                .Feature
+                                                .FeatureStatus
+                                                .NEW
+                                        )
+                                        .featureType(
+                                            SubscriptionProvisionResponse.Data.Entitlement
+                                                .SubscriptionFeatureEntitlement
+                                                .Feature
+                                                .FeatureType
+                                                .BOOLEAN
+                                        )
                                         .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)
-                                .isGranted(true)
                                 .resetPeriod(
-                                    SubscriptionProvisionResponse.Data.Entitlement.ResetPeriod.YEAR
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .ResetPeriod
+                                        .YEAR
                                 )
                                 .usageLimit(0.0)
                                 .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
                         .status(SubscriptionProvisionResponse.Data.Status.SUCCESS)
-                        .checkoutBillingId("checkoutBillingId")
-                        .checkoutUrl("checkoutUrl")
-                        .isScheduled(true)
                         .subscription(
                             SubscriptionProvisionResponse.Data.Subscription.builder()
                                 .id("id")
@@ -162,6 +194,9 @@ internal class SubscriptionProvisionResponseTest {
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
+                        .checkoutBillingId("checkoutBillingId")
+                        .checkoutUrl("checkoutUrl")
+                        .isScheduled(true)
                         .build()
                 )
                 .build()
@@ -171,30 +206,62 @@ internal class SubscriptionProvisionResponseTest {
                 SubscriptionProvisionResponse.Data.builder()
                     .id("id")
                     .addEntitlement(
-                        SubscriptionProvisionResponse.Data.Entitlement.builder()
-                            .accessDeniedReason("accessDeniedReason")
+                        SubscriptionProvisionResponse.Data.Entitlement
+                            .SubscriptionFeatureEntitlement
+                            .builder()
+                            .accessDeniedReason(
+                                SubscriptionProvisionResponse.Data.Entitlement
+                                    .SubscriptionFeatureEntitlement
+                                    .AccessDeniedReason
+                                    .FEATURE_NOT_FOUND
+                            )
+                            .isGranted(true)
+                            .type(
+                                SubscriptionProvisionResponse.Data.Entitlement
+                                    .SubscriptionFeatureEntitlement
+                                    .Type
+                                    .FEATURE
+                            )
                             .currentUsage(0.0)
                             .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .feature(
-                                SubscriptionProvisionResponse.Data.Entitlement.Feature.builder()
+                                SubscriptionProvisionResponse.Data.Entitlement
+                                    .SubscriptionFeatureEntitlement
+                                    .Feature
+                                    .builder()
+                                    .displayName("displayName")
+                                    .featureStatus(
+                                        SubscriptionProvisionResponse.Data.Entitlement
+                                            .SubscriptionFeatureEntitlement
+                                            .Feature
+                                            .FeatureStatus
+                                            .NEW
+                                    )
+                                    .featureType(
+                                        SubscriptionProvisionResponse.Data.Entitlement
+                                            .SubscriptionFeatureEntitlement
+                                            .Feature
+                                            .FeatureType
+                                            .BOOLEAN
+                                    )
                                     .refId("refId")
                                     .build()
                             )
                             .hasUnlimitedUsage(true)
-                            .isGranted(true)
                             .resetPeriod(
-                                SubscriptionProvisionResponse.Data.Entitlement.ResetPeriod.YEAR
+                                SubscriptionProvisionResponse.Data.Entitlement
+                                    .SubscriptionFeatureEntitlement
+                                    .ResetPeriod
+                                    .YEAR
                             )
                             .usageLimit(0.0)
                             .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
                     .status(SubscriptionProvisionResponse.Data.Status.SUCCESS)
-                    .checkoutBillingId("checkoutBillingId")
-                    .checkoutUrl("checkoutUrl")
-                    .isScheduled(true)
                     .subscription(
                         SubscriptionProvisionResponse.Data.Subscription.builder()
                             .id("id")
@@ -309,6 +376,9 @@ internal class SubscriptionProvisionResponseTest {
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
+                    .checkoutBillingId("checkoutBillingId")
+                    .checkoutUrl("checkoutUrl")
+                    .isScheduled(true)
                     .build()
             )
     }
@@ -322,32 +392,64 @@ internal class SubscriptionProvisionResponseTest {
                     SubscriptionProvisionResponse.Data.builder()
                         .id("id")
                         .addEntitlement(
-                            SubscriptionProvisionResponse.Data.Entitlement.builder()
-                                .accessDeniedReason("accessDeniedReason")
+                            SubscriptionProvisionResponse.Data.Entitlement
+                                .SubscriptionFeatureEntitlement
+                                .builder()
+                                .accessDeniedReason(
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .AccessDeniedReason
+                                        .FEATURE_NOT_FOUND
+                                )
+                                .isGranted(true)
+                                .type(
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .Type
+                                        .FEATURE
+                                )
                                 .currentUsage(0.0)
                                 .entitlementUpdatedAt(
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
                                 )
                                 .feature(
-                                    SubscriptionProvisionResponse.Data.Entitlement.Feature.builder()
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .Feature
+                                        .builder()
+                                        .displayName("displayName")
+                                        .featureStatus(
+                                            SubscriptionProvisionResponse.Data.Entitlement
+                                                .SubscriptionFeatureEntitlement
+                                                .Feature
+                                                .FeatureStatus
+                                                .NEW
+                                        )
+                                        .featureType(
+                                            SubscriptionProvisionResponse.Data.Entitlement
+                                                .SubscriptionFeatureEntitlement
+                                                .Feature
+                                                .FeatureType
+                                                .BOOLEAN
+                                        )
                                         .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)
-                                .isGranted(true)
                                 .resetPeriod(
-                                    SubscriptionProvisionResponse.Data.Entitlement.ResetPeriod.YEAR
+                                    SubscriptionProvisionResponse.Data.Entitlement
+                                        .SubscriptionFeatureEntitlement
+                                        .ResetPeriod
+                                        .YEAR
                                 )
                                 .usageLimit(0.0)
                                 .usagePeriodAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .usagePeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .usagePeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
                         .status(SubscriptionProvisionResponse.Data.Status.SUCCESS)
-                        .checkoutBillingId("checkoutBillingId")
-                        .checkoutUrl("checkoutUrl")
-                        .isScheduled(true)
                         .subscription(
                             SubscriptionProvisionResponse.Data.Subscription.builder()
                                 .id("id")
@@ -465,6 +567,9 @@ internal class SubscriptionProvisionResponseTest {
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
+                        .checkoutBillingId("checkoutBillingId")
+                        .checkoutUrl("checkoutUrl")
+                        .isScheduled(true)
                         .build()
                 )
                 .build()
