@@ -19,20 +19,15 @@ internal class SubscriptionProvisionResponseTest {
                     SubscriptionProvisionResponse.Data.builder()
                         .id("id")
                         .addEntitlement(
-                            SubscriptionProvisionResponse.Data.Entitlement
-                                .SubscriptionFeatureEntitlement
-                                .builder()
+                            SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.builder()
                                 .accessDeniedReason(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .AccessDeniedReason
                                         .FEATURE_NOT_FOUND
                                 )
                                 .isGranted(true)
                                 .type(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
-                                        .Type
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.Type
                                         .FEATURE
                                 )
                                 .currentUsage(0.0)
@@ -40,21 +35,20 @@ internal class SubscriptionProvisionResponseTest {
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
                                 )
                                 .feature(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .Feature
                                         .builder()
                                         .displayName("displayName")
                                         .featureStatus(
                                             SubscriptionProvisionResponse.Data.Entitlement
-                                                .SubscriptionFeatureEntitlement
+                                                .UnionMember0
                                                 .Feature
                                                 .FeatureStatus
                                                 .NEW
                                         )
                                         .featureType(
                                             SubscriptionProvisionResponse.Data.Entitlement
-                                                .SubscriptionFeatureEntitlement
+                                                .UnionMember0
                                                 .Feature
                                                 .FeatureType
                                                 .BOOLEAN
@@ -64,8 +58,7 @@ internal class SubscriptionProvisionResponseTest {
                                 )
                                 .hasUnlimitedUsage(true)
                                 .resetPeriod(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .ResetPeriod
                                         .YEAR
                                 )
@@ -206,40 +199,31 @@ internal class SubscriptionProvisionResponseTest {
                 SubscriptionProvisionResponse.Data.builder()
                     .id("id")
                     .addEntitlement(
-                        SubscriptionProvisionResponse.Data.Entitlement
-                            .SubscriptionFeatureEntitlement
-                            .builder()
+                        SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.builder()
                             .accessDeniedReason(
-                                SubscriptionProvisionResponse.Data.Entitlement
-                                    .SubscriptionFeatureEntitlement
+                                SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                     .AccessDeniedReason
                                     .FEATURE_NOT_FOUND
                             )
                             .isGranted(true)
                             .type(
-                                SubscriptionProvisionResponse.Data.Entitlement
-                                    .SubscriptionFeatureEntitlement
-                                    .Type
+                                SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.Type
                                     .FEATURE
                             )
                             .currentUsage(0.0)
                             .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .feature(
-                                SubscriptionProvisionResponse.Data.Entitlement
-                                    .SubscriptionFeatureEntitlement
-                                    .Feature
+                                SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.Feature
                                     .builder()
                                     .displayName("displayName")
                                     .featureStatus(
-                                        SubscriptionProvisionResponse.Data.Entitlement
-                                            .SubscriptionFeatureEntitlement
+                                        SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                             .Feature
                                             .FeatureStatus
                                             .NEW
                                     )
                                     .featureType(
-                                        SubscriptionProvisionResponse.Data.Entitlement
-                                            .SubscriptionFeatureEntitlement
+                                        SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                             .Feature
                                             .FeatureType
                                             .BOOLEAN
@@ -249,8 +233,7 @@ internal class SubscriptionProvisionResponseTest {
                             )
                             .hasUnlimitedUsage(true)
                             .resetPeriod(
-                                SubscriptionProvisionResponse.Data.Entitlement
-                                    .SubscriptionFeatureEntitlement
+                                SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                     .ResetPeriod
                                     .YEAR
                             )
@@ -392,20 +375,15 @@ internal class SubscriptionProvisionResponseTest {
                     SubscriptionProvisionResponse.Data.builder()
                         .id("id")
                         .addEntitlement(
-                            SubscriptionProvisionResponse.Data.Entitlement
-                                .SubscriptionFeatureEntitlement
-                                .builder()
+                            SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.builder()
                                 .accessDeniedReason(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .AccessDeniedReason
                                         .FEATURE_NOT_FOUND
                                 )
                                 .isGranted(true)
                                 .type(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
-                                        .Type
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0.Type
                                         .FEATURE
                                 )
                                 .currentUsage(0.0)
@@ -413,21 +391,20 @@ internal class SubscriptionProvisionResponseTest {
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
                                 )
                                 .feature(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .Feature
                                         .builder()
                                         .displayName("displayName")
                                         .featureStatus(
                                             SubscriptionProvisionResponse.Data.Entitlement
-                                                .SubscriptionFeatureEntitlement
+                                                .UnionMember0
                                                 .Feature
                                                 .FeatureStatus
                                                 .NEW
                                         )
                                         .featureType(
                                             SubscriptionProvisionResponse.Data.Entitlement
-                                                .SubscriptionFeatureEntitlement
+                                                .UnionMember0
                                                 .Feature
                                                 .FeatureType
                                                 .BOOLEAN
@@ -437,8 +414,7 @@ internal class SubscriptionProvisionResponseTest {
                                 )
                                 .hasUnlimitedUsage(true)
                                 .resetPeriod(
-                                    SubscriptionProvisionResponse.Data.Entitlement
-                                        .SubscriptionFeatureEntitlement
+                                    SubscriptionProvisionResponse.Data.Entitlement.UnionMember0
                                         .ResetPeriod
                                         .YEAR
                                 )
