@@ -160,6 +160,9 @@ internal class SubscriptionServiceAsyncTest {
                     )
                     .addPriceOverride(
                         SubscriptionUpdateParams.PriceOverride.builder()
+                            .addonId("addonId")
+                            .baseCharge(true)
+                            .currencyId("currencyId")
                             .featureId("featureId")
                             .price(
                                 SubscriptionUpdateParams.PriceOverride.Price.builder()

@@ -6784,6 +6784,9 @@ private constructor(
     class PriceOverride
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val addonId: JsonField<String>,
+        private val baseCharge: JsonField<Boolean>,
+        private val currencyId: JsonField<String>,
         private val featureId: JsonField<String>,
         private val price: JsonField<Price>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -6791,25 +6794,81 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("addonId") @ExcludeMissing addonId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("baseCharge")
+            @ExcludeMissing
+            baseCharge: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("currencyId")
+            @ExcludeMissing
+            currencyId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("featureId")
             @ExcludeMissing
             featureId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("price") @ExcludeMissing price: JsonField<Price> = JsonMissing.of(),
-        ) : this(featureId, price, mutableMapOf())
+        ) : this(addonId, baseCharge, currencyId, featureId, price, mutableMapOf())
+
+        /**
+         * Addon ID
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun addonId(): Optional<String> = addonId.getOptional("addonId")
+
+        /**
+         * Whether this is a base charge override
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun baseCharge(): Optional<Boolean> = baseCharge.getOptional("baseCharge")
+
+        /**
+         * The corresponding custom currency id of the recurring credits price
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
 
         /**
          * Feature ID
          *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        fun featureId(): String = featureId.getRequired("featureId")
+        fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
         /**
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun price(): Optional<Price> = price.getOptional("price")
+
+        /**
+         * Returns the raw JSON value of [addonId].
+         *
+         * Unlike [addonId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("addonId") @ExcludeMissing fun _addonId(): JsonField<String> = addonId
+
+        /**
+         * Returns the raw JSON value of [baseCharge].
+         *
+         * Unlike [baseCharge], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("baseCharge")
+        @ExcludeMissing
+        fun _baseCharge(): JsonField<Boolean> = baseCharge
+
+        /**
+         * Returns the raw JSON value of [currencyId].
+         *
+         * Unlike [currencyId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currencyId")
+        @ExcludeMissing
+        fun _currencyId(): JsonField<String> = currencyId
 
         /**
          * Returns the raw JSON value of [featureId].
@@ -6839,30 +6898,65 @@ private constructor(
 
         companion object {
 
-            /**
-             * Returns a mutable builder for constructing an instance of [PriceOverride].
-             *
-             * The following fields are required:
-             * ```java
-             * .featureId()
-             * ```
-             */
+            /** Returns a mutable builder for constructing an instance of [PriceOverride]. */
             @JvmStatic fun builder() = Builder()
         }
 
         /** A builder for [PriceOverride]. */
         class Builder internal constructor() {
 
-            private var featureId: JsonField<String>? = null
+            private var addonId: JsonField<String> = JsonMissing.of()
+            private var baseCharge: JsonField<Boolean> = JsonMissing.of()
+            private var currencyId: JsonField<String> = JsonMissing.of()
+            private var featureId: JsonField<String> = JsonMissing.of()
             private var price: JsonField<Price> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(priceOverride: PriceOverride) = apply {
+                addonId = priceOverride.addonId
+                baseCharge = priceOverride.baseCharge
+                currencyId = priceOverride.currencyId
                 featureId = priceOverride.featureId
                 price = priceOverride.price
                 additionalProperties = priceOverride.additionalProperties.toMutableMap()
             }
+
+            /** Addon ID */
+            fun addonId(addonId: String) = addonId(JsonField.of(addonId))
+
+            /**
+             * Sets [Builder.addonId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.addonId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun addonId(addonId: JsonField<String>) = apply { this.addonId = addonId }
+
+            /** Whether this is a base charge override */
+            fun baseCharge(baseCharge: Boolean) = baseCharge(JsonField.of(baseCharge))
+
+            /**
+             * Sets [Builder.baseCharge] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.baseCharge] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun baseCharge(baseCharge: JsonField<Boolean>) = apply { this.baseCharge = baseCharge }
+
+            /** The corresponding custom currency id of the recurring credits price */
+            fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
+
+            /**
+             * Sets [Builder.currencyId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currencyId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currencyId(currencyId: JsonField<String>) = apply { this.currencyId = currencyId }
 
             /** Feature ID */
             fun featureId(featureId: String) = featureId(JsonField.of(featureId))
@@ -6910,17 +7004,13 @@ private constructor(
              * Returns an immutable instance of [PriceOverride].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .featureId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
              */
             fun build(): PriceOverride =
                 PriceOverride(
-                    checkRequired("featureId", featureId),
+                    addonId,
+                    baseCharge,
+                    currencyId,
+                    featureId,
                     price,
                     additionalProperties.toMutableMap(),
                 )
@@ -6933,6 +7023,9 @@ private constructor(
                 return@apply
             }
 
+            addonId()
+            baseCharge()
+            currencyId()
             featureId()
             price().ifPresent { it.validate() }
             validated = true
@@ -6954,7 +7047,10 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (featureId.asKnown().isPresent) 1 else 0) +
+            (if (addonId.asKnown().isPresent) 1 else 0) +
+                (if (baseCharge.asKnown().isPresent) 1 else 0) +
+                (if (currencyId.asKnown().isPresent) 1 else 0) +
+                (if (featureId.asKnown().isPresent) 1 else 0) +
                 (price.asKnown().getOrNull()?.validity() ?: 0)
 
         class Price
@@ -7981,17 +8077,22 @@ private constructor(
             }
 
             return other is PriceOverride &&
+                addonId == other.addonId &&
+                baseCharge == other.baseCharge &&
+                currencyId == other.currencyId &&
                 featureId == other.featureId &&
                 price == other.price &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(featureId, price, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(addonId, baseCharge, currencyId, featureId, price, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "PriceOverride{featureId=$featureId, price=$price, additionalProperties=$additionalProperties}"
+            "PriceOverride{addonId=$addonId, baseCharge=$baseCharge, currencyId=$currencyId, featureId=$featureId, price=$price, additionalProperties=$additionalProperties}"
     }
 
     class ScheduleStrategy @JsonCreator private constructor(private val value: JsonField<String>) :
