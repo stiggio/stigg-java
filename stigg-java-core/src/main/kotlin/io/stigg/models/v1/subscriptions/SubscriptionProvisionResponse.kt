@@ -2627,6 +2627,7 @@ private constructor(
                 private val usageLimit: JsonField<Double>,
                 private val usageUpdatedAt: JsonField<OffsetDateTime>,
                 private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
+                private val usagePeriodEnd: JsonField<OffsetDateTime>,
                 private val validUntil: JsonField<OffsetDateTime>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -2655,6 +2656,9 @@ private constructor(
                     @JsonProperty("entitlementUpdatedAt")
                     @ExcludeMissing
                     entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("usagePeriodEnd")
+                    @ExcludeMissing
+                    usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
                     @JsonProperty("validUntil")
                     @ExcludeMissing
                     validUntil: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -2667,6 +2671,7 @@ private constructor(
                     usageLimit,
                     usageUpdatedAt,
                     entitlementUpdatedAt,
+                    usagePeriodEnd,
                     validUntil,
                     mutableMapOf(),
                 )
@@ -2732,6 +2737,15 @@ private constructor(
                  */
                 fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
                     entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+
+                /**
+                 * The end date of the current billing period for recurring credit grants.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usagePeriodEnd(): Optional<OffsetDateTime> =
+                    usagePeriodEnd.getOptional("usagePeriodEnd")
 
                 /**
                  * The next time the entitlement should be recalculated
@@ -2820,6 +2834,16 @@ private constructor(
                 fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
 
                 /**
+                 * Returns the raw JSON value of [usagePeriodEnd].
+                 *
+                 * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usagePeriodEnd")
+                @ExcludeMissing
+                fun _usagePeriodEnd(): JsonField<OffsetDateTime> = usagePeriodEnd
+
+                /**
                  * Returns the raw JSON value of [validUntil].
                  *
                  * Unlike [validUntil], this method doesn't throw if the JSON field has an
@@ -2871,6 +2895,7 @@ private constructor(
                     private var usageLimit: JsonField<Double>? = null
                     private var usageUpdatedAt: JsonField<OffsetDateTime>? = null
                     private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var validUntil: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -2884,6 +2909,7 @@ private constructor(
                         usageLimit = unionMember1.usageLimit
                         usageUpdatedAt = unionMember1.usageUpdatedAt
                         entitlementUpdatedAt = unionMember1.entitlementUpdatedAt
+                        usagePeriodEnd = unionMember1.usagePeriodEnd
                         validUntil = unionMember1.validUntil
                         additionalProperties = unionMember1.additionalProperties.toMutableMap()
                     }
@@ -3004,6 +3030,21 @@ private constructor(
                             this.entitlementUpdatedAt = entitlementUpdatedAt
                         }
 
+                    /** The end date of the current billing period for recurring credit grants. */
+                    fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime) =
+                        usagePeriodEnd(JsonField.of(usagePeriodEnd))
+
+                    /**
+                     * Sets [Builder.usagePeriodEnd] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usagePeriodEnd] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usagePeriodEnd(usagePeriodEnd: JsonField<OffsetDateTime>) = apply {
+                        this.usagePeriodEnd = usagePeriodEnd
+                    }
+
                     /** The next time the entitlement should be recalculated */
                     fun validUntil(validUntil: OffsetDateTime) =
                         validUntil(JsonField.of(validUntil))
@@ -3069,6 +3110,7 @@ private constructor(
                             checkRequired("usageLimit", usageLimit),
                             checkRequired("usageUpdatedAt", usageUpdatedAt),
                             entitlementUpdatedAt,
+                            usagePeriodEnd,
                             validUntil,
                             additionalProperties.toMutableMap(),
                         )
@@ -3089,6 +3131,7 @@ private constructor(
                     usageLimit()
                     usageUpdatedAt()
                     entitlementUpdatedAt()
+                    usagePeriodEnd()
                     validUntil()
                     validated = true
                 }
@@ -3117,6 +3160,7 @@ private constructor(
                         (if (usageLimit.asKnown().isPresent) 1 else 0) +
                         (if (usageUpdatedAt.asKnown().isPresent) 1 else 0) +
                         (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
                         (if (validUntil.asKnown().isPresent) 1 else 0)
 
                 class AccessDeniedReason
@@ -3651,6 +3695,7 @@ private constructor(
                         usageLimit == other.usageLimit &&
                         usageUpdatedAt == other.usageUpdatedAt &&
                         entitlementUpdatedAt == other.entitlementUpdatedAt &&
+                        usagePeriodEnd == other.usagePeriodEnd &&
                         validUntil == other.validUntil &&
                         additionalProperties == other.additionalProperties
                 }
@@ -3665,6 +3710,7 @@ private constructor(
                         usageLimit,
                         usageUpdatedAt,
                         entitlementUpdatedAt,
+                        usagePeriodEnd,
                         validUntil,
                         additionalProperties,
                     )
@@ -3673,7 +3719,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "UnionMember1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, validUntil=$validUntil, additionalProperties=$additionalProperties}"
+                    "UnionMember1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, usagePeriodEnd=$usagePeriodEnd, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
         }
 
