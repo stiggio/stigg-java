@@ -35,9 +35,13 @@ internal class CouponServiceTest {
                     )
                     .description("description")
                     .durationInMonths(1L)
+                    .metadata(
+                        CouponCreateParams.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .name("name")
                     .percentOff(1.0)
-                    .additionalMetaData(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 

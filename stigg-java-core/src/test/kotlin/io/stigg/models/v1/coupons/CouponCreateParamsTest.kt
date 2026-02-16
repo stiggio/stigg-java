@@ -21,9 +21,13 @@ internal class CouponCreateParamsTest {
             )
             .description("description")
             .durationInMonths(1L)
+            .metadata(
+                CouponCreateParams.Metadata.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
             .name("name")
             .percentOff(1.0)
-            .additionalMetaData(JsonValue.from(mapOf<String, Any>()))
             .build()
     }
 
@@ -40,41 +44,11 @@ internal class CouponCreateParamsTest {
                 )
                 .description("description")
                 .durationInMonths(1L)
-                .name("name")
-                .percentOff(1.0)
-                .additionalMetaData(JsonValue.from(mapOf<String, Any>()))
-                .build()
-
-        val body = params._body()
-
-        assertThat(body.id()).isEqualTo("id")
-        assertThat(body.amountsOff().getOrNull())
-            .containsExactly(
-                CouponCreateParams.AmountsOff.builder()
-                    .amount(0.0)
-                    .currency(CouponCreateParams.AmountsOff.Currency.USD)
-                    .build()
-            )
-        assertThat(body.description()).contains("description")
-        assertThat(body.durationInMonths()).contains(1L)
-        assertThat(body.name()).isEqualTo("name")
-        assertThat(body.percentOff()).contains(1.0)
-        assertThat(body._additionalMetaData()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
-    }
-
-    @Test
-    fun bodyWithoutOptionalFields() {
-        val params =
-            CouponCreateParams.builder()
-                .id("id")
-                .addAmountsOff(
-                    CouponCreateParams.AmountsOff.builder()
-                        .amount(0.0)
-                        .currency(CouponCreateParams.AmountsOff.Currency.USD)
+                .metadata(
+                    CouponCreateParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
-                .description("description")
-                .durationInMonths(1L)
                 .name("name")
                 .percentOff(1.0)
                 .build()
@@ -91,6 +65,12 @@ internal class CouponCreateParamsTest {
             )
         assertThat(body.description()).contains("description")
         assertThat(body.durationInMonths()).contains(1L)
+        assertThat(body.metadata())
+            .contains(
+                CouponCreateParams.Metadata.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
         assertThat(body.name()).isEqualTo("name")
         assertThat(body.percentOff()).contains(1.0)
     }

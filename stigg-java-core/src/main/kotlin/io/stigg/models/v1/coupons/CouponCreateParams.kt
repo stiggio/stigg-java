@@ -67,6 +67,14 @@ private constructor(
     fun durationInMonths(): Optional<Long> = body.durationInMonths()
 
     /**
+     * Metadata associated with the entity
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun metadata(): Optional<Metadata> = body.metadata()
+
+    /**
      * Name of the coupon
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
@@ -81,16 +89,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun percentOff(): Optional<Double> = body.percentOff()
-
-    /**
-     * Metadata associated with the entity
-     *
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```java
-     * MyClass myObject = couponCreateParams.additionalMetaData().convert(MyClass.class);
-     * ```
-     */
-    fun _additionalMetaData(): JsonValue = body._additionalMetaData()
 
     /**
      * Returns the raw JSON value of [id].
@@ -120,6 +118,13 @@ private constructor(
      * type.
      */
     fun _durationInMonths(): JsonField<Long> = body._durationInMonths()
+
+    /**
+     * Returns the raw JSON value of [metadata].
+     *
+     * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _metadata(): JsonField<Metadata> = body._metadata()
 
     /**
      * Returns the raw JSON value of [name].
@@ -156,6 +161,7 @@ private constructor(
          * .amountsOff()
          * .description()
          * .durationInMonths()
+         * .metadata()
          * .name()
          * .percentOff()
          * ```
@@ -186,7 +192,7 @@ private constructor(
          * - [amountsOff]
          * - [description]
          * - [durationInMonths]
-         * - [name]
+         * - [metadata]
          * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
@@ -268,6 +274,21 @@ private constructor(
             body.durationInMonths(durationInMonths)
         }
 
+        /** Metadata associated with the entity */
+        fun metadata(metadata: Metadata?) = apply { body.metadata(metadata) }
+
+        /** Alias for calling [Builder.metadata] with `metadata.orElse(null)`. */
+        fun metadata(metadata: Optional<Metadata>) = metadata(metadata.getOrNull())
+
+        /**
+         * Sets [Builder.metadata] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.metadata] with a well-typed [Metadata] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
+
         /** Name of the coupon */
         fun name(name: String) = apply { body.name(name) }
 
@@ -300,11 +321,6 @@ private constructor(
          * value.
          */
         fun percentOff(percentOff: JsonField<Double>) = apply { body.percentOff(percentOff) }
-
-        /** Metadata associated with the entity */
-        fun additionalMetaData(additionalMetaData: JsonValue) = apply {
-            body.additionalMetaData(additionalMetaData)
-        }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -434,6 +450,7 @@ private constructor(
          * .amountsOff()
          * .description()
          * .durationInMonths()
+         * .metadata()
          * .name()
          * .percentOff()
          * ```
@@ -462,9 +479,9 @@ private constructor(
         private val amountsOff: JsonField<List<AmountsOff>>,
         private val description: JsonField<String>,
         private val durationInMonths: JsonField<Long>,
+        private val metadata: JsonField<Metadata>,
         private val name: JsonField<String>,
         private val percentOff: JsonField<Double>,
-        private val additionalMetaData: JsonValue,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -480,21 +497,21 @@ private constructor(
             @JsonProperty("durationInMonths")
             @ExcludeMissing
             durationInMonths: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("metadata")
+            @ExcludeMissing
+            metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("percentOff")
             @ExcludeMissing
             percentOff: JsonField<Double> = JsonMissing.of(),
-            @JsonProperty("additionalMetaData")
-            @ExcludeMissing
-            additionalMetaData: JsonValue = JsonMissing.of(),
         ) : this(
             id,
             amountsOff,
             description,
             durationInMonths,
+            metadata,
             name,
             percentOff,
-            additionalMetaData,
             mutableMapOf(),
         )
 
@@ -531,6 +548,14 @@ private constructor(
         fun durationInMonths(): Optional<Long> = durationInMonths.getOptional("durationInMonths")
 
         /**
+         * Metadata associated with the entity
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
+
+        /**
          * Name of the coupon
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
@@ -545,18 +570,6 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun percentOff(): Optional<Double> = percentOff.getOptional("percentOff")
-
-        /**
-         * Metadata associated with the entity
-         *
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = body.additionalMetaData().convert(MyClass.class);
-         * ```
-         */
-        @JsonProperty("additionalMetaData")
-        @ExcludeMissing
-        fun _additionalMetaData(): JsonValue = additionalMetaData
 
         /**
          * Returns the raw JSON value of [id].
@@ -592,6 +605,13 @@ private constructor(
         @JsonProperty("durationInMonths")
         @ExcludeMissing
         fun _durationInMonths(): JsonField<Long> = durationInMonths
+
+        /**
+         * Returns the raw JSON value of [metadata].
+         *
+         * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
 
         /**
          * Returns the raw JSON value of [name].
@@ -632,6 +652,7 @@ private constructor(
              * .amountsOff()
              * .description()
              * .durationInMonths()
+             * .metadata()
              * .name()
              * .percentOff()
              * ```
@@ -646,9 +667,9 @@ private constructor(
             private var amountsOff: JsonField<MutableList<AmountsOff>>? = null
             private var description: JsonField<String>? = null
             private var durationInMonths: JsonField<Long>? = null
+            private var metadata: JsonField<Metadata>? = null
             private var name: JsonField<String>? = null
             private var percentOff: JsonField<Double>? = null
-            private var additionalMetaData: JsonValue = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -657,9 +678,9 @@ private constructor(
                 amountsOff = body.amountsOff.map { it.toMutableList() }
                 description = body.description
                 durationInMonths = body.durationInMonths
+                metadata = body.metadata
                 name = body.name
                 percentOff = body.percentOff
-                additionalMetaData = body.additionalMetaData
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -752,6 +773,21 @@ private constructor(
                 this.durationInMonths = durationInMonths
             }
 
+            /** Metadata associated with the entity */
+            fun metadata(metadata: Metadata?) = metadata(JsonField.ofNullable(metadata))
+
+            /** Alias for calling [Builder.metadata] with `metadata.orElse(null)`. */
+            fun metadata(metadata: Optional<Metadata>) = metadata(metadata.getOrNull())
+
+            /**
+             * Sets [Builder.metadata] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.metadata] with a well-typed [Metadata] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
+
             /** Name of the coupon */
             fun name(name: String) = name(JsonField.of(name))
 
@@ -786,11 +822,6 @@ private constructor(
              */
             fun percentOff(percentOff: JsonField<Double>) = apply { this.percentOff = percentOff }
 
-            /** Metadata associated with the entity */
-            fun additionalMetaData(additionalMetaData: JsonValue) = apply {
-                this.additionalMetaData = additionalMetaData
-            }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -821,6 +852,7 @@ private constructor(
              * .amountsOff()
              * .description()
              * .durationInMonths()
+             * .metadata()
              * .name()
              * .percentOff()
              * ```
@@ -833,9 +865,9 @@ private constructor(
                     checkRequired("amountsOff", amountsOff).map { it.toImmutable() },
                     checkRequired("description", description),
                     checkRequired("durationInMonths", durationInMonths),
+                    checkRequired("metadata", metadata),
                     checkRequired("name", name),
                     checkRequired("percentOff", percentOff),
-                    additionalMetaData,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -851,6 +883,7 @@ private constructor(
             amountsOff().ifPresent { it.forEach { it.validate() } }
             description()
             durationInMonths()
+            metadata().ifPresent { it.validate() }
             name()
             percentOff()
             validated = true
@@ -876,6 +909,7 @@ private constructor(
                 (amountsOff.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (description.asKnown().isPresent) 1 else 0) +
                 (if (durationInMonths.asKnown().isPresent) 1 else 0) +
+                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
                 (if (percentOff.asKnown().isPresent) 1 else 0)
 
@@ -889,9 +923,9 @@ private constructor(
                 amountsOff == other.amountsOff &&
                 description == other.description &&
                 durationInMonths == other.durationInMonths &&
+                metadata == other.metadata &&
                 name == other.name &&
                 percentOff == other.percentOff &&
-                additionalMetaData == other.additionalMetaData &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -901,9 +935,9 @@ private constructor(
                 amountsOff,
                 description,
                 durationInMonths,
+                metadata,
                 name,
                 percentOff,
-                additionalMetaData,
                 additionalProperties,
             )
         }
@@ -911,7 +945,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{id=$id, amountsOff=$amountsOff, description=$description, durationInMonths=$durationInMonths, name=$name, percentOff=$percentOff, additionalMetaData=$additionalMetaData, additionalProperties=$additionalProperties}"
+            "Body{id=$id, amountsOff=$amountsOff, description=$description, durationInMonths=$durationInMonths, metadata=$metadata, name=$name, percentOff=$percentOff, additionalProperties=$additionalProperties}"
     }
 
     /** Monetary amount with currency */
@@ -1928,6 +1962,106 @@ private constructor(
 
         override fun toString() =
             "AmountsOff{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
+    }
+
+    /** Metadata associated with the entity */
+    class Metadata
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Metadata]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Metadata]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(metadata: Metadata) = apply {
+                additionalProperties = metadata.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Metadata].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Metadata = Metadata(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Metadata = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Metadata && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
