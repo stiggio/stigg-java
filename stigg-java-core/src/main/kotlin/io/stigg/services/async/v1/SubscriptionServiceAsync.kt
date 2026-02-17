@@ -21,6 +21,8 @@ import io.stigg.models.v1.subscriptions.SubscriptionRetrieveParams
 import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
 import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import io.stigg.services.async.v1.subscriptions.FutureUpdateServiceAsync
+import io.stigg.services.async.v1.subscriptions.InvoiceServiceAsync
+import io.stigg.services.async.v1.subscriptions.UsageServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -39,6 +41,10 @@ interface SubscriptionServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionServiceAsync
 
     fun futureUpdate(): FutureUpdateServiceAsync
+
+    fun usage(): UsageServiceAsync
+
+    fun invoice(): InvoiceServiceAsync
 
     /**
      * Retrieves a subscription by its unique identifier, including plan details, billing period,
@@ -301,6 +307,10 @@ interface SubscriptionServiceAsync {
         ): SubscriptionServiceAsync.WithRawResponse
 
         fun futureUpdate(): FutureUpdateServiceAsync.WithRawResponse
+
+        fun usage(): UsageServiceAsync.WithRawResponse
+
+        fun invoice(): InvoiceServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/subscriptions/{id}`, but is otherwise the

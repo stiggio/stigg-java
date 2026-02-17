@@ -6,6 +6,7 @@ import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.coupons.CouponCreateParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -76,5 +77,47 @@ internal class CouponServiceTest {
         val page = couponService.list()
 
         page.response().validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun archiveCoupon() {
+        val client =
+            StiggOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val couponService = client.v1().coupons()
+
+        val coupon = couponService.archiveCoupon("x")
+
+        coupon.validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun updateCoupon() {
+        val client =
+            StiggOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val couponService = client.v1().coupons()
+
+        val coupon =
+            couponService.updateCoupon(
+                CouponUpdateCouponParams.builder()
+                    .id("x")
+                    .description("description")
+                    .metadata(
+                        CouponUpdateCouponParams.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .name("name")
+                    .build()
+            )
+
+        coupon.validate()
     }
 }

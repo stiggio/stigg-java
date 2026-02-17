@@ -17,6 +17,10 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
+import io.stigg.services.blocking.v1.events.AddonService
+import io.stigg.services.blocking.v1.events.AddonServiceImpl
+import io.stigg.services.blocking.v1.events.FeatureService
+import io.stigg.services.blocking.v1.events.FeatureServiceImpl
 import java.util.function.Consumer
 
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -26,10 +30,18 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         WithRawResponseImpl(clientOptions)
     }
 
+    private val features: FeatureService by lazy { FeatureServiceImpl(clientOptions) }
+
+    private val addons: AddonService by lazy { AddonServiceImpl(clientOptions) }
+
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
         EventServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    override fun features(): FeatureService = features
+
+    override fun addons(): AddonService = addons
 
     override fun report(
         params: EventReportParams,
@@ -44,12 +56,24 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
+        private val features: FeatureService.WithRawResponse by lazy {
+            FeatureServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val addons: AddonService.WithRawResponse by lazy {
+            AddonServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventService.WithRawResponse =
             EventServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        override fun features(): FeatureService.WithRawResponse = features
+
+        override fun addons(): AddonService.WithRawResponse = addons
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
