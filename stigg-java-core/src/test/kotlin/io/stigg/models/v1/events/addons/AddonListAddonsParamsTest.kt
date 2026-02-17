@@ -24,7 +24,7 @@ internal class AddonListAddonsParamsTest {
             )
             .limit(1L)
             .productId("productId")
-            .status(AddonListAddonsParams.Status.DRAFT)
+            .status("status")
             .build()
     }
 
@@ -44,7 +44,7 @@ internal class AddonListAddonsParamsTest {
                 )
                 .limit(1L)
                 .productId("productId")
-                .status(AddonListAddonsParams.Status.DRAFT)
+                .status("status")
                 .build()
 
         val queryParams = params._queryParams()
@@ -60,7 +60,7 @@ internal class AddonListAddonsParamsTest {
                     .put("createdAt[lte]", "2019-12-27T18:11:19.117Z")
                     .put("limit", "1")
                     .put("productId", "productId")
-                    .put("status", "DRAFT")
+                    .put("status", "status")
                     .build()
             )
     }
