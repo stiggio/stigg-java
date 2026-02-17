@@ -34,6 +34,10 @@ import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
 import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import io.stigg.services.blocking.v1.subscriptions.FutureUpdateService
 import io.stigg.services.blocking.v1.subscriptions.FutureUpdateServiceImpl
+import io.stigg.services.blocking.v1.subscriptions.InvoiceService
+import io.stigg.services.blocking.v1.subscriptions.InvoiceServiceImpl
+import io.stigg.services.blocking.v1.subscriptions.UsageService
+import io.stigg.services.blocking.v1.subscriptions.UsageServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -46,12 +50,20 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
 
     private val futureUpdate: FutureUpdateService by lazy { FutureUpdateServiceImpl(clientOptions) }
 
+    private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
+
+    private val invoice: InvoiceService by lazy { InvoiceServiceImpl(clientOptions) }
+
     override fun withRawResponse(): SubscriptionService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionService =
         SubscriptionServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun futureUpdate(): FutureUpdateService = futureUpdate
+
+    override fun usage(): UsageService = usage
+
+    override fun invoice(): InvoiceService = invoice
 
     override fun retrieve(
         params: SubscriptionRetrieveParams,
@@ -133,6 +145,14 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
             FutureUpdateServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val usage: UsageService.WithRawResponse by lazy {
+            UsageServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val invoice: InvoiceService.WithRawResponse by lazy {
+            InvoiceServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): SubscriptionService.WithRawResponse =
@@ -141,6 +161,10 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
             )
 
         override fun futureUpdate(): FutureUpdateService.WithRawResponse = futureUpdate
+
+        override fun usage(): UsageService.WithRawResponse = usage
+
+        override fun invoice(): InvoiceService.WithRawResponse = invoice
 
         private val retrieveHandler: Handler<Subscription> =
             jsonHandler<Subscription>(clientOptions.jsonMapper)
