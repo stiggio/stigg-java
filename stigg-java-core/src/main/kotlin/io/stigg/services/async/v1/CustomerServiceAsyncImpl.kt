@@ -32,6 +32,8 @@ import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsyncImpl
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -47,12 +49,19 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         PaymentMethodServiceAsyncImpl(clientOptions)
     }
 
+    private val promotionalEntitlements: PromotionalEntitlementServiceAsync by lazy {
+        PromotionalEntitlementServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
         CustomerServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun paymentMethod(): PaymentMethodServiceAsync = paymentMethod
+
+    override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync =
+        promotionalEntitlements
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -120,6 +129,11 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             PaymentMethodServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val promotionalEntitlements:
+            PromotionalEntitlementServiceAsync.WithRawResponse by lazy {
+            PromotionalEntitlementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -128,6 +142,9 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             )
 
         override fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse = paymentMethod
+
+        override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse =
+            promotionalEntitlements
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)

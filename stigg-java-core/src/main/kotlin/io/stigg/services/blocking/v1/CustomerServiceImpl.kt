@@ -32,6 +32,8 @@ import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
 import io.stigg.services.blocking.v1.customers.PaymentMethodServiceImpl
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -46,12 +48,18 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         PaymentMethodServiceImpl(clientOptions)
     }
 
+    private val promotionalEntitlements: PromotionalEntitlementService by lazy {
+        PromotionalEntitlementServiceImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
         CustomerServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun paymentMethod(): PaymentMethodService = paymentMethod
+
+    override fun promotionalEntitlements(): PromotionalEntitlementService = promotionalEntitlements
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -119,6 +127,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             PaymentMethodServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val promotionalEntitlements: PromotionalEntitlementService.WithRawResponse by lazy {
+            PromotionalEntitlementServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -127,6 +139,9 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             )
 
         override fun paymentMethod(): PaymentMethodService.WithRawResponse = paymentMethod
+
+        override fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse =
+            promotionalEntitlements
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)

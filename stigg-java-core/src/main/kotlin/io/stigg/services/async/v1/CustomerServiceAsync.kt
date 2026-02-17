@@ -18,6 +18,7 @@ import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
+import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -36,6 +37,8 @@ interface CustomerServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync
 
     fun paymentMethod(): PaymentMethodServiceAsync
+
+    fun promotionalEntitlements(): PromotionalEntitlementServiceAsync
 
     /**
      * Retrieves a customer by their unique identifier, including billing information and
@@ -266,6 +269,8 @@ interface CustomerServiceAsync {
         ): CustomerServiceAsync.WithRawResponse
 
         fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse
+
+        fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}`, but is otherwise the same
