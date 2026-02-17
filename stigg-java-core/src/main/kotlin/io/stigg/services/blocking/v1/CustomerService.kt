@@ -19,6 +19,7 @@ import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
+import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
 import java.util.function.Consumer
 
 interface CustomerService {
@@ -36,6 +37,8 @@ interface CustomerService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService
 
     fun paymentMethod(): PaymentMethodService
+
+    fun promotionalEntitlements(): PromotionalEntitlementService
 
     /**
      * Retrieves a customer by their unique identifier, including billing information and
@@ -246,6 +249,8 @@ interface CustomerService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService.WithRawResponse
 
         fun paymentMethod(): PaymentMethodService.WithRawResponse
+
+        fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}`, but is otherwise the same
