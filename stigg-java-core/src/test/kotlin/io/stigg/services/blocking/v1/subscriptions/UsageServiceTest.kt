@@ -33,4 +33,19 @@ internal class UsageServiceTest {
 
         response.validate()
     }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun sync() {
+        val client =
+            StiggOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val usageService = client.v1().subscriptions().usage()
+
+        val response = usageService.sync("x")
+
+        response.validate()
+    }
 }
