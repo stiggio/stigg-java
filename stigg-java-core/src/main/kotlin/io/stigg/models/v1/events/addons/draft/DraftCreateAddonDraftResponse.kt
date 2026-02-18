@@ -177,6 +177,7 @@ private constructor(
         private val maxQuantity: JsonField<Long>,
         private val metadata: JsonField<Metadata>,
         private val pricingType: JsonField<PricingType>,
+        private val productId: JsonField<String>,
         private val status: JsonField<Status>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val versionNumber: JsonField<Long>,
@@ -216,6 +217,9 @@ private constructor(
             @JsonProperty("pricingType")
             @ExcludeMissing
             pricingType: JsonField<PricingType> = JsonMissing.of(),
+            @JsonProperty("productId")
+            @ExcludeMissing
+            productId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
@@ -235,6 +239,7 @@ private constructor(
             maxQuantity,
             metadata,
             pricingType,
+            productId,
             status,
             updatedAt,
             versionNumber,
@@ -290,7 +295,7 @@ private constructor(
         fun displayName(): String = displayName.getRequired("displayName")
 
         /**
-         * List of entitlements for the addon
+         * List of entitlements of the package
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -328,6 +333,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun pricingType(): Optional<PricingType> = pricingType.getOptional("pricingType")
+
+        /**
+         * The product id of the package
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun productId(): String = productId.getRequired("productId")
 
         /**
          * The status of the package
@@ -447,6 +460,13 @@ private constructor(
         fun _pricingType(): JsonField<PricingType> = pricingType
 
         /**
+         * Returns the raw JSON value of [productId].
+         *
+         * Unlike [productId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("productId") @ExcludeMissing fun _productId(): JsonField<String> = productId
+
+        /**
          * Returns the raw JSON value of [status].
          *
          * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
@@ -502,6 +522,7 @@ private constructor(
              * .maxQuantity()
              * .metadata()
              * .pricingType()
+             * .productId()
              * .status()
              * .updatedAt()
              * .versionNumber()
@@ -524,6 +545,7 @@ private constructor(
             private var maxQuantity: JsonField<Long>? = null
             private var metadata: JsonField<Metadata>? = null
             private var pricingType: JsonField<PricingType>? = null
+            private var productId: JsonField<String>? = null
             private var status: JsonField<Status>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
             private var versionNumber: JsonField<Long>? = null
@@ -542,6 +564,7 @@ private constructor(
                 maxQuantity = data.maxQuantity
                 metadata = data.metadata
                 pricingType = data.pricingType
+                productId = data.productId
                 status = data.status
                 updatedAt = data.updatedAt
                 versionNumber = data.versionNumber
@@ -651,7 +674,7 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** List of entitlements for the addon */
+            /** List of entitlements of the package */
             fun entitlements(entitlements: List<Entitlement>) =
                 entitlements(JsonField.of(entitlements))
 
@@ -753,6 +776,18 @@ private constructor(
                 this.pricingType = pricingType
             }
 
+            /** The product id of the package */
+            fun productId(productId: String) = productId(JsonField.of(productId))
+
+            /**
+             * Sets [Builder.productId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.productId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun productId(productId: JsonField<String>) = apply { this.productId = productId }
+
             /** The status of the package */
             fun status(status: Status) = status(JsonField.of(status))
 
@@ -830,6 +865,7 @@ private constructor(
              * .maxQuantity()
              * .metadata()
              * .pricingType()
+             * .productId()
              * .status()
              * .updatedAt()
              * .versionNumber()
@@ -850,6 +886,7 @@ private constructor(
                     checkRequired("maxQuantity", maxQuantity),
                     checkRequired("metadata", metadata),
                     checkRequired("pricingType", pricingType),
+                    checkRequired("productId", productId),
                     checkRequired("status", status),
                     checkRequired("updatedAt", updatedAt),
                     checkRequired("versionNumber", versionNumber),
@@ -875,6 +912,7 @@ private constructor(
             maxQuantity()
             metadata().validate()
             pricingType().ifPresent { it.validate() }
+            productId()
             status().validate()
             updatedAt()
             versionNumber()
@@ -908,6 +946,7 @@ private constructor(
                 (if (maxQuantity.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (pricingType.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (productId.asKnown().isPresent) 1 else 0) +
                 (status.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0) +
                 (if (versionNumber.asKnown().isPresent) 1 else 0)
@@ -1637,6 +1676,7 @@ private constructor(
                 maxQuantity == other.maxQuantity &&
                 metadata == other.metadata &&
                 pricingType == other.pricingType &&
+                productId == other.productId &&
                 status == other.status &&
                 updatedAt == other.updatedAt &&
                 versionNumber == other.versionNumber &&
@@ -1656,6 +1696,7 @@ private constructor(
                 maxQuantity,
                 metadata,
                 pricingType,
+                productId,
                 status,
                 updatedAt,
                 versionNumber,
@@ -1666,7 +1707,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, dependencies=$dependencies, description=$description, displayName=$displayName, entitlements=$entitlements, isLatest=$isLatest, maxQuantity=$maxQuantity, metadata=$metadata, pricingType=$pricingType, status=$status, updatedAt=$updatedAt, versionNumber=$versionNumber, additionalProperties=$additionalProperties}"
+            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, dependencies=$dependencies, description=$description, displayName=$displayName, entitlements=$entitlements, isLatest=$isLatest, maxQuantity=$maxQuantity, metadata=$metadata, pricingType=$pricingType, productId=$productId, status=$status, updatedAt=$updatedAt, versionNumber=$versionNumber, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

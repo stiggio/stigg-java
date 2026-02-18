@@ -16,7 +16,7 @@ internal class AddonCreateAddonParamsTest {
             .productId("productId")
             .billingId("billingId")
             .description("description")
-            .maxQuantity(1L)
+            .maxQuantity(0L)
             .metadata(
                 AddonCreateAddonParams.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -36,7 +36,7 @@ internal class AddonCreateAddonParamsTest {
                 .productId("productId")
                 .billingId("billingId")
                 .description("description")
-                .maxQuantity(1L)
+                .maxQuantity(0L)
                 .metadata(
                     AddonCreateAddonParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -53,7 +53,7 @@ internal class AddonCreateAddonParamsTest {
         assertThat(body.productId()).isEqualTo("productId")
         assertThat(body.billingId()).contains("billingId")
         assertThat(body.description()).contains("description")
-        assertThat(body.maxQuantity()).contains(1L)
+        assertThat(body.maxQuantity()).contains(0L)
         assertThat(body.metadata())
             .contains(
                 AddonCreateAddonParams.Metadata.builder()
