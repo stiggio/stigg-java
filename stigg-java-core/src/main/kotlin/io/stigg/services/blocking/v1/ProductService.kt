@@ -77,28 +77,18 @@ interface ProductService {
     ): ProductCreateProductResponse
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
-    fun duplicateProduct(id: String): ProductDuplicateProductResponse =
-        duplicateProduct(id, ProductDuplicateProductParams.none())
+    fun duplicateProduct(
+        pathId: String,
+        params: ProductDuplicateProductParams,
+    ): ProductDuplicateProductResponse = duplicateProduct(pathId, params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        id: String,
-        params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductDuplicateProductResponse =
-        duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see duplicateProduct */
-    fun duplicateProduct(
-        id: String,
-        params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
-    ): ProductDuplicateProductResponse = duplicateProduct(id, params, RequestOptions.none())
-
-    /** @see duplicateProduct */
-    fun duplicateProduct(
+        pathId: String,
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductDuplicateProductResponse
+    ): ProductDuplicateProductResponse =
+        duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
     /** @see duplicateProduct */
     fun duplicateProduct(params: ProductDuplicateProductParams): ProductDuplicateProductResponse =
@@ -106,10 +96,9 @@ interface ProductService {
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        id: String,
-        requestOptions: RequestOptions,
-    ): ProductDuplicateProductResponse =
-        duplicateProduct(id, ProductDuplicateProductParams.none(), requestOptions)
+        params: ProductDuplicateProductParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ProductDuplicateProductResponse
 
     /** Retrieves a paginated list of products in the environment. */
     fun listProducts(): ProductListProductsPage = listProducts(ProductListProductsParams.none())
@@ -275,32 +264,20 @@ interface ProductService {
          * the same as [ProductService.duplicateProduct].
          */
         @MustBeClosed
-        fun duplicateProduct(id: String): HttpResponseFor<ProductDuplicateProductResponse> =
-            duplicateProduct(id, ProductDuplicateProductParams.none())
-
-        /** @see duplicateProduct */
-        @MustBeClosed
         fun duplicateProduct(
-            id: String,
-            params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
+            pathId: String,
+            params: ProductDuplicateProductParams,
         ): HttpResponseFor<ProductDuplicateProductResponse> =
-            duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
+            duplicateProduct(pathId, params, RequestOptions.none())
 
         /** @see duplicateProduct */
         @MustBeClosed
         fun duplicateProduct(
-            id: String,
-            params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
-        ): HttpResponseFor<ProductDuplicateProductResponse> =
-            duplicateProduct(id, params, RequestOptions.none())
-
-        /** @see duplicateProduct */
-        @MustBeClosed
-        fun duplicateProduct(
+            pathId: String,
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductDuplicateProductResponse>
+        ): HttpResponseFor<ProductDuplicateProductResponse> =
+            duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
         /** @see duplicateProduct */
         @MustBeClosed
@@ -312,10 +289,9 @@ interface ProductService {
         /** @see duplicateProduct */
         @MustBeClosed
         fun duplicateProduct(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductDuplicateProductResponse> =
-            duplicateProduct(id, ProductDuplicateProductParams.none(), requestOptions)
+            params: ProductDuplicateProductParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ProductDuplicateProductResponse>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/products`, but is otherwise the same as
