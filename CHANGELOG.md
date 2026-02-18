@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.11 (2026-02-18)
+
+Full Changelog: [v0.1.0-alpha.10...v0.1.0-alpha.11](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.10...v0.1.0-alpha.11)
+
+### Bug Fixes
+
+* **api:** remove bodyId param, rename pathId to id in products duplicateProduct ([afa295c](https://github.com/stiggio/stigg-java/commit/afa295c091ee9014770e071d2015550db55a17f1))
+
 ## 0.1.0-alpha.10 (2026-02-18)
 
 Full Changelog: [v0.1.0-alpha.9...v0.1.0-alpha.10](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.9...v0.1.0-alpha.10)
