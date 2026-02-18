@@ -6,10 +6,12 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.coupons.Coupon
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
 import io.stigg.models.v1.coupons.CouponListPageAsync
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -87,6 +89,68 @@ interface CouponServiceAsync {
     /** @see list */
     fun list(requestOptions: RequestOptions): CompletableFuture<CouponListPageAsync> =
         list(CouponListParams.none(), requestOptions)
+
+    /** Archives a coupon, preventing it from being applied to new subscriptions. */
+    fun archiveCoupon(id: String): CompletableFuture<Coupon> =
+        archiveCoupon(id, CouponArchiveCouponParams.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        id: String,
+        params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Coupon> = archiveCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        id: String,
+        params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+    ): CompletableFuture<Coupon> = archiveCoupon(id, params, RequestOptions.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        params: CouponArchiveCouponParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Coupon>
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(params: CouponArchiveCouponParams): CompletableFuture<Coupon> =
+        archiveCoupon(params, RequestOptions.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(id: String, requestOptions: RequestOptions): CompletableFuture<Coupon> =
+        archiveCoupon(id, CouponArchiveCouponParams.none(), requestOptions)
+
+    /** Updates an existing coupon's properties such as name, description, and metadata. */
+    fun updateCoupon(id: String): CompletableFuture<Coupon> =
+        updateCoupon(id, CouponUpdateCouponParams.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        id: String,
+        params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Coupon> = updateCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        id: String,
+        params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+    ): CompletableFuture<Coupon> = updateCoupon(id, params, RequestOptions.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        params: CouponUpdateCouponParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Coupon>
+
+    /** @see updateCoupon */
+    fun updateCoupon(params: CouponUpdateCouponParams): CompletableFuture<Coupon> =
+        updateCoupon(params, RequestOptions.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(id: String, requestOptions: RequestOptions): CompletableFuture<Coupon> =
+        updateCoupon(id, CouponUpdateCouponParams.none(), requestOptions)
 
     /**
      * A view of [CouponServiceAsync] that provides access to raw HTTP responses for each method.
@@ -177,5 +241,85 @@ interface CouponServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<CouponListPageAsync>> =
             list(CouponListParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/coupons/{id}/archive`, but is otherwise the
+         * same as [CouponServiceAsync.archiveCoupon].
+         */
+        fun archiveCoupon(id: String): CompletableFuture<HttpResponseFor<Coupon>> =
+            archiveCoupon(id, CouponArchiveCouponParams.none())
+
+        /** @see archiveCoupon */
+        fun archiveCoupon(
+            id: String,
+            params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            archiveCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see archiveCoupon */
+        fun archiveCoupon(
+            id: String,
+            params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            archiveCoupon(id, params, RequestOptions.none())
+
+        /** @see archiveCoupon */
+        fun archiveCoupon(
+            params: CouponArchiveCouponParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>>
+
+        /** @see archiveCoupon */
+        fun archiveCoupon(
+            params: CouponArchiveCouponParams
+        ): CompletableFuture<HttpResponseFor<Coupon>> = archiveCoupon(params, RequestOptions.none())
+
+        /** @see archiveCoupon */
+        fun archiveCoupon(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            archiveCoupon(id, CouponArchiveCouponParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/coupons/{id}`, but is otherwise the same
+         * as [CouponServiceAsync.updateCoupon].
+         */
+        fun updateCoupon(id: String): CompletableFuture<HttpResponseFor<Coupon>> =
+            updateCoupon(id, CouponUpdateCouponParams.none())
+
+        /** @see updateCoupon */
+        fun updateCoupon(
+            id: String,
+            params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            updateCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see updateCoupon */
+        fun updateCoupon(
+            id: String,
+            params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            updateCoupon(id, params, RequestOptions.none())
+
+        /** @see updateCoupon */
+        fun updateCoupon(
+            params: CouponUpdateCouponParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Coupon>>
+
+        /** @see updateCoupon */
+        fun updateCoupon(
+            params: CouponUpdateCouponParams
+        ): CompletableFuture<HttpResponseFor<Coupon>> = updateCoupon(params, RequestOptions.none())
+
+        /** @see updateCoupon */
+        fun updateCoupon(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Coupon>> =
+            updateCoupon(id, CouponUpdateCouponParams.none(), requestOptions)
     }
 }

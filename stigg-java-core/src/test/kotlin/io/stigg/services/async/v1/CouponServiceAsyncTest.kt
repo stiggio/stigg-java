@@ -6,6 +6,7 @@ import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.coupons.CouponCreateParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -35,9 +36,13 @@ internal class CouponServiceAsyncTest {
                     )
                     .description("description")
                     .durationInMonths(1L)
+                    .metadata(
+                        CouponCreateParams.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .name("name")
                     .percentOff(1.0)
-                    .additionalMetaData(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 
@@ -75,5 +80,49 @@ internal class CouponServiceAsyncTest {
 
         val page = pageFuture.get()
         page.response().validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun archiveCoupon() {
+        val client =
+            StiggOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val couponServiceAsync = client.v1().coupons()
+
+        val couponFuture = couponServiceAsync.archiveCoupon("x")
+
+        val coupon = couponFuture.get()
+        coupon.validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun updateCoupon() {
+        val client =
+            StiggOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val couponServiceAsync = client.v1().coupons()
+
+        val couponFuture =
+            couponServiceAsync.updateCoupon(
+                CouponUpdateCouponParams.builder()
+                    .id("x")
+                    .description("description")
+                    .metadata(
+                        CouponUpdateCouponParams.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .name("name")
+                    .build()
+            )
+
+        val coupon = couponFuture.get()
+        coupon.validate()
     }
 }

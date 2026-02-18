@@ -16,8 +16,11 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantParams
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListPageAsync
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListPageResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeResponse
 import java.util.concurrent.CompletableFuture
@@ -42,18 +45,25 @@ internal constructor(private val clientOptions: ClientOptions) :
             clientOptions.toBuilder().apply(modifier::accept).build()
         )
 
-    override fun grant(
-        params: PromotionalEntitlementGrantParams,
+    override fun create(
+        params: PromotionalEntitlementCreateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<PromotionalEntitlementGrantResponse> =
-        // post /api/v1/customers/{customerId}/promotional
-        withRawResponse().grant(params, requestOptions).thenApply { it.parse() }
+    ): CompletableFuture<PromotionalEntitlementCreateResponse> =
+        // post /api/v1/customers/{id}/promotional-entitlements
+        withRawResponse().create(params, requestOptions).thenApply { it.parse() }
+
+    override fun list(
+        params: PromotionalEntitlementListParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<PromotionalEntitlementListPageAsync> =
+        // get /api/v1/customers/{id}/promotional-entitlements
+        withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
     override fun revoke(
         params: PromotionalEntitlementRevokeParams,
         requestOptions: RequestOptions,
     ): CompletableFuture<PromotionalEntitlementRevokeResponse> =
-        // delete /api/v1/customers/{customerId}/promotional/{featureId}
+        // delete /api/v1/customers/{id}/promotional-entitlements/{featureId}
         withRawResponse().revoke(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -69,21 +79,27 @@ internal constructor(private val clientOptions: ClientOptions) :
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val grantHandler: Handler<PromotionalEntitlementGrantResponse> =
-            jsonHandler<PromotionalEntitlementGrantResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<PromotionalEntitlementCreateResponse> =
+            jsonHandler<PromotionalEntitlementCreateResponse>(clientOptions.jsonMapper)
 
-        override fun grant(
-            params: PromotionalEntitlementGrantParams,
+        override fun create(
+            params: PromotionalEntitlementCreateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<PromotionalEntitlementGrantResponse>> {
+        ): CompletableFuture<HttpResponseFor<PromotionalEntitlementCreateResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("customerId", params.customerId().getOrNull())
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "promotional")
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "customers",
+                        params._pathParam(0),
+                        "promotional-entitlements",
+                    )
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
@@ -93,11 +109,58 @@ internal constructor(private val clientOptions: ClientOptions) :
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { grantHandler.handle(it) }
+                            .use { createHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                    }
+                }
+        }
+
+        private val listHandler: Handler<PromotionalEntitlementListPageResponse> =
+            jsonHandler<PromotionalEntitlementListPageResponse>(clientOptions.jsonMapper)
+
+        override fun list(
+            params: PromotionalEntitlementListParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<PromotionalEntitlementListPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "customers",
+                        params._pathParam(0),
+                        "promotional-entitlements",
+                    )
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                PromotionalEntitlementListPageAsync.builder()
+                                    .service(PromotionalEntitlementServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }
@@ -122,7 +185,7 @@ internal constructor(private val clientOptions: ClientOptions) :
                         "v1",
                         "customers",
                         params._pathParam(0),
-                        "promotional",
+                        "promotional-entitlements",
                         params._pathParam(1),
                     )
                     .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }

@@ -34,6 +34,10 @@ import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
 import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import io.stigg.services.async.v1.subscriptions.FutureUpdateServiceAsync
 import io.stigg.services.async.v1.subscriptions.FutureUpdateServiceAsyncImpl
+import io.stigg.services.async.v1.subscriptions.InvoiceServiceAsync
+import io.stigg.services.async.v1.subscriptions.InvoiceServiceAsyncImpl
+import io.stigg.services.async.v1.subscriptions.UsageServiceAsync
+import io.stigg.services.async.v1.subscriptions.UsageServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -49,12 +53,20 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
         FutureUpdateServiceAsyncImpl(clientOptions)
     }
 
+    private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
+
+    private val invoice: InvoiceServiceAsync by lazy { InvoiceServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): SubscriptionServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionServiceAsync =
         SubscriptionServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun futureUpdate(): FutureUpdateServiceAsync = futureUpdate
+
+    override fun usage(): UsageServiceAsync = usage
+
+    override fun invoice(): InvoiceServiceAsync = invoice
 
     override fun retrieve(
         params: SubscriptionRetrieveParams,
@@ -136,6 +148,14 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
             FutureUpdateServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val usage: UsageServiceAsync.WithRawResponse by lazy {
+            UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val invoice: InvoiceServiceAsync.WithRawResponse by lazy {
+            InvoiceServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): SubscriptionServiceAsync.WithRawResponse =
@@ -144,6 +164,10 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
             )
 
         override fun futureUpdate(): FutureUpdateServiceAsync.WithRawResponse = futureUpdate
+
+        override fun usage(): UsageServiceAsync.WithRawResponse = usage
+
+        override fun invoice(): InvoiceServiceAsync.WithRawResponse = invoice
 
         private val retrieveHandler: Handler<Subscription> =
             jsonHandler<Subscription>(clientOptions.jsonMapper)

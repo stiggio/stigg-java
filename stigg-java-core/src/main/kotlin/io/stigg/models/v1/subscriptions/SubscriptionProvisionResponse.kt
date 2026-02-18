@@ -429,18 +429,16 @@ private constructor(
             }
 
             /**
-             * Alias for calling [addEntitlement] with
-             * `Entitlement.ofSubscriptionFeature(subscriptionFeature)`.
+             * Alias for calling [addEntitlement] with `Entitlement.ofUnionMember0(unionMember0)`.
              */
-            fun addEntitlement(subscriptionFeature: Entitlement.SubscriptionFeatureEntitlement) =
-                addEntitlement(Entitlement.ofSubscriptionFeature(subscriptionFeature))
+            fun addEntitlement(unionMember0: Entitlement.UnionMember0) =
+                addEntitlement(Entitlement.ofUnionMember0(unionMember0))
 
             /**
-             * Alias for calling [addEntitlement] with
-             * `Entitlement.ofSubscriptionCredit(subscriptionCredit)`.
+             * Alias for calling [addEntitlement] with `Entitlement.ofUnionMember1(unionMember1)`.
              */
-            fun addEntitlement(subscriptionCredit: Entitlement.SubscriptionCreditEntitlement) =
-                addEntitlement(Entitlement.ofSubscriptionCredit(subscriptionCredit))
+            fun addEntitlement(unionMember1: Entitlement.UnionMember1) =
+                addEntitlement(Entitlement.ofUnionMember1(unionMember1))
 
             /** Provision status: SUCCESS or PAYMENT_REQUIRED */
             fun status(status: Status) = status(JsonField.of(status))
@@ -608,35 +606,29 @@ private constructor(
         @JsonSerialize(using = Entitlement.Serializer::class)
         class Entitlement
         private constructor(
-            private val subscriptionFeature: SubscriptionFeatureEntitlement? = null,
-            private val subscriptionCredit: SubscriptionCreditEntitlement? = null,
+            private val unionMember0: UnionMember0? = null,
+            private val unionMember1: UnionMember1? = null,
             private val _json: JsonValue? = null,
         ) {
 
-            fun subscriptionFeature(): Optional<SubscriptionFeatureEntitlement> =
-                Optional.ofNullable(subscriptionFeature)
+            fun unionMember0(): Optional<UnionMember0> = Optional.ofNullable(unionMember0)
 
-            fun subscriptionCredit(): Optional<SubscriptionCreditEntitlement> =
-                Optional.ofNullable(subscriptionCredit)
+            fun unionMember1(): Optional<UnionMember1> = Optional.ofNullable(unionMember1)
 
-            fun isSubscriptionFeature(): Boolean = subscriptionFeature != null
+            fun isUnionMember0(): Boolean = unionMember0 != null
 
-            fun isSubscriptionCredit(): Boolean = subscriptionCredit != null
+            fun isUnionMember1(): Boolean = unionMember1 != null
 
-            fun asSubscriptionFeature(): SubscriptionFeatureEntitlement =
-                subscriptionFeature.getOrThrow("subscriptionFeature")
+            fun asUnionMember0(): UnionMember0 = unionMember0.getOrThrow("unionMember0")
 
-            fun asSubscriptionCredit(): SubscriptionCreditEntitlement =
-                subscriptionCredit.getOrThrow("subscriptionCredit")
+            fun asUnionMember1(): UnionMember1 = unionMember1.getOrThrow("unionMember1")
 
             fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
             fun <T> accept(visitor: Visitor<T>): T =
                 when {
-                    subscriptionFeature != null ->
-                        visitor.visitSubscriptionFeature(subscriptionFeature)
-                    subscriptionCredit != null ->
-                        visitor.visitSubscriptionCredit(subscriptionCredit)
+                    unionMember0 != null -> visitor.visitUnionMember0(unionMember0)
+                    unionMember1 != null -> visitor.visitUnionMember1(unionMember1)
                     else -> visitor.unknown(_json)
                 }
 
@@ -649,16 +641,12 @@ private constructor(
 
                 accept(
                     object : Visitor<Unit> {
-                        override fun visitSubscriptionFeature(
-                            subscriptionFeature: SubscriptionFeatureEntitlement
-                        ) {
-                            subscriptionFeature.validate()
+                        override fun visitUnionMember0(unionMember0: UnionMember0) {
+                            unionMember0.validate()
                         }
 
-                        override fun visitSubscriptionCredit(
-                            subscriptionCredit: SubscriptionCreditEntitlement
-                        ) {
-                            subscriptionCredit.validate()
+                        override fun visitUnionMember1(unionMember1: UnionMember1) {
+                            unionMember1.validate()
                         }
                     }
                 )
@@ -683,13 +671,11 @@ private constructor(
             internal fun validity(): Int =
                 accept(
                     object : Visitor<Int> {
-                        override fun visitSubscriptionFeature(
-                            subscriptionFeature: SubscriptionFeatureEntitlement
-                        ) = subscriptionFeature.validity()
+                        override fun visitUnionMember0(unionMember0: UnionMember0) =
+                            unionMember0.validity()
 
-                        override fun visitSubscriptionCredit(
-                            subscriptionCredit: SubscriptionCreditEntitlement
-                        ) = subscriptionCredit.validity()
+                        override fun visitUnionMember1(unionMember1: UnionMember1) =
+                            unionMember1.validity()
 
                         override fun unknown(json: JsonValue?) = 0
                     }
@@ -701,18 +687,16 @@ private constructor(
                 }
 
                 return other is Entitlement &&
-                    subscriptionFeature == other.subscriptionFeature &&
-                    subscriptionCredit == other.subscriptionCredit
+                    unionMember0 == other.unionMember0 &&
+                    unionMember1 == other.unionMember1
             }
 
-            override fun hashCode(): Int = Objects.hash(subscriptionFeature, subscriptionCredit)
+            override fun hashCode(): Int = Objects.hash(unionMember0, unionMember1)
 
             override fun toString(): String =
                 when {
-                    subscriptionFeature != null ->
-                        "Entitlement{subscriptionFeature=$subscriptionFeature}"
-                    subscriptionCredit != null ->
-                        "Entitlement{subscriptionCredit=$subscriptionCredit}"
+                    unionMember0 != null -> "Entitlement{unionMember0=$unionMember0}"
+                    unionMember1 != null -> "Entitlement{unionMember1=$unionMember1}"
                     _json != null -> "Entitlement{_unknown=$_json}"
                     else -> throw IllegalStateException("Invalid Entitlement")
                 }
@@ -720,12 +704,12 @@ private constructor(
             companion object {
 
                 @JvmStatic
-                fun ofSubscriptionFeature(subscriptionFeature: SubscriptionFeatureEntitlement) =
-                    Entitlement(subscriptionFeature = subscriptionFeature)
+                fun ofUnionMember0(unionMember0: UnionMember0) =
+                    Entitlement(unionMember0 = unionMember0)
 
                 @JvmStatic
-                fun ofSubscriptionCredit(subscriptionCredit: SubscriptionCreditEntitlement) =
-                    Entitlement(subscriptionCredit = subscriptionCredit)
+                fun ofUnionMember1(unionMember1: UnionMember1) =
+                    Entitlement(unionMember1 = unionMember1)
             }
 
             /**
@@ -734,9 +718,9 @@ private constructor(
              */
             interface Visitor<out T> {
 
-                fun visitSubscriptionFeature(subscriptionFeature: SubscriptionFeatureEntitlement): T
+                fun visitUnionMember0(unionMember0: UnionMember0): T
 
-                fun visitSubscriptionCredit(subscriptionCredit: SubscriptionCreditEntitlement): T
+                fun visitUnionMember1(unionMember1: UnionMember1): T
 
                 /**
                  * Maps an unknown variant of [Entitlement] to a value of type [T].
@@ -760,16 +744,12 @@ private constructor(
 
                     val bestMatches =
                         sequenceOf(
-                                tryDeserialize(
-                                        node,
-                                        jacksonTypeRef<SubscriptionFeatureEntitlement>(),
-                                    )
-                                    ?.let { Entitlement(subscriptionFeature = it, _json = json) },
-                                tryDeserialize(
-                                        node,
-                                        jacksonTypeRef<SubscriptionCreditEntitlement>(),
-                                    )
-                                    ?.let { Entitlement(subscriptionCredit = it, _json = json) },
+                                tryDeserialize(node, jacksonTypeRef<UnionMember0>())?.let {
+                                    Entitlement(unionMember0 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<UnionMember1>())?.let {
+                                    Entitlement(unionMember1 = it, _json = json)
+                                },
                             )
                             .filterNotNull()
                             .allMaxBy { it.validity() }
@@ -795,17 +775,15 @@ private constructor(
                     provider: SerializerProvider,
                 ) {
                     when {
-                        value.subscriptionFeature != null ->
-                            generator.writeObject(value.subscriptionFeature)
-                        value.subscriptionCredit != null ->
-                            generator.writeObject(value.subscriptionCredit)
+                        value.unionMember0 != null -> generator.writeObject(value.unionMember0)
+                        value.unionMember1 != null -> generator.writeObject(value.unionMember1)
                         value._json != null -> generator.writeObject(value._json)
                         else -> throw IllegalStateException("Invalid Entitlement")
                     }
                 }
             }
 
-            class SubscriptionFeatureEntitlement
+            class UnionMember0
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
                 private val accessDeniedReason: JsonField<AccessDeniedReason>,
@@ -1122,8 +1100,7 @@ private constructor(
                 companion object {
 
                     /**
-                     * Returns a mutable builder for constructing an instance of
-                     * [SubscriptionFeatureEntitlement].
+                     * Returns a mutable builder for constructing an instance of [UnionMember0].
                      *
                      * The following fields are required:
                      * ```java
@@ -1135,7 +1112,7 @@ private constructor(
                     @JvmStatic fun builder() = Builder()
                 }
 
-                /** A builder for [SubscriptionFeatureEntitlement]. */
+                /** A builder for [UnionMember0]. */
                 class Builder internal constructor() {
 
                     private var accessDeniedReason: JsonField<AccessDeniedReason>? = null
@@ -1154,24 +1131,21 @@ private constructor(
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
-                    internal fun from(
-                        subscriptionFeatureEntitlement: SubscriptionFeatureEntitlement
-                    ) = apply {
-                        accessDeniedReason = subscriptionFeatureEntitlement.accessDeniedReason
-                        isGranted = subscriptionFeatureEntitlement.isGranted
-                        type = subscriptionFeatureEntitlement.type
-                        currentUsage = subscriptionFeatureEntitlement.currentUsage
-                        entitlementUpdatedAt = subscriptionFeatureEntitlement.entitlementUpdatedAt
-                        feature = subscriptionFeatureEntitlement.feature
-                        hasUnlimitedUsage = subscriptionFeatureEntitlement.hasUnlimitedUsage
-                        resetPeriod = subscriptionFeatureEntitlement.resetPeriod
-                        usageLimit = subscriptionFeatureEntitlement.usageLimit
-                        usagePeriodAnchor = subscriptionFeatureEntitlement.usagePeriodAnchor
-                        usagePeriodEnd = subscriptionFeatureEntitlement.usagePeriodEnd
-                        usagePeriodStart = subscriptionFeatureEntitlement.usagePeriodStart
-                        validUntil = subscriptionFeatureEntitlement.validUntil
-                        additionalProperties =
-                            subscriptionFeatureEntitlement.additionalProperties.toMutableMap()
+                    internal fun from(unionMember0: UnionMember0) = apply {
+                        accessDeniedReason = unionMember0.accessDeniedReason
+                        isGranted = unionMember0.isGranted
+                        type = unionMember0.type
+                        currentUsage = unionMember0.currentUsage
+                        entitlementUpdatedAt = unionMember0.entitlementUpdatedAt
+                        feature = unionMember0.feature
+                        hasUnlimitedUsage = unionMember0.hasUnlimitedUsage
+                        resetPeriod = unionMember0.resetPeriod
+                        usageLimit = unionMember0.usageLimit
+                        usagePeriodAnchor = unionMember0.usagePeriodAnchor
+                        usagePeriodEnd = unionMember0.usagePeriodEnd
+                        usagePeriodStart = unionMember0.usagePeriodStart
+                        validUntil = unionMember0.validUntil
+                        additionalProperties = unionMember0.additionalProperties.toMutableMap()
                     }
 
                     fun accessDeniedReason(accessDeniedReason: AccessDeniedReason?) =
@@ -1410,7 +1384,7 @@ private constructor(
                     }
 
                     /**
-                     * Returns an immutable instance of [SubscriptionFeatureEntitlement].
+                     * Returns an immutable instance of [UnionMember0].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
                      *
@@ -1423,8 +1397,8 @@ private constructor(
                      *
                      * @throws IllegalStateException if any required field is unset.
                      */
-                    fun build(): SubscriptionFeatureEntitlement =
-                        SubscriptionFeatureEntitlement(
+                    fun build(): UnionMember0 =
+                        UnionMember0(
                             checkRequired("accessDeniedReason", accessDeniedReason),
                             checkRequired("isGranted", isGranted),
                             checkRequired("type", type),
@@ -1444,7 +1418,7 @@ private constructor(
 
                 private var validated: Boolean = false
 
-                fun validate(): SubscriptionFeatureEntitlement = apply {
+                fun validate(): UnionMember0 = apply {
                     if (validated) {
                         return@apply
                     }
@@ -2600,7 +2574,7 @@ private constructor(
                         return true
                     }
 
-                    return other is SubscriptionFeatureEntitlement &&
+                    return other is UnionMember0 &&
                         accessDeniedReason == other.accessDeniedReason &&
                         isGranted == other.isGranted &&
                         type == other.type &&
@@ -2639,10 +2613,10 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "SubscriptionFeatureEntitlement{accessDeniedReason=$accessDeniedReason, isGranted=$isGranted, type=$type, currentUsage=$currentUsage, entitlementUpdatedAt=$entitlementUpdatedAt, feature=$feature, hasUnlimitedUsage=$hasUnlimitedUsage, resetPeriod=$resetPeriod, usageLimit=$usageLimit, usagePeriodAnchor=$usagePeriodAnchor, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, validUntil=$validUntil, additionalProperties=$additionalProperties}"
+                    "UnionMember0{accessDeniedReason=$accessDeniedReason, isGranted=$isGranted, type=$type, currentUsage=$currentUsage, entitlementUpdatedAt=$entitlementUpdatedAt, feature=$feature, hasUnlimitedUsage=$hasUnlimitedUsage, resetPeriod=$resetPeriod, usageLimit=$usageLimit, usagePeriodAnchor=$usagePeriodAnchor, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
 
-            class SubscriptionCreditEntitlement
+            class UnionMember1
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
                 private val accessDeniedReason: JsonField<AccessDeniedReason>,
@@ -2653,6 +2627,7 @@ private constructor(
                 private val usageLimit: JsonField<Double>,
                 private val usageUpdatedAt: JsonField<OffsetDateTime>,
                 private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
+                private val usagePeriodEnd: JsonField<OffsetDateTime>,
                 private val validUntil: JsonField<OffsetDateTime>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -2681,6 +2656,9 @@ private constructor(
                     @JsonProperty("entitlementUpdatedAt")
                     @ExcludeMissing
                     entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("usagePeriodEnd")
+                    @ExcludeMissing
+                    usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
                     @JsonProperty("validUntil")
                     @ExcludeMissing
                     validUntil: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -2693,6 +2671,7 @@ private constructor(
                     usageLimit,
                     usageUpdatedAt,
                     entitlementUpdatedAt,
+                    usagePeriodEnd,
                     validUntil,
                     mutableMapOf(),
                 )
@@ -2758,6 +2737,15 @@ private constructor(
                  */
                 fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
                     entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+
+                /**
+                 * The end date of the current billing period for recurring credit grants.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun usagePeriodEnd(): Optional<OffsetDateTime> =
+                    usagePeriodEnd.getOptional("usagePeriodEnd")
 
                 /**
                  * The next time the entitlement should be recalculated
@@ -2846,6 +2834,16 @@ private constructor(
                 fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
 
                 /**
+                 * Returns the raw JSON value of [usagePeriodEnd].
+                 *
+                 * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("usagePeriodEnd")
+                @ExcludeMissing
+                fun _usagePeriodEnd(): JsonField<OffsetDateTime> = usagePeriodEnd
+
+                /**
                  * Returns the raw JSON value of [validUntil].
                  *
                  * Unlike [validUntil], this method doesn't throw if the JSON field has an
@@ -2870,8 +2868,7 @@ private constructor(
                 companion object {
 
                     /**
-                     * Returns a mutable builder for constructing an instance of
-                     * [SubscriptionCreditEntitlement].
+                     * Returns a mutable builder for constructing an instance of [UnionMember1].
                      *
                      * The following fields are required:
                      * ```java
@@ -2887,7 +2884,7 @@ private constructor(
                     @JvmStatic fun builder() = Builder()
                 }
 
-                /** A builder for [SubscriptionCreditEntitlement]. */
+                /** A builder for [UnionMember1]. */
                 class Builder internal constructor() {
 
                     private var accessDeniedReason: JsonField<AccessDeniedReason>? = null
@@ -2898,24 +2895,23 @@ private constructor(
                     private var usageLimit: JsonField<Double>? = null
                     private var usageUpdatedAt: JsonField<OffsetDateTime>? = null
                     private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var validUntil: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
-                    internal fun from(
-                        subscriptionCreditEntitlement: SubscriptionCreditEntitlement
-                    ) = apply {
-                        accessDeniedReason = subscriptionCreditEntitlement.accessDeniedReason
-                        currency = subscriptionCreditEntitlement.currency
-                        currentUsage = subscriptionCreditEntitlement.currentUsage
-                        isGranted = subscriptionCreditEntitlement.isGranted
-                        type = subscriptionCreditEntitlement.type
-                        usageLimit = subscriptionCreditEntitlement.usageLimit
-                        usageUpdatedAt = subscriptionCreditEntitlement.usageUpdatedAt
-                        entitlementUpdatedAt = subscriptionCreditEntitlement.entitlementUpdatedAt
-                        validUntil = subscriptionCreditEntitlement.validUntil
-                        additionalProperties =
-                            subscriptionCreditEntitlement.additionalProperties.toMutableMap()
+                    internal fun from(unionMember1: UnionMember1) = apply {
+                        accessDeniedReason = unionMember1.accessDeniedReason
+                        currency = unionMember1.currency
+                        currentUsage = unionMember1.currentUsage
+                        isGranted = unionMember1.isGranted
+                        type = unionMember1.type
+                        usageLimit = unionMember1.usageLimit
+                        usageUpdatedAt = unionMember1.usageUpdatedAt
+                        entitlementUpdatedAt = unionMember1.entitlementUpdatedAt
+                        usagePeriodEnd = unionMember1.usagePeriodEnd
+                        validUntil = unionMember1.validUntil
+                        additionalProperties = unionMember1.additionalProperties.toMutableMap()
                     }
 
                     fun accessDeniedReason(accessDeniedReason: AccessDeniedReason?) =
@@ -3034,6 +3030,21 @@ private constructor(
                             this.entitlementUpdatedAt = entitlementUpdatedAt
                         }
 
+                    /** The end date of the current billing period for recurring credit grants. */
+                    fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime) =
+                        usagePeriodEnd(JsonField.of(usagePeriodEnd))
+
+                    /**
+                     * Sets [Builder.usagePeriodEnd] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.usagePeriodEnd] with a well-typed
+                     * [OffsetDateTime] value instead. This method is primarily for setting the
+                     * field to an undocumented or not yet supported value.
+                     */
+                    fun usagePeriodEnd(usagePeriodEnd: JsonField<OffsetDateTime>) = apply {
+                        this.usagePeriodEnd = usagePeriodEnd
+                    }
+
                     /** The next time the entitlement should be recalculated */
                     fun validUntil(validUntil: OffsetDateTime) =
                         validUntil(JsonField.of(validUntil))
@@ -3072,7 +3083,7 @@ private constructor(
                     }
 
                     /**
-                     * Returns an immutable instance of [SubscriptionCreditEntitlement].
+                     * Returns an immutable instance of [UnionMember1].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
                      *
@@ -3089,8 +3100,8 @@ private constructor(
                      *
                      * @throws IllegalStateException if any required field is unset.
                      */
-                    fun build(): SubscriptionCreditEntitlement =
-                        SubscriptionCreditEntitlement(
+                    fun build(): UnionMember1 =
+                        UnionMember1(
                             checkRequired("accessDeniedReason", accessDeniedReason),
                             checkRequired("currency", currency),
                             checkRequired("currentUsage", currentUsage),
@@ -3099,6 +3110,7 @@ private constructor(
                             checkRequired("usageLimit", usageLimit),
                             checkRequired("usageUpdatedAt", usageUpdatedAt),
                             entitlementUpdatedAt,
+                            usagePeriodEnd,
                             validUntil,
                             additionalProperties.toMutableMap(),
                         )
@@ -3106,7 +3118,7 @@ private constructor(
 
                 private var validated: Boolean = false
 
-                fun validate(): SubscriptionCreditEntitlement = apply {
+                fun validate(): UnionMember1 = apply {
                     if (validated) {
                         return@apply
                     }
@@ -3119,6 +3131,7 @@ private constructor(
                     usageLimit()
                     usageUpdatedAt()
                     entitlementUpdatedAt()
+                    usagePeriodEnd()
                     validUntil()
                     validated = true
                 }
@@ -3147,6 +3160,7 @@ private constructor(
                         (if (usageLimit.asKnown().isPresent) 1 else 0) +
                         (if (usageUpdatedAt.asKnown().isPresent) 1 else 0) +
                         (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
                         (if (validUntil.asKnown().isPresent) 1 else 0)
 
                 class AccessDeniedReason
@@ -3672,7 +3686,7 @@ private constructor(
                         return true
                     }
 
-                    return other is SubscriptionCreditEntitlement &&
+                    return other is UnionMember1 &&
                         accessDeniedReason == other.accessDeniedReason &&
                         currency == other.currency &&
                         currentUsage == other.currentUsage &&
@@ -3681,6 +3695,7 @@ private constructor(
                         usageLimit == other.usageLimit &&
                         usageUpdatedAt == other.usageUpdatedAt &&
                         entitlementUpdatedAt == other.entitlementUpdatedAt &&
+                        usagePeriodEnd == other.usagePeriodEnd &&
                         validUntil == other.validUntil &&
                         additionalProperties == other.additionalProperties
                 }
@@ -3695,6 +3710,7 @@ private constructor(
                         usageLimit,
                         usageUpdatedAt,
                         entitlementUpdatedAt,
+                        usagePeriodEnd,
                         validUntil,
                         additionalProperties,
                     )
@@ -3703,7 +3719,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "SubscriptionCreditEntitlement{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, validUntil=$validUntil, additionalProperties=$additionalProperties}"
+                    "UnionMember1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, usagePeriodEnd=$usagePeriodEnd, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
         }
 

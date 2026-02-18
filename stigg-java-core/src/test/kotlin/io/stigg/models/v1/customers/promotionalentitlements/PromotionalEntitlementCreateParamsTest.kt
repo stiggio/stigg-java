@@ -6,14 +6,14 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class PromotionalEntitlementGrantParamsTest {
+internal class PromotionalEntitlementCreateParamsTest {
 
     @Test
     fun create() {
-        PromotionalEntitlementGrantParams.builder()
-            .customerId("customerId")
+        PromotionalEntitlementCreateParams.builder()
+            .id("x")
             .addPromotionalEntitlement(
-                PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                     .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addEnumValue("string")
                     .featureId("featureId")
@@ -21,28 +21,30 @@ internal class PromotionalEntitlementGrantParamsTest {
                     .hasUnlimitedUsage(true)
                     .isVisible(true)
                     .monthlyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .MonthlyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .MonthlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
                             )
                             .build()
                     )
-                    .period(PromotionalEntitlementGrantParams.PromotionalEntitlement.Period._1_WEEK)
+                    .period(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                    )
                     .resetPeriod(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod.YEAR
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod.YEAR
                     )
                     .usageLimit(-9007199254740991L)
                     .weeklyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .WeeklyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .WeeklyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
@@ -50,11 +52,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                             .build()
                     )
                     .yearlyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .YearlyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .YearlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
@@ -69,10 +71,10 @@ internal class PromotionalEntitlementGrantParamsTest {
     @Test
     fun pathParams() {
         val params =
-            PromotionalEntitlementGrantParams.builder()
-                .customerId("customerId")
+            PromotionalEntitlementCreateParams.builder()
+                .id("x")
                 .addPromotionalEntitlement(
-                    PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                    PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                         .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addEnumValue("string")
                         .featureId("featureId")
@@ -80,11 +82,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                         .hasUnlimitedUsage(true)
                         .isVisible(true)
                         .monthlyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .MonthlyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .MonthlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -92,19 +94,19 @@ internal class PromotionalEntitlementGrantParamsTest {
                                 .build()
                         )
                         .period(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement.Period._1_WEEK
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
                         )
                         .resetPeriod(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod
                                 .YEAR
                         )
                         .usageLimit(-9007199254740991L)
                         .weeklyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .WeeklyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .WeeklyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -112,11 +114,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                                 .build()
                         )
                         .yearlyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .YearlyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .YearlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -127,7 +129,7 @@ internal class PromotionalEntitlementGrantParamsTest {
                 )
                 .build()
 
-        assertThat(params._pathParam(0)).isEqualTo("customerId")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -135,10 +137,10 @@ internal class PromotionalEntitlementGrantParamsTest {
     @Test
     fun body() {
         val params =
-            PromotionalEntitlementGrantParams.builder()
-                .customerId("customerId")
+            PromotionalEntitlementCreateParams.builder()
+                .id("x")
                 .addPromotionalEntitlement(
-                    PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                    PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                         .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addEnumValue("string")
                         .featureId("featureId")
@@ -146,11 +148,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                         .hasUnlimitedUsage(true)
                         .isVisible(true)
                         .monthlyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .MonthlyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .MonthlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -158,19 +160,19 @@ internal class PromotionalEntitlementGrantParamsTest {
                                 .build()
                         )
                         .period(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement.Period._1_WEEK
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
                         )
                         .resetPeriod(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod
                                 .YEAR
                         )
                         .usageLimit(-9007199254740991L)
                         .weeklyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .WeeklyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .WeeklyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -178,11 +180,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                                 .build()
                         )
                         .yearlyResetPeriodConfiguration(
-                            PromotionalEntitlementGrantParams.PromotionalEntitlement
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
                                 .YearlyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
                                         .YearlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
@@ -197,7 +199,7 @@ internal class PromotionalEntitlementGrantParamsTest {
 
         assertThat(body.promotionalEntitlements())
             .containsExactly(
-                PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                     .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addEnumValue("string")
                     .featureId("featureId")
@@ -205,28 +207,30 @@ internal class PromotionalEntitlementGrantParamsTest {
                     .hasUnlimitedUsage(true)
                     .isVisible(true)
                     .monthlyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .MonthlyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .MonthlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
                             )
                             .build()
                     )
-                    .period(PromotionalEntitlementGrantParams.PromotionalEntitlement.Period._1_WEEK)
+                    .period(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                    )
                     .resetPeriod(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod.YEAR
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod.YEAR
                     )
                     .usageLimit(-9007199254740991L)
                     .weeklyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .WeeklyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .WeeklyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
@@ -234,11 +238,11 @@ internal class PromotionalEntitlementGrantParamsTest {
                             .build()
                     )
                     .yearlyResetPeriodConfiguration(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                             .YearlyResetPeriodConfiguration
                             .builder()
                             .accordingTo(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .YearlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START

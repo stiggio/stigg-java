@@ -15,14 +15,14 @@ import kotlin.jvm.optionals.getOrNull
 /** Revokes a previously granted promotional entitlement from a customer for a specific feature. */
 class PromotionalEntitlementRevokeParams
 private constructor(
-    private val customerId: String,
+    private val id: String,
     private val featureId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
-    fun customerId(): String = customerId
+    fun id(): String = id
 
     fun featureId(): Optional<String> = Optional.ofNullable(featureId)
 
@@ -45,7 +45,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .customerId()
+         * .id()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -54,7 +54,7 @@ private constructor(
     /** A builder for [PromotionalEntitlementRevokeParams]. */
     class Builder internal constructor() {
 
-        private var customerId: String? = null
+        private var id: String? = null
         private var featureId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -63,7 +63,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(promotionalEntitlementRevokeParams: PromotionalEntitlementRevokeParams) =
             apply {
-                customerId = promotionalEntitlementRevokeParams.customerId
+                id = promotionalEntitlementRevokeParams.id
                 featureId = promotionalEntitlementRevokeParams.featureId
                 additionalHeaders = promotionalEntitlementRevokeParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
@@ -72,7 +72,7 @@ private constructor(
                     promotionalEntitlementRevokeParams.additionalBodyProperties.toMutableMap()
             }
 
-        fun customerId(customerId: String) = apply { this.customerId = customerId }
+        fun id(id: String) = apply { this.id = id }
 
         fun featureId(featureId: String?) = apply { this.featureId = featureId }
 
@@ -206,14 +206,14 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .customerId()
+         * .id()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): PromotionalEntitlementRevokeParams =
             PromotionalEntitlementRevokeParams(
-                checkRequired("customerId", customerId),
+                checkRequired("id", id),
                 featureId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -226,7 +226,7 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> customerId
+            0 -> id
             1 -> featureId ?: ""
             else -> ""
         }
@@ -241,7 +241,7 @@ private constructor(
         }
 
         return other is PromotionalEntitlementRevokeParams &&
-            customerId == other.customerId &&
+            id == other.id &&
             featureId == other.featureId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
@@ -250,7 +250,7 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
-            customerId,
+            id,
             featureId,
             additionalHeaders,
             additionalQueryParams,
@@ -258,5 +258,5 @@ private constructor(
         )
 
     override fun toString() =
-        "PromotionalEntitlementRevokeParams{customerId=$customerId, featureId=$featureId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "PromotionalEntitlementRevokeParams{id=$id, featureId=$featureId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

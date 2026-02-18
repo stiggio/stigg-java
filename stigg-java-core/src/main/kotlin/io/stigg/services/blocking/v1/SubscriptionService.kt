@@ -22,6 +22,8 @@ import io.stigg.models.v1.subscriptions.SubscriptionRetrieveParams
 import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
 import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import io.stigg.services.blocking.v1.subscriptions.FutureUpdateService
+import io.stigg.services.blocking.v1.subscriptions.InvoiceService
+import io.stigg.services.blocking.v1.subscriptions.UsageService
 import java.util.function.Consumer
 
 interface SubscriptionService {
@@ -39,6 +41,10 @@ interface SubscriptionService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionService
 
     fun futureUpdate(): FutureUpdateService
+
+    fun usage(): UsageService
+
+    fun invoice(): InvoiceService
 
     /**
      * Retrieves a subscription by its unique identifier, including plan details, billing period,
@@ -294,6 +300,10 @@ interface SubscriptionService {
         ): SubscriptionService.WithRawResponse
 
         fun futureUpdate(): FutureUpdateService.WithRawResponse
+
+        fun usage(): UsageService.WithRawResponse
+
+        fun invoice(): InvoiceService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/subscriptions/{id}`, but is otherwise the

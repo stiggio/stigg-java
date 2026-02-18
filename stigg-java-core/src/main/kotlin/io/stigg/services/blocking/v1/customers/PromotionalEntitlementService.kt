@@ -6,8 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantParams
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListPage
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeResponse
 import java.util.function.Consumer
@@ -30,28 +32,59 @@ interface PromotionalEntitlementService {
      * Grants promotional entitlements to a customer, providing feature access outside their
      * subscription. Entitlements can be time-limited or permanent.
      */
-    fun grant(
-        customerId: String,
-        params: PromotionalEntitlementGrantParams,
-    ): PromotionalEntitlementGrantResponse = grant(customerId, params, RequestOptions.none())
+    fun create(
+        id: String,
+        params: PromotionalEntitlementCreateParams,
+    ): PromotionalEntitlementCreateResponse = create(id, params, RequestOptions.none())
 
-    /** @see grant */
-    fun grant(
-        customerId: String,
-        params: PromotionalEntitlementGrantParams,
+    /** @see create */
+    fun create(
+        id: String,
+        params: PromotionalEntitlementCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): PromotionalEntitlementGrantResponse =
-        grant(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): PromotionalEntitlementCreateResponse =
+        create(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see grant */
-    fun grant(params: PromotionalEntitlementGrantParams): PromotionalEntitlementGrantResponse =
-        grant(params, RequestOptions.none())
+    /** @see create */
+    fun create(params: PromotionalEntitlementCreateParams): PromotionalEntitlementCreateResponse =
+        create(params, RequestOptions.none())
 
-    /** @see grant */
-    fun grant(
-        params: PromotionalEntitlementGrantParams,
+    /** @see create */
+    fun create(
+        params: PromotionalEntitlementCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): PromotionalEntitlementGrantResponse
+    ): PromotionalEntitlementCreateResponse
+
+    /** Retrieves a paginated list of a customer's promotional entitlements. */
+    fun list(id: String): PromotionalEntitlementListPage =
+        list(id, PromotionalEntitlementListParams.none())
+
+    /** @see list */
+    fun list(
+        id: String,
+        params: PromotionalEntitlementListParams = PromotionalEntitlementListParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PromotionalEntitlementListPage = list(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see list */
+    fun list(
+        id: String,
+        params: PromotionalEntitlementListParams = PromotionalEntitlementListParams.none(),
+    ): PromotionalEntitlementListPage = list(id, params, RequestOptions.none())
+
+    /** @see list */
+    fun list(
+        params: PromotionalEntitlementListParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PromotionalEntitlementListPage
+
+    /** @see list */
+    fun list(params: PromotionalEntitlementListParams): PromotionalEntitlementListPage =
+        list(params, RequestOptions.none())
+
+    /** @see list */
+    fun list(id: String, requestOptions: RequestOptions): PromotionalEntitlementListPage =
+        list(id, PromotionalEntitlementListParams.none(), requestOptions)
 
     /**
      * Revokes a previously granted promotional entitlement from a customer for a specific feature.
@@ -95,43 +128,88 @@ interface PromotionalEntitlementService {
         ): PromotionalEntitlementService.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /api/v1/customers/{customerId}/promotional`, but is
-         * otherwise the same as [PromotionalEntitlementService.grant].
+         * Returns a raw HTTP response for `post /api/v1/customers/{id}/promotional-entitlements`,
+         * but is otherwise the same as [PromotionalEntitlementService.create].
          */
         @MustBeClosed
-        fun grant(
-            customerId: String,
-            params: PromotionalEntitlementGrantParams,
-        ): HttpResponseFor<PromotionalEntitlementGrantResponse> =
-            grant(customerId, params, RequestOptions.none())
+        fun create(
+            id: String,
+            params: PromotionalEntitlementCreateParams,
+        ): HttpResponseFor<PromotionalEntitlementCreateResponse> =
+            create(id, params, RequestOptions.none())
 
-        /** @see grant */
+        /** @see create */
         @MustBeClosed
-        fun grant(
-            customerId: String,
-            params: PromotionalEntitlementGrantParams,
+        fun create(
+            id: String,
+            params: PromotionalEntitlementCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<PromotionalEntitlementGrantResponse> =
-            grant(params.toBuilder().customerId(customerId).build(), requestOptions)
+        ): HttpResponseFor<PromotionalEntitlementCreateResponse> =
+            create(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see grant */
+        /** @see create */
         @MustBeClosed
-        fun grant(
-            params: PromotionalEntitlementGrantParams
-        ): HttpResponseFor<PromotionalEntitlementGrantResponse> =
-            grant(params, RequestOptions.none())
+        fun create(
+            params: PromotionalEntitlementCreateParams
+        ): HttpResponseFor<PromotionalEntitlementCreateResponse> =
+            create(params, RequestOptions.none())
 
-        /** @see grant */
+        /** @see create */
         @MustBeClosed
-        fun grant(
-            params: PromotionalEntitlementGrantParams,
+        fun create(
+            params: PromotionalEntitlementCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<PromotionalEntitlementGrantResponse>
+        ): HttpResponseFor<PromotionalEntitlementCreateResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/promotional-entitlements`,
+         * but is otherwise the same as [PromotionalEntitlementService.list].
+         */
+        @MustBeClosed
+        fun list(id: String): HttpResponseFor<PromotionalEntitlementListPage> =
+            list(id, PromotionalEntitlementListParams.none())
+
+        /** @see list */
+        @MustBeClosed
+        fun list(
+            id: String,
+            params: PromotionalEntitlementListParams = PromotionalEntitlementListParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PromotionalEntitlementListPage> =
+            list(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see list */
+        @MustBeClosed
+        fun list(
+            id: String,
+            params: PromotionalEntitlementListParams = PromotionalEntitlementListParams.none(),
+        ): HttpResponseFor<PromotionalEntitlementListPage> = list(id, params, RequestOptions.none())
+
+        /** @see list */
+        @MustBeClosed
+        fun list(
+            params: PromotionalEntitlementListParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PromotionalEntitlementListPage>
+
+        /** @see list */
+        @MustBeClosed
+        fun list(
+            params: PromotionalEntitlementListParams
+        ): HttpResponseFor<PromotionalEntitlementListPage> = list(params, RequestOptions.none())
+
+        /** @see list */
+        @MustBeClosed
+        fun list(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PromotionalEntitlementListPage> =
+            list(id, PromotionalEntitlementListParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `delete
-         * /api/v1/customers/{customerId}/promotional/{featureId}`, but is otherwise the same as
-         * [PromotionalEntitlementService.revoke].
+         * /api/v1/customers/{id}/promotional-entitlements/{featureId}`, but is otherwise the same
+         * as [PromotionalEntitlementService.revoke].
          */
         @MustBeClosed
         fun revoke(

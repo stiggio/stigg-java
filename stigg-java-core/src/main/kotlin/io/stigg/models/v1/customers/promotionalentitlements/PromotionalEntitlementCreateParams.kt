@@ -28,15 +28,15 @@ import kotlin.jvm.optionals.getOrNull
  * Grants promotional entitlements to a customer, providing feature access outside their
  * subscription. Entitlements can be time-limited or permanent.
  */
-class PromotionalEntitlementGrantParams
+class PromotionalEntitlementCreateParams
 private constructor(
-    private val customerId: String?,
+    private val id: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun customerId(): Optional<String> = Optional.ofNullable(customerId)
+    fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
      * Promotional entitlements to grant
@@ -69,7 +69,7 @@ private constructor(
 
         /**
          * Returns a mutable builder for constructing an instance of
-         * [PromotionalEntitlementGrantParams].
+         * [PromotionalEntitlementCreateParams].
          *
          * The following fields are required:
          * ```java
@@ -79,28 +79,28 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [PromotionalEntitlementGrantParams]. */
+    /** A builder for [PromotionalEntitlementCreateParams]. */
     class Builder internal constructor() {
 
-        private var customerId: String? = null
+        private var id: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(promotionalEntitlementGrantParams: PromotionalEntitlementGrantParams) =
+        internal fun from(promotionalEntitlementCreateParams: PromotionalEntitlementCreateParams) =
             apply {
-                customerId = promotionalEntitlementGrantParams.customerId
-                body = promotionalEntitlementGrantParams.body.toBuilder()
-                additionalHeaders = promotionalEntitlementGrantParams.additionalHeaders.toBuilder()
+                id = promotionalEntitlementCreateParams.id
+                body = promotionalEntitlementCreateParams.body.toBuilder()
+                additionalHeaders = promotionalEntitlementCreateParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
-                    promotionalEntitlementGrantParams.additionalQueryParams.toBuilder()
+                    promotionalEntitlementCreateParams.additionalQueryParams.toBuilder()
             }
 
-        fun customerId(customerId: String?) = apply { this.customerId = customerId }
+        fun id(id: String?) = apply { this.id = id }
 
-        /** Alias for calling [Builder.customerId] with `customerId.orElse(null)`. */
-        fun customerId(customerId: Optional<String>) = customerId(customerId.getOrNull())
+        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
+        fun id(id: Optional<String>) = id(id.getOrNull())
 
         /**
          * Sets the entire request body.
@@ -254,7 +254,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [PromotionalEntitlementGrantParams].
+         * Returns an immutable instance of [PromotionalEntitlementCreateParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -265,9 +265,9 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): PromotionalEntitlementGrantParams =
-            PromotionalEntitlementGrantParams(
-                customerId,
+        fun build(): PromotionalEntitlementCreateParams =
+            PromotionalEntitlementCreateParams(
+                id,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -278,7 +278,7 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> customerId ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
@@ -2546,16 +2546,15 @@ private constructor(
             return true
         }
 
-        return other is PromotionalEntitlementGrantParams &&
-            customerId == other.customerId &&
+        return other is PromotionalEntitlementCreateParams &&
+            id == other.id &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(customerId, body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(id, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "PromotionalEntitlementGrantParams{customerId=$customerId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PromotionalEntitlementCreateParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

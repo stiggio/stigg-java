@@ -33,7 +33,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Response object */
-class PromotionalEntitlementGrantResponse
+class PromotionalEntitlementCreateResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<List<Data>>,
@@ -74,7 +74,7 @@ private constructor(
 
         /**
          * Returns a mutable builder for constructing an instance of
-         * [PromotionalEntitlementGrantResponse].
+         * [PromotionalEntitlementCreateResponse].
          *
          * The following fields are required:
          * ```java
@@ -84,7 +84,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [PromotionalEntitlementGrantResponse]. */
+    /** A builder for [PromotionalEntitlementCreateResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<MutableList<Data>>? = null
@@ -92,11 +92,11 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(
-            promotionalEntitlementGrantResponse: PromotionalEntitlementGrantResponse
+            promotionalEntitlementCreateResponse: PromotionalEntitlementCreateResponse
         ) = apply {
-            data = promotionalEntitlementGrantResponse.data.map { it.toMutableList() }
+            data = promotionalEntitlementCreateResponse.data.map { it.toMutableList() }
             additionalProperties =
-                promotionalEntitlementGrantResponse.additionalProperties.toMutableMap()
+                promotionalEntitlementCreateResponse.additionalProperties.toMutableMap()
         }
 
         fun data(data: List<Data>) = data(JsonField.of(data))
@@ -143,7 +143,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [PromotionalEntitlementGrantResponse].
+         * Returns an immutable instance of [PromotionalEntitlementCreateResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -154,8 +154,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): PromotionalEntitlementGrantResponse =
-            PromotionalEntitlementGrantResponse(
+        fun build(): PromotionalEntitlementCreateResponse =
+            PromotionalEntitlementCreateResponse(
                 checkRequired("data", data).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
@@ -163,7 +163,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): PromotionalEntitlementGrantResponse = apply {
+    fun validate(): PromotionalEntitlementCreateResponse = apply {
         if (validated) {
             return@apply
         }
@@ -2917,7 +2917,7 @@ private constructor(
             return true
         }
 
-        return other is PromotionalEntitlementGrantResponse &&
+        return other is PromotionalEntitlementCreateResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -2927,5 +2927,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PromotionalEntitlementGrantResponse{data=$data, additionalProperties=$additionalProperties}"
+        "PromotionalEntitlementCreateResponse{data=$data, additionalProperties=$additionalProperties}"
 }

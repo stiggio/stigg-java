@@ -29,6 +29,27 @@ internal class ProductListProductsPageResponseTest {
                         .multipleSubscriptions(true)
                         .status(ProductListProductsResponse.Status.PUBLISHED)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .productSettings(
+                            ProductListProductsResponse.ProductSettings.builder()
+                                .subscriptionCancellationTime(
+                                    ProductListProductsResponse.ProductSettings
+                                        .SubscriptionCancellationTime
+                                        .END_OF_BILLING_PERIOD
+                                )
+                                .subscriptionEndSetup(
+                                    ProductListProductsResponse.ProductSettings.SubscriptionEndSetup
+                                        .DOWNGRADE_TO_FREE
+                                )
+                                .subscriptionStartSetup(
+                                    ProductListProductsResponse.ProductSettings
+                                        .SubscriptionStartSetup
+                                        .PLAN_SELECTION
+                                )
+                                .downgradePlanId("downgradePlanId")
+                                .prorateAtEndOfBillingPeriod(true)
+                                .subscriptionStartPlanId("subscriptionStartPlanId")
+                                .build()
+                        )
                         .build()
                 )
                 .pagination(
@@ -54,6 +75,26 @@ internal class ProductListProductsPageResponseTest {
                     .multipleSubscriptions(true)
                     .status(ProductListProductsResponse.Status.PUBLISHED)
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .productSettings(
+                        ProductListProductsResponse.ProductSettings.builder()
+                            .subscriptionCancellationTime(
+                                ProductListProductsResponse.ProductSettings
+                                    .SubscriptionCancellationTime
+                                    .END_OF_BILLING_PERIOD
+                            )
+                            .subscriptionEndSetup(
+                                ProductListProductsResponse.ProductSettings.SubscriptionEndSetup
+                                    .DOWNGRADE_TO_FREE
+                            )
+                            .subscriptionStartSetup(
+                                ProductListProductsResponse.ProductSettings.SubscriptionStartSetup
+                                    .PLAN_SELECTION
+                            )
+                            .downgradePlanId("downgradePlanId")
+                            .prorateAtEndOfBillingPeriod(true)
+                            .subscriptionStartPlanId("subscriptionStartPlanId")
+                            .build()
+                    )
                     .build()
             )
         assertThat(productListProductsPageResponse.pagination())
@@ -84,6 +125,27 @@ internal class ProductListProductsPageResponseTest {
                         .multipleSubscriptions(true)
                         .status(ProductListProductsResponse.Status.PUBLISHED)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .productSettings(
+                            ProductListProductsResponse.ProductSettings.builder()
+                                .subscriptionCancellationTime(
+                                    ProductListProductsResponse.ProductSettings
+                                        .SubscriptionCancellationTime
+                                        .END_OF_BILLING_PERIOD
+                                )
+                                .subscriptionEndSetup(
+                                    ProductListProductsResponse.ProductSettings.SubscriptionEndSetup
+                                        .DOWNGRADE_TO_FREE
+                                )
+                                .subscriptionStartSetup(
+                                    ProductListProductsResponse.ProductSettings
+                                        .SubscriptionStartSetup
+                                        .PLAN_SELECTION
+                                )
+                                .downgradePlanId("downgradePlanId")
+                                .prorateAtEndOfBillingPeriod(true)
+                                .subscriptionStartPlanId("subscriptionStartPlanId")
+                                .build()
+                        )
                         .build()
                 )
                 .pagination(

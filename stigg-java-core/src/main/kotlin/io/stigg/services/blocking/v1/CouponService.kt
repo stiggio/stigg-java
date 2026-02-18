@@ -7,10 +7,12 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.coupons.Coupon
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
 import io.stigg.models.v1.coupons.CouponListPage
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import java.util.function.Consumer
 
 interface CouponService {
@@ -82,6 +84,66 @@ interface CouponService {
     /** @see list */
     fun list(requestOptions: RequestOptions): CouponListPage =
         list(CouponListParams.none(), requestOptions)
+
+    /** Archives a coupon, preventing it from being applied to new subscriptions. */
+    fun archiveCoupon(id: String): Coupon = archiveCoupon(id, CouponArchiveCouponParams.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        id: String,
+        params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Coupon = archiveCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        id: String,
+        params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+    ): Coupon = archiveCoupon(id, params, RequestOptions.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(
+        params: CouponArchiveCouponParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Coupon
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(params: CouponArchiveCouponParams): Coupon =
+        archiveCoupon(params, RequestOptions.none())
+
+    /** @see archiveCoupon */
+    fun archiveCoupon(id: String, requestOptions: RequestOptions): Coupon =
+        archiveCoupon(id, CouponArchiveCouponParams.none(), requestOptions)
+
+    /** Updates an existing coupon's properties such as name, description, and metadata. */
+    fun updateCoupon(id: String): Coupon = updateCoupon(id, CouponUpdateCouponParams.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        id: String,
+        params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Coupon = updateCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        id: String,
+        params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+    ): Coupon = updateCoupon(id, params, RequestOptions.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(
+        params: CouponUpdateCouponParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Coupon
+
+    /** @see updateCoupon */
+    fun updateCoupon(params: CouponUpdateCouponParams): Coupon =
+        updateCoupon(params, RequestOptions.none())
+
+    /** @see updateCoupon */
+    fun updateCoupon(id: String, requestOptions: RequestOptions): Coupon =
+        updateCoupon(id, CouponUpdateCouponParams.none(), requestOptions)
 
     /** A view of [CouponService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -171,5 +233,86 @@ interface CouponService {
         @MustBeClosed
         fun list(requestOptions: RequestOptions): HttpResponseFor<CouponListPage> =
             list(CouponListParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/coupons/{id}/archive`, but is otherwise the
+         * same as [CouponService.archiveCoupon].
+         */
+        @MustBeClosed
+        fun archiveCoupon(id: String): HttpResponseFor<Coupon> =
+            archiveCoupon(id, CouponArchiveCouponParams.none())
+
+        /** @see archiveCoupon */
+        @MustBeClosed
+        fun archiveCoupon(
+            id: String,
+            params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Coupon> =
+            archiveCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see archiveCoupon */
+        @MustBeClosed
+        fun archiveCoupon(
+            id: String,
+            params: CouponArchiveCouponParams = CouponArchiveCouponParams.none(),
+        ): HttpResponseFor<Coupon> = archiveCoupon(id, params, RequestOptions.none())
+
+        /** @see archiveCoupon */
+        @MustBeClosed
+        fun archiveCoupon(
+            params: CouponArchiveCouponParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Coupon>
+
+        /** @see archiveCoupon */
+        @MustBeClosed
+        fun archiveCoupon(params: CouponArchiveCouponParams): HttpResponseFor<Coupon> =
+            archiveCoupon(params, RequestOptions.none())
+
+        /** @see archiveCoupon */
+        @MustBeClosed
+        fun archiveCoupon(id: String, requestOptions: RequestOptions): HttpResponseFor<Coupon> =
+            archiveCoupon(id, CouponArchiveCouponParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/coupons/{id}`, but is otherwise the same
+         * as [CouponService.updateCoupon].
+         */
+        @MustBeClosed
+        fun updateCoupon(id: String): HttpResponseFor<Coupon> =
+            updateCoupon(id, CouponUpdateCouponParams.none())
+
+        /** @see updateCoupon */
+        @MustBeClosed
+        fun updateCoupon(
+            id: String,
+            params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Coupon> = updateCoupon(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see updateCoupon */
+        @MustBeClosed
+        fun updateCoupon(
+            id: String,
+            params: CouponUpdateCouponParams = CouponUpdateCouponParams.none(),
+        ): HttpResponseFor<Coupon> = updateCoupon(id, params, RequestOptions.none())
+
+        /** @see updateCoupon */
+        @MustBeClosed
+        fun updateCoupon(
+            params: CouponUpdateCouponParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Coupon>
+
+        /** @see updateCoupon */
+        @MustBeClosed
+        fun updateCoupon(params: CouponUpdateCouponParams): HttpResponseFor<Coupon> =
+            updateCoupon(params, RequestOptions.none())
+
+        /** @see updateCoupon */
+        @MustBeClosed
+        fun updateCoupon(id: String, requestOptions: RequestOptions): HttpResponseFor<Coupon> =
+            updateCoupon(id, CouponUpdateCouponParams.none(), requestOptions)
     }
 }

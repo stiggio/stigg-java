@@ -16,8 +16,11 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantParams
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListPage
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListPageResponse
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementListParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeResponse
 import java.util.function.Consumer
@@ -37,18 +40,25 @@ internal constructor(private val clientOptions: ClientOptions) : PromotionalEnti
     ): PromotionalEntitlementService =
         PromotionalEntitlementServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun grant(
-        params: PromotionalEntitlementGrantParams,
+    override fun create(
+        params: PromotionalEntitlementCreateParams,
         requestOptions: RequestOptions,
-    ): PromotionalEntitlementGrantResponse =
-        // post /api/v1/customers/{customerId}/promotional
-        withRawResponse().grant(params, requestOptions).parse()
+    ): PromotionalEntitlementCreateResponse =
+        // post /api/v1/customers/{id}/promotional-entitlements
+        withRawResponse().create(params, requestOptions).parse()
+
+    override fun list(
+        params: PromotionalEntitlementListParams,
+        requestOptions: RequestOptions,
+    ): PromotionalEntitlementListPage =
+        // get /api/v1/customers/{id}/promotional-entitlements
+        withRawResponse().list(params, requestOptions).parse()
 
     override fun revoke(
         params: PromotionalEntitlementRevokeParams,
         requestOptions: RequestOptions,
     ): PromotionalEntitlementRevokeResponse =
-        // delete /api/v1/customers/{customerId}/promotional/{featureId}
+        // delete /api/v1/customers/{id}/promotional-entitlements/{featureId}
         withRawResponse().revoke(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -64,21 +74,27 @@ internal constructor(private val clientOptions: ClientOptions) : PromotionalEnti
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val grantHandler: Handler<PromotionalEntitlementGrantResponse> =
-            jsonHandler<PromotionalEntitlementGrantResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<PromotionalEntitlementCreateResponse> =
+            jsonHandler<PromotionalEntitlementCreateResponse>(clientOptions.jsonMapper)
 
-        override fun grant(
-            params: PromotionalEntitlementGrantParams,
+        override fun create(
+            params: PromotionalEntitlementCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<PromotionalEntitlementGrantResponse> {
+        ): HttpResponseFor<PromotionalEntitlementCreateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("customerId", params.customerId().getOrNull())
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "promotional")
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "customers",
+                        params._pathParam(0),
+                        "promotional-entitlements",
+                    )
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -86,11 +102,54 @@ internal constructor(private val clientOptions: ClientOptions) : PromotionalEnti
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { grantHandler.handle(it) }
+                    .use { createHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listHandler: Handler<PromotionalEntitlementListPageResponse> =
+            jsonHandler<PromotionalEntitlementListPageResponse>(clientOptions.jsonMapper)
+
+        override fun list(
+            params: PromotionalEntitlementListParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PromotionalEntitlementListPage> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "customers",
+                        params._pathParam(0),
+                        "promotional-entitlements",
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        PromotionalEntitlementListPage.builder()
+                            .service(PromotionalEntitlementServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
@@ -114,7 +173,7 @@ internal constructor(private val clientOptions: ClientOptions) : PromotionalEnti
                         "v1",
                         "customers",
                         params._pathParam(0),
-                        "promotional",
+                        "promotional-entitlements",
                         params._pathParam(1),
                     )
                     .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }

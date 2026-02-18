@@ -4,7 +4,7 @@ package io.stigg.services.async.v1.customers
 
 import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantParams
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -16,7 +16,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
-    fun grant() {
+    fun create() {
         val client =
             StiggOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -24,12 +24,12 @@ internal class PromotionalEntitlementServiceAsyncTest {
                 .build()
         val promotionalEntitlementServiceAsync = client.v1().customers().promotionalEntitlements()
 
-        val responseFuture =
-            promotionalEntitlementServiceAsync.grant(
-                PromotionalEntitlementGrantParams.builder()
-                    .customerId("customerId")
+        val promotionalEntitlementFuture =
+            promotionalEntitlementServiceAsync.create(
+                PromotionalEntitlementCreateParams.builder()
+                    .id("x")
                     .addPromotionalEntitlement(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                             .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .addEnumValue("string")
                             .featureId("featureId")
@@ -37,11 +37,11 @@ internal class PromotionalEntitlementServiceAsyncTest {
                             .hasUnlimitedUsage(true)
                             .isVisible(true)
                             .monthlyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .MonthlyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .MonthlyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -49,20 +49,21 @@ internal class PromotionalEntitlementServiceAsyncTest {
                                     .build()
                             )
                             .period(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement.Period
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement.Period
                                     ._1_WEEK
                             )
                             .resetPeriod(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                    .ResetPeriod
                                     .YEAR
                             )
                             .usageLimit(-9007199254740991L)
                             .weeklyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .WeeklyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .WeeklyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -70,11 +71,11 @@ internal class PromotionalEntitlementServiceAsyncTest {
                                     .build()
                             )
                             .yearlyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .YearlyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .YearlyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -86,8 +87,24 @@ internal class PromotionalEntitlementServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val promotionalEntitlement = promotionalEntitlementFuture.get()
+        promotionalEntitlement.validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun list() {
+        val client =
+            StiggOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val promotionalEntitlementServiceAsync = client.v1().customers().promotionalEntitlements()
+
+        val pageFuture = promotionalEntitlementServiceAsync.list("x")
+
+        val page = pageFuture.get()
+        page.response().validate()
     }
 
     @Disabled("Prism tests are disabled")
@@ -102,10 +119,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
 
         val responseFuture =
             promotionalEntitlementServiceAsync.revoke(
-                PromotionalEntitlementRevokeParams.builder()
-                    .customerId("customerId")
-                    .featureId("featureId")
-                    .build()
+                PromotionalEntitlementRevokeParams.builder().id("id").featureId("featureId").build()
             )
 
         val response = responseFuture.get()

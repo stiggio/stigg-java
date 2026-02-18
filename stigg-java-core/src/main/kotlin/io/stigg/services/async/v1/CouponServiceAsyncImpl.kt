@@ -17,11 +17,13 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1.coupons.Coupon
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
 import io.stigg.models.v1.coupons.CouponListPageAsync
 import io.stigg.models.v1.coupons.CouponListPageResponse
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -58,6 +60,20 @@ class CouponServiceAsyncImpl internal constructor(private val clientOptions: Cli
     ): CompletableFuture<CouponListPageAsync> =
         // get /api/v1/coupons
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
+
+    override fun archiveCoupon(
+        params: CouponArchiveCouponParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<Coupon> =
+        // post /api/v1/coupons/{id}/archive
+        withRawResponse().archiveCoupon(params, requestOptions).thenApply { it.parse() }
+
+    override fun updateCoupon(
+        params: CouponUpdateCouponParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<Coupon> =
+        // patch /api/v1/coupons/{id}
+        withRawResponse().updateCoupon(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CouponServiceAsync.WithRawResponse {
@@ -167,6 +183,74 @@ class CouponServiceAsyncImpl internal constructor(private val clientOptions: Cli
                                     .params(params)
                                     .response(it)
                                     .build()
+                            }
+                    }
+                }
+        }
+
+        private val archiveCouponHandler: Handler<Coupon> =
+            jsonHandler<Coupon>(clientOptions.jsonMapper)
+
+        override fun archiveCoupon(
+            params: CouponArchiveCouponParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Coupon>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "coupons", params._pathParam(0), "archive")
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { archiveCouponHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val updateCouponHandler: Handler<Coupon> =
+            jsonHandler<Coupon>(clientOptions.jsonMapper)
+
+        override fun updateCoupon(
+            params: CouponUpdateCouponParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Coupon>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "coupons", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { updateCouponHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
                             }
                     }
                 }

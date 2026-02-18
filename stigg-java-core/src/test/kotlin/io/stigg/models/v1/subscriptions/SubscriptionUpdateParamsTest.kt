@@ -111,6 +111,9 @@ internal class SubscriptionUpdateParamsTest {
             )
             .addPriceOverride(
                 SubscriptionUpdateParams.PriceOverride.builder()
+                    .addonId("addonId")
+                    .baseCharge(true)
+                    .currencyId("currencyId")
                     .featureId("featureId")
                     .price(
                         SubscriptionUpdateParams.PriceOverride.Price.builder()
@@ -292,6 +295,9 @@ internal class SubscriptionUpdateParamsTest {
                 )
                 .addPriceOverride(
                     SubscriptionUpdateParams.PriceOverride.builder()
+                        .addonId("addonId")
+                        .baseCharge(true)
+                        .currencyId("currencyId")
                         .featureId("featureId")
                         .price(
                             SubscriptionUpdateParams.PriceOverride.Price.builder()
@@ -463,6 +469,9 @@ internal class SubscriptionUpdateParamsTest {
         assertThat(body.priceOverrides().getOrNull())
             .containsExactly(
                 SubscriptionUpdateParams.PriceOverride.builder()
+                    .addonId("addonId")
+                    .baseCharge(true)
+                    .currencyId("currencyId")
                     .featureId("featureId")
                     .price(
                         SubscriptionUpdateParams.PriceOverride.Price.builder()

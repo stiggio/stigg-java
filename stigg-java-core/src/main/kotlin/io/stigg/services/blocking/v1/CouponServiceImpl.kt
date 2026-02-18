@@ -17,11 +17,13 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.coupons.Coupon
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
 import io.stigg.models.v1.coupons.CouponListPage
 import io.stigg.models.v1.coupons.CouponListPageResponse
 import io.stigg.models.v1.coupons.CouponListParams
 import io.stigg.models.v1.coupons.CouponRetrieveParams
+import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -48,6 +50,20 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun list(params: CouponListParams, requestOptions: RequestOptions): CouponListPage =
         // get /api/v1/coupons
         withRawResponse().list(params, requestOptions).parse()
+
+    override fun archiveCoupon(
+        params: CouponArchiveCouponParams,
+        requestOptions: RequestOptions,
+    ): Coupon =
+        // post /api/v1/coupons/{id}/archive
+        withRawResponse().archiveCoupon(params, requestOptions).parse()
+
+    override fun updateCoupon(
+        params: CouponUpdateCouponParams,
+        requestOptions: RequestOptions,
+    ): Coupon =
+        // patch /api/v1/coupons/{id}
+        withRawResponse().updateCoupon(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CouponService.WithRawResponse {
@@ -148,6 +164,68 @@ class CouponServiceImpl internal constructor(private val clientOptions: ClientOp
                             .params(params)
                             .response(it)
                             .build()
+                    }
+            }
+        }
+
+        private val archiveCouponHandler: Handler<Coupon> =
+            jsonHandler<Coupon>(clientOptions.jsonMapper)
+
+        override fun archiveCoupon(
+            params: CouponArchiveCouponParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<Coupon> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "coupons", params._pathParam(0), "archive")
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { archiveCouponHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val updateCouponHandler: Handler<Coupon> =
+            jsonHandler<Coupon>(clientOptions.jsonMapper)
+
+        override fun updateCoupon(
+            params: CouponUpdateCouponParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<Coupon> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "coupons", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { updateCouponHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
                     }
             }
         }

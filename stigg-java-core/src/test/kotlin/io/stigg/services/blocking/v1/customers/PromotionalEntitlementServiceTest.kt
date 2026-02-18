@@ -4,7 +4,7 @@ package io.stigg.services.blocking.v1.customers
 
 import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
-import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementGrantParams
+import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -16,7 +16,7 @@ internal class PromotionalEntitlementServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
-    fun grant() {
+    fun create() {
         val client =
             StiggOkHttpClient.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -24,12 +24,12 @@ internal class PromotionalEntitlementServiceTest {
                 .build()
         val promotionalEntitlementService = client.v1().customers().promotionalEntitlements()
 
-        val response =
-            promotionalEntitlementService.grant(
-                PromotionalEntitlementGrantParams.builder()
-                    .customerId("customerId")
+        val promotionalEntitlement =
+            promotionalEntitlementService.create(
+                PromotionalEntitlementCreateParams.builder()
+                    .id("x")
                     .addPromotionalEntitlement(
-                        PromotionalEntitlementGrantParams.PromotionalEntitlement.builder()
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                             .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .addEnumValue("string")
                             .featureId("featureId")
@@ -37,11 +37,11 @@ internal class PromotionalEntitlementServiceTest {
                             .hasUnlimitedUsage(true)
                             .isVisible(true)
                             .monthlyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .MonthlyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .MonthlyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -49,20 +49,21 @@ internal class PromotionalEntitlementServiceTest {
                                     .build()
                             )
                             .period(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement.Period
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement.Period
                                     ._1_WEEK
                             )
                             .resetPeriod(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement.ResetPeriod
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                    .ResetPeriod
                                     .YEAR
                             )
                             .usageLimit(-9007199254740991L)
                             .weeklyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .WeeklyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .WeeklyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -70,11 +71,11 @@ internal class PromotionalEntitlementServiceTest {
                                     .build()
                             )
                             .yearlyResetPeriodConfiguration(
-                                PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
                                     .YearlyResetPeriodConfiguration
                                     .builder()
                                     .accordingTo(
-                                        PromotionalEntitlementGrantParams.PromotionalEntitlement
+                                        PromotionalEntitlementCreateParams.PromotionalEntitlement
                                             .YearlyResetPeriodConfiguration
                                             .AccordingTo
                                             .SUBSCRIPTION_START
@@ -86,7 +87,22 @@ internal class PromotionalEntitlementServiceTest {
                     .build()
             )
 
-        response.validate()
+        promotionalEntitlement.validate()
+    }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun list() {
+        val client =
+            StiggOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val promotionalEntitlementService = client.v1().customers().promotionalEntitlements()
+
+        val page = promotionalEntitlementService.list("x")
+
+        page.response().validate()
     }
 
     @Disabled("Prism tests are disabled")
@@ -101,10 +117,7 @@ internal class PromotionalEntitlementServiceTest {
 
         val response =
             promotionalEntitlementService.revoke(
-                PromotionalEntitlementRevokeParams.builder()
-                    .customerId("customerId")
-                    .featureId("featureId")
-                    .build()
+                PromotionalEntitlementRevokeParams.builder().id("id").featureId("featureId").build()
             )
 
         response.validate()
