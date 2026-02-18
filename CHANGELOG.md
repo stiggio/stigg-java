@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.8 (2026-02-18)
+
+Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
+
+### Features
+
+* **api:** Add missing endpoints ([d81a748](https://github.com/stiggio/stigg-java/commit/d81a748ab2ddcb2d955478f68757e44b0e7070f8))
+* **api:** api update ([05b4405](https://github.com/stiggio/stigg-java/commit/05b44056830f7cf918c1792da6fe303e3bef7c14))
+
 ## 0.1.0-alpha.7 (2026-02-18)
 
 Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
