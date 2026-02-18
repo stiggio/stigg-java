@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.1.0-alpha.6 (2026-02-18)
+
+Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
+
+### Features
+
+* **api:** api update ([95d5605](https://github.com/stiggio/stigg-java/commit/95d5605d2053a6e60a1d7c952a2fa4b60511bc1b))
+* **api:** api update ([0ff619e](https://github.com/stiggio/stigg-java/commit/0ff619e4e6799fe6dab0bc2d9a4b67de9d910a0c))
+* **api:** api update ([4822d05](https://github.com/stiggio/stigg-java/commit/4822d05b8e14524cf50659b97a147405b15d5e43))
+* **api:** api update ([75c02b4](https://github.com/stiggio/stigg-java/commit/75c02b4c898b3323ef9954d70e7b774b8a97516a))
+* **api:** api update ([ae1537f](https://github.com/stiggio/stigg-java/commit/ae1537ff124bddb15dd7f348b4492ad0fa96fc24))
+* **api:** api update ([b33cdcd](https://github.com/stiggio/stigg-java/commit/b33cdcdd374697972a55946ec29822bd25296bb3))
+* **api:** api update ([ce8bc2d](https://github.com/stiggio/stigg-java/commit/ce8bc2d0241aacdef9b7acdb3155aac8b002cbc0))
+* **api:** api update ([433f272](https://github.com/stiggio/stigg-java/commit/433f272e15871bec003dd7509d24a9cc8af416af))
+* **api:** manual updates ([1613518](https://github.com/stiggio/stigg-java/commit/16135188836e8e81d26bbe00c9a0c49f586f5c80))
+* **api:** manual updates ([f554f23](https://github.com/stiggio/stigg-java/commit/f554f239659701f5eb9d51f82eaab11405bcdf32))
+* **api:** manual updates ([3b93301](https://github.com/stiggio/stigg-java/commit/3b9330186e08917411f16728b5067d141e823f13))
+* **api:** updated the production environment ([5ff06e6](https://github.com/stiggio/stigg-java/commit/5ff06e6bd61479ce36bf279903058c23c16cc811))
+
+
+### Chores
+
+* configure new SDK language ([712a586](https://github.com/stiggio/stigg-java/commit/712a586a86ebde23d300ade11128dbc722ba8e2a))
+* **internal:** update `TestServerExtension` comment ([a08d4cf](https://github.com/stiggio/stigg-java/commit/a08d4cff1ab26ef6a361f8181905460d6c689fa1))
+
 ## 0.1.0-alpha.5 (2026-02-08)
 
 Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
