@@ -85,19 +85,29 @@ interface ProductServiceAsync {
     ): CompletableFuture<ProductCreateProductResponse>
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
-    fun duplicateProduct(
-        pathId: String,
-        params: ProductDuplicateProductParams,
-    ): CompletableFuture<ProductDuplicateProductResponse> =
-        duplicateProduct(pathId, params, RequestOptions.none())
+    fun duplicateProduct(id: String): CompletableFuture<ProductDuplicateProductResponse> =
+        duplicateProduct(id, ProductDuplicateProductParams.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        pathId: String,
-        params: ProductDuplicateProductParams,
+        id: String,
+        params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ProductDuplicateProductResponse> =
-        duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+        duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see duplicateProduct */
+    fun duplicateProduct(
+        id: String,
+        params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
+    ): CompletableFuture<ProductDuplicateProductResponse> =
+        duplicateProduct(id, params, RequestOptions.none())
+
+    /** @see duplicateProduct */
+    fun duplicateProduct(
+        params: ProductDuplicateProductParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ProductDuplicateProductResponse>
 
     /** @see duplicateProduct */
     fun duplicateProduct(
@@ -107,9 +117,10 @@ interface ProductServiceAsync {
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        params: ProductDuplicateProductParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductDuplicateProductResponse>
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ProductDuplicateProductResponse> =
+        duplicateProduct(id, ProductDuplicateProductParams.none(), requestOptions)
 
     /** Retrieves a paginated list of products in the environment. */
     fun listProducts(): CompletableFuture<ProductListProductsPageAsync> =
@@ -285,18 +296,30 @@ interface ProductServiceAsync {
          * the same as [ProductServiceAsync.duplicateProduct].
          */
         fun duplicateProduct(
-            pathId: String,
-            params: ProductDuplicateProductParams,
+            id: String
         ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
-            duplicateProduct(pathId, params, RequestOptions.none())
+            duplicateProduct(id, ProductDuplicateProductParams.none())
 
         /** @see duplicateProduct */
         fun duplicateProduct(
-            pathId: String,
-            params: ProductDuplicateProductParams,
+            id: String,
+            params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
-            duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+            duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see duplicateProduct */
+        fun duplicateProduct(
+            id: String,
+            params: ProductDuplicateProductParams = ProductDuplicateProductParams.none(),
+        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
+            duplicateProduct(id, params, RequestOptions.none())
+
+        /** @see duplicateProduct */
+        fun duplicateProduct(
+            params: ProductDuplicateProductParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>>
 
         /** @see duplicateProduct */
         fun duplicateProduct(
@@ -306,9 +329,10 @@ interface ProductServiceAsync {
 
         /** @see duplicateProduct */
         fun duplicateProduct(
-            params: ProductDuplicateProductParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>>
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
+            duplicateProduct(id, ProductDuplicateProductParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /api/v1/products`, but is otherwise the same as
