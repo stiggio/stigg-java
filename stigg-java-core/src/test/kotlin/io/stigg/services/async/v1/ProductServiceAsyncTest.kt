@@ -73,8 +73,7 @@ internal class ProductServiceAsyncTest {
         val responseFuture =
             productServiceAsync.duplicateProduct(
                 ProductDuplicateProductParams.builder()
-                    .pathId("x")
-                    .bodyId("id")
+                    .id("x")
                     .description("description")
                     .displayName("displayName")
                     .build()
