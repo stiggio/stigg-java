@@ -34,20 +34,4 @@ internal class UsageServiceAsyncTest {
         val response = responseFuture.get()
         response.validate()
     }
-
-    @Disabled("Prism tests are disabled")
-    @Test
-    fun syncUsage() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
-        val usageServiceAsync = client.v1().subscriptions().usage()
-
-        val responseFuture = usageServiceAsync.syncUsage("x")
-
-        val response = responseFuture.get()
-        response.validate()
-    }
 }
