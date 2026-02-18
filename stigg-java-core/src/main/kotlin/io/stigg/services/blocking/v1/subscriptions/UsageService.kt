@@ -8,8 +8,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageParams
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageResponse
-import io.stigg.models.v1.subscriptions.usage.UsageSyncUsageParams
-import io.stigg.models.v1.subscriptions.usage.UsageSyncUsageResponse
 import java.util.function.Consumer
 
 interface UsageService {
@@ -59,38 +57,6 @@ interface UsageService {
     /** @see chargeUsage */
     fun chargeUsage(id: String, requestOptions: RequestOptions): UsageChargeUsageResponse =
         chargeUsage(id, UsageChargeUsageParams.none(), requestOptions)
-
-    /**
-     * Triggers a usage sync for a subscription, reporting current usage to the billing provider.
-     */
-    fun syncUsage(id: String): UsageSyncUsageResponse = syncUsage(id, UsageSyncUsageParams.none())
-
-    /** @see syncUsage */
-    fun syncUsage(
-        id: String,
-        params: UsageSyncUsageParams = UsageSyncUsageParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): UsageSyncUsageResponse = syncUsage(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see syncUsage */
-    fun syncUsage(
-        id: String,
-        params: UsageSyncUsageParams = UsageSyncUsageParams.none(),
-    ): UsageSyncUsageResponse = syncUsage(id, params, RequestOptions.none())
-
-    /** @see syncUsage */
-    fun syncUsage(
-        params: UsageSyncUsageParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): UsageSyncUsageResponse
-
-    /** @see syncUsage */
-    fun syncUsage(params: UsageSyncUsageParams): UsageSyncUsageResponse =
-        syncUsage(params, RequestOptions.none())
-
-    /** @see syncUsage */
-    fun syncUsage(id: String, requestOptions: RequestOptions): UsageSyncUsageResponse =
-        syncUsage(id, UsageSyncUsageParams.none(), requestOptions)
 
     /** A view of [UsageService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -146,49 +112,5 @@ interface UsageService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<UsageChargeUsageResponse> =
             chargeUsage(id, UsageChargeUsageParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/subscriptions/{id}/usage/sync`, but is
-         * otherwise the same as [UsageService.syncUsage].
-         */
-        @MustBeClosed
-        fun syncUsage(id: String): HttpResponseFor<UsageSyncUsageResponse> =
-            syncUsage(id, UsageSyncUsageParams.none())
-
-        /** @see syncUsage */
-        @MustBeClosed
-        fun syncUsage(
-            id: String,
-            params: UsageSyncUsageParams = UsageSyncUsageParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<UsageSyncUsageResponse> =
-            syncUsage(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see syncUsage */
-        @MustBeClosed
-        fun syncUsage(
-            id: String,
-            params: UsageSyncUsageParams = UsageSyncUsageParams.none(),
-        ): HttpResponseFor<UsageSyncUsageResponse> = syncUsage(id, params, RequestOptions.none())
-
-        /** @see syncUsage */
-        @MustBeClosed
-        fun syncUsage(
-            params: UsageSyncUsageParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<UsageSyncUsageResponse>
-
-        /** @see syncUsage */
-        @MustBeClosed
-        fun syncUsage(params: UsageSyncUsageParams): HttpResponseFor<UsageSyncUsageResponse> =
-            syncUsage(params, RequestOptions.none())
-
-        /** @see syncUsage */
-        @MustBeClosed
-        fun syncUsage(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<UsageSyncUsageResponse> =
-            syncUsage(id, UsageSyncUsageParams.none(), requestOptions)
     }
 }
