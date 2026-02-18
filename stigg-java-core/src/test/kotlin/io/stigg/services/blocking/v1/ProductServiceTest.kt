@@ -71,7 +71,8 @@ internal class ProductServiceTest {
         val response =
             productService.duplicateProduct(
                 ProductDuplicateProductParams.builder()
-                    .id("x")
+                    .pathId("x")
+                    .bodyId("id")
                     .description("description")
                     .displayName("displayName")
                     .build()
