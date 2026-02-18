@@ -21,6 +21,8 @@ import io.stigg.services.async.v1.events.AddonServiceAsync
 import io.stigg.services.async.v1.events.AddonServiceAsyncImpl
 import io.stigg.services.async.v1.events.FeatureServiceAsync
 import io.stigg.services.async.v1.events.FeatureServiceAsyncImpl
+import io.stigg.services.async.v1.events.PlanServiceAsync
+import io.stigg.services.async.v1.events.PlanServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -35,6 +37,8 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     private val addons: AddonServiceAsync by lazy { AddonServiceAsyncImpl(clientOptions) }
 
+    private val plans: PlanServiceAsync by lazy { PlanServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): EventServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync =
@@ -43,6 +47,8 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun features(): FeatureServiceAsync = features
 
     override fun addons(): AddonServiceAsync = addons
+
+    override fun plans(): PlanServiceAsync = plans
 
     override fun report(
         params: EventReportParams,
@@ -65,6 +71,10 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
             AddonServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val plans: PlanServiceAsync.WithRawResponse by lazy {
+            PlanServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventServiceAsync.WithRawResponse =
@@ -75,6 +85,8 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
         override fun features(): FeatureServiceAsync.WithRawResponse = features
 
         override fun addons(): AddonServiceAsync.WithRawResponse = addons
+
+        override fun plans(): PlanServiceAsync.WithRawResponse = plans
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
