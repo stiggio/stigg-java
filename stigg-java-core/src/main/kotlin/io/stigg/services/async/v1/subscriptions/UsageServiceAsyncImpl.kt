@@ -18,8 +18,6 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageParams
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageResponse
-import io.stigg.models.v1.subscriptions.usage.UsageSyncUsageParams
-import io.stigg.models.v1.subscriptions.usage.UsageSyncUsageResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -42,13 +40,6 @@ class UsageServiceAsyncImpl internal constructor(private val clientOptions: Clie
     ): CompletableFuture<UsageChargeUsageResponse> =
         // post /api/v1/subscriptions/{id}/usage/charge
         withRawResponse().chargeUsage(params, requestOptions).thenApply { it.parse() }
-
-    override fun syncUsage(
-        params: UsageSyncUsageParams,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<UsageSyncUsageResponse> =
-        // post /api/v1/subscriptions/{id}/usage/sync
-        withRawResponse().syncUsage(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         UsageServiceAsync.WithRawResponse {
@@ -95,47 +86,6 @@ class UsageServiceAsyncImpl internal constructor(private val clientOptions: Clie
                     errorHandler.handle(response).parseable {
                         response
                             .use { chargeUsageHandler.handle(it) }
-                            .also {
-                                if (requestOptions.responseValidation!!) {
-                                    it.validate()
-                                }
-                            }
-                    }
-                }
-        }
-
-        private val syncUsageHandler: Handler<UsageSyncUsageResponse> =
-            jsonHandler<UsageSyncUsageResponse>(clientOptions.jsonMapper)
-
-        override fun syncUsage(
-            params: UsageSyncUsageParams,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<UsageSyncUsageResponse>> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments(
-                        "api",
-                        "v1",
-                        "subscriptions",
-                        params._pathParam(0),
-                        "usage",
-                        "sync",
-                    )
-                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            return request
-                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
-                .thenApply { response ->
-                    errorHandler.handle(response).parseable {
-                        response
-                            .use { syncUsageHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
