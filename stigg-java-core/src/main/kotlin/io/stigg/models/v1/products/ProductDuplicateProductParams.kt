@@ -11,7 +11,6 @@ import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
 import io.stigg.core.Params
-import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import io.stigg.errors.StiggInvalidDataException
@@ -23,21 +22,13 @@ import kotlin.jvm.optionals.getOrNull
 /** Duplicates an existing product, including its plans, addons, and configuration. */
 class ProductDuplicateProductParams
 private constructor(
-    private val pathId: String?,
+    private val id: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun pathId(): Optional<String> = Optional.ofNullable(pathId)
-
-    /**
-     * The unique identifier for the entity
-     *
-     * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
-     *   missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bodyId(): String = body.bodyId()
+    fun id(): Optional<String> = Optional.ofNullable(id)
 
     /**
      * Description of the product
@@ -54,13 +45,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun displayName(): Optional<String> = body.displayName()
-
-    /**
-     * Returns the raw JSON value of [bodyId].
-     *
-     * Unlike [bodyId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _bodyId(): JsonField<String> = body._bodyId()
 
     /**
      * Returns the raw JSON value of [description].
@@ -88,14 +72,11 @@ private constructor(
 
     companion object {
 
+        @JvmStatic fun none(): ProductDuplicateProductParams = builder().build()
+
         /**
          * Returns a mutable builder for constructing an instance of
          * [ProductDuplicateProductParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .bodyId()
-         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -103,45 +84,33 @@ private constructor(
     /** A builder for [ProductDuplicateProductParams]. */
     class Builder internal constructor() {
 
-        private var pathId: String? = null
+        private var id: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(productDuplicateProductParams: ProductDuplicateProductParams) = apply {
-            pathId = productDuplicateProductParams.pathId
+            id = productDuplicateProductParams.id
             body = productDuplicateProductParams.body.toBuilder()
             additionalHeaders = productDuplicateProductParams.additionalHeaders.toBuilder()
             additionalQueryParams = productDuplicateProductParams.additionalQueryParams.toBuilder()
         }
 
-        fun pathId(pathId: String?) = apply { this.pathId = pathId }
+        fun id(id: String?) = apply { this.id = id }
 
-        /** Alias for calling [Builder.pathId] with `pathId.orElse(null)`. */
-        fun pathId(pathId: Optional<String>) = pathId(pathId.getOrNull())
+        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
+        fun id(id: Optional<String>) = id(id.getOrNull())
 
         /**
          * Sets the entire request body.
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [bodyId]
          * - [description]
          * - [displayName]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        /** The unique identifier for the entity */
-        fun bodyId(bodyId: String) = apply { body.bodyId(bodyId) }
-
-        /**
-         * Sets [Builder.bodyId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bodyId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bodyId(bodyId: JsonField<String>) = apply { body.bodyId(bodyId) }
 
         /** Description of the product */
         fun description(description: String?) = apply { body.description(description) }
@@ -291,17 +260,10 @@ private constructor(
          * Returns an immutable instance of [ProductDuplicateProductParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .bodyId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ProductDuplicateProductParams =
             ProductDuplicateProductParams(
-                pathId,
+                id,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -312,7 +274,7 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> pathId ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
@@ -326,7 +288,6 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val bodyId: JsonField<String>,
         private val description: JsonField<String>,
         private val displayName: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -334,22 +295,13 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("id") @ExcludeMissing bodyId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("description")
             @ExcludeMissing
             description: JsonField<String> = JsonMissing.of(),
             @JsonProperty("displayName")
             @ExcludeMissing
             displayName: JsonField<String> = JsonMissing.of(),
-        ) : this(bodyId, description, displayName, mutableMapOf())
-
-        /**
-         * The unique identifier for the entity
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun bodyId(): String = bodyId.getRequired("id")
+        ) : this(description, displayName, mutableMapOf())
 
         /**
          * Description of the product
@@ -366,13 +318,6 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun displayName(): Optional<String> = displayName.getOptional("displayName")
-
-        /**
-         * Returns the raw JSON value of [bodyId].
-         *
-         * Unlike [bodyId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("id") @ExcludeMissing fun _bodyId(): JsonField<String> = bodyId
 
         /**
          * Returns the raw JSON value of [description].
@@ -406,44 +351,23 @@ private constructor(
 
         companion object {
 
-            /**
-             * Returns a mutable builder for constructing an instance of [Body].
-             *
-             * The following fields are required:
-             * ```java
-             * .bodyId()
-             * ```
-             */
+            /** Returns a mutable builder for constructing an instance of [Body]. */
             @JvmStatic fun builder() = Builder()
         }
 
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var bodyId: JsonField<String>? = null
             private var description: JsonField<String> = JsonMissing.of()
             private var displayName: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
-                bodyId = body.bodyId
                 description = body.description
                 displayName = body.displayName
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
-
-            /** The unique identifier for the entity */
-            fun bodyId(bodyId: String) = bodyId(JsonField.of(bodyId))
-
-            /**
-             * Sets [Builder.bodyId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.bodyId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun bodyId(bodyId: JsonField<String>) = apply { this.bodyId = bodyId }
 
             /** Description of the product */
             fun description(description: String?) = description(JsonField.ofNullable(description))
@@ -499,21 +423,8 @@ private constructor(
              * Returns an immutable instance of [Body].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .bodyId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): Body =
-                Body(
-                    checkRequired("bodyId", bodyId),
-                    description,
-                    displayName,
-                    additionalProperties.toMutableMap(),
-                )
+            fun build(): Body = Body(description, displayName, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -523,7 +434,6 @@ private constructor(
                 return@apply
             }
 
-            bodyId()
             description()
             displayName()
             validated = true
@@ -545,8 +455,7 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (bodyId.asKnown().isPresent) 1 else 0) +
-                (if (description.asKnown().isPresent) 1 else 0) +
+            (if (description.asKnown().isPresent) 1 else 0) +
                 (if (displayName.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
@@ -555,20 +464,19 @@ private constructor(
             }
 
             return other is Body &&
-                bodyId == other.bodyId &&
                 description == other.description &&
                 displayName == other.displayName &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(bodyId, description, displayName, additionalProperties)
+            Objects.hash(description, displayName, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{bodyId=$bodyId, description=$description, displayName=$displayName, additionalProperties=$additionalProperties}"
+            "Body{description=$description, displayName=$displayName, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -577,15 +485,14 @@ private constructor(
         }
 
         return other is ProductDuplicateProductParams &&
-            pathId == other.pathId &&
+            id == other.id &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(pathId, body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(id, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ProductDuplicateProductParams{pathId=$pathId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ProductDuplicateProductParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
