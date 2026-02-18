@@ -7,6 +7,8 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageParams
 import io.stigg.models.v1.subscriptions.usage.UsageChargeUsageResponse
+import io.stigg.models.v1.subscriptions.usage.UsageSyncParams
+import io.stigg.models.v1.subscriptions.usage.UsageSyncResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -62,6 +64,39 @@ interface UsageServiceAsync {
     ): CompletableFuture<UsageChargeUsageResponse> =
         chargeUsage(id, UsageChargeUsageParams.none(), requestOptions)
 
+    /**
+     * Triggers a usage sync for a subscription, reporting current usage to the billing provider.
+     */
+    fun sync(id: String): CompletableFuture<UsageSyncResponse> = sync(id, UsageSyncParams.none())
+
+    /** @see sync */
+    fun sync(
+        id: String,
+        params: UsageSyncParams = UsageSyncParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<UsageSyncResponse> =
+        sync(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see sync */
+    fun sync(
+        id: String,
+        params: UsageSyncParams = UsageSyncParams.none(),
+    ): CompletableFuture<UsageSyncResponse> = sync(id, params, RequestOptions.none())
+
+    /** @see sync */
+    fun sync(
+        params: UsageSyncParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<UsageSyncResponse>
+
+    /** @see sync */
+    fun sync(params: UsageSyncParams): CompletableFuture<UsageSyncResponse> =
+        sync(params, RequestOptions.none())
+
+    /** @see sync */
+    fun sync(id: String, requestOptions: RequestOptions): CompletableFuture<UsageSyncResponse> =
+        sync(id, UsageSyncParams.none(), requestOptions)
+
     /** A view of [UsageServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -114,5 +149,44 @@ interface UsageServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<UsageChargeUsageResponse>> =
             chargeUsage(id, UsageChargeUsageParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/subscriptions/{id}/usage/sync`, but is
+         * otherwise the same as [UsageServiceAsync.sync].
+         */
+        fun sync(id: String): CompletableFuture<HttpResponseFor<UsageSyncResponse>> =
+            sync(id, UsageSyncParams.none())
+
+        /** @see sync */
+        fun sync(
+            id: String,
+            params: UsageSyncParams = UsageSyncParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<UsageSyncResponse>> =
+            sync(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see sync */
+        fun sync(
+            id: String,
+            params: UsageSyncParams = UsageSyncParams.none(),
+        ): CompletableFuture<HttpResponseFor<UsageSyncResponse>> =
+            sync(id, params, RequestOptions.none())
+
+        /** @see sync */
+        fun sync(
+            params: UsageSyncParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<UsageSyncResponse>>
+
+        /** @see sync */
+        fun sync(params: UsageSyncParams): CompletableFuture<HttpResponseFor<UsageSyncResponse>> =
+            sync(params, RequestOptions.none())
+
+        /** @see sync */
+        fun sync(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<UsageSyncResponse>> =
+            sync(id, UsageSyncParams.none(), requestOptions)
     }
 }
