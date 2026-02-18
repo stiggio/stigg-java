@@ -21,6 +21,8 @@ import io.stigg.services.blocking.v1.events.AddonService
 import io.stigg.services.blocking.v1.events.AddonServiceImpl
 import io.stigg.services.blocking.v1.events.FeatureService
 import io.stigg.services.blocking.v1.events.FeatureServiceImpl
+import io.stigg.services.blocking.v1.events.PlanService
+import io.stigg.services.blocking.v1.events.PlanServiceImpl
 import java.util.function.Consumer
 
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -34,6 +36,8 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     private val addons: AddonService by lazy { AddonServiceImpl(clientOptions) }
 
+    private val plans: PlanService by lazy { PlanServiceImpl(clientOptions) }
+
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
@@ -42,6 +46,8 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun features(): FeatureService = features
 
     override fun addons(): AddonService = addons
+
+    override fun plans(): PlanService = plans
 
     override fun report(
         params: EventReportParams,
@@ -64,6 +70,10 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             AddonServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val plans: PlanService.WithRawResponse by lazy {
+            PlanServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventService.WithRawResponse =
@@ -74,6 +84,8 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         override fun features(): FeatureService.WithRawResponse = features
 
         override fun addons(): AddonService.WithRawResponse = addons
+
+        override fun plans(): PlanService.WithRawResponse = plans
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
