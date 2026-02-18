@@ -49,7 +49,7 @@ internal class AddonServiceAsyncTest {
                     .productId("productId")
                     .billingId("billingId")
                     .description("description")
-                    .maxQuantity(1L)
+                    .maxQuantity(0L)
                     .metadata(
                         AddonCreateAddonParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))

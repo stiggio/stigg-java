@@ -39,7 +39,7 @@ private constructor(
     /** Filter by product ID */
     fun productId(): Optional<String> = Optional.ofNullable(productId)
 
-    /** Filter by addon status. Supports comma-separated values for multiple statuses */
+    /** Filter by status. Supports comma-separated values for multiple statuses */
     fun status(): Optional<String> = Optional.ofNullable(status)
 
     /** Additional headers to send with the request. */
@@ -119,7 +119,7 @@ private constructor(
         /** Alias for calling [Builder.productId] with `productId.orElse(null)`. */
         fun productId(productId: Optional<String>) = productId(productId.getOrNull())
 
-        /** Filter by addon status. Supports comma-separated values for multiple statuses */
+        /** Filter by status. Supports comma-separated values for multiple statuses */
         fun status(status: String?) = apply { this.status = status }
 
         /** Alias for calling [Builder.status] with `status.orElse(null)`. */

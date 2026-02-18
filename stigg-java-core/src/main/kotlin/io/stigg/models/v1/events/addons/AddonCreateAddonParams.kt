@@ -47,7 +47,7 @@ private constructor(
     fun displayName(): String = body.displayName()
 
     /**
-     * The product ID to associate the addon with
+     * The product id of the package
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -241,7 +241,7 @@ private constructor(
          */
         fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
-        /** The product ID to associate the addon with */
+        /** The product id of the package */
         fun productId(productId: String) = apply { body.productId(productId) }
 
         /**
@@ -254,7 +254,10 @@ private constructor(
         fun productId(productId: JsonField<String>) = apply { body.productId(productId) }
 
         /** The unique identifier for the entity in the billing provider */
-        fun billingId(billingId: String) = apply { body.billingId(billingId) }
+        fun billingId(billingId: String?) = apply { body.billingId(billingId) }
+
+        /** Alias for calling [Builder.billingId] with `billingId.orElse(null)`. */
+        fun billingId(billingId: Optional<String>) = billingId(billingId.getOrNull())
 
         /**
          * Sets [Builder.billingId] to an arbitrary JSON value.
@@ -266,7 +269,10 @@ private constructor(
         fun billingId(billingId: JsonField<String>) = apply { body.billingId(billingId) }
 
         /** The description of the package */
-        fun description(description: String) = apply { body.description(description) }
+        fun description(description: String?) = apply { body.description(description) }
+
+        /** Alias for calling [Builder.description] with `description.orElse(null)`. */
+        fun description(description: Optional<String>) = description(description.getOrNull())
 
         /**
          * Sets [Builder.description] to an arbitrary JSON value.
@@ -278,7 +284,17 @@ private constructor(
         fun description(description: JsonField<String>) = apply { body.description(description) }
 
         /** The maximum quantity of this addon that can be added to a subscription */
-        fun maxQuantity(maxQuantity: Long) = apply { body.maxQuantity(maxQuantity) }
+        fun maxQuantity(maxQuantity: Long?) = apply { body.maxQuantity(maxQuantity) }
+
+        /**
+         * Alias for [Builder.maxQuantity].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxQuantity(maxQuantity: Long) = maxQuantity(maxQuantity as Long?)
+
+        /** Alias for calling [Builder.maxQuantity] with `maxQuantity.orElse(null)`. */
+        fun maxQuantity(maxQuantity: Optional<Long>) = maxQuantity(maxQuantity.getOrNull())
 
         /**
          * Sets [Builder.maxQuantity] to an arbitrary JSON value.
@@ -302,7 +318,10 @@ private constructor(
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
         /** The pricing type of the package */
-        fun pricingType(pricingType: PricingType) = apply { body.pricingType(pricingType) }
+        fun pricingType(pricingType: PricingType?) = apply { body.pricingType(pricingType) }
+
+        /** Alias for calling [Builder.pricingType] with `pricingType.orElse(null)`. */
+        fun pricingType(pricingType: Optional<PricingType>) = pricingType(pricingType.getOrNull())
 
         /**
          * Sets [Builder.pricingType] to an arbitrary JSON value.
@@ -542,7 +561,7 @@ private constructor(
         fun displayName(): String = displayName.getRequired("displayName")
 
         /**
-         * The product ID to associate the addon with
+         * The product id of the package
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -749,7 +768,7 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** The product ID to associate the addon with */
+            /** The product id of the package */
             fun productId(productId: String) = productId(JsonField.of(productId))
 
             /**
@@ -762,7 +781,10 @@ private constructor(
             fun productId(productId: JsonField<String>) = apply { this.productId = productId }
 
             /** The unique identifier for the entity in the billing provider */
-            fun billingId(billingId: String) = billingId(JsonField.of(billingId))
+            fun billingId(billingId: String?) = billingId(JsonField.ofNullable(billingId))
+
+            /** Alias for calling [Builder.billingId] with `billingId.orElse(null)`. */
+            fun billingId(billingId: Optional<String>) = billingId(billingId.getOrNull())
 
             /**
              * Sets [Builder.billingId] to an arbitrary JSON value.
@@ -774,7 +796,10 @@ private constructor(
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
             /** The description of the package */
-            fun description(description: String) = description(JsonField.of(description))
+            fun description(description: String?) = description(JsonField.ofNullable(description))
+
+            /** Alias for calling [Builder.description] with `description.orElse(null)`. */
+            fun description(description: Optional<String>) = description(description.getOrNull())
 
             /**
              * Sets [Builder.description] to an arbitrary JSON value.
@@ -788,7 +813,17 @@ private constructor(
             }
 
             /** The maximum quantity of this addon that can be added to a subscription */
-            fun maxQuantity(maxQuantity: Long) = maxQuantity(JsonField.of(maxQuantity))
+            fun maxQuantity(maxQuantity: Long?) = maxQuantity(JsonField.ofNullable(maxQuantity))
+
+            /**
+             * Alias for [Builder.maxQuantity].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun maxQuantity(maxQuantity: Long) = maxQuantity(maxQuantity as Long?)
+
+            /** Alias for calling [Builder.maxQuantity] with `maxQuantity.orElse(null)`. */
+            fun maxQuantity(maxQuantity: Optional<Long>) = maxQuantity(maxQuantity.getOrNull())
 
             /**
              * Sets [Builder.maxQuantity] to an arbitrary JSON value.
@@ -812,7 +847,12 @@ private constructor(
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
             /** The pricing type of the package */
-            fun pricingType(pricingType: PricingType) = pricingType(JsonField.of(pricingType))
+            fun pricingType(pricingType: PricingType?) =
+                pricingType(JsonField.ofNullable(pricingType))
+
+            /** Alias for calling [Builder.pricingType] with `pricingType.orElse(null)`. */
+            fun pricingType(pricingType: Optional<PricingType>) =
+                pricingType(pricingType.getOrNull())
 
             /**
              * Sets [Builder.pricingType] to an arbitrary JSON value.
