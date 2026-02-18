@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-alpha.7 (2026-02-18)
+
+Full Changelog: [v0.1.0-alpha.6...v0.1.0-alpha.7](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.6...v0.1.0-alpha.7)
+
+### Features
+
+* **api:** manual updates ([2f0b03e](https://github.com/stiggio/stigg-java/commit/2f0b03e0c4ce17ce47c6e2121acbc3dc85ca342f))
+* **api:** manual updates ([2f0b03e](https://github.com/stiggio/stigg-java/commit/2f0b03e0c4ce17ce47c6e2121acbc3dc85ca342f))
+* **api:** trigger release ([f7b8880](https://github.com/stiggio/stigg-java/commit/f7b88802a688b8e38c67d0b35ec477e1c46ec85b))
+* **api:** trigger release ([f7b8880](https://github.com/stiggio/stigg-java/commit/f7b88802a688b8e38c67d0b35ec477e1c46ec85b))
+
 ## 0.1.0-alpha.6 (2026-02-18)
 
 Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
