@@ -9,6 +9,7 @@ import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import io.stigg.services.async.v1.events.AddonServiceAsync
 import io.stigg.services.async.v1.events.FeatureServiceAsync
+import io.stigg.services.async.v1.events.PlanServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -29,6 +30,8 @@ interface EventServiceAsync {
     fun features(): FeatureServiceAsync
 
     fun addons(): AddonServiceAsync
+
+    fun plans(): PlanServiceAsync
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -58,6 +61,8 @@ interface EventServiceAsync {
         fun features(): FeatureServiceAsync.WithRawResponse
 
         fun addons(): AddonServiceAsync.WithRawResponse
+
+        fun plans(): PlanServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
