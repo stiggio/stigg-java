@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.13 (2026-02-19)
+
+Full Changelog: [v0.1.0-alpha.12...v0.1.0-alpha.13](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.12...v0.1.0-alpha.13)
+
+### Features
+
+* **client:** add connection pooling option ([be1375e](https://github.com/stiggio/stigg-java/commit/be1375e3e9423a590759b79e412f5833b8cb1cb1))
+
+
+### Chores
+
+* **internal:** make `OkHttp` constructor internal ([5e87f4f](https://github.com/stiggio/stigg-java/commit/5e87f4f8eed23785b8f41f354ecada73d20bcb3b))
+
 ## 0.1.0-alpha.12 (2026-02-18)
 
 Full Changelog: [v0.1.0-alpha.11...v0.1.0-alpha.12](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.11...v0.1.0-alpha.12)
