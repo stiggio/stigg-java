@@ -2,24 +2,17 @@
 
 package io.stigg.services.blocking.v1.customers
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.customers.paymentmethod.PaymentMethodAttachParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class PaymentMethodServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun attach() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val paymentMethodService = client.v1().customers().paymentMethod()
 
         val customerResponse =
@@ -39,11 +32,7 @@ internal class PaymentMethodServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun detach() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val paymentMethodService = client.v1().customers().paymentMethod()
 
         val customerResponse = paymentMethodService.detach("x")

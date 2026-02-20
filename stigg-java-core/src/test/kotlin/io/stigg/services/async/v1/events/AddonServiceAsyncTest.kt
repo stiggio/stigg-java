@@ -2,7 +2,6 @@
 
 package io.stigg.services.async.v1.events
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.events.addons.AddonCreateAddonParams
@@ -10,19 +9,13 @@ import io.stigg.models.v1.events.addons.AddonPublishAddonParams
 import io.stigg.models.v1.events.addons.AddonUpdateAddonParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class AddonServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun archiveAddon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val responseFuture = addonServiceAsync.archiveAddon("x")
@@ -34,11 +27,7 @@ internal class AddonServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun createAddon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val responseFuture =
@@ -67,11 +56,7 @@ internal class AddonServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun listAddons() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val pageFuture = addonServiceAsync.listAddons()
@@ -83,11 +68,7 @@ internal class AddonServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun publishAddon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val responseFuture =
@@ -105,11 +86,7 @@ internal class AddonServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun retrieveAddon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val responseFuture = addonServiceAsync.retrieveAddon("x")
@@ -121,11 +98,7 @@ internal class AddonServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun updateAddon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().events().addons()
 
         val responseFuture =
