@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class EventServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun report() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()

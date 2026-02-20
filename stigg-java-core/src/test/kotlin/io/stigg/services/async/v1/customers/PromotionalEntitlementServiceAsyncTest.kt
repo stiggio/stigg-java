@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class PromotionalEntitlementServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun create() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -84,7 +84,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
         promotionalEntitlement.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun list() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -96,7 +96,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun revoke() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()

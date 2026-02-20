@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class FeatureServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun archiveFeature() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -22,7 +22,7 @@ internal class FeatureServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun createFeature() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -64,7 +64,7 @@ internal class FeatureServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun listFeatures() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -75,7 +75,7 @@ internal class FeatureServiceTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieveFeature() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -86,7 +86,7 @@ internal class FeatureServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun unarchiveFeature() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -97,7 +97,7 @@ internal class FeatureServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun updateFeature() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()

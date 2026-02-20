@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class FutureUpdateServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelPendingPayment() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -20,7 +20,7 @@ internal class FutureUpdateServiceAsyncTest {
         cancelSubscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelSchedule() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()

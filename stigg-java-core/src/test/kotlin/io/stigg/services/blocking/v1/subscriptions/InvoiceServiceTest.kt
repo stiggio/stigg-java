@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class InvoiceServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun markAsPaid() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()

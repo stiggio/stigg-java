@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class CouponServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun create() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -42,7 +42,7 @@ internal class CouponServiceTest {
         coupon.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieve() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -53,7 +53,7 @@ internal class CouponServiceTest {
         coupon.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun list() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -64,7 +64,7 @@ internal class CouponServiceTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun archiveCoupon() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -75,7 +75,7 @@ internal class CouponServiceTest {
         coupon.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun updateCoupon() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
