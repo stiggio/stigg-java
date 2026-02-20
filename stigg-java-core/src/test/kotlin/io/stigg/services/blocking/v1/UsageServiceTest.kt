@@ -2,7 +2,6 @@
 
 package io.stigg.services.blocking.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.usage.UsageHistoryParams
@@ -10,19 +9,13 @@ import io.stigg.models.v1.usage.UsageReportParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class UsageServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun history() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val usageService = client.v1().usage()
 
         val response =
@@ -43,11 +36,7 @@ internal class UsageServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun report() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val usageService = client.v1().usage()
 
         val response =

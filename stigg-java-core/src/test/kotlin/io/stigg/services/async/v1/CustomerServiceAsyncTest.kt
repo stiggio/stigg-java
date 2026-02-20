@@ -2,7 +2,6 @@
 
 package io.stigg.services.async.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.customers.CustomerImportParams
@@ -11,19 +10,13 @@ import io.stigg.models.v1.customers.CustomerUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class CustomerServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun retrieve() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val customerResponseFuture = customerServiceAsync.retrieve("x")
@@ -35,11 +28,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun update() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val customerResponseFuture =
@@ -73,11 +62,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun list() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val pageFuture = customerServiceAsync.list()
@@ -89,11 +74,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun archive() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val customerResponseFuture = customerServiceAsync.archive("x")
@@ -105,11 +86,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun import_() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val responseFuture =
@@ -139,11 +116,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun listResources() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val pageFuture = customerServiceAsync.listResources("x")
@@ -155,11 +128,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun provision() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val customerResponseFuture =
@@ -202,11 +171,7 @@ internal class CustomerServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun unarchive() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
         val customerResponseFuture = customerServiceAsync.unarchive("x")

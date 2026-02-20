@@ -2,26 +2,19 @@
 
 package io.stigg.services.async.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.events.EventReportParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class EventServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun report() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val eventServiceAsync = client.v1().events()
 
         val responseFuture =

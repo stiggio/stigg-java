@@ -2,26 +2,19 @@
 
 package io.stigg.services.blocking.v1.customers
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class PromotionalEntitlementServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun create() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val promotionalEntitlementService = client.v1().customers().promotionalEntitlements()
 
         val promotionalEntitlement =
@@ -93,11 +86,7 @@ internal class PromotionalEntitlementServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun list() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val promotionalEntitlementService = client.v1().customers().promotionalEntitlements()
 
         val page = promotionalEntitlementService.list("x")
@@ -108,11 +97,7 @@ internal class PromotionalEntitlementServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun revoke() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val promotionalEntitlementService = client.v1().customers().promotionalEntitlements()
 
         val response =
