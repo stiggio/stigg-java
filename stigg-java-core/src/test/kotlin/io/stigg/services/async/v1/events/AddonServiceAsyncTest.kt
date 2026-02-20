@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class AddonServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun archiveAddon() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -24,7 +24,7 @@ internal class AddonServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun createAddon() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -53,7 +53,7 @@ internal class AddonServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun listAddons() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -65,7 +65,7 @@ internal class AddonServiceAsyncTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun publishAddon() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -83,7 +83,7 @@ internal class AddonServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieveAddon() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -95,7 +95,7 @@ internal class AddonServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun updateAddon() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()

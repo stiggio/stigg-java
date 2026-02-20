@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class DraftServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun createAddonDraft() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
@@ -20,7 +20,7 @@ internal class DraftServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun removeAddonDraft() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()

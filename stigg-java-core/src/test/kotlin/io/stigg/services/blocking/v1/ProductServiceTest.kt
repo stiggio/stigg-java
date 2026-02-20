@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class ProductServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun archiveProduct() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -23,7 +23,7 @@ internal class ProductServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun createProduct() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -47,7 +47,7 @@ internal class ProductServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun duplicateProduct() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -66,7 +66,7 @@ internal class ProductServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun listProducts() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -77,7 +77,7 @@ internal class ProductServiceTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun unarchiveProduct() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -88,7 +88,7 @@ internal class ProductServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun updateProduct() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
