@@ -2,26 +2,19 @@
 
 package io.stigg.services.async.v1.customers
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementCreateParams
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class PromotionalEntitlementServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun create() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val promotionalEntitlementServiceAsync = client.v1().customers().promotionalEntitlements()
 
         val promotionalEntitlementFuture =
@@ -94,11 +87,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun list() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val promotionalEntitlementServiceAsync = client.v1().customers().promotionalEntitlements()
 
         val pageFuture = promotionalEntitlementServiceAsync.list("x")
@@ -110,11 +99,7 @@ internal class PromotionalEntitlementServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun revoke() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val promotionalEntitlementServiceAsync = client.v1().customers().promotionalEntitlements()
 
         val responseFuture =

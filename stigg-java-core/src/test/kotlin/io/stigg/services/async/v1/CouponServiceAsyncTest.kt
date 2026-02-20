@@ -2,26 +2,19 @@
 
 package io.stigg.services.async.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.coupons.CouponCreateParams
 import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class CouponServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun create() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
         val couponFuture =
@@ -53,11 +46,7 @@ internal class CouponServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun retrieve() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
         val couponFuture = couponServiceAsync.retrieve("x")
@@ -69,11 +58,7 @@ internal class CouponServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun list() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
         val pageFuture = couponServiceAsync.list()
@@ -85,11 +70,7 @@ internal class CouponServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun archiveCoupon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
         val couponFuture = couponServiceAsync.archiveCoupon("x")
@@ -101,11 +82,7 @@ internal class CouponServiceAsyncTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun updateCoupon() {
-        val client =
-            StiggOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
         val couponFuture =

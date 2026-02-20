@@ -2,26 +2,19 @@
 
 package io.stigg.services.blocking.v1.events
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.events.features.FeatureCreateFeatureParams
 import io.stigg.models.v1.events.features.FeatureUpdateFeatureParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class FeatureServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun archiveFeature() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val response = featureService.archiveFeature("x")
@@ -32,11 +25,7 @@ internal class FeatureServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun createFeature() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val response =
@@ -78,11 +67,7 @@ internal class FeatureServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun listFeatures() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val page = featureService.listFeatures()
@@ -93,11 +78,7 @@ internal class FeatureServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun retrieveFeature() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val response = featureService.retrieveFeature("x")
@@ -108,11 +89,7 @@ internal class FeatureServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun unarchiveFeature() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val response = featureService.unarchiveFeature("x")
@@ -123,11 +100,7 @@ internal class FeatureServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun updateFeature() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
         val response =

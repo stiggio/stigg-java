@@ -2,7 +2,6 @@
 
 package io.stigg.services.blocking.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.products.ProductCreateProductParams
@@ -10,19 +9,13 @@ import io.stigg.models.v1.products.ProductDuplicateProductParams
 import io.stigg.models.v1.products.ProductUpdateProductParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class ProductServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun archiveProduct() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val response = productService.archiveProduct("x")
@@ -33,11 +26,7 @@ internal class ProductServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun createProduct() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val response =
@@ -61,11 +50,7 @@ internal class ProductServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun duplicateProduct() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val response =
@@ -84,11 +69,7 @@ internal class ProductServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun listProducts() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val page = productService.listProducts()
@@ -99,11 +80,7 @@ internal class ProductServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun unarchiveProduct() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val response = productService.unarchiveProduct("x")
@@ -114,11 +91,7 @@ internal class ProductServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun updateProduct() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
         val response =

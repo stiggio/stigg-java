@@ -2,7 +2,6 @@
 
 package io.stigg.services.blocking.v1
 
-import io.stigg.TestServerExtension
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.subscriptions.SubscriptionCancelParams
@@ -16,19 +15,13 @@ import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class SubscriptionServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun retrieve() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription = subscriptionService.retrieve("x")
@@ -39,11 +32,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun update() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription =
@@ -235,11 +224,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun list() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val page = subscriptionService.list()
@@ -250,11 +235,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun cancel() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription =
@@ -276,11 +257,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun delegate() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription =
@@ -297,11 +274,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun import_() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val response =
@@ -333,11 +306,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun migrate() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription =
@@ -356,11 +325,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun preview() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val response =
@@ -481,11 +446,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun provision() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val response =
@@ -714,11 +675,7 @@ internal class SubscriptionServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun transfer() {
-        val client =
-            StiggOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val subscriptionService = client.v1().subscriptions()
 
         val subscription =
