@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class PlanServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun create() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -38,7 +38,7 @@ internal class PlanServiceTest {
         plan.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieve() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -49,7 +49,7 @@ internal class PlanServiceTest {
         plan.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun list() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()

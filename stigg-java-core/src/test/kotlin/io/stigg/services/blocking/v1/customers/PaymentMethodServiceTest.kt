@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class PaymentMethodServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun attach() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -29,7 +29,7 @@ internal class PaymentMethodServiceTest {
         customerResponse.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun detach() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()

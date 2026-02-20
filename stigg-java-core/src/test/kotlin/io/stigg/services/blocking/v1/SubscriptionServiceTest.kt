@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 
 internal class SubscriptionServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieve() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -29,7 +29,7 @@ internal class SubscriptionServiceTest {
         subscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun update() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -221,7 +221,7 @@ internal class SubscriptionServiceTest {
         subscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun list() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -232,7 +232,7 @@ internal class SubscriptionServiceTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun cancel() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -254,7 +254,7 @@ internal class SubscriptionServiceTest {
         subscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun delegate() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -271,7 +271,7 @@ internal class SubscriptionServiceTest {
         subscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun import_() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -303,7 +303,7 @@ internal class SubscriptionServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun migrate() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -322,7 +322,7 @@ internal class SubscriptionServiceTest {
         subscription.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun preview() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -443,7 +443,7 @@ internal class SubscriptionServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun provision() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
@@ -672,7 +672,7 @@ internal class SubscriptionServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun transfer() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
