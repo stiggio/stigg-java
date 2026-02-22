@@ -171,7 +171,7 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerImportResponse>
 
-    /** Get a list of customerresources */
+    /** Retrieves a paginated list of resources within the same customer. */
     fun listResources(id: String): CompletableFuture<CustomerListResourcesPageAsync> =
         listResources(id, CustomerListResourcesParams.none())
 
