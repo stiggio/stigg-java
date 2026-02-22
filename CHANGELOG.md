@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-alpha.14 (2026-02-22)
+
+Full Changelog: [v0.1.0-alpha.13...v0.1.0-alpha.14](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.13...v0.1.0-alpha.14)
+
+### Features
+
+* **api:** api update ([d78e784](https://github.com/stiggio/stigg-java/commit/d78e784f43851212c94627eb4440a2548d70593a))
+
+
+### Chores
+
+* **internal:** remove mock server code ([cf210da](https://github.com/stiggio/stigg-java/commit/cf210dae08a83ab54b7da3bb3eb91084d7b6ef0c))
+* update mock server docs ([7967561](https://github.com/stiggio/stigg-java/commit/79675614e570d4df396977193e1ec0d7d3bca6d6))
+
 ## 0.1.0-alpha.13 (2026-02-19)
 
 Full Changelog: [v0.1.0-alpha.12...v0.1.0-alpha.13](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.12...v0.1.0-alpha.13)
