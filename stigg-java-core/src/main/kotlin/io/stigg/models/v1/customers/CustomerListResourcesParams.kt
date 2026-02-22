@@ -9,7 +9,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get a list of customerresources */
+/** Retrieves a paginated list of resources within the same customer. */
 class CustomerListResourcesParams
 private constructor(
     private val id: String?,

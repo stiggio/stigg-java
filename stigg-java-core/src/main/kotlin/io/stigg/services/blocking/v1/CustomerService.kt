@@ -164,7 +164,7 @@ interface CustomerService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerImportResponse
 
-    /** Get a list of customerresources */
+    /** Retrieves a paginated list of resources within the same customer. */
     fun listResources(id: String): CustomerListResourcesPage =
         listResources(id, CustomerListResourcesParams.none())
 
