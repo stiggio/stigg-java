@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Stainless.
+
 package io.stigg.core.http
 
 import io.stigg.core.DefaultSleeper
