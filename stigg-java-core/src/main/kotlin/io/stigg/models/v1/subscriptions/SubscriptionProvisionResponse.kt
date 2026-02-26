@@ -3406,6 +3406,11 @@ private constructor(
                 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
                     private val currencyId: JsonField<String>,
+                    private val displayName: JsonField<String>,
+                    private val additionalMetaData: JsonValue,
+                    private val description: JsonField<String>,
+                    private val unitPlural: JsonField<String>,
+                    private val unitSingular: JsonField<String>,
                     private val additionalProperties: MutableMap<String, JsonValue>,
                 ) {
 
@@ -3413,8 +3418,31 @@ private constructor(
                     private constructor(
                         @JsonProperty("currencyId")
                         @ExcludeMissing
-                        currencyId: JsonField<String> = JsonMissing.of()
-                    ) : this(currencyId, mutableMapOf())
+                        currencyId: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("displayName")
+                        @ExcludeMissing
+                        displayName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("additionalMetaData")
+                        @ExcludeMissing
+                        additionalMetaData: JsonValue = JsonMissing.of(),
+                        @JsonProperty("description")
+                        @ExcludeMissing
+                        description: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("unitPlural")
+                        @ExcludeMissing
+                        unitPlural: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("unitSingular")
+                        @ExcludeMissing
+                        unitSingular: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        currencyId,
+                        displayName,
+                        additionalMetaData,
+                        description,
+                        unitPlural,
+                        unitSingular,
+                        mutableMapOf(),
+                    )
 
                     /**
                      * The unique identifier of the custom currency.
@@ -3426,6 +3454,52 @@ private constructor(
                     fun currencyId(): String = currencyId.getRequired("currencyId")
 
                     /**
+                     * The display name of the currency.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun displayName(): String = displayName.getRequired("displayName")
+
+                    /**
+                     * Additional metadata associated with the currency.
+                     *
+                     * This arbitrary value can be deserialized into a custom type using the
+                     * `convert` method:
+                     * ```java
+                     * MyClass myObject = currency.additionalMetaData().convert(MyClass.class);
+                     * ```
+                     */
+                    @JsonProperty("additionalMetaData")
+                    @ExcludeMissing
+                    fun _additionalMetaData(): JsonValue = additionalMetaData
+
+                    /**
+                     * A description of the currency.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type
+                     *   (e.g. if the server responded with an unexpected value).
+                     */
+                    fun description(): Optional<String> = description.getOptional("description")
+
+                    /**
+                     * The plural form of the currency unit.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type
+                     *   (e.g. if the server responded with an unexpected value).
+                     */
+                    fun unitPlural(): Optional<String> = unitPlural.getOptional("unitPlural")
+
+                    /**
+                     * The singular form of the currency unit.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type
+                     *   (e.g. if the server responded with an unexpected value).
+                     */
+                    fun unitSingular(): Optional<String> = unitSingular.getOptional("unitSingular")
+
+                    /**
                      * Returns the raw JSON value of [currencyId].
                      *
                      * Unlike [currencyId], this method doesn't throw if the JSON field has an
@@ -3434,6 +3508,46 @@ private constructor(
                     @JsonProperty("currencyId")
                     @ExcludeMissing
                     fun _currencyId(): JsonField<String> = currencyId
+
+                    /**
+                     * Returns the raw JSON value of [displayName].
+                     *
+                     * Unlike [displayName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("displayName")
+                    @ExcludeMissing
+                    fun _displayName(): JsonField<String> = displayName
+
+                    /**
+                     * Returns the raw JSON value of [description].
+                     *
+                     * Unlike [description], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("description")
+                    @ExcludeMissing
+                    fun _description(): JsonField<String> = description
+
+                    /**
+                     * Returns the raw JSON value of [unitPlural].
+                     *
+                     * Unlike [unitPlural], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("unitPlural")
+                    @ExcludeMissing
+                    fun _unitPlural(): JsonField<String> = unitPlural
+
+                    /**
+                     * Returns the raw JSON value of [unitSingular].
+                     *
+                     * Unlike [unitSingular], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("unitSingular")
+                    @ExcludeMissing
+                    fun _unitSingular(): JsonField<String> = unitSingular
 
                     @JsonAnySetter
                     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -3455,6 +3569,7 @@ private constructor(
                          * The following fields are required:
                          * ```java
                          * .currencyId()
+                         * .displayName()
                          * ```
                          */
                         @JvmStatic fun builder() = Builder()
@@ -3464,12 +3579,22 @@ private constructor(
                     class Builder internal constructor() {
 
                         private var currencyId: JsonField<String>? = null
+                        private var displayName: JsonField<String>? = null
+                        private var additionalMetaData: JsonValue = JsonMissing.of()
+                        private var description: JsonField<String> = JsonMissing.of()
+                        private var unitPlural: JsonField<String> = JsonMissing.of()
+                        private var unitSingular: JsonField<String> = JsonMissing.of()
                         private var additionalProperties: MutableMap<String, JsonValue> =
                             mutableMapOf()
 
                         @JvmSynthetic
                         internal fun from(currency: Currency) = apply {
                             currencyId = currency.currencyId
+                            displayName = currency.displayName
+                            additionalMetaData = currency.additionalMetaData
+                            description = currency.description
+                            unitPlural = currency.unitPlural
+                            unitSingular = currency.unitSingular
                             additionalProperties = currency.additionalProperties.toMutableMap()
                         }
 
@@ -3485,6 +3610,90 @@ private constructor(
                          */
                         fun currencyId(currencyId: JsonField<String>) = apply {
                             this.currencyId = currencyId
+                        }
+
+                        /** The display name of the currency. */
+                        fun displayName(displayName: String) =
+                            displayName(JsonField.of(displayName))
+
+                        /**
+                         * Sets [Builder.displayName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.displayName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun displayName(displayName: JsonField<String>) = apply {
+                            this.displayName = displayName
+                        }
+
+                        /** Additional metadata associated with the currency. */
+                        fun additionalMetaData(additionalMetaData: JsonValue) = apply {
+                            this.additionalMetaData = additionalMetaData
+                        }
+
+                        /** A description of the currency. */
+                        fun description(description: String?) =
+                            description(JsonField.ofNullable(description))
+
+                        /**
+                         * Alias for calling [Builder.description] with `description.orElse(null)`.
+                         */
+                        fun description(description: Optional<String>) =
+                            description(description.getOrNull())
+
+                        /**
+                         * Sets [Builder.description] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.description] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun description(description: JsonField<String>) = apply {
+                            this.description = description
+                        }
+
+                        /** The plural form of the currency unit. */
+                        fun unitPlural(unitPlural: String?) =
+                            unitPlural(JsonField.ofNullable(unitPlural))
+
+                        /**
+                         * Alias for calling [Builder.unitPlural] with `unitPlural.orElse(null)`.
+                         */
+                        fun unitPlural(unitPlural: Optional<String>) =
+                            unitPlural(unitPlural.getOrNull())
+
+                        /**
+                         * Sets [Builder.unitPlural] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.unitPlural] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun unitPlural(unitPlural: JsonField<String>) = apply {
+                            this.unitPlural = unitPlural
+                        }
+
+                        /** The singular form of the currency unit. */
+                        fun unitSingular(unitSingular: String?) =
+                            unitSingular(JsonField.ofNullable(unitSingular))
+
+                        /**
+                         * Alias for calling [Builder.unitSingular] with
+                         * `unitSingular.orElse(null)`.
+                         */
+                        fun unitSingular(unitSingular: Optional<String>) =
+                            unitSingular(unitSingular.getOrNull())
+
+                        /**
+                         * Sets [Builder.unitSingular] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.unitSingular] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun unitSingular(unitSingular: JsonField<String>) = apply {
+                            this.unitSingular = unitSingular
                         }
 
                         fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
@@ -3517,6 +3726,7 @@ private constructor(
                          * The following fields are required:
                          * ```java
                          * .currencyId()
+                         * .displayName()
                          * ```
                          *
                          * @throws IllegalStateException if any required field is unset.
@@ -3524,6 +3734,11 @@ private constructor(
                         fun build(): Currency =
                             Currency(
                                 checkRequired("currencyId", currencyId),
+                                checkRequired("displayName", displayName),
+                                additionalMetaData,
+                                description,
+                                unitPlural,
+                                unitSingular,
                                 additionalProperties.toMutableMap(),
                             )
                     }
@@ -3536,6 +3751,10 @@ private constructor(
                         }
 
                         currencyId()
+                        displayName()
+                        description()
+                        unitPlural()
+                        unitSingular()
                         validated = true
                     }
 
@@ -3554,7 +3773,12 @@ private constructor(
                      * Used for best match union deserialization.
                      */
                     @JvmSynthetic
-                    internal fun validity(): Int = (if (currencyId.asKnown().isPresent) 1 else 0)
+                    internal fun validity(): Int =
+                        (if (currencyId.asKnown().isPresent) 1 else 0) +
+                            (if (displayName.asKnown().isPresent) 1 else 0) +
+                            (if (description.asKnown().isPresent) 1 else 0) +
+                            (if (unitPlural.asKnown().isPresent) 1 else 0) +
+                            (if (unitSingular.asKnown().isPresent) 1 else 0)
 
                     override fun equals(other: Any?): Boolean {
                         if (this === other) {
@@ -3563,17 +3787,30 @@ private constructor(
 
                         return other is Currency &&
                             currencyId == other.currencyId &&
+                            displayName == other.displayName &&
+                            additionalMetaData == other.additionalMetaData &&
+                            description == other.description &&
+                            unitPlural == other.unitPlural &&
+                            unitSingular == other.unitSingular &&
                             additionalProperties == other.additionalProperties
                     }
 
                     private val hashCode: Int by lazy {
-                        Objects.hash(currencyId, additionalProperties)
+                        Objects.hash(
+                            currencyId,
+                            displayName,
+                            additionalMetaData,
+                            description,
+                            unitPlural,
+                            unitSingular,
+                            additionalProperties,
+                        )
                     }
 
                     override fun hashCode(): Int = hashCode
 
                     override fun toString() =
-                        "Currency{currencyId=$currencyId, additionalProperties=$additionalProperties}"
+                        "Currency{currencyId=$currencyId, displayName=$displayName, additionalMetaData=$additionalMetaData, description=$description, unitPlural=$unitPlural, unitSingular=$unitSingular, additionalProperties=$additionalProperties}"
                 }
 
                 class Type @JsonCreator private constructor(private val value: JsonField<String>) :

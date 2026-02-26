@@ -19,7 +19,24 @@ internal class PlanRetrieveResponseTest {
                     PlanRetrieveResponse.Data.builder()
                         .id("id")
                         .billingId("billingId")
+                        .addCompatibleAddonId("string")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .defaultTrialConfig(
+                            PlanRetrieveResponse.Data.DefaultTrialConfig.builder()
+                                .duration(0.0)
+                                .units(PlanRetrieveResponse.Data.DefaultTrialConfig.Units.DAY)
+                                .budget(
+                                    PlanRetrieveResponse.Data.DefaultTrialConfig.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
+                                .trialEndBehavior(
+                                    PlanRetrieveResponse.Data.DefaultTrialConfig.TrialEndBehavior
+                                        .CONVERT_TO_PAID
+                                )
+                                .build()
+                        )
                         .description("description")
                         .displayName("displayName")
                         .addEntitlement(
@@ -49,7 +66,24 @@ internal class PlanRetrieveResponseTest {
                 PlanRetrieveResponse.Data.builder()
                     .id("id")
                     .billingId("billingId")
+                    .addCompatibleAddonId("string")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .defaultTrialConfig(
+                        PlanRetrieveResponse.Data.DefaultTrialConfig.builder()
+                            .duration(0.0)
+                            .units(PlanRetrieveResponse.Data.DefaultTrialConfig.Units.DAY)
+                            .budget(
+                                PlanRetrieveResponse.Data.DefaultTrialConfig.Budget.builder()
+                                    .hasSoftLimit(true)
+                                    .limit(0.0)
+                                    .build()
+                            )
+                            .trialEndBehavior(
+                                PlanRetrieveResponse.Data.DefaultTrialConfig.TrialEndBehavior
+                                    .CONVERT_TO_PAID
+                            )
+                            .build()
+                    )
                     .description("description")
                     .displayName("displayName")
                     .addEntitlement(
@@ -83,7 +117,24 @@ internal class PlanRetrieveResponseTest {
                     PlanRetrieveResponse.Data.builder()
                         .id("id")
                         .billingId("billingId")
+                        .addCompatibleAddonId("string")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .defaultTrialConfig(
+                            PlanRetrieveResponse.Data.DefaultTrialConfig.builder()
+                                .duration(0.0)
+                                .units(PlanRetrieveResponse.Data.DefaultTrialConfig.Units.DAY)
+                                .budget(
+                                    PlanRetrieveResponse.Data.DefaultTrialConfig.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
+                                .trialEndBehavior(
+                                    PlanRetrieveResponse.Data.DefaultTrialConfig.TrialEndBehavior
+                                        .CONVERT_TO_PAID
+                                )
+                                .build()
+                        )
                         .description("description")
                         .displayName("displayName")
                         .addEntitlement(

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,7 +18,23 @@ internal class PlanListResponseTest {
             PlanListResponse.builder()
                 .id("id")
                 .billingId("billingId")
+                .addCompatibleAddonId("string")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .defaultTrialConfig(
+                    PlanListResponse.DefaultTrialConfig.builder()
+                        .duration(0.0)
+                        .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                        .budget(
+                            PlanListResponse.DefaultTrialConfig.Budget.builder()
+                                .hasSoftLimit(true)
+                                .limit(0.0)
+                                .build()
+                        )
+                        .trialEndBehavior(
+                            PlanListResponse.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                        )
+                        .build()
+                )
                 .description("description")
                 .displayName("displayName")
                 .addEntitlement(
@@ -42,8 +59,25 @@ internal class PlanListResponseTest {
 
         assertThat(planListResponse.id()).isEqualTo("id")
         assertThat(planListResponse.billingId()).contains("billingId")
+        assertThat(planListResponse.compatibleAddonIds().getOrNull()).containsExactly("string")
         assertThat(planListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(planListResponse.defaultTrialConfig())
+            .contains(
+                PlanListResponse.DefaultTrialConfig.builder()
+                    .duration(0.0)
+                    .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                    .budget(
+                        PlanListResponse.DefaultTrialConfig.Budget.builder()
+                            .hasSoftLimit(true)
+                            .limit(0.0)
+                            .build()
+                    )
+                    .trialEndBehavior(
+                        PlanListResponse.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                    )
+                    .build()
+            )
         assertThat(planListResponse.description()).contains("description")
         assertThat(planListResponse.displayName()).isEqualTo("displayName")
         assertThat(planListResponse.entitlements())
@@ -76,7 +110,23 @@ internal class PlanListResponseTest {
             PlanListResponse.builder()
                 .id("id")
                 .billingId("billingId")
+                .addCompatibleAddonId("string")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .defaultTrialConfig(
+                    PlanListResponse.DefaultTrialConfig.builder()
+                        .duration(0.0)
+                        .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                        .budget(
+                            PlanListResponse.DefaultTrialConfig.Budget.builder()
+                                .hasSoftLimit(true)
+                                .limit(0.0)
+                                .build()
+                        )
+                        .trialEndBehavior(
+                            PlanListResponse.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                        )
+                        .build()
+                )
                 .description("description")
                 .displayName("displayName")
                 .addEntitlement(
