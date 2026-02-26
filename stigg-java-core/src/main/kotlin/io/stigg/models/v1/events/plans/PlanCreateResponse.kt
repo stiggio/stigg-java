@@ -164,7 +164,9 @@ private constructor(
     private constructor(
         private val id: JsonField<String>,
         private val billingId: JsonField<String>,
+        private val compatibleAddonIds: JsonField<List<String>>,
         private val createdAt: JsonField<OffsetDateTime>,
+        private val defaultTrialConfig: JsonField<DefaultTrialConfig>,
         private val description: JsonField<String>,
         private val displayName: JsonField<String>,
         private val entitlements: JsonField<List<Entitlement>>,
@@ -185,9 +187,15 @@ private constructor(
             @JsonProperty("billingId")
             @ExcludeMissing
             billingId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("compatibleAddonIds")
+            @ExcludeMissing
+            compatibleAddonIds: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("createdAt")
             @ExcludeMissing
             createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("defaultTrialConfig")
+            @ExcludeMissing
+            defaultTrialConfig: JsonField<DefaultTrialConfig> = JsonMissing.of(),
             @JsonProperty("description")
             @ExcludeMissing
             description: JsonField<String> = JsonMissing.of(),
@@ -222,7 +230,9 @@ private constructor(
         ) : this(
             id,
             billingId,
+            compatibleAddonIds,
             createdAt,
+            defaultTrialConfig,
             description,
             displayName,
             entitlements,
@@ -254,12 +264,28 @@ private constructor(
         fun billingId(): Optional<String> = billingId.getOptional("billingId")
 
         /**
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun compatibleAddonIds(): Optional<List<String>> =
+            compatibleAddonIds.getOptional("compatibleAddonIds")
+
+        /**
          * Timestamp of when the record was created
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+        /**
+         * Default trial configuration for the plan
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun defaultTrialConfig(): Optional<DefaultTrialConfig> =
+            defaultTrialConfig.getOptional("defaultTrialConfig")
 
         /**
          * The description of the package
@@ -364,6 +390,16 @@ private constructor(
         @JsonProperty("billingId") @ExcludeMissing fun _billingId(): JsonField<String> = billingId
 
         /**
+         * Returns the raw JSON value of [compatibleAddonIds].
+         *
+         * Unlike [compatibleAddonIds], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("compatibleAddonIds")
+        @ExcludeMissing
+        fun _compatibleAddonIds(): JsonField<List<String>> = compatibleAddonIds
+
+        /**
          * Returns the raw JSON value of [createdAt].
          *
          * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -371,6 +407,16 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+
+        /**
+         * Returns the raw JSON value of [defaultTrialConfig].
+         *
+         * Unlike [defaultTrialConfig], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("defaultTrialConfig")
+        @ExcludeMissing
+        fun _defaultTrialConfig(): JsonField<DefaultTrialConfig> = defaultTrialConfig
 
         /**
          * Returns the raw JSON value of [description].
@@ -487,7 +533,9 @@ private constructor(
              * ```java
              * .id()
              * .billingId()
+             * .compatibleAddonIds()
              * .createdAt()
+             * .defaultTrialConfig()
              * .description()
              * .displayName()
              * .entitlements()
@@ -509,7 +557,9 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var billingId: JsonField<String>? = null
+            private var compatibleAddonIds: JsonField<MutableList<String>>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
+            private var defaultTrialConfig: JsonField<DefaultTrialConfig>? = null
             private var description: JsonField<String>? = null
             private var displayName: JsonField<String>? = null
             private var entitlements: JsonField<MutableList<Entitlement>>? = null
@@ -527,7 +577,9 @@ private constructor(
             internal fun from(data: Data) = apply {
                 id = data.id
                 billingId = data.billingId
+                compatibleAddonIds = data.compatibleAddonIds.map { it.toMutableList() }
                 createdAt = data.createdAt
+                defaultTrialConfig = data.defaultTrialConfig
                 description = data.description
                 displayName = data.displayName
                 entitlements = data.entitlements.map { it.toMutableList() }
@@ -569,6 +621,39 @@ private constructor(
              */
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
+            fun compatibleAddonIds(compatibleAddonIds: List<String>?) =
+                compatibleAddonIds(JsonField.ofNullable(compatibleAddonIds))
+
+            /**
+             * Alias for calling [Builder.compatibleAddonIds] with
+             * `compatibleAddonIds.orElse(null)`.
+             */
+            fun compatibleAddonIds(compatibleAddonIds: Optional<List<String>>) =
+                compatibleAddonIds(compatibleAddonIds.getOrNull())
+
+            /**
+             * Sets [Builder.compatibleAddonIds] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.compatibleAddonIds] with a well-typed `List<String>`
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun compatibleAddonIds(compatibleAddonIds: JsonField<List<String>>) = apply {
+                this.compatibleAddonIds = compatibleAddonIds.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [compatibleAddonIds].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addCompatibleAddonId(compatibleAddonId: String) = apply {
+                compatibleAddonIds =
+                    (compatibleAddonIds ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("compatibleAddonIds", it).add(compatibleAddonId)
+                    }
+            }
+
             /** Timestamp of when the record was created */
             fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
@@ -581,6 +666,28 @@ private constructor(
              */
             fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply {
                 this.createdAt = createdAt
+            }
+
+            /** Default trial configuration for the plan */
+            fun defaultTrialConfig(defaultTrialConfig: DefaultTrialConfig?) =
+                defaultTrialConfig(JsonField.ofNullable(defaultTrialConfig))
+
+            /**
+             * Alias for calling [Builder.defaultTrialConfig] with
+             * `defaultTrialConfig.orElse(null)`.
+             */
+            fun defaultTrialConfig(defaultTrialConfig: Optional<DefaultTrialConfig>) =
+                defaultTrialConfig(defaultTrialConfig.getOrNull())
+
+            /**
+             * Sets [Builder.defaultTrialConfig] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.defaultTrialConfig] with a well-typed
+             * [DefaultTrialConfig] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun defaultTrialConfig(defaultTrialConfig: JsonField<DefaultTrialConfig>) = apply {
+                this.defaultTrialConfig = defaultTrialConfig
             }
 
             /** The description of the package */
@@ -793,7 +900,9 @@ private constructor(
              * ```java
              * .id()
              * .billingId()
+             * .compatibleAddonIds()
              * .createdAt()
+             * .defaultTrialConfig()
              * .description()
              * .displayName()
              * .entitlements()
@@ -813,7 +922,11 @@ private constructor(
                 Data(
                     checkRequired("id", id),
                     checkRequired("billingId", billingId),
+                    checkRequired("compatibleAddonIds", compatibleAddonIds).map {
+                        it.toImmutable()
+                    },
                     checkRequired("createdAt", createdAt),
+                    checkRequired("defaultTrialConfig", defaultTrialConfig),
                     checkRequired("description", description),
                     checkRequired("displayName", displayName),
                     checkRequired("entitlements", entitlements).map { it.toImmutable() },
@@ -838,7 +951,9 @@ private constructor(
 
             id()
             billingId()
+            compatibleAddonIds()
             createdAt()
+            defaultTrialConfig().ifPresent { it.validate() }
             description()
             displayName()
             entitlements().forEach { it.validate() }
@@ -871,7 +986,9 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
                 (if (billingId.asKnown().isPresent) 1 else 0) +
+                (compatibleAddonIds.asKnown().getOrNull()?.size ?: 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
+                (defaultTrialConfig.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (description.asKnown().isPresent) 1 else 0) +
                 (if (displayName.asKnown().isPresent) 1 else 0) +
                 (entitlements.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -883,6 +1000,790 @@ private constructor(
                 (status.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0) +
                 (if (versionNumber.asKnown().isPresent) 1 else 0)
+
+        /** Default trial configuration for the plan */
+        class DefaultTrialConfig
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val duration: JsonField<Double>,
+            private val units: JsonField<Units>,
+            private val budget: JsonField<Budget>,
+            private val trialEndBehavior: JsonField<TrialEndBehavior>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("duration")
+                @ExcludeMissing
+                duration: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("units") @ExcludeMissing units: JsonField<Units> = JsonMissing.of(),
+                @JsonProperty("budget")
+                @ExcludeMissing
+                budget: JsonField<Budget> = JsonMissing.of(),
+                @JsonProperty("trialEndBehavior")
+                @ExcludeMissing
+                trialEndBehavior: JsonField<TrialEndBehavior> = JsonMissing.of(),
+            ) : this(duration, units, budget, trialEndBehavior, mutableMapOf())
+
+            /**
+             * The duration of the trial in the specified units
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun duration(): Double = duration.getRequired("duration")
+
+            /**
+             * The time unit for the trial duration (DAY or MONTH)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun units(): Units = units.getRequired("units")
+
+            /**
+             * Budget configuration for the trial
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun budget(): Optional<Budget> = budget.getOptional("budget")
+
+            /**
+             * Behavior when the trial ends (CONVERT_TO_PAID or CANCEL_SUBSCRIPTION)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun trialEndBehavior(): Optional<TrialEndBehavior> =
+                trialEndBehavior.getOptional("trialEndBehavior")
+
+            /**
+             * Returns the raw JSON value of [duration].
+             *
+             * Unlike [duration], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("duration") @ExcludeMissing fun _duration(): JsonField<Double> = duration
+
+            /**
+             * Returns the raw JSON value of [units].
+             *
+             * Unlike [units], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("units") @ExcludeMissing fun _units(): JsonField<Units> = units
+
+            /**
+             * Returns the raw JSON value of [budget].
+             *
+             * Unlike [budget], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("budget") @ExcludeMissing fun _budget(): JsonField<Budget> = budget
+
+            /**
+             * Returns the raw JSON value of [trialEndBehavior].
+             *
+             * Unlike [trialEndBehavior], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("trialEndBehavior")
+            @ExcludeMissing
+            fun _trialEndBehavior(): JsonField<TrialEndBehavior> = trialEndBehavior
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [DefaultTrialConfig].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .duration()
+                 * .units()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [DefaultTrialConfig]. */
+            class Builder internal constructor() {
+
+                private var duration: JsonField<Double>? = null
+                private var units: JsonField<Units>? = null
+                private var budget: JsonField<Budget> = JsonMissing.of()
+                private var trialEndBehavior: JsonField<TrialEndBehavior> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(defaultTrialConfig: DefaultTrialConfig) = apply {
+                    duration = defaultTrialConfig.duration
+                    units = defaultTrialConfig.units
+                    budget = defaultTrialConfig.budget
+                    trialEndBehavior = defaultTrialConfig.trialEndBehavior
+                    additionalProperties = defaultTrialConfig.additionalProperties.toMutableMap()
+                }
+
+                /** The duration of the trial in the specified units */
+                fun duration(duration: Double) = duration(JsonField.of(duration))
+
+                /**
+                 * Sets [Builder.duration] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.duration] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun duration(duration: JsonField<Double>) = apply { this.duration = duration }
+
+                /** The time unit for the trial duration (DAY or MONTH) */
+                fun units(units: Units) = units(JsonField.of(units))
+
+                /**
+                 * Sets [Builder.units] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.units] with a well-typed [Units] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun units(units: JsonField<Units>) = apply { this.units = units }
+
+                /** Budget configuration for the trial */
+                fun budget(budget: Budget?) = budget(JsonField.ofNullable(budget))
+
+                /** Alias for calling [Builder.budget] with `budget.orElse(null)`. */
+                fun budget(budget: Optional<Budget>) = budget(budget.getOrNull())
+
+                /**
+                 * Sets [Builder.budget] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.budget] with a well-typed [Budget] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun budget(budget: JsonField<Budget>) = apply { this.budget = budget }
+
+                /** Behavior when the trial ends (CONVERT_TO_PAID or CANCEL_SUBSCRIPTION) */
+                fun trialEndBehavior(trialEndBehavior: TrialEndBehavior?) =
+                    trialEndBehavior(JsonField.ofNullable(trialEndBehavior))
+
+                /**
+                 * Alias for calling [Builder.trialEndBehavior] with
+                 * `trialEndBehavior.orElse(null)`.
+                 */
+                fun trialEndBehavior(trialEndBehavior: Optional<TrialEndBehavior>) =
+                    trialEndBehavior(trialEndBehavior.getOrNull())
+
+                /**
+                 * Sets [Builder.trialEndBehavior] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.trialEndBehavior] with a well-typed
+                 * [TrialEndBehavior] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun trialEndBehavior(trialEndBehavior: JsonField<TrialEndBehavior>) = apply {
+                    this.trialEndBehavior = trialEndBehavior
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [DefaultTrialConfig].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .duration()
+                 * .units()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): DefaultTrialConfig =
+                    DefaultTrialConfig(
+                        checkRequired("duration", duration),
+                        checkRequired("units", units),
+                        budget,
+                        trialEndBehavior,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): DefaultTrialConfig = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                duration()
+                units().validate()
+                budget().ifPresent { it.validate() }
+                trialEndBehavior().ifPresent { it.validate() }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (duration.asKnown().isPresent) 1 else 0) +
+                    (units.asKnown().getOrNull()?.validity() ?: 0) +
+                    (budget.asKnown().getOrNull()?.validity() ?: 0) +
+                    (trialEndBehavior.asKnown().getOrNull()?.validity() ?: 0)
+
+            /** The time unit for the trial duration (DAY or MONTH) */
+            class Units @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val DAY = of("DAY")
+
+                    @JvmField val MONTH = of("MONTH")
+
+                    @JvmStatic fun of(value: String) = Units(JsonField.of(value))
+                }
+
+                /** An enum containing [Units]'s known values. */
+                enum class Known {
+                    DAY,
+                    MONTH,
+                }
+
+                /**
+                 * An enum containing [Units]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Units] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    DAY,
+                    MONTH,
+                    /**
+                     * An enum member indicating that [Units] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        DAY -> Value.DAY
+                        MONTH -> Value.MONTH
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value is a not a known
+                 *   member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        DAY -> Known.DAY
+                        MONTH -> Known.MONTH
+                        else -> throw StiggInvalidDataException("Unknown Units: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        StiggInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): Units = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Units && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            /** Budget configuration for the trial */
+            class Budget
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val hasSoftLimit: JsonField<Boolean>,
+                private val limit: JsonField<Double>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("hasSoftLimit")
+                    @ExcludeMissing
+                    hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("limit")
+                    @ExcludeMissing
+                    limit: JsonField<Double> = JsonMissing.of(),
+                ) : this(hasSoftLimit, limit, mutableMapOf())
+
+                /**
+                 * Whether the budget limit is a soft limit (allows overage) or hard limit
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun hasSoftLimit(): Boolean = hasSoftLimit.getRequired("hasSoftLimit")
+
+                /**
+                 * The budget limit amount
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun limit(): Double = limit.getRequired("limit")
+
+                /**
+                 * Returns the raw JSON value of [hasSoftLimit].
+                 *
+                 * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
+
+                /**
+                 * Returns the raw JSON value of [limit].
+                 *
+                 * Unlike [limit], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("limit") @ExcludeMissing fun _limit(): JsonField<Double> = limit
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [Budget].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .hasSoftLimit()
+                     * .limit()
+                     * ```
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Budget]. */
+                class Builder internal constructor() {
+
+                    private var hasSoftLimit: JsonField<Boolean>? = null
+                    private var limit: JsonField<Double>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(budget: Budget) = apply {
+                        hasSoftLimit = budget.hasSoftLimit
+                        limit = budget.limit
+                        additionalProperties = budget.additionalProperties.toMutableMap()
+                    }
+
+                    /** Whether the budget limit is a soft limit (allows overage) or hard limit */
+                    fun hasSoftLimit(hasSoftLimit: Boolean) =
+                        hasSoftLimit(JsonField.of(hasSoftLimit))
+
+                    /**
+                     * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                        this.hasSoftLimit = hasSoftLimit
+                    }
+
+                    /** The budget limit amount */
+                    fun limit(limit: Double) = limit(JsonField.of(limit))
+
+                    /**
+                     * Sets [Builder.limit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.limit] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun limit(limit: JsonField<Double>) = apply { this.limit = limit }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Budget].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .hasSoftLimit()
+                     * .limit()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): Budget =
+                        Budget(
+                            checkRequired("hasSoftLimit", hasSoftLimit),
+                            checkRequired("limit", limit),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Budget = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    hasSoftLimit()
+                    limit()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
+                        (if (limit.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Budget &&
+                        hasSoftLimit == other.hasSoftLimit &&
+                        limit == other.limit &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(hasSoftLimit, limit, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Budget{hasSoftLimit=$hasSoftLimit, limit=$limit, additionalProperties=$additionalProperties}"
+            }
+
+            /** Behavior when the trial ends (CONVERT_TO_PAID or CANCEL_SUBSCRIPTION) */
+            class TrialEndBehavior
+            @JsonCreator
+            private constructor(private val value: JsonField<String>) : Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val CONVERT_TO_PAID = of("CONVERT_TO_PAID")
+
+                    @JvmField val CANCEL_SUBSCRIPTION = of("CANCEL_SUBSCRIPTION")
+
+                    @JvmStatic fun of(value: String) = TrialEndBehavior(JsonField.of(value))
+                }
+
+                /** An enum containing [TrialEndBehavior]'s known values. */
+                enum class Known {
+                    CONVERT_TO_PAID,
+                    CANCEL_SUBSCRIPTION,
+                }
+
+                /**
+                 * An enum containing [TrialEndBehavior]'s known values, as well as an [_UNKNOWN]
+                 * member.
+                 *
+                 * An instance of [TrialEndBehavior] can contain an unknown value in a couple of
+                 * cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    CONVERT_TO_PAID,
+                    CANCEL_SUBSCRIPTION,
+                    /**
+                     * An enum member indicating that [TrialEndBehavior] was instantiated with an
+                     * unknown value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        CONVERT_TO_PAID -> Value.CONVERT_TO_PAID
+                        CANCEL_SUBSCRIPTION -> Value.CANCEL_SUBSCRIPTION
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value is a not a known
+                 *   member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        CONVERT_TO_PAID -> Known.CONVERT_TO_PAID
+                        CANCEL_SUBSCRIPTION -> Known.CANCEL_SUBSCRIPTION
+                        else -> throw StiggInvalidDataException("Unknown TrialEndBehavior: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        StiggInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): TrialEndBehavior = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is TrialEndBehavior && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is DefaultTrialConfig &&
+                    duration == other.duration &&
+                    units == other.units &&
+                    budget == other.budget &&
+                    trialEndBehavior == other.trialEndBehavior &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(duration, units, budget, trialEndBehavior, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "DefaultTrialConfig{duration=$duration, units=$units, budget=$budget, trialEndBehavior=$trialEndBehavior, additionalProperties=$additionalProperties}"
+        }
 
         /** Entitlement reference with type and identifier */
         class Entitlement
@@ -1600,7 +2501,9 @@ private constructor(
             return other is Data &&
                 id == other.id &&
                 billingId == other.billingId &&
+                compatibleAddonIds == other.compatibleAddonIds &&
                 createdAt == other.createdAt &&
+                defaultTrialConfig == other.defaultTrialConfig &&
                 description == other.description &&
                 displayName == other.displayName &&
                 entitlements == other.entitlements &&
@@ -1619,7 +2522,9 @@ private constructor(
             Objects.hash(
                 id,
                 billingId,
+                compatibleAddonIds,
                 createdAt,
+                defaultTrialConfig,
                 description,
                 displayName,
                 entitlements,
@@ -1638,7 +2543,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, description=$description, displayName=$displayName, entitlements=$entitlements, isLatest=$isLatest, metadata=$metadata, parentPlanId=$parentPlanId, pricingType=$pricingType, productId=$productId, status=$status, updatedAt=$updatedAt, versionNumber=$versionNumber, additionalProperties=$additionalProperties}"
+            "Data{id=$id, billingId=$billingId, compatibleAddonIds=$compatibleAddonIds, createdAt=$createdAt, defaultTrialConfig=$defaultTrialConfig, description=$description, displayName=$displayName, entitlements=$entitlements, isLatest=$isLatest, metadata=$metadata, parentPlanId=$parentPlanId, pricingType=$pricingType, productId=$productId, status=$status, updatedAt=$updatedAt, versionNumber=$versionNumber, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

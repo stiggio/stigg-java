@@ -23,6 +23,21 @@ internal class PlanServiceTest {
                     .displayName("displayName")
                     .productId("productId")
                     .billingId("billingId")
+                    .defaultTrialConfig(
+                        PlanCreateParams.DefaultTrialConfig.builder()
+                            .duration(0.0)
+                            .units(PlanCreateParams.DefaultTrialConfig.Units.DAY)
+                            .budget(
+                                PlanCreateParams.DefaultTrialConfig.Budget.builder()
+                                    .hasSoftLimit(true)
+                                    .limit(0.0)
+                                    .build()
+                            )
+                            .trialEndBehavior(
+                                PlanCreateParams.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                            )
+                            .build()
+                    )
                     .description("description")
                     .metadata(
                         PlanCreateParams.Metadata.builder()
