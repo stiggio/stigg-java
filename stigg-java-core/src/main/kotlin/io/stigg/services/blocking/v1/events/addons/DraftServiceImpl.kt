@@ -16,8 +16,8 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.events.addons.Addon
 import io.stigg.models.v1.events.addons.draft.DraftCreateAddonDraftParams
-import io.stigg.models.v1.events.addons.draft.DraftCreateAddonDraftResponse
 import io.stigg.models.v1.events.addons.draft.DraftRemoveAddonDraftParams
 import io.stigg.models.v1.events.addons.draft.DraftRemoveAddonDraftResponse
 import java.util.function.Consumer
@@ -38,7 +38,7 @@ class DraftServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun createAddonDraft(
         params: DraftCreateAddonDraftParams,
         requestOptions: RequestOptions,
-    ): DraftCreateAddonDraftResponse =
+    ): Addon =
         // post /api/v1/addons/{id}/draft
         withRawResponse().createAddonDraft(params, requestOptions).parse()
 
@@ -62,13 +62,13 @@ class DraftServiceImpl internal constructor(private val clientOptions: ClientOpt
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val createAddonDraftHandler: Handler<DraftCreateAddonDraftResponse> =
-            jsonHandler<DraftCreateAddonDraftResponse>(clientOptions.jsonMapper)
+        private val createAddonDraftHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun createAddonDraft(
             params: DraftCreateAddonDraftParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DraftCreateAddonDraftResponse> {
+        ): HttpResponseFor<Addon> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

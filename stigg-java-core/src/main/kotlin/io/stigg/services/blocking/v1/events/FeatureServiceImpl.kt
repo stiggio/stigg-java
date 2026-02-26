@@ -16,19 +16,15 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.events.features.Feature
 import io.stigg.models.v1.events.features.FeatureArchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureArchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureCreateFeatureParams
-import io.stigg.models.v1.events.features.FeatureCreateFeatureResponse
 import io.stigg.models.v1.events.features.FeatureListFeaturesPage
 import io.stigg.models.v1.events.features.FeatureListFeaturesPageResponse
 import io.stigg.models.v1.events.features.FeatureListFeaturesParams
 import io.stigg.models.v1.events.features.FeatureRetrieveFeatureParams
-import io.stigg.models.v1.events.features.FeatureRetrieveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUpdateFeatureParams
-import io.stigg.models.v1.events.features.FeatureUpdateFeatureResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -47,14 +43,14 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
     override fun archiveFeature(
         params: FeatureArchiveFeatureParams,
         requestOptions: RequestOptions,
-    ): FeatureArchiveFeatureResponse =
+    ): Feature =
         // post /api/v1/features/{id}/archive
         withRawResponse().archiveFeature(params, requestOptions).parse()
 
     override fun createFeature(
         params: FeatureCreateFeatureParams,
         requestOptions: RequestOptions,
-    ): FeatureCreateFeatureResponse =
+    ): Feature =
         // post /api/v1/features
         withRawResponse().createFeature(params, requestOptions).parse()
 
@@ -68,21 +64,21 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
     override fun retrieveFeature(
         params: FeatureRetrieveFeatureParams,
         requestOptions: RequestOptions,
-    ): FeatureRetrieveFeatureResponse =
+    ): Feature =
         // get /api/v1/features/{id}
         withRawResponse().retrieveFeature(params, requestOptions).parse()
 
     override fun unarchiveFeature(
         params: FeatureUnarchiveFeatureParams,
         requestOptions: RequestOptions,
-    ): FeatureUnarchiveFeatureResponse =
+    ): Feature =
         // post /api/v1/features/{id}/unarchive
         withRawResponse().unarchiveFeature(params, requestOptions).parse()
 
     override fun updateFeature(
         params: FeatureUpdateFeatureParams,
         requestOptions: RequestOptions,
-    ): FeatureUpdateFeatureResponse =
+    ): Feature =
         // patch /api/v1/features/{id}
         withRawResponse().updateFeature(params, requestOptions).parse()
 
@@ -99,13 +95,13 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val archiveFeatureHandler: Handler<FeatureArchiveFeatureResponse> =
-            jsonHandler<FeatureArchiveFeatureResponse>(clientOptions.jsonMapper)
+        private val archiveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun archiveFeature(
             params: FeatureArchiveFeatureParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureArchiveFeatureResponse> {
+        ): HttpResponseFor<Feature> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -130,13 +126,13 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val createFeatureHandler: Handler<FeatureCreateFeatureResponse> =
-            jsonHandler<FeatureCreateFeatureResponse>(clientOptions.jsonMapper)
+        private val createFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun createFeature(
             params: FeatureCreateFeatureParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureCreateFeatureResponse> {
+        ): HttpResponseFor<Feature> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -192,13 +188,13 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val retrieveFeatureHandler: Handler<FeatureRetrieveFeatureResponse> =
-            jsonHandler<FeatureRetrieveFeatureResponse>(clientOptions.jsonMapper)
+        private val retrieveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun retrieveFeature(
             params: FeatureRetrieveFeatureParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse> {
+        ): HttpResponseFor<Feature> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -222,13 +218,13 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val unarchiveFeatureHandler: Handler<FeatureUnarchiveFeatureResponse> =
-            jsonHandler<FeatureUnarchiveFeatureResponse>(clientOptions.jsonMapper)
+        private val unarchiveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun unarchiveFeature(
             params: FeatureUnarchiveFeatureParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse> {
+        ): HttpResponseFor<Feature> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -253,13 +249,13 @@ class FeatureServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val updateFeatureHandler: Handler<FeatureUpdateFeatureResponse> =
-            jsonHandler<FeatureUpdateFeatureResponse>(clientOptions.jsonMapper)
+        private val updateFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun updateFeature(
             params: FeatureUpdateFeatureParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureUpdateFeatureResponse> {
+        ): HttpResponseFor<Feature> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

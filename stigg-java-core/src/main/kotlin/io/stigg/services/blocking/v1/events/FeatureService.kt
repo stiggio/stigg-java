@@ -6,18 +6,14 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.events.features.Feature
 import io.stigg.models.v1.events.features.FeatureArchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureArchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureCreateFeatureParams
-import io.stigg.models.v1.events.features.FeatureCreateFeatureResponse
 import io.stigg.models.v1.events.features.FeatureListFeaturesPage
 import io.stigg.models.v1.events.features.FeatureListFeaturesParams
 import io.stigg.models.v1.events.features.FeatureRetrieveFeatureParams
-import io.stigg.models.v1.events.features.FeatureRetrieveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUpdateFeatureParams
-import io.stigg.models.v1.events.features.FeatureUpdateFeatureResponse
 import java.util.function.Consumer
 
 interface FeatureService {
@@ -35,46 +31,44 @@ interface FeatureService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FeatureService
 
     /** Archives a feature, preventing it from being used in new entitlements. */
-    fun archiveFeature(id: String): FeatureArchiveFeatureResponse =
-        archiveFeature(id, FeatureArchiveFeatureParams.none())
+    fun archiveFeature(id: String): Feature = archiveFeature(id, FeatureArchiveFeatureParams.none())
 
     /** @see archiveFeature */
     fun archiveFeature(
         id: String,
         params: FeatureArchiveFeatureParams = FeatureArchiveFeatureParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureArchiveFeatureResponse =
-        archiveFeature(params.toBuilder().id(id).build(), requestOptions)
+    ): Feature = archiveFeature(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archiveFeature */
     fun archiveFeature(
         id: String,
         params: FeatureArchiveFeatureParams = FeatureArchiveFeatureParams.none(),
-    ): FeatureArchiveFeatureResponse = archiveFeature(id, params, RequestOptions.none())
+    ): Feature = archiveFeature(id, params, RequestOptions.none())
 
     /** @see archiveFeature */
     fun archiveFeature(
         params: FeatureArchiveFeatureParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureArchiveFeatureResponse
+    ): Feature
 
     /** @see archiveFeature */
-    fun archiveFeature(params: FeatureArchiveFeatureParams): FeatureArchiveFeatureResponse =
+    fun archiveFeature(params: FeatureArchiveFeatureParams): Feature =
         archiveFeature(params, RequestOptions.none())
 
     /** @see archiveFeature */
-    fun archiveFeature(id: String, requestOptions: RequestOptions): FeatureArchiveFeatureResponse =
+    fun archiveFeature(id: String, requestOptions: RequestOptions): Feature =
         archiveFeature(id, FeatureArchiveFeatureParams.none(), requestOptions)
 
     /** Creates a new feature with the specified type, metering, and configuration. */
-    fun createFeature(params: FeatureCreateFeatureParams): FeatureCreateFeatureResponse =
+    fun createFeature(params: FeatureCreateFeatureParams): Feature =
         createFeature(params, RequestOptions.none())
 
     /** @see createFeature */
     fun createFeature(
         params: FeatureCreateFeatureParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureCreateFeatureResponse
+    ): Feature
 
     /** Retrieves a paginated list of features in the environment. */
     fun listFeatures(): FeatureListFeaturesPage = listFeatures(FeatureListFeaturesParams.none())
@@ -95,7 +89,7 @@ interface FeatureService {
         listFeatures(FeatureListFeaturesParams.none(), requestOptions)
 
     /** Retrieves a feature by its unique identifier. */
-    fun retrieveFeature(id: String): FeatureRetrieveFeatureResponse =
+    fun retrieveFeature(id: String): Feature =
         retrieveFeature(id, FeatureRetrieveFeatureParams.none())
 
     /** @see retrieveFeature */
@@ -103,34 +97,30 @@ interface FeatureService {
         id: String,
         params: FeatureRetrieveFeatureParams = FeatureRetrieveFeatureParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureRetrieveFeatureResponse =
-        retrieveFeature(params.toBuilder().id(id).build(), requestOptions)
+    ): Feature = retrieveFeature(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieveFeature */
     fun retrieveFeature(
         id: String,
         params: FeatureRetrieveFeatureParams = FeatureRetrieveFeatureParams.none(),
-    ): FeatureRetrieveFeatureResponse = retrieveFeature(id, params, RequestOptions.none())
+    ): Feature = retrieveFeature(id, params, RequestOptions.none())
 
     /** @see retrieveFeature */
     fun retrieveFeature(
         params: FeatureRetrieveFeatureParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureRetrieveFeatureResponse
+    ): Feature
 
     /** @see retrieveFeature */
-    fun retrieveFeature(params: FeatureRetrieveFeatureParams): FeatureRetrieveFeatureResponse =
+    fun retrieveFeature(params: FeatureRetrieveFeatureParams): Feature =
         retrieveFeature(params, RequestOptions.none())
 
     /** @see retrieveFeature */
-    fun retrieveFeature(
-        id: String,
-        requestOptions: RequestOptions,
-    ): FeatureRetrieveFeatureResponse =
+    fun retrieveFeature(id: String, requestOptions: RequestOptions): Feature =
         retrieveFeature(id, FeatureRetrieveFeatureParams.none(), requestOptions)
 
     /** Restores an archived feature, allowing it to be used in entitlements again. */
-    fun unarchiveFeature(id: String): FeatureUnarchiveFeatureResponse =
+    fun unarchiveFeature(id: String): Feature =
         unarchiveFeature(id, FeatureUnarchiveFeatureParams.none())
 
     /** @see unarchiveFeature */
@@ -138,65 +128,59 @@ interface FeatureService {
         id: String,
         params: FeatureUnarchiveFeatureParams = FeatureUnarchiveFeatureParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureUnarchiveFeatureResponse =
-        unarchiveFeature(params.toBuilder().id(id).build(), requestOptions)
+    ): Feature = unarchiveFeature(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchiveFeature */
     fun unarchiveFeature(
         id: String,
         params: FeatureUnarchiveFeatureParams = FeatureUnarchiveFeatureParams.none(),
-    ): FeatureUnarchiveFeatureResponse = unarchiveFeature(id, params, RequestOptions.none())
+    ): Feature = unarchiveFeature(id, params, RequestOptions.none())
 
     /** @see unarchiveFeature */
     fun unarchiveFeature(
         params: FeatureUnarchiveFeatureParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureUnarchiveFeatureResponse
+    ): Feature
 
     /** @see unarchiveFeature */
-    fun unarchiveFeature(params: FeatureUnarchiveFeatureParams): FeatureUnarchiveFeatureResponse =
+    fun unarchiveFeature(params: FeatureUnarchiveFeatureParams): Feature =
         unarchiveFeature(params, RequestOptions.none())
 
     /** @see unarchiveFeature */
-    fun unarchiveFeature(
-        id: String,
-        requestOptions: RequestOptions,
-    ): FeatureUnarchiveFeatureResponse =
+    fun unarchiveFeature(id: String, requestOptions: RequestOptions): Feature =
         unarchiveFeature(id, FeatureUnarchiveFeatureParams.none(), requestOptions)
 
     /**
      * Updates an existing feature's properties such as display name, description, and
      * configuration.
      */
-    fun updateFeature(id: String): FeatureUpdateFeatureResponse =
-        updateFeature(id, FeatureUpdateFeatureParams.none())
+    fun updateFeature(id: String): Feature = updateFeature(id, FeatureUpdateFeatureParams.none())
 
     /** @see updateFeature */
     fun updateFeature(
         id: String,
         params: FeatureUpdateFeatureParams = FeatureUpdateFeatureParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureUpdateFeatureResponse =
-        updateFeature(params.toBuilder().id(id).build(), requestOptions)
+    ): Feature = updateFeature(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see updateFeature */
     fun updateFeature(
         id: String,
         params: FeatureUpdateFeatureParams = FeatureUpdateFeatureParams.none(),
-    ): FeatureUpdateFeatureResponse = updateFeature(id, params, RequestOptions.none())
+    ): Feature = updateFeature(id, params, RequestOptions.none())
 
     /** @see updateFeature */
     fun updateFeature(
         params: FeatureUpdateFeatureParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): FeatureUpdateFeatureResponse
+    ): Feature
 
     /** @see updateFeature */
-    fun updateFeature(params: FeatureUpdateFeatureParams): FeatureUpdateFeatureResponse =
+    fun updateFeature(params: FeatureUpdateFeatureParams): Feature =
         updateFeature(params, RequestOptions.none())
 
     /** @see updateFeature */
-    fun updateFeature(id: String, requestOptions: RequestOptions): FeatureUpdateFeatureResponse =
+    fun updateFeature(id: String, requestOptions: RequestOptions): Feature =
         updateFeature(id, FeatureUpdateFeatureParams.none(), requestOptions)
 
     /** A view of [FeatureService] that provides access to raw HTTP responses for each method. */
@@ -214,7 +198,7 @@ interface FeatureService {
          * the same as [FeatureService.archiveFeature].
          */
         @MustBeClosed
-        fun archiveFeature(id: String): HttpResponseFor<FeatureArchiveFeatureResponse> =
+        fun archiveFeature(id: String): HttpResponseFor<Feature> =
             archiveFeature(id, FeatureArchiveFeatureParams.none())
 
         /** @see archiveFeature */
@@ -223,7 +207,7 @@ interface FeatureService {
             id: String,
             params: FeatureArchiveFeatureParams = FeatureArchiveFeatureParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureArchiveFeatureResponse> =
+        ): HttpResponseFor<Feature> =
             archiveFeature(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archiveFeature */
@@ -231,29 +215,23 @@ interface FeatureService {
         fun archiveFeature(
             id: String,
             params: FeatureArchiveFeatureParams = FeatureArchiveFeatureParams.none(),
-        ): HttpResponseFor<FeatureArchiveFeatureResponse> =
-            archiveFeature(id, params, RequestOptions.none())
+        ): HttpResponseFor<Feature> = archiveFeature(id, params, RequestOptions.none())
 
         /** @see archiveFeature */
         @MustBeClosed
         fun archiveFeature(
             params: FeatureArchiveFeatureParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureArchiveFeatureResponse>
+        ): HttpResponseFor<Feature>
 
         /** @see archiveFeature */
         @MustBeClosed
-        fun archiveFeature(
-            params: FeatureArchiveFeatureParams
-        ): HttpResponseFor<FeatureArchiveFeatureResponse> =
+        fun archiveFeature(params: FeatureArchiveFeatureParams): HttpResponseFor<Feature> =
             archiveFeature(params, RequestOptions.none())
 
         /** @see archiveFeature */
         @MustBeClosed
-        fun archiveFeature(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureArchiveFeatureResponse> =
+        fun archiveFeature(id: String, requestOptions: RequestOptions): HttpResponseFor<Feature> =
             archiveFeature(id, FeatureArchiveFeatureParams.none(), requestOptions)
 
         /**
@@ -261,9 +239,7 @@ interface FeatureService {
          * [FeatureService.createFeature].
          */
         @MustBeClosed
-        fun createFeature(
-            params: FeatureCreateFeatureParams
-        ): HttpResponseFor<FeatureCreateFeatureResponse> =
+        fun createFeature(params: FeatureCreateFeatureParams): HttpResponseFor<Feature> =
             createFeature(params, RequestOptions.none())
 
         /** @see createFeature */
@@ -271,7 +247,7 @@ interface FeatureService {
         fun createFeature(
             params: FeatureCreateFeatureParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureCreateFeatureResponse>
+        ): HttpResponseFor<Feature>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/features`, but is otherwise the same as
@@ -304,7 +280,7 @@ interface FeatureService {
          * [FeatureService.retrieveFeature].
          */
         @MustBeClosed
-        fun retrieveFeature(id: String): HttpResponseFor<FeatureRetrieveFeatureResponse> =
+        fun retrieveFeature(id: String): HttpResponseFor<Feature> =
             retrieveFeature(id, FeatureRetrieveFeatureParams.none())
 
         /** @see retrieveFeature */
@@ -313,7 +289,7 @@ interface FeatureService {
             id: String,
             params: FeatureRetrieveFeatureParams = FeatureRetrieveFeatureParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse> =
+        ): HttpResponseFor<Feature> =
             retrieveFeature(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieveFeature */
@@ -321,29 +297,23 @@ interface FeatureService {
         fun retrieveFeature(
             id: String,
             params: FeatureRetrieveFeatureParams = FeatureRetrieveFeatureParams.none(),
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse> =
-            retrieveFeature(id, params, RequestOptions.none())
+        ): HttpResponseFor<Feature> = retrieveFeature(id, params, RequestOptions.none())
 
         /** @see retrieveFeature */
         @MustBeClosed
         fun retrieveFeature(
             params: FeatureRetrieveFeatureParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse>
+        ): HttpResponseFor<Feature>
 
         /** @see retrieveFeature */
         @MustBeClosed
-        fun retrieveFeature(
-            params: FeatureRetrieveFeatureParams
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse> =
+        fun retrieveFeature(params: FeatureRetrieveFeatureParams): HttpResponseFor<Feature> =
             retrieveFeature(params, RequestOptions.none())
 
         /** @see retrieveFeature */
         @MustBeClosed
-        fun retrieveFeature(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureRetrieveFeatureResponse> =
+        fun retrieveFeature(id: String, requestOptions: RequestOptions): HttpResponseFor<Feature> =
             retrieveFeature(id, FeatureRetrieveFeatureParams.none(), requestOptions)
 
         /**
@@ -351,7 +321,7 @@ interface FeatureService {
          * the same as [FeatureService.unarchiveFeature].
          */
         @MustBeClosed
-        fun unarchiveFeature(id: String): HttpResponseFor<FeatureUnarchiveFeatureResponse> =
+        fun unarchiveFeature(id: String): HttpResponseFor<Feature> =
             unarchiveFeature(id, FeatureUnarchiveFeatureParams.none())
 
         /** @see unarchiveFeature */
@@ -360,7 +330,7 @@ interface FeatureService {
             id: String,
             params: FeatureUnarchiveFeatureParams = FeatureUnarchiveFeatureParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse> =
+        ): HttpResponseFor<Feature> =
             unarchiveFeature(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchiveFeature */
@@ -368,29 +338,23 @@ interface FeatureService {
         fun unarchiveFeature(
             id: String,
             params: FeatureUnarchiveFeatureParams = FeatureUnarchiveFeatureParams.none(),
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse> =
-            unarchiveFeature(id, params, RequestOptions.none())
+        ): HttpResponseFor<Feature> = unarchiveFeature(id, params, RequestOptions.none())
 
         /** @see unarchiveFeature */
         @MustBeClosed
         fun unarchiveFeature(
             params: FeatureUnarchiveFeatureParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse>
+        ): HttpResponseFor<Feature>
 
         /** @see unarchiveFeature */
         @MustBeClosed
-        fun unarchiveFeature(
-            params: FeatureUnarchiveFeatureParams
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse> =
+        fun unarchiveFeature(params: FeatureUnarchiveFeatureParams): HttpResponseFor<Feature> =
             unarchiveFeature(params, RequestOptions.none())
 
         /** @see unarchiveFeature */
         @MustBeClosed
-        fun unarchiveFeature(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureUnarchiveFeatureResponse> =
+        fun unarchiveFeature(id: String, requestOptions: RequestOptions): HttpResponseFor<Feature> =
             unarchiveFeature(id, FeatureUnarchiveFeatureParams.none(), requestOptions)
 
         /**
@@ -398,7 +362,7 @@ interface FeatureService {
          * as [FeatureService.updateFeature].
          */
         @MustBeClosed
-        fun updateFeature(id: String): HttpResponseFor<FeatureUpdateFeatureResponse> =
+        fun updateFeature(id: String): HttpResponseFor<Feature> =
             updateFeature(id, FeatureUpdateFeatureParams.none())
 
         /** @see updateFeature */
@@ -407,7 +371,7 @@ interface FeatureService {
             id: String,
             params: FeatureUpdateFeatureParams = FeatureUpdateFeatureParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureUpdateFeatureResponse> =
+        ): HttpResponseFor<Feature> =
             updateFeature(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see updateFeature */
@@ -415,29 +379,23 @@ interface FeatureService {
         fun updateFeature(
             id: String,
             params: FeatureUpdateFeatureParams = FeatureUpdateFeatureParams.none(),
-        ): HttpResponseFor<FeatureUpdateFeatureResponse> =
-            updateFeature(id, params, RequestOptions.none())
+        ): HttpResponseFor<Feature> = updateFeature(id, params, RequestOptions.none())
 
         /** @see updateFeature */
         @MustBeClosed
         fun updateFeature(
             params: FeatureUpdateFeatureParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<FeatureUpdateFeatureResponse>
+        ): HttpResponseFor<Feature>
 
         /** @see updateFeature */
         @MustBeClosed
-        fun updateFeature(
-            params: FeatureUpdateFeatureParams
-        ): HttpResponseFor<FeatureUpdateFeatureResponse> =
+        fun updateFeature(params: FeatureUpdateFeatureParams): HttpResponseFor<Feature> =
             updateFeature(params, RequestOptions.none())
 
         /** @see updateFeature */
         @MustBeClosed
-        fun updateFeature(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<FeatureUpdateFeatureResponse> =
+        fun updateFeature(id: String, requestOptions: RequestOptions): HttpResponseFor<Feature> =
             updateFeature(id, FeatureUpdateFeatureParams.none(), requestOptions)
     }
 }

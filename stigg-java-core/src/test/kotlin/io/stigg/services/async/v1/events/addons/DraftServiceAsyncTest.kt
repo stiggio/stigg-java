@@ -14,10 +14,10 @@ internal class DraftServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val draftServiceAsync = client.v1().events().addons().draft()
 
-        val responseFuture = draftServiceAsync.createAddonDraft("x")
+        val addonFuture = draftServiceAsync.createAddonDraft("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val addon = addonFuture.get()
+        addon.validate()
     }
 
     @Disabled("Mock server tests are disabled")

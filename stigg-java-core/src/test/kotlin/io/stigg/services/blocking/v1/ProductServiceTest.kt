@@ -18,9 +18,9 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val response = productService.archiveProduct("x")
+        val product = productService.archiveProduct("x")
 
-        response.validate()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -29,7 +29,7 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val response =
+        val product =
             productService.createProduct(
                 ProductCreateProductParams.builder()
                     .id("id")
@@ -44,7 +44,7 @@ internal class ProductServiceTest {
                     .build()
             )
 
-        response.validate()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -53,7 +53,7 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val response =
+        val product =
             productService.duplicateProduct(
                 ProductDuplicateProductParams.builder()
                     .pathId("x")
@@ -63,7 +63,7 @@ internal class ProductServiceTest {
                     .build()
             )
 
-        response.validate()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -83,9 +83,9 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val response = productService.unarchiveProduct("x")
+        val product = productService.unarchiveProduct("x")
 
-        response.validate()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -94,7 +94,7 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val response =
+        val product =
             productService.updateProduct(
                 ProductUpdateProductParams.builder()
                     .id("x")
@@ -136,6 +136,6 @@ internal class ProductServiceTest {
                     .build()
             )
 
-        response.validate()
+        product.validate()
     }
 }

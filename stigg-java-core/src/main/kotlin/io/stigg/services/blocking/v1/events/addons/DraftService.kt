@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.events.addons.Addon
 import io.stigg.models.v1.events.addons.draft.DraftCreateAddonDraftParams
-import io.stigg.models.v1.events.addons.draft.DraftCreateAddonDraftResponse
 import io.stigg.models.v1.events.addons.draft.DraftRemoveAddonDraftParams
 import io.stigg.models.v1.events.addons.draft.DraftRemoveAddonDraftResponse
 import java.util.function.Consumer
@@ -27,7 +27,7 @@ interface DraftService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): DraftService
 
     /** Creates a draft version of an existing addon for modification before publishing. */
-    fun createAddonDraft(id: String): DraftCreateAddonDraftResponse =
+    fun createAddonDraft(id: String): Addon =
         createAddonDraft(id, DraftCreateAddonDraftParams.none())
 
     /** @see createAddonDraft */
@@ -35,30 +35,26 @@ interface DraftService {
         id: String,
         params: DraftCreateAddonDraftParams = DraftCreateAddonDraftParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DraftCreateAddonDraftResponse =
-        createAddonDraft(params.toBuilder().id(id).build(), requestOptions)
+    ): Addon = createAddonDraft(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see createAddonDraft */
     fun createAddonDraft(
         id: String,
         params: DraftCreateAddonDraftParams = DraftCreateAddonDraftParams.none(),
-    ): DraftCreateAddonDraftResponse = createAddonDraft(id, params, RequestOptions.none())
+    ): Addon = createAddonDraft(id, params, RequestOptions.none())
 
     /** @see createAddonDraft */
     fun createAddonDraft(
         params: DraftCreateAddonDraftParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DraftCreateAddonDraftResponse
+    ): Addon
 
     /** @see createAddonDraft */
-    fun createAddonDraft(params: DraftCreateAddonDraftParams): DraftCreateAddonDraftResponse =
+    fun createAddonDraft(params: DraftCreateAddonDraftParams): Addon =
         createAddonDraft(params, RequestOptions.none())
 
     /** @see createAddonDraft */
-    fun createAddonDraft(
-        id: String,
-        requestOptions: RequestOptions,
-    ): DraftCreateAddonDraftResponse =
+    fun createAddonDraft(id: String, requestOptions: RequestOptions): Addon =
         createAddonDraft(id, DraftCreateAddonDraftParams.none(), requestOptions)
 
     /** Removes a draft version of an addon. */
@@ -111,7 +107,7 @@ interface DraftService {
          * same as [DraftService.createAddonDraft].
          */
         @MustBeClosed
-        fun createAddonDraft(id: String): HttpResponseFor<DraftCreateAddonDraftResponse> =
+        fun createAddonDraft(id: String): HttpResponseFor<Addon> =
             createAddonDraft(id, DraftCreateAddonDraftParams.none())
 
         /** @see createAddonDraft */
@@ -120,7 +116,7 @@ interface DraftService {
             id: String,
             params: DraftCreateAddonDraftParams = DraftCreateAddonDraftParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DraftCreateAddonDraftResponse> =
+        ): HttpResponseFor<Addon> =
             createAddonDraft(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see createAddonDraft */
@@ -128,29 +124,23 @@ interface DraftService {
         fun createAddonDraft(
             id: String,
             params: DraftCreateAddonDraftParams = DraftCreateAddonDraftParams.none(),
-        ): HttpResponseFor<DraftCreateAddonDraftResponse> =
-            createAddonDraft(id, params, RequestOptions.none())
+        ): HttpResponseFor<Addon> = createAddonDraft(id, params, RequestOptions.none())
 
         /** @see createAddonDraft */
         @MustBeClosed
         fun createAddonDraft(
             params: DraftCreateAddonDraftParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DraftCreateAddonDraftResponse>
+        ): HttpResponseFor<Addon>
 
         /** @see createAddonDraft */
         @MustBeClosed
-        fun createAddonDraft(
-            params: DraftCreateAddonDraftParams
-        ): HttpResponseFor<DraftCreateAddonDraftResponse> =
+        fun createAddonDraft(params: DraftCreateAddonDraftParams): HttpResponseFor<Addon> =
             createAddonDraft(params, RequestOptions.none())
 
         /** @see createAddonDraft */
         @MustBeClosed
-        fun createAddonDraft(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<DraftCreateAddonDraftResponse> =
+        fun createAddonDraft(id: String, requestOptions: RequestOptions): HttpResponseFor<Addon> =
             createAddonDraft(id, DraftCreateAddonDraftParams.none(), requestOptions)
 
         /**
