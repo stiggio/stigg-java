@@ -16,21 +16,22 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.events.addons.Addon
 import io.stigg.models.v1.events.addons.AddonArchiveAddonParams
-import io.stigg.models.v1.events.addons.AddonArchiveAddonResponse
 import io.stigg.models.v1.events.addons.AddonCreateAddonParams
-import io.stigg.models.v1.events.addons.AddonCreateAddonResponse
 import io.stigg.models.v1.events.addons.AddonListAddonsPage
 import io.stigg.models.v1.events.addons.AddonListAddonsPageResponse
 import io.stigg.models.v1.events.addons.AddonListAddonsParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonResponse
 import io.stigg.models.v1.events.addons.AddonRetrieveAddonParams
-import io.stigg.models.v1.events.addons.AddonRetrieveAddonResponse
+import io.stigg.models.v1.events.addons.AddonSetPricingParams
 import io.stigg.models.v1.events.addons.AddonUpdateAddonParams
-import io.stigg.models.v1.events.addons.AddonUpdateAddonResponse
+import io.stigg.models.v1.events.addons.SetPackagePricingResponse
 import io.stigg.services.blocking.v1.events.addons.DraftService
 import io.stigg.services.blocking.v1.events.addons.DraftServiceImpl
+import io.stigg.services.blocking.v1.events.addons.EntitlementService
+import io.stigg.services.blocking.v1.events.addons.EntitlementServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -43,6 +44,8 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     private val draft: DraftService by lazy { DraftServiceImpl(clientOptions) }
 
+    private val entitlements: EntitlementService by lazy { EntitlementServiceImpl(clientOptions) }
+
     override fun withRawResponse(): AddonService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AddonService =
@@ -50,17 +53,19 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     override fun draft(): DraftService = draft
 
+    override fun entitlements(): EntitlementService = entitlements
+
     override fun archiveAddon(
         params: AddonArchiveAddonParams,
         requestOptions: RequestOptions,
-    ): AddonArchiveAddonResponse =
+    ): Addon =
         // post /api/v1/addons/{id}/archive
         withRawResponse().archiveAddon(params, requestOptions).parse()
 
     override fun createAddon(
         params: AddonCreateAddonParams,
         requestOptions: RequestOptions,
-    ): AddonCreateAddonResponse =
+    ): Addon =
         // post /api/v1/addons
         withRawResponse().createAddon(params, requestOptions).parse()
 
@@ -81,14 +86,21 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun retrieveAddon(
         params: AddonRetrieveAddonParams,
         requestOptions: RequestOptions,
-    ): AddonRetrieveAddonResponse =
+    ): Addon =
         // get /api/v1/addons/{id}
         withRawResponse().retrieveAddon(params, requestOptions).parse()
+
+    override fun setPricing(
+        params: AddonSetPricingParams,
+        requestOptions: RequestOptions,
+    ): SetPackagePricingResponse =
+        // put /api/v1/addons/{id}/charges
+        withRawResponse().setPricing(params, requestOptions).parse()
 
     override fun updateAddon(
         params: AddonUpdateAddonParams,
         requestOptions: RequestOptions,
-    ): AddonUpdateAddonResponse =
+    ): Addon =
         // patch /api/v1/addons/{id}
         withRawResponse().updateAddon(params, requestOptions).parse()
 
@@ -102,6 +114,10 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
             DraftServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val entitlements: EntitlementService.WithRawResponse by lazy {
+            EntitlementServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): AddonService.WithRawResponse =
@@ -111,13 +127,15 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
 
         override fun draft(): DraftService.WithRawResponse = draft
 
-        private val archiveAddonHandler: Handler<AddonArchiveAddonResponse> =
-            jsonHandler<AddonArchiveAddonResponse>(clientOptions.jsonMapper)
+        override fun entitlements(): EntitlementService.WithRawResponse = entitlements
+
+        private val archiveAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun archiveAddon(
             params: AddonArchiveAddonParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonArchiveAddonResponse> {
+        ): HttpResponseFor<Addon> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -142,13 +160,13 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val createAddonHandler: Handler<AddonCreateAddonResponse> =
-            jsonHandler<AddonCreateAddonResponse>(clientOptions.jsonMapper)
+        private val createAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun createAddon(
             params: AddonCreateAddonParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonCreateAddonResponse> {
+        ): HttpResponseFor<Addon> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -235,13 +253,13 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val retrieveAddonHandler: Handler<AddonRetrieveAddonResponse> =
-            jsonHandler<AddonRetrieveAddonResponse>(clientOptions.jsonMapper)
+        private val retrieveAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun retrieveAddon(
             params: AddonRetrieveAddonParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonRetrieveAddonResponse> {
+        ): HttpResponseFor<Addon> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -265,13 +283,44 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val updateAddonHandler: Handler<AddonUpdateAddonResponse> =
-            jsonHandler<AddonUpdateAddonResponse>(clientOptions.jsonMapper)
+        private val setPricingHandler: Handler<SetPackagePricingResponse> =
+            jsonHandler<SetPackagePricingResponse>(clientOptions.jsonMapper)
+
+        override fun setPricing(
+            params: AddonSetPricingParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SetPackagePricingResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PUT)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "addons", params._pathParam(0), "charges")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { setPricingHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val updateAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun updateAddon(
             params: AddonUpdateAddonParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonUpdateAddonResponse> {
+        ): HttpResponseFor<Addon> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

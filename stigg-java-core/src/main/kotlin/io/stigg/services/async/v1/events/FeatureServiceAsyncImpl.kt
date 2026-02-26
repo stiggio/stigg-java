@@ -16,19 +16,15 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
+import io.stigg.models.v1.events.features.Feature
 import io.stigg.models.v1.events.features.FeatureArchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureArchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureCreateFeatureParams
-import io.stigg.models.v1.events.features.FeatureCreateFeatureResponse
 import io.stigg.models.v1.events.features.FeatureListFeaturesPageAsync
 import io.stigg.models.v1.events.features.FeatureListFeaturesPageResponse
 import io.stigg.models.v1.events.features.FeatureListFeaturesParams
 import io.stigg.models.v1.events.features.FeatureRetrieveFeatureParams
-import io.stigg.models.v1.events.features.FeatureRetrieveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureParams
-import io.stigg.models.v1.events.features.FeatureUnarchiveFeatureResponse
 import io.stigg.models.v1.events.features.FeatureUpdateFeatureParams
-import io.stigg.models.v1.events.features.FeatureUpdateFeatureResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -48,14 +44,14 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun archiveFeature(
         params: FeatureArchiveFeatureParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FeatureArchiveFeatureResponse> =
+    ): CompletableFuture<Feature> =
         // post /api/v1/features/{id}/archive
         withRawResponse().archiveFeature(params, requestOptions).thenApply { it.parse() }
 
     override fun createFeature(
         params: FeatureCreateFeatureParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FeatureCreateFeatureResponse> =
+    ): CompletableFuture<Feature> =
         // post /api/v1/features
         withRawResponse().createFeature(params, requestOptions).thenApply { it.parse() }
 
@@ -69,21 +65,21 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun retrieveFeature(
         params: FeatureRetrieveFeatureParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FeatureRetrieveFeatureResponse> =
+    ): CompletableFuture<Feature> =
         // get /api/v1/features/{id}
         withRawResponse().retrieveFeature(params, requestOptions).thenApply { it.parse() }
 
     override fun unarchiveFeature(
         params: FeatureUnarchiveFeatureParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FeatureUnarchiveFeatureResponse> =
+    ): CompletableFuture<Feature> =
         // post /api/v1/features/{id}/unarchive
         withRawResponse().unarchiveFeature(params, requestOptions).thenApply { it.parse() }
 
     override fun updateFeature(
         params: FeatureUpdateFeatureParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<FeatureUpdateFeatureResponse> =
+    ): CompletableFuture<Feature> =
         // patch /api/v1/features/{id}
         withRawResponse().updateFeature(params, requestOptions).thenApply { it.parse() }
 
@@ -100,13 +96,13 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val archiveFeatureHandler: Handler<FeatureArchiveFeatureResponse> =
-            jsonHandler<FeatureArchiveFeatureResponse>(clientOptions.jsonMapper)
+        private val archiveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun archiveFeature(
             params: FeatureArchiveFeatureParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FeatureArchiveFeatureResponse>> {
+        ): CompletableFuture<HttpResponseFor<Feature>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -134,13 +130,13 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val createFeatureHandler: Handler<FeatureCreateFeatureResponse> =
-            jsonHandler<FeatureCreateFeatureResponse>(clientOptions.jsonMapper)
+        private val createFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun createFeature(
             params: FeatureCreateFeatureParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FeatureCreateFeatureResponse>> {
+        ): CompletableFuture<HttpResponseFor<Feature>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -203,13 +199,13 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val retrieveFeatureHandler: Handler<FeatureRetrieveFeatureResponse> =
-            jsonHandler<FeatureRetrieveFeatureResponse>(clientOptions.jsonMapper)
+        private val retrieveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun retrieveFeature(
             params: FeatureRetrieveFeatureParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FeatureRetrieveFeatureResponse>> {
+        ): CompletableFuture<HttpResponseFor<Feature>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -236,13 +232,13 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val unarchiveFeatureHandler: Handler<FeatureUnarchiveFeatureResponse> =
-            jsonHandler<FeatureUnarchiveFeatureResponse>(clientOptions.jsonMapper)
+        private val unarchiveFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun unarchiveFeature(
             params: FeatureUnarchiveFeatureParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FeatureUnarchiveFeatureResponse>> {
+        ): CompletableFuture<HttpResponseFor<Feature>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -270,13 +266,13 @@ class FeatureServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val updateFeatureHandler: Handler<FeatureUpdateFeatureResponse> =
-            jsonHandler<FeatureUpdateFeatureResponse>(clientOptions.jsonMapper)
+        private val updateFeatureHandler: Handler<Feature> =
+            jsonHandler<Feature>(clientOptions.jsonMapper)
 
         override fun updateFeature(
             params: FeatureUpdateFeatureParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<FeatureUpdateFeatureResponse>> {
+        ): CompletableFuture<HttpResponseFor<Feature>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

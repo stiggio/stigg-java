@@ -5,18 +5,14 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.products.Product
 import io.stigg.models.v1.products.ProductArchiveProductParams
-import io.stigg.models.v1.products.ProductArchiveProductResponse
 import io.stigg.models.v1.products.ProductCreateProductParams
-import io.stigg.models.v1.products.ProductCreateProductResponse
 import io.stigg.models.v1.products.ProductDuplicateProductParams
-import io.stigg.models.v1.products.ProductDuplicateProductResponse
 import io.stigg.models.v1.products.ProductListProductsPageAsync
 import io.stigg.models.v1.products.ProductListProductsParams
 import io.stigg.models.v1.products.ProductUnarchiveProductParams
-import io.stigg.models.v1.products.ProductUnarchiveProductResponse
 import io.stigg.models.v1.products.ProductUpdateProductParams
-import io.stigg.models.v1.products.ProductUpdateProductResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -35,7 +31,7 @@ interface ProductServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ProductServiceAsync
 
     /** Archives a product, preventing new subscriptions. All plans and addons are archived. */
-    fun archiveProduct(id: String): CompletableFuture<ProductArchiveProductResponse> =
+    fun archiveProduct(id: String): CompletableFuture<Product> =
         archiveProduct(id, ProductArchiveProductParams.none())
 
     /** @see archiveProduct */
@@ -43,73 +39,62 @@ interface ProductServiceAsync {
         id: String,
         params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductArchiveProductResponse> =
+    ): CompletableFuture<Product> =
         archiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archiveProduct */
     fun archiveProduct(
         id: String,
         params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
-    ): CompletableFuture<ProductArchiveProductResponse> =
-        archiveProduct(id, params, RequestOptions.none())
+    ): CompletableFuture<Product> = archiveProduct(id, params, RequestOptions.none())
 
     /** @see archiveProduct */
     fun archiveProduct(
         params: ProductArchiveProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductArchiveProductResponse>
+    ): CompletableFuture<Product>
 
     /** @see archiveProduct */
-    fun archiveProduct(
-        params: ProductArchiveProductParams
-    ): CompletableFuture<ProductArchiveProductResponse> =
+    fun archiveProduct(params: ProductArchiveProductParams): CompletableFuture<Product> =
         archiveProduct(params, RequestOptions.none())
 
     /** @see archiveProduct */
-    fun archiveProduct(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<ProductArchiveProductResponse> =
+    fun archiveProduct(id: String, requestOptions: RequestOptions): CompletableFuture<Product> =
         archiveProduct(id, ProductArchiveProductParams.none(), requestOptions)
 
     /** Creates a new product. */
-    fun createProduct(
-        params: ProductCreateProductParams
-    ): CompletableFuture<ProductCreateProductResponse> =
+    fun createProduct(params: ProductCreateProductParams): CompletableFuture<Product> =
         createProduct(params, RequestOptions.none())
 
     /** @see createProduct */
     fun createProduct(
         params: ProductCreateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductCreateProductResponse>
+    ): CompletableFuture<Product>
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
     fun duplicateProduct(
         pathId: String,
         params: ProductDuplicateProductParams,
-    ): CompletableFuture<ProductDuplicateProductResponse> =
-        duplicateProduct(pathId, params, RequestOptions.none())
+    ): CompletableFuture<Product> = duplicateProduct(pathId, params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
         pathId: String,
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductDuplicateProductResponse> =
+    ): CompletableFuture<Product> =
         duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
     /** @see duplicateProduct */
-    fun duplicateProduct(
-        params: ProductDuplicateProductParams
-    ): CompletableFuture<ProductDuplicateProductResponse> =
+    fun duplicateProduct(params: ProductDuplicateProductParams): CompletableFuture<Product> =
         duplicateProduct(params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductDuplicateProductResponse>
+    ): CompletableFuture<Product>
 
     /** Retrieves a paginated list of products in the environment. */
     fun listProducts(): CompletableFuture<ProductListProductsPageAsync> =
@@ -133,7 +118,7 @@ interface ProductServiceAsync {
         listProducts(ProductListProductsParams.none(), requestOptions)
 
     /** Restores an archived product, allowing new subscriptions to be created. */
-    fun unarchiveProduct(id: String): CompletableFuture<ProductUnarchiveProductResponse> =
+    fun unarchiveProduct(id: String): CompletableFuture<Product> =
         unarchiveProduct(id, ProductUnarchiveProductParams.none())
 
     /** @see unarchiveProduct */
@@ -141,37 +126,31 @@ interface ProductServiceAsync {
         id: String,
         params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductUnarchiveProductResponse> =
+    ): CompletableFuture<Product> =
         unarchiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchiveProduct */
     fun unarchiveProduct(
         id: String,
         params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
-    ): CompletableFuture<ProductUnarchiveProductResponse> =
-        unarchiveProduct(id, params, RequestOptions.none())
+    ): CompletableFuture<Product> = unarchiveProduct(id, params, RequestOptions.none())
 
     /** @see unarchiveProduct */
     fun unarchiveProduct(
         params: ProductUnarchiveProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductUnarchiveProductResponse>
+    ): CompletableFuture<Product>
 
     /** @see unarchiveProduct */
-    fun unarchiveProduct(
-        params: ProductUnarchiveProductParams
-    ): CompletableFuture<ProductUnarchiveProductResponse> =
+    fun unarchiveProduct(params: ProductUnarchiveProductParams): CompletableFuture<Product> =
         unarchiveProduct(params, RequestOptions.none())
 
     /** @see unarchiveProduct */
-    fun unarchiveProduct(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<ProductUnarchiveProductResponse> =
+    fun unarchiveProduct(id: String, requestOptions: RequestOptions): CompletableFuture<Product> =
         unarchiveProduct(id, ProductUnarchiveProductParams.none(), requestOptions)
 
     /** Updates an existing product's properties such as display name, description, and metadata. */
-    fun updateProduct(id: String): CompletableFuture<ProductUpdateProductResponse> =
+    fun updateProduct(id: String): CompletableFuture<Product> =
         updateProduct(id, ProductUpdateProductParams.none())
 
     /** @see updateProduct */
@@ -179,33 +158,26 @@ interface ProductServiceAsync {
         id: String,
         params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductUpdateProductResponse> =
-        updateProduct(params.toBuilder().id(id).build(), requestOptions)
+    ): CompletableFuture<Product> = updateProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see updateProduct */
     fun updateProduct(
         id: String,
         params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
-    ): CompletableFuture<ProductUpdateProductResponse> =
-        updateProduct(id, params, RequestOptions.none())
+    ): CompletableFuture<Product> = updateProduct(id, params, RequestOptions.none())
 
     /** @see updateProduct */
     fun updateProduct(
         params: ProductUpdateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ProductUpdateProductResponse>
+    ): CompletableFuture<Product>
 
     /** @see updateProduct */
-    fun updateProduct(
-        params: ProductUpdateProductParams
-    ): CompletableFuture<ProductUpdateProductResponse> =
+    fun updateProduct(params: ProductUpdateProductParams): CompletableFuture<Product> =
         updateProduct(params, RequestOptions.none())
 
     /** @see updateProduct */
-    fun updateProduct(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<ProductUpdateProductResponse> =
+    fun updateProduct(id: String, requestOptions: RequestOptions): CompletableFuture<Product> =
         updateProduct(id, ProductUpdateProductParams.none(), requestOptions)
 
     /**
@@ -226,9 +198,7 @@ interface ProductServiceAsync {
          * Returns a raw HTTP response for `post /api/v1/products/{id}/archive`, but is otherwise
          * the same as [ProductServiceAsync.archiveProduct].
          */
-        fun archiveProduct(
-            id: String
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> =
+        fun archiveProduct(id: String): CompletableFuture<HttpResponseFor<Product>> =
             archiveProduct(id, ProductArchiveProductParams.none())
 
         /** @see archiveProduct */
@@ -236,33 +206,33 @@ interface ProductServiceAsync {
             id: String,
             params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             archiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archiveProduct */
         fun archiveProduct(
             id: String,
             params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             archiveProduct(id, params, RequestOptions.none())
 
         /** @see archiveProduct */
         fun archiveProduct(
             params: ProductArchiveProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>>
+        ): CompletableFuture<HttpResponseFor<Product>>
 
         /** @see archiveProduct */
         fun archiveProduct(
             params: ProductArchiveProductParams
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             archiveProduct(params, RequestOptions.none())
 
         /** @see archiveProduct */
         fun archiveProduct(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             archiveProduct(id, ProductArchiveProductParams.none(), requestOptions)
 
         /**
@@ -271,14 +241,14 @@ interface ProductServiceAsync {
          */
         fun createProduct(
             params: ProductCreateProductParams
-        ): CompletableFuture<HttpResponseFor<ProductCreateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             createProduct(params, RequestOptions.none())
 
         /** @see createProduct */
         fun createProduct(
             params: ProductCreateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductCreateProductResponse>>
+        ): CompletableFuture<HttpResponseFor<Product>>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/products/{id}/duplicate`, but is otherwise
@@ -287,7 +257,7 @@ interface ProductServiceAsync {
         fun duplicateProduct(
             pathId: String,
             params: ProductDuplicateProductParams,
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             duplicateProduct(pathId, params, RequestOptions.none())
 
         /** @see duplicateProduct */
@@ -295,20 +265,20 @@ interface ProductServiceAsync {
             pathId: String,
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
         /** @see duplicateProduct */
         fun duplicateProduct(
             params: ProductDuplicateProductParams
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             duplicateProduct(params, RequestOptions.none())
 
         /** @see duplicateProduct */
         fun duplicateProduct(
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>>
+        ): CompletableFuture<HttpResponseFor<Product>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/products`, but is otherwise the same as
@@ -339,9 +309,7 @@ interface ProductServiceAsync {
          * Returns a raw HTTP response for `post /api/v1/products/{id}/unarchive`, but is otherwise
          * the same as [ProductServiceAsync.unarchiveProduct].
          */
-        fun unarchiveProduct(
-            id: String
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> =
+        fun unarchiveProduct(id: String): CompletableFuture<HttpResponseFor<Product>> =
             unarchiveProduct(id, ProductUnarchiveProductParams.none())
 
         /** @see unarchiveProduct */
@@ -349,42 +317,40 @@ interface ProductServiceAsync {
             id: String,
             params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             unarchiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchiveProduct */
         fun unarchiveProduct(
             id: String,
             params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             unarchiveProduct(id, params, RequestOptions.none())
 
         /** @see unarchiveProduct */
         fun unarchiveProduct(
             params: ProductUnarchiveProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>>
+        ): CompletableFuture<HttpResponseFor<Product>>
 
         /** @see unarchiveProduct */
         fun unarchiveProduct(
             params: ProductUnarchiveProductParams
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             unarchiveProduct(params, RequestOptions.none())
 
         /** @see unarchiveProduct */
         fun unarchiveProduct(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             unarchiveProduct(id, ProductUnarchiveProductParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `patch /api/v1/products/{id}`, but is otherwise the same
          * as [ProductServiceAsync.updateProduct].
          */
-        fun updateProduct(
-            id: String
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> =
+        fun updateProduct(id: String): CompletableFuture<HttpResponseFor<Product>> =
             updateProduct(id, ProductUpdateProductParams.none())
 
         /** @see updateProduct */
@@ -392,33 +358,33 @@ interface ProductServiceAsync {
             id: String,
             params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             updateProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see updateProduct */
         fun updateProduct(
             id: String,
             params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             updateProduct(id, params, RequestOptions.none())
 
         /** @see updateProduct */
         fun updateProduct(
             params: ProductUpdateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>>
+        ): CompletableFuture<HttpResponseFor<Product>>
 
         /** @see updateProduct */
         fun updateProduct(
             params: ProductUpdateProductParams
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             updateProduct(params, RequestOptions.none())
 
         /** @see updateProduct */
         fun updateProduct(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> =
+        ): CompletableFuture<HttpResponseFor<Product>> =
             updateProduct(id, ProductUpdateProductParams.none(), requestOptions)
     }
 }

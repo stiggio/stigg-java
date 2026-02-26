@@ -16,21 +16,22 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
+import io.stigg.models.v1.events.addons.Addon
 import io.stigg.models.v1.events.addons.AddonArchiveAddonParams
-import io.stigg.models.v1.events.addons.AddonArchiveAddonResponse
 import io.stigg.models.v1.events.addons.AddonCreateAddonParams
-import io.stigg.models.v1.events.addons.AddonCreateAddonResponse
 import io.stigg.models.v1.events.addons.AddonListAddonsPageAsync
 import io.stigg.models.v1.events.addons.AddonListAddonsPageResponse
 import io.stigg.models.v1.events.addons.AddonListAddonsParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonResponse
 import io.stigg.models.v1.events.addons.AddonRetrieveAddonParams
-import io.stigg.models.v1.events.addons.AddonRetrieveAddonResponse
+import io.stigg.models.v1.events.addons.AddonSetPricingParams
 import io.stigg.models.v1.events.addons.AddonUpdateAddonParams
-import io.stigg.models.v1.events.addons.AddonUpdateAddonResponse
+import io.stigg.models.v1.events.addons.SetPackagePricingResponse
 import io.stigg.services.async.v1.events.addons.DraftServiceAsync
 import io.stigg.services.async.v1.events.addons.DraftServiceAsyncImpl
+import io.stigg.services.async.v1.events.addons.EntitlementServiceAsync
+import io.stigg.services.async.v1.events.addons.EntitlementServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -44,6 +45,10 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     private val draft: DraftServiceAsync by lazy { DraftServiceAsyncImpl(clientOptions) }
 
+    private val entitlements: EntitlementServiceAsync by lazy {
+        EntitlementServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): AddonServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AddonServiceAsync =
@@ -51,17 +56,19 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     override fun draft(): DraftServiceAsync = draft
 
+    override fun entitlements(): EntitlementServiceAsync = entitlements
+
     override fun archiveAddon(
         params: AddonArchiveAddonParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<AddonArchiveAddonResponse> =
+    ): CompletableFuture<Addon> =
         // post /api/v1/addons/{id}/archive
         withRawResponse().archiveAddon(params, requestOptions).thenApply { it.parse() }
 
     override fun createAddon(
         params: AddonCreateAddonParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<AddonCreateAddonResponse> =
+    ): CompletableFuture<Addon> =
         // post /api/v1/addons
         withRawResponse().createAddon(params, requestOptions).thenApply { it.parse() }
 
@@ -82,14 +89,21 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun retrieveAddon(
         params: AddonRetrieveAddonParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<AddonRetrieveAddonResponse> =
+    ): CompletableFuture<Addon> =
         // get /api/v1/addons/{id}
         withRawResponse().retrieveAddon(params, requestOptions).thenApply { it.parse() }
+
+    override fun setPricing(
+        params: AddonSetPricingParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<SetPackagePricingResponse> =
+        // put /api/v1/addons/{id}/charges
+        withRawResponse().setPricing(params, requestOptions).thenApply { it.parse() }
 
     override fun updateAddon(
         params: AddonUpdateAddonParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<AddonUpdateAddonResponse> =
+    ): CompletableFuture<Addon> =
         // patch /api/v1/addons/{id}
         withRawResponse().updateAddon(params, requestOptions).thenApply { it.parse() }
 
@@ -103,6 +117,10 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
             DraftServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val entitlements: EntitlementServiceAsync.WithRawResponse by lazy {
+            EntitlementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): AddonServiceAsync.WithRawResponse =
@@ -112,13 +130,15 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
         override fun draft(): DraftServiceAsync.WithRawResponse = draft
 
-        private val archiveAddonHandler: Handler<AddonArchiveAddonResponse> =
-            jsonHandler<AddonArchiveAddonResponse>(clientOptions.jsonMapper)
+        override fun entitlements(): EntitlementServiceAsync.WithRawResponse = entitlements
+
+        private val archiveAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun archiveAddon(
             params: AddonArchiveAddonParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<AddonArchiveAddonResponse>> {
+        ): CompletableFuture<HttpResponseFor<Addon>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -146,13 +166,13 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 }
         }
 
-        private val createAddonHandler: Handler<AddonCreateAddonResponse> =
-            jsonHandler<AddonCreateAddonResponse>(clientOptions.jsonMapper)
+        private val createAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun createAddon(
             params: AddonCreateAddonParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<AddonCreateAddonResponse>> {
+        ): CompletableFuture<HttpResponseFor<Addon>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -249,13 +269,13 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 }
         }
 
-        private val retrieveAddonHandler: Handler<AddonRetrieveAddonResponse> =
-            jsonHandler<AddonRetrieveAddonResponse>(clientOptions.jsonMapper)
+        private val retrieveAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun retrieveAddon(
             params: AddonRetrieveAddonParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<AddonRetrieveAddonResponse>> {
+        ): CompletableFuture<HttpResponseFor<Addon>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -282,13 +302,47 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 }
         }
 
-        private val updateAddonHandler: Handler<AddonUpdateAddonResponse> =
-            jsonHandler<AddonUpdateAddonResponse>(clientOptions.jsonMapper)
+        private val setPricingHandler: Handler<SetPackagePricingResponse> =
+            jsonHandler<SetPackagePricingResponse>(clientOptions.jsonMapper)
+
+        override fun setPricing(
+            params: AddonSetPricingParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PUT)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "addons", params._pathParam(0), "charges")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { setPricingHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val updateAddonHandler: Handler<Addon> =
+            jsonHandler<Addon>(clientOptions.jsonMapper)
 
         override fun updateAddon(
             params: AddonUpdateAddonParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<AddonUpdateAddonResponse>> {
+        ): CompletableFuture<HttpResponseFor<Addon>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

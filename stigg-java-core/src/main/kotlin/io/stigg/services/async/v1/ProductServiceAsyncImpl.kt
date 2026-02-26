@@ -16,19 +16,15 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
+import io.stigg.models.v1.products.Product
 import io.stigg.models.v1.products.ProductArchiveProductParams
-import io.stigg.models.v1.products.ProductArchiveProductResponse
 import io.stigg.models.v1.products.ProductCreateProductParams
-import io.stigg.models.v1.products.ProductCreateProductResponse
 import io.stigg.models.v1.products.ProductDuplicateProductParams
-import io.stigg.models.v1.products.ProductDuplicateProductResponse
 import io.stigg.models.v1.products.ProductListProductsPageAsync
 import io.stigg.models.v1.products.ProductListProductsPageResponse
 import io.stigg.models.v1.products.ProductListProductsParams
 import io.stigg.models.v1.products.ProductUnarchiveProductParams
-import io.stigg.models.v1.products.ProductUnarchiveProductResponse
 import io.stigg.models.v1.products.ProductUpdateProductParams
-import io.stigg.models.v1.products.ProductUpdateProductResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -48,21 +44,21 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun archiveProduct(
         params: ProductArchiveProductParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ProductArchiveProductResponse> =
+    ): CompletableFuture<Product> =
         // post /api/v1/products/{id}/archive
         withRawResponse().archiveProduct(params, requestOptions).thenApply { it.parse() }
 
     override fun createProduct(
         params: ProductCreateProductParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ProductCreateProductResponse> =
+    ): CompletableFuture<Product> =
         // post /api/v1/products
         withRawResponse().createProduct(params, requestOptions).thenApply { it.parse() }
 
     override fun duplicateProduct(
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ProductDuplicateProductResponse> =
+    ): CompletableFuture<Product> =
         // post /api/v1/products/{id}/duplicate
         withRawResponse().duplicateProduct(params, requestOptions).thenApply { it.parse() }
 
@@ -76,14 +72,14 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun unarchiveProduct(
         params: ProductUnarchiveProductParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ProductUnarchiveProductResponse> =
+    ): CompletableFuture<Product> =
         // post /api/v1/products/{id}/unarchive
         withRawResponse().unarchiveProduct(params, requestOptions).thenApply { it.parse() }
 
     override fun updateProduct(
         params: ProductUpdateProductParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ProductUpdateProductResponse> =
+    ): CompletableFuture<Product> =
         // patch /api/v1/products/{id}
         withRawResponse().updateProduct(params, requestOptions).thenApply { it.parse() }
 
@@ -100,13 +96,13 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val archiveProductHandler: Handler<ProductArchiveProductResponse> =
-            jsonHandler<ProductArchiveProductResponse>(clientOptions.jsonMapper)
+        private val archiveProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun archiveProduct(
             params: ProductArchiveProductParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductArchiveProductResponse>> {
+        ): CompletableFuture<HttpResponseFor<Product>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -134,13 +130,13 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val createProductHandler: Handler<ProductCreateProductResponse> =
-            jsonHandler<ProductCreateProductResponse>(clientOptions.jsonMapper)
+        private val createProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun createProduct(
             params: ProductCreateProductParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductCreateProductResponse>> {
+        ): CompletableFuture<HttpResponseFor<Product>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -165,13 +161,13 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val duplicateProductHandler: Handler<ProductDuplicateProductResponse> =
-            jsonHandler<ProductDuplicateProductResponse>(clientOptions.jsonMapper)
+        private val duplicateProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun duplicateProduct(
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductDuplicateProductResponse>> {
+        ): CompletableFuture<HttpResponseFor<Product>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("pathId", params.pathId().getOrNull())
@@ -237,13 +233,13 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val unarchiveProductHandler: Handler<ProductUnarchiveProductResponse> =
-            jsonHandler<ProductUnarchiveProductResponse>(clientOptions.jsonMapper)
+        private val unarchiveProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun unarchiveProduct(
             params: ProductUnarchiveProductParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductUnarchiveProductResponse>> {
+        ): CompletableFuture<HttpResponseFor<Product>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -271,13 +267,13 @@ class ProductServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val updateProductHandler: Handler<ProductUpdateProductResponse> =
-            jsonHandler<ProductUpdateProductResponse>(clientOptions.jsonMapper)
+        private val updateProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun updateProduct(
             params: ProductUpdateProductParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ProductUpdateProductResponse>> {
+        ): CompletableFuture<HttpResponseFor<Product>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
