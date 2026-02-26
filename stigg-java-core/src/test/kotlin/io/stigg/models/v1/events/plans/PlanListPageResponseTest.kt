@@ -19,7 +19,24 @@ internal class PlanListPageResponseTest {
                     PlanListResponse.builder()
                         .id("id")
                         .billingId("billingId")
+                        .addCompatibleAddonId("string")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .defaultTrialConfig(
+                            PlanListResponse.DefaultTrialConfig.builder()
+                                .duration(0.0)
+                                .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                                .budget(
+                                    PlanListResponse.DefaultTrialConfig.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
+                                .trialEndBehavior(
+                                    PlanListResponse.DefaultTrialConfig.TrialEndBehavior
+                                        .CONVERT_TO_PAID
+                                )
+                                .build()
+                        )
                         .description("description")
                         .displayName("displayName")
                         .addEntitlement(
@@ -55,7 +72,23 @@ internal class PlanListPageResponseTest {
                 PlanListResponse.builder()
                     .id("id")
                     .billingId("billingId")
+                    .addCompatibleAddonId("string")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .defaultTrialConfig(
+                        PlanListResponse.DefaultTrialConfig.builder()
+                            .duration(0.0)
+                            .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                            .budget(
+                                PlanListResponse.DefaultTrialConfig.Budget.builder()
+                                    .hasSoftLimit(true)
+                                    .limit(0.0)
+                                    .build()
+                            )
+                            .trialEndBehavior(
+                                PlanListResponse.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                            )
+                            .build()
+                    )
                     .description("description")
                     .displayName("displayName")
                     .addEntitlement(
@@ -96,7 +129,24 @@ internal class PlanListPageResponseTest {
                     PlanListResponse.builder()
                         .id("id")
                         .billingId("billingId")
+                        .addCompatibleAddonId("string")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .defaultTrialConfig(
+                            PlanListResponse.DefaultTrialConfig.builder()
+                                .duration(0.0)
+                                .units(PlanListResponse.DefaultTrialConfig.Units.DAY)
+                                .budget(
+                                    PlanListResponse.DefaultTrialConfig.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
+                                .trialEndBehavior(
+                                    PlanListResponse.DefaultTrialConfig.TrialEndBehavior
+                                        .CONVERT_TO_PAID
+                                )
+                                .build()
+                        )
                         .description("description")
                         .displayName("displayName")
                         .addEntitlement(

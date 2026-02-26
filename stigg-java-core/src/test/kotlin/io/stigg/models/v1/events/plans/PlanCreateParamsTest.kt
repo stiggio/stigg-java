@@ -15,6 +15,21 @@ internal class PlanCreateParamsTest {
             .displayName("displayName")
             .productId("productId")
             .billingId("billingId")
+            .defaultTrialConfig(
+                PlanCreateParams.DefaultTrialConfig.builder()
+                    .duration(0.0)
+                    .units(PlanCreateParams.DefaultTrialConfig.Units.DAY)
+                    .budget(
+                        PlanCreateParams.DefaultTrialConfig.Budget.builder()
+                            .hasSoftLimit(true)
+                            .limit(0.0)
+                            .build()
+                    )
+                    .trialEndBehavior(
+                        PlanCreateParams.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                    )
+                    .build()
+            )
             .description("description")
             .metadata(
                 PlanCreateParams.Metadata.builder()
@@ -35,6 +50,21 @@ internal class PlanCreateParamsTest {
                 .displayName("displayName")
                 .productId("productId")
                 .billingId("billingId")
+                .defaultTrialConfig(
+                    PlanCreateParams.DefaultTrialConfig.builder()
+                        .duration(0.0)
+                        .units(PlanCreateParams.DefaultTrialConfig.Units.DAY)
+                        .budget(
+                            PlanCreateParams.DefaultTrialConfig.Budget.builder()
+                                .hasSoftLimit(true)
+                                .limit(0.0)
+                                .build()
+                        )
+                        .trialEndBehavior(
+                            PlanCreateParams.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                        )
+                        .build()
+                )
                 .description("description")
                 .metadata(
                     PlanCreateParams.Metadata.builder()
@@ -52,6 +82,22 @@ internal class PlanCreateParamsTest {
         assertThat(body.displayName()).isEqualTo("displayName")
         assertThat(body.productId()).isEqualTo("productId")
         assertThat(body.billingId()).contains("billingId")
+        assertThat(body.defaultTrialConfig())
+            .contains(
+                PlanCreateParams.DefaultTrialConfig.builder()
+                    .duration(0.0)
+                    .units(PlanCreateParams.DefaultTrialConfig.Units.DAY)
+                    .budget(
+                        PlanCreateParams.DefaultTrialConfig.Budget.builder()
+                            .hasSoftLimit(true)
+                            .limit(0.0)
+                            .build()
+                    )
+                    .trialEndBehavior(
+                        PlanCreateParams.DefaultTrialConfig.TrialEndBehavior.CONVERT_TO_PAID
+                    )
+                    .build()
+            )
         assertThat(body.description()).contains("description")
         assertThat(body.metadata())
             .contains(
