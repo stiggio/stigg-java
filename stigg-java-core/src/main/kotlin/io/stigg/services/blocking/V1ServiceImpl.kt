@@ -3,12 +3,18 @@
 package io.stigg.services.blocking
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.blocking.v1.AddonService
+import io.stigg.services.blocking.v1.AddonServiceImpl
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CouponServiceImpl
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.CustomerServiceImpl
 import io.stigg.services.blocking.v1.EventService
 import io.stigg.services.blocking.v1.EventServiceImpl
+import io.stigg.services.blocking.v1.FeatureService
+import io.stigg.services.blocking.v1.FeatureServiceImpl
+import io.stigg.services.blocking.v1.PlanService
+import io.stigg.services.blocking.v1.PlanServiceImpl
 import io.stigg.services.blocking.v1.ProductService
 import io.stigg.services.blocking.v1.ProductServiceImpl
 import io.stigg.services.blocking.v1.SubscriptionService
@@ -33,6 +39,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val events: EventService by lazy { EventServiceImpl(clientOptions) }
 
+    private val features: FeatureService by lazy { FeatureServiceImpl(clientOptions) }
+
+    private val addons: AddonService by lazy { AddonServiceImpl(clientOptions) }
+
+    private val plans: PlanService by lazy { PlanServiceImpl(clientOptions) }
+
     private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
 
     private val products: ProductService by lazy { ProductServiceImpl(clientOptions) }
@@ -49,6 +61,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     override fun coupons(): CouponService = coupons
 
     override fun events(): EventService = events
+
+    override fun features(): FeatureService = features
+
+    override fun addons(): AddonService = addons
+
+    override fun plans(): PlanService = plans
 
     override fun usage(): UsageService = usage
 
@@ -73,6 +91,18 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             EventServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val features: FeatureService.WithRawResponse by lazy {
+            FeatureServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val addons: AddonService.WithRawResponse by lazy {
+            AddonServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val plans: PlanService.WithRawResponse by lazy {
+            PlanServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val usage: UsageService.WithRawResponse by lazy {
             UsageServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -95,6 +125,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         override fun coupons(): CouponService.WithRawResponse = coupons
 
         override fun events(): EventService.WithRawResponse = events
+
+        override fun features(): FeatureService.WithRawResponse = features
+
+        override fun addons(): AddonService.WithRawResponse = addons
+
+        override fun plans(): PlanService.WithRawResponse = plans
 
         override fun usage(): UsageService.WithRawResponse = usage
 

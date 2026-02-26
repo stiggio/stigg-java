@@ -3,9 +3,12 @@
 package io.stigg.services.async
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.async.v1.AddonServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.EventServiceAsync
+import io.stigg.services.async.v1.FeatureServiceAsync
+import io.stigg.services.async.v1.PlanServiceAsync
 import io.stigg.services.async.v1.ProductServiceAsync
 import io.stigg.services.async.v1.SubscriptionServiceAsync
 import io.stigg.services.async.v1.UsageServiceAsync
@@ -33,6 +36,12 @@ interface V1ServiceAsync {
 
     fun events(): EventServiceAsync
 
+    fun features(): FeatureServiceAsync
+
+    fun addons(): AddonServiceAsync
+
+    fun plans(): PlanServiceAsync
+
     fun usage(): UsageServiceAsync
 
     fun products(): ProductServiceAsync
@@ -54,6 +63,12 @@ interface V1ServiceAsync {
         fun coupons(): CouponServiceAsync.WithRawResponse
 
         fun events(): EventServiceAsync.WithRawResponse
+
+        fun features(): FeatureServiceAsync.WithRawResponse
+
+        fun addons(): AddonServiceAsync.WithRawResponse
+
+        fun plans(): PlanServiceAsync.WithRawResponse
 
         fun usage(): UsageServiceAsync.WithRawResponse
 
