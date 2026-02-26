@@ -6,18 +6,14 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.products.Product
 import io.stigg.models.v1.products.ProductArchiveProductParams
-import io.stigg.models.v1.products.ProductArchiveProductResponse
 import io.stigg.models.v1.products.ProductCreateProductParams
-import io.stigg.models.v1.products.ProductCreateProductResponse
 import io.stigg.models.v1.products.ProductDuplicateProductParams
-import io.stigg.models.v1.products.ProductDuplicateProductResponse
 import io.stigg.models.v1.products.ProductListProductsPage
 import io.stigg.models.v1.products.ProductListProductsParams
 import io.stigg.models.v1.products.ProductUnarchiveProductParams
-import io.stigg.models.v1.products.ProductUnarchiveProductResponse
 import io.stigg.models.v1.products.ProductUpdateProductParams
-import io.stigg.models.v1.products.ProductUpdateProductResponse
 import java.util.function.Consumer
 
 interface ProductService {
@@ -35,70 +31,65 @@ interface ProductService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ProductService
 
     /** Archives a product, preventing new subscriptions. All plans and addons are archived. */
-    fun archiveProduct(id: String): ProductArchiveProductResponse =
-        archiveProduct(id, ProductArchiveProductParams.none())
+    fun archiveProduct(id: String): Product = archiveProduct(id, ProductArchiveProductParams.none())
 
     /** @see archiveProduct */
     fun archiveProduct(
         id: String,
         params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductArchiveProductResponse =
-        archiveProduct(params.toBuilder().id(id).build(), requestOptions)
+    ): Product = archiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archiveProduct */
     fun archiveProduct(
         id: String,
         params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
-    ): ProductArchiveProductResponse = archiveProduct(id, params, RequestOptions.none())
+    ): Product = archiveProduct(id, params, RequestOptions.none())
 
     /** @see archiveProduct */
     fun archiveProduct(
         params: ProductArchiveProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductArchiveProductResponse
+    ): Product
 
     /** @see archiveProduct */
-    fun archiveProduct(params: ProductArchiveProductParams): ProductArchiveProductResponse =
+    fun archiveProduct(params: ProductArchiveProductParams): Product =
         archiveProduct(params, RequestOptions.none())
 
     /** @see archiveProduct */
-    fun archiveProduct(id: String, requestOptions: RequestOptions): ProductArchiveProductResponse =
+    fun archiveProduct(id: String, requestOptions: RequestOptions): Product =
         archiveProduct(id, ProductArchiveProductParams.none(), requestOptions)
 
     /** Creates a new product. */
-    fun createProduct(params: ProductCreateProductParams): ProductCreateProductResponse =
+    fun createProduct(params: ProductCreateProductParams): Product =
         createProduct(params, RequestOptions.none())
 
     /** @see createProduct */
     fun createProduct(
         params: ProductCreateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductCreateProductResponse
+    ): Product
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
-    fun duplicateProduct(
-        pathId: String,
-        params: ProductDuplicateProductParams,
-    ): ProductDuplicateProductResponse = duplicateProduct(pathId, params, RequestOptions.none())
+    fun duplicateProduct(pathId: String, params: ProductDuplicateProductParams): Product =
+        duplicateProduct(pathId, params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
         pathId: String,
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductDuplicateProductResponse =
-        duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+    ): Product = duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
     /** @see duplicateProduct */
-    fun duplicateProduct(params: ProductDuplicateProductParams): ProductDuplicateProductResponse =
+    fun duplicateProduct(params: ProductDuplicateProductParams): Product =
         duplicateProduct(params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductDuplicateProductResponse
+    ): Product
 
     /** Retrieves a paginated list of products in the environment. */
     fun listProducts(): ProductListProductsPage = listProducts(ProductListProductsParams.none())
@@ -119,7 +110,7 @@ interface ProductService {
         listProducts(ProductListProductsParams.none(), requestOptions)
 
     /** Restores an archived product, allowing new subscriptions to be created. */
-    fun unarchiveProduct(id: String): ProductUnarchiveProductResponse =
+    fun unarchiveProduct(id: String): Product =
         unarchiveProduct(id, ProductUnarchiveProductParams.none())
 
     /** @see unarchiveProduct */
@@ -127,62 +118,56 @@ interface ProductService {
         id: String,
         params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductUnarchiveProductResponse =
-        unarchiveProduct(params.toBuilder().id(id).build(), requestOptions)
+    ): Product = unarchiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchiveProduct */
     fun unarchiveProduct(
         id: String,
         params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
-    ): ProductUnarchiveProductResponse = unarchiveProduct(id, params, RequestOptions.none())
+    ): Product = unarchiveProduct(id, params, RequestOptions.none())
 
     /** @see unarchiveProduct */
     fun unarchiveProduct(
         params: ProductUnarchiveProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductUnarchiveProductResponse
+    ): Product
 
     /** @see unarchiveProduct */
-    fun unarchiveProduct(params: ProductUnarchiveProductParams): ProductUnarchiveProductResponse =
+    fun unarchiveProduct(params: ProductUnarchiveProductParams): Product =
         unarchiveProduct(params, RequestOptions.none())
 
     /** @see unarchiveProduct */
-    fun unarchiveProduct(
-        id: String,
-        requestOptions: RequestOptions,
-    ): ProductUnarchiveProductResponse =
+    fun unarchiveProduct(id: String, requestOptions: RequestOptions): Product =
         unarchiveProduct(id, ProductUnarchiveProductParams.none(), requestOptions)
 
     /** Updates an existing product's properties such as display name, description, and metadata. */
-    fun updateProduct(id: String): ProductUpdateProductResponse =
-        updateProduct(id, ProductUpdateProductParams.none())
+    fun updateProduct(id: String): Product = updateProduct(id, ProductUpdateProductParams.none())
 
     /** @see updateProduct */
     fun updateProduct(
         id: String,
         params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductUpdateProductResponse =
-        updateProduct(params.toBuilder().id(id).build(), requestOptions)
+    ): Product = updateProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see updateProduct */
     fun updateProduct(
         id: String,
         params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
-    ): ProductUpdateProductResponse = updateProduct(id, params, RequestOptions.none())
+    ): Product = updateProduct(id, params, RequestOptions.none())
 
     /** @see updateProduct */
     fun updateProduct(
         params: ProductUpdateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ProductUpdateProductResponse
+    ): Product
 
     /** @see updateProduct */
-    fun updateProduct(params: ProductUpdateProductParams): ProductUpdateProductResponse =
+    fun updateProduct(params: ProductUpdateProductParams): Product =
         updateProduct(params, RequestOptions.none())
 
     /** @see updateProduct */
-    fun updateProduct(id: String, requestOptions: RequestOptions): ProductUpdateProductResponse =
+    fun updateProduct(id: String, requestOptions: RequestOptions): Product =
         updateProduct(id, ProductUpdateProductParams.none(), requestOptions)
 
     /** A view of [ProductService] that provides access to raw HTTP responses for each method. */
@@ -200,7 +185,7 @@ interface ProductService {
          * the same as [ProductService.archiveProduct].
          */
         @MustBeClosed
-        fun archiveProduct(id: String): HttpResponseFor<ProductArchiveProductResponse> =
+        fun archiveProduct(id: String): HttpResponseFor<Product> =
             archiveProduct(id, ProductArchiveProductParams.none())
 
         /** @see archiveProduct */
@@ -209,7 +194,7 @@ interface ProductService {
             id: String,
             params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductArchiveProductResponse> =
+        ): HttpResponseFor<Product> =
             archiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archiveProduct */
@@ -217,29 +202,23 @@ interface ProductService {
         fun archiveProduct(
             id: String,
             params: ProductArchiveProductParams = ProductArchiveProductParams.none(),
-        ): HttpResponseFor<ProductArchiveProductResponse> =
-            archiveProduct(id, params, RequestOptions.none())
+        ): HttpResponseFor<Product> = archiveProduct(id, params, RequestOptions.none())
 
         /** @see archiveProduct */
         @MustBeClosed
         fun archiveProduct(
             params: ProductArchiveProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductArchiveProductResponse>
+        ): HttpResponseFor<Product>
 
         /** @see archiveProduct */
         @MustBeClosed
-        fun archiveProduct(
-            params: ProductArchiveProductParams
-        ): HttpResponseFor<ProductArchiveProductResponse> =
+        fun archiveProduct(params: ProductArchiveProductParams): HttpResponseFor<Product> =
             archiveProduct(params, RequestOptions.none())
 
         /** @see archiveProduct */
         @MustBeClosed
-        fun archiveProduct(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductArchiveProductResponse> =
+        fun archiveProduct(id: String, requestOptions: RequestOptions): HttpResponseFor<Product> =
             archiveProduct(id, ProductArchiveProductParams.none(), requestOptions)
 
         /**
@@ -247,9 +226,7 @@ interface ProductService {
          * [ProductService.createProduct].
          */
         @MustBeClosed
-        fun createProduct(
-            params: ProductCreateProductParams
-        ): HttpResponseFor<ProductCreateProductResponse> =
+        fun createProduct(params: ProductCreateProductParams): HttpResponseFor<Product> =
             createProduct(params, RequestOptions.none())
 
         /** @see createProduct */
@@ -257,7 +234,7 @@ interface ProductService {
         fun createProduct(
             params: ProductCreateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductCreateProductResponse>
+        ): HttpResponseFor<Product>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/products/{id}/duplicate`, but is otherwise
@@ -267,8 +244,7 @@ interface ProductService {
         fun duplicateProduct(
             pathId: String,
             params: ProductDuplicateProductParams,
-        ): HttpResponseFor<ProductDuplicateProductResponse> =
-            duplicateProduct(pathId, params, RequestOptions.none())
+        ): HttpResponseFor<Product> = duplicateProduct(pathId, params, RequestOptions.none())
 
         /** @see duplicateProduct */
         @MustBeClosed
@@ -276,14 +252,12 @@ interface ProductService {
             pathId: String,
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductDuplicateProductResponse> =
+        ): HttpResponseFor<Product> =
             duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
 
         /** @see duplicateProduct */
         @MustBeClosed
-        fun duplicateProduct(
-            params: ProductDuplicateProductParams
-        ): HttpResponseFor<ProductDuplicateProductResponse> =
+        fun duplicateProduct(params: ProductDuplicateProductParams): HttpResponseFor<Product> =
             duplicateProduct(params, RequestOptions.none())
 
         /** @see duplicateProduct */
@@ -291,7 +265,7 @@ interface ProductService {
         fun duplicateProduct(
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductDuplicateProductResponse>
+        ): HttpResponseFor<Product>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/products`, but is otherwise the same as
@@ -324,7 +298,7 @@ interface ProductService {
          * the same as [ProductService.unarchiveProduct].
          */
         @MustBeClosed
-        fun unarchiveProduct(id: String): HttpResponseFor<ProductUnarchiveProductResponse> =
+        fun unarchiveProduct(id: String): HttpResponseFor<Product> =
             unarchiveProduct(id, ProductUnarchiveProductParams.none())
 
         /** @see unarchiveProduct */
@@ -333,7 +307,7 @@ interface ProductService {
             id: String,
             params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductUnarchiveProductResponse> =
+        ): HttpResponseFor<Product> =
             unarchiveProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchiveProduct */
@@ -341,29 +315,23 @@ interface ProductService {
         fun unarchiveProduct(
             id: String,
             params: ProductUnarchiveProductParams = ProductUnarchiveProductParams.none(),
-        ): HttpResponseFor<ProductUnarchiveProductResponse> =
-            unarchiveProduct(id, params, RequestOptions.none())
+        ): HttpResponseFor<Product> = unarchiveProduct(id, params, RequestOptions.none())
 
         /** @see unarchiveProduct */
         @MustBeClosed
         fun unarchiveProduct(
             params: ProductUnarchiveProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductUnarchiveProductResponse>
+        ): HttpResponseFor<Product>
 
         /** @see unarchiveProduct */
         @MustBeClosed
-        fun unarchiveProduct(
-            params: ProductUnarchiveProductParams
-        ): HttpResponseFor<ProductUnarchiveProductResponse> =
+        fun unarchiveProduct(params: ProductUnarchiveProductParams): HttpResponseFor<Product> =
             unarchiveProduct(params, RequestOptions.none())
 
         /** @see unarchiveProduct */
         @MustBeClosed
-        fun unarchiveProduct(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductUnarchiveProductResponse> =
+        fun unarchiveProduct(id: String, requestOptions: RequestOptions): HttpResponseFor<Product> =
             unarchiveProduct(id, ProductUnarchiveProductParams.none(), requestOptions)
 
         /**
@@ -371,7 +339,7 @@ interface ProductService {
          * as [ProductService.updateProduct].
          */
         @MustBeClosed
-        fun updateProduct(id: String): HttpResponseFor<ProductUpdateProductResponse> =
+        fun updateProduct(id: String): HttpResponseFor<Product> =
             updateProduct(id, ProductUpdateProductParams.none())
 
         /** @see updateProduct */
@@ -380,7 +348,7 @@ interface ProductService {
             id: String,
             params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductUpdateProductResponse> =
+        ): HttpResponseFor<Product> =
             updateProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see updateProduct */
@@ -388,29 +356,23 @@ interface ProductService {
         fun updateProduct(
             id: String,
             params: ProductUpdateProductParams = ProductUpdateProductParams.none(),
-        ): HttpResponseFor<ProductUpdateProductResponse> =
-            updateProduct(id, params, RequestOptions.none())
+        ): HttpResponseFor<Product> = updateProduct(id, params, RequestOptions.none())
 
         /** @see updateProduct */
         @MustBeClosed
         fun updateProduct(
             params: ProductUpdateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ProductUpdateProductResponse>
+        ): HttpResponseFor<Product>
 
         /** @see updateProduct */
         @MustBeClosed
-        fun updateProduct(
-            params: ProductUpdateProductParams
-        ): HttpResponseFor<ProductUpdateProductResponse> =
+        fun updateProduct(params: ProductUpdateProductParams): HttpResponseFor<Product> =
             updateProduct(params, RequestOptions.none())
 
         /** @see updateProduct */
         @MustBeClosed
-        fun updateProduct(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductUpdateProductResponse> =
+        fun updateProduct(id: String, requestOptions: RequestOptions): HttpResponseFor<Product> =
             updateProduct(id, ProductUpdateProductParams.none(), requestOptions)
     }
 }

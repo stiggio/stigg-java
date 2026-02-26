@@ -6,19 +6,19 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.events.addons.Addon
 import io.stigg.models.v1.events.addons.AddonArchiveAddonParams
-import io.stigg.models.v1.events.addons.AddonArchiveAddonResponse
 import io.stigg.models.v1.events.addons.AddonCreateAddonParams
-import io.stigg.models.v1.events.addons.AddonCreateAddonResponse
 import io.stigg.models.v1.events.addons.AddonListAddonsPage
 import io.stigg.models.v1.events.addons.AddonListAddonsParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonParams
 import io.stigg.models.v1.events.addons.AddonPublishAddonResponse
 import io.stigg.models.v1.events.addons.AddonRetrieveAddonParams
-import io.stigg.models.v1.events.addons.AddonRetrieveAddonResponse
+import io.stigg.models.v1.events.addons.AddonSetPricingParams
 import io.stigg.models.v1.events.addons.AddonUpdateAddonParams
-import io.stigg.models.v1.events.addons.AddonUpdateAddonResponse
+import io.stigg.models.v1.events.addons.SetPackagePricingResponse
 import io.stigg.services.blocking.v1.events.addons.DraftService
+import io.stigg.services.blocking.v1.events.addons.EntitlementService
 import java.util.function.Consumer
 
 interface AddonService {
@@ -37,46 +37,47 @@ interface AddonService {
 
     fun draft(): DraftService
 
+    fun entitlements(): EntitlementService
+
     /** Archives an addon, preventing it from being used in new subscriptions. */
-    fun archiveAddon(id: String): AddonArchiveAddonResponse =
-        archiveAddon(id, AddonArchiveAddonParams.none())
+    fun archiveAddon(id: String): Addon = archiveAddon(id, AddonArchiveAddonParams.none())
 
     /** @see archiveAddon */
     fun archiveAddon(
         id: String,
         params: AddonArchiveAddonParams = AddonArchiveAddonParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonArchiveAddonResponse = archiveAddon(params.toBuilder().id(id).build(), requestOptions)
+    ): Addon = archiveAddon(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archiveAddon */
     fun archiveAddon(
         id: String,
         params: AddonArchiveAddonParams = AddonArchiveAddonParams.none(),
-    ): AddonArchiveAddonResponse = archiveAddon(id, params, RequestOptions.none())
+    ): Addon = archiveAddon(id, params, RequestOptions.none())
 
     /** @see archiveAddon */
     fun archiveAddon(
         params: AddonArchiveAddonParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonArchiveAddonResponse
+    ): Addon
 
     /** @see archiveAddon */
-    fun archiveAddon(params: AddonArchiveAddonParams): AddonArchiveAddonResponse =
+    fun archiveAddon(params: AddonArchiveAddonParams): Addon =
         archiveAddon(params, RequestOptions.none())
 
     /** @see archiveAddon */
-    fun archiveAddon(id: String, requestOptions: RequestOptions): AddonArchiveAddonResponse =
+    fun archiveAddon(id: String, requestOptions: RequestOptions): Addon =
         archiveAddon(id, AddonArchiveAddonParams.none(), requestOptions)
 
     /** Creates a new addon in draft status, associated with a specific product. */
-    fun createAddon(params: AddonCreateAddonParams): AddonCreateAddonResponse =
+    fun createAddon(params: AddonCreateAddonParams): Addon =
         createAddon(params, RequestOptions.none())
 
     /** @see createAddon */
     fun createAddon(
         params: AddonCreateAddonParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonCreateAddonResponse
+    ): Addon
 
     /** Retrieves a paginated list of addons in the environment. */
     fun listAddons(): AddonListAddonsPage = listAddons(AddonListAddonsParams.none())
@@ -118,65 +119,84 @@ interface AddonService {
     ): AddonPublishAddonResponse
 
     /** Retrieves an addon by its unique identifier, including entitlements and pricing details. */
-    fun retrieveAddon(id: String): AddonRetrieveAddonResponse =
-        retrieveAddon(id, AddonRetrieveAddonParams.none())
+    fun retrieveAddon(id: String): Addon = retrieveAddon(id, AddonRetrieveAddonParams.none())
 
     /** @see retrieveAddon */
     fun retrieveAddon(
         id: String,
         params: AddonRetrieveAddonParams = AddonRetrieveAddonParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonRetrieveAddonResponse = retrieveAddon(params.toBuilder().id(id).build(), requestOptions)
+    ): Addon = retrieveAddon(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieveAddon */
     fun retrieveAddon(
         id: String,
         params: AddonRetrieveAddonParams = AddonRetrieveAddonParams.none(),
-    ): AddonRetrieveAddonResponse = retrieveAddon(id, params, RequestOptions.none())
+    ): Addon = retrieveAddon(id, params, RequestOptions.none())
 
     /** @see retrieveAddon */
     fun retrieveAddon(
         params: AddonRetrieveAddonParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonRetrieveAddonResponse
+    ): Addon
 
     /** @see retrieveAddon */
-    fun retrieveAddon(params: AddonRetrieveAddonParams): AddonRetrieveAddonResponse =
+    fun retrieveAddon(params: AddonRetrieveAddonParams): Addon =
         retrieveAddon(params, RequestOptions.none())
 
     /** @see retrieveAddon */
-    fun retrieveAddon(id: String, requestOptions: RequestOptions): AddonRetrieveAddonResponse =
+    fun retrieveAddon(id: String, requestOptions: RequestOptions): Addon =
         retrieveAddon(id, AddonRetrieveAddonParams.none(), requestOptions)
 
+    /** Sets the pricing configuration for an addon. */
+    fun setPricing(id: String, params: AddonSetPricingParams): SetPackagePricingResponse =
+        setPricing(id, params, RequestOptions.none())
+
+    /** @see setPricing */
+    fun setPricing(
+        id: String,
+        params: AddonSetPricingParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SetPackagePricingResponse = setPricing(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see setPricing */
+    fun setPricing(params: AddonSetPricingParams): SetPackagePricingResponse =
+        setPricing(params, RequestOptions.none())
+
+    /** @see setPricing */
+    fun setPricing(
+        params: AddonSetPricingParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SetPackagePricingResponse
+
     /** Updates an existing addon's properties such as display name, description, and metadata. */
-    fun updateAddon(id: String): AddonUpdateAddonResponse =
-        updateAddon(id, AddonUpdateAddonParams.none())
+    fun updateAddon(id: String): Addon = updateAddon(id, AddonUpdateAddonParams.none())
 
     /** @see updateAddon */
     fun updateAddon(
         id: String,
         params: AddonUpdateAddonParams = AddonUpdateAddonParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonUpdateAddonResponse = updateAddon(params.toBuilder().id(id).build(), requestOptions)
+    ): Addon = updateAddon(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see updateAddon */
     fun updateAddon(
         id: String,
         params: AddonUpdateAddonParams = AddonUpdateAddonParams.none(),
-    ): AddonUpdateAddonResponse = updateAddon(id, params, RequestOptions.none())
+    ): Addon = updateAddon(id, params, RequestOptions.none())
 
     /** @see updateAddon */
     fun updateAddon(
         params: AddonUpdateAddonParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AddonUpdateAddonResponse
+    ): Addon
 
     /** @see updateAddon */
-    fun updateAddon(params: AddonUpdateAddonParams): AddonUpdateAddonResponse =
+    fun updateAddon(params: AddonUpdateAddonParams): Addon =
         updateAddon(params, RequestOptions.none())
 
     /** @see updateAddon */
-    fun updateAddon(id: String, requestOptions: RequestOptions): AddonUpdateAddonResponse =
+    fun updateAddon(id: String, requestOptions: RequestOptions): Addon =
         updateAddon(id, AddonUpdateAddonParams.none(), requestOptions)
 
     /** A view of [AddonService] that provides access to raw HTTP responses for each method. */
@@ -191,12 +211,14 @@ interface AddonService {
 
         fun draft(): DraftService.WithRawResponse
 
+        fun entitlements(): EntitlementService.WithRawResponse
+
         /**
          * Returns a raw HTTP response for `post /api/v1/addons/{id}/archive`, but is otherwise the
          * same as [AddonService.archiveAddon].
          */
         @MustBeClosed
-        fun archiveAddon(id: String): HttpResponseFor<AddonArchiveAddonResponse> =
+        fun archiveAddon(id: String): HttpResponseFor<Addon> =
             archiveAddon(id, AddonArchiveAddonParams.none())
 
         /** @see archiveAddon */
@@ -205,36 +227,30 @@ interface AddonService {
             id: String,
             params: AddonArchiveAddonParams = AddonArchiveAddonParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonArchiveAddonResponse> =
-            archiveAddon(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Addon> = archiveAddon(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archiveAddon */
         @MustBeClosed
         fun archiveAddon(
             id: String,
             params: AddonArchiveAddonParams = AddonArchiveAddonParams.none(),
-        ): HttpResponseFor<AddonArchiveAddonResponse> =
-            archiveAddon(id, params, RequestOptions.none())
+        ): HttpResponseFor<Addon> = archiveAddon(id, params, RequestOptions.none())
 
         /** @see archiveAddon */
         @MustBeClosed
         fun archiveAddon(
             params: AddonArchiveAddonParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonArchiveAddonResponse>
+        ): HttpResponseFor<Addon>
 
         /** @see archiveAddon */
         @MustBeClosed
-        fun archiveAddon(
-            params: AddonArchiveAddonParams
-        ): HttpResponseFor<AddonArchiveAddonResponse> = archiveAddon(params, RequestOptions.none())
+        fun archiveAddon(params: AddonArchiveAddonParams): HttpResponseFor<Addon> =
+            archiveAddon(params, RequestOptions.none())
 
         /** @see archiveAddon */
         @MustBeClosed
-        fun archiveAddon(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonArchiveAddonResponse> =
+        fun archiveAddon(id: String, requestOptions: RequestOptions): HttpResponseFor<Addon> =
             archiveAddon(id, AddonArchiveAddonParams.none(), requestOptions)
 
         /**
@@ -242,7 +258,7 @@ interface AddonService {
          * [AddonService.createAddon].
          */
         @MustBeClosed
-        fun createAddon(params: AddonCreateAddonParams): HttpResponseFor<AddonCreateAddonResponse> =
+        fun createAddon(params: AddonCreateAddonParams): HttpResponseFor<Addon> =
             createAddon(params, RequestOptions.none())
 
         /** @see createAddon */
@@ -250,7 +266,7 @@ interface AddonService {
         fun createAddon(
             params: AddonCreateAddonParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonCreateAddonResponse>
+        ): HttpResponseFor<Addon>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/addons`, but is otherwise the same as
@@ -316,7 +332,7 @@ interface AddonService {
          * [AddonService.retrieveAddon].
          */
         @MustBeClosed
-        fun retrieveAddon(id: String): HttpResponseFor<AddonRetrieveAddonResponse> =
+        fun retrieveAddon(id: String): HttpResponseFor<Addon> =
             retrieveAddon(id, AddonRetrieveAddonParams.none())
 
         /** @see retrieveAddon */
@@ -325,45 +341,70 @@ interface AddonService {
             id: String,
             params: AddonRetrieveAddonParams = AddonRetrieveAddonParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonRetrieveAddonResponse> =
-            retrieveAddon(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Addon> = retrieveAddon(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieveAddon */
         @MustBeClosed
         fun retrieveAddon(
             id: String,
             params: AddonRetrieveAddonParams = AddonRetrieveAddonParams.none(),
-        ): HttpResponseFor<AddonRetrieveAddonResponse> =
-            retrieveAddon(id, params, RequestOptions.none())
+        ): HttpResponseFor<Addon> = retrieveAddon(id, params, RequestOptions.none())
 
         /** @see retrieveAddon */
         @MustBeClosed
         fun retrieveAddon(
             params: AddonRetrieveAddonParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonRetrieveAddonResponse>
+        ): HttpResponseFor<Addon>
 
         /** @see retrieveAddon */
         @MustBeClosed
-        fun retrieveAddon(
-            params: AddonRetrieveAddonParams
-        ): HttpResponseFor<AddonRetrieveAddonResponse> =
+        fun retrieveAddon(params: AddonRetrieveAddonParams): HttpResponseFor<Addon> =
             retrieveAddon(params, RequestOptions.none())
 
         /** @see retrieveAddon */
         @MustBeClosed
-        fun retrieveAddon(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonRetrieveAddonResponse> =
+        fun retrieveAddon(id: String, requestOptions: RequestOptions): HttpResponseFor<Addon> =
             retrieveAddon(id, AddonRetrieveAddonParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `put /api/v1/addons/{id}/charges`, but is otherwise the
+         * same as [AddonService.setPricing].
+         */
+        @MustBeClosed
+        fun setPricing(
+            id: String,
+            params: AddonSetPricingParams,
+        ): HttpResponseFor<SetPackagePricingResponse> =
+            setPricing(id, params, RequestOptions.none())
+
+        /** @see setPricing */
+        @MustBeClosed
+        fun setPricing(
+            id: String,
+            params: AddonSetPricingParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SetPackagePricingResponse> =
+            setPricing(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see setPricing */
+        @MustBeClosed
+        fun setPricing(params: AddonSetPricingParams): HttpResponseFor<SetPackagePricingResponse> =
+            setPricing(params, RequestOptions.none())
+
+        /** @see setPricing */
+        @MustBeClosed
+        fun setPricing(
+            params: AddonSetPricingParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SetPackagePricingResponse>
 
         /**
          * Returns a raw HTTP response for `patch /api/v1/addons/{id}`, but is otherwise the same as
          * [AddonService.updateAddon].
          */
         @MustBeClosed
-        fun updateAddon(id: String): HttpResponseFor<AddonUpdateAddonResponse> =
+        fun updateAddon(id: String): HttpResponseFor<Addon> =
             updateAddon(id, AddonUpdateAddonParams.none())
 
         /** @see updateAddon */
@@ -372,35 +413,30 @@ interface AddonService {
             id: String,
             params: AddonUpdateAddonParams = AddonUpdateAddonParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonUpdateAddonResponse> =
-            updateAddon(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Addon> = updateAddon(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see updateAddon */
         @MustBeClosed
         fun updateAddon(
             id: String,
             params: AddonUpdateAddonParams = AddonUpdateAddonParams.none(),
-        ): HttpResponseFor<AddonUpdateAddonResponse> =
-            updateAddon(id, params, RequestOptions.none())
+        ): HttpResponseFor<Addon> = updateAddon(id, params, RequestOptions.none())
 
         /** @see updateAddon */
         @MustBeClosed
         fun updateAddon(
             params: AddonUpdateAddonParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AddonUpdateAddonResponse>
+        ): HttpResponseFor<Addon>
 
         /** @see updateAddon */
         @MustBeClosed
-        fun updateAddon(params: AddonUpdateAddonParams): HttpResponseFor<AddonUpdateAddonResponse> =
+        fun updateAddon(params: AddonUpdateAddonParams): HttpResponseFor<Addon> =
             updateAddon(params, RequestOptions.none())
 
         /** @see updateAddon */
         @MustBeClosed
-        fun updateAddon(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AddonUpdateAddonResponse> =
+        fun updateAddon(id: String, requestOptions: RequestOptions): HttpResponseFor<Addon> =
             updateAddon(id, AddonUpdateAddonParams.none(), requestOptions)
     }
 }

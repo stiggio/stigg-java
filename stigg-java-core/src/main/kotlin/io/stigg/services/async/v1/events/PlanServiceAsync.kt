@@ -5,12 +5,19 @@ package io.stigg.services.async.v1.events
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.events.addons.SetPackagePricingResponse
+import io.stigg.models.v1.events.plans.Plan
+import io.stigg.models.v1.events.plans.PlanArchiveParams
 import io.stigg.models.v1.events.plans.PlanCreateParams
-import io.stigg.models.v1.events.plans.PlanCreateResponse
 import io.stigg.models.v1.events.plans.PlanListPageAsync
 import io.stigg.models.v1.events.plans.PlanListParams
+import io.stigg.models.v1.events.plans.PlanPublishParams
+import io.stigg.models.v1.events.plans.PlanPublishResponse
 import io.stigg.models.v1.events.plans.PlanRetrieveParams
-import io.stigg.models.v1.events.plans.PlanRetrieveResponse
+import io.stigg.models.v1.events.plans.PlanSetPricingParams
+import io.stigg.models.v1.events.plans.PlanUpdateParams
+import io.stigg.services.async.v1.events.plans.DraftServiceAsync
+import io.stigg.services.async.v1.events.plans.EntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -28,50 +35,79 @@ interface PlanServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PlanServiceAsync
 
+    fun draft(): DraftServiceAsync
+
+    fun entitlements(): EntitlementServiceAsync
+
     /** Creates a new plan in draft status. */
-    fun create(params: PlanCreateParams): CompletableFuture<PlanCreateResponse> =
+    fun create(params: PlanCreateParams): CompletableFuture<Plan> =
         create(params, RequestOptions.none())
 
     /** @see create */
     fun create(
         params: PlanCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<PlanCreateResponse>
+    ): CompletableFuture<Plan>
 
     /** Retrieves a plan by its unique identifier, including entitlements and pricing details. */
-    fun retrieve(id: String): CompletableFuture<PlanRetrieveResponse> =
-        retrieve(id, PlanRetrieveParams.none())
+    fun retrieve(id: String): CompletableFuture<Plan> = retrieve(id, PlanRetrieveParams.none())
 
     /** @see retrieve */
     fun retrieve(
         id: String,
         params: PlanRetrieveParams = PlanRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<PlanRetrieveResponse> =
-        retrieve(params.toBuilder().id(id).build(), requestOptions)
+    ): CompletableFuture<Plan> = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         id: String,
         params: PlanRetrieveParams = PlanRetrieveParams.none(),
-    ): CompletableFuture<PlanRetrieveResponse> = retrieve(id, params, RequestOptions.none())
+    ): CompletableFuture<Plan> = retrieve(id, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: PlanRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<PlanRetrieveResponse>
+    ): CompletableFuture<Plan>
 
     /** @see retrieve */
-    fun retrieve(params: PlanRetrieveParams): CompletableFuture<PlanRetrieveResponse> =
+    fun retrieve(params: PlanRetrieveParams): CompletableFuture<Plan> =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    fun retrieve(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<PlanRetrieveResponse> =
+    fun retrieve(id: String, requestOptions: RequestOptions): CompletableFuture<Plan> =
         retrieve(id, PlanRetrieveParams.none(), requestOptions)
+
+    /** Updates an existing plan's properties such as display name, description, and metadata. */
+    fun update(id: String): CompletableFuture<Plan> = update(id, PlanUpdateParams.none())
+
+    /** @see update */
+    fun update(
+        id: String,
+        params: PlanUpdateParams = PlanUpdateParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Plan> = update(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see update */
+    fun update(
+        id: String,
+        params: PlanUpdateParams = PlanUpdateParams.none(),
+    ): CompletableFuture<Plan> = update(id, params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        params: PlanUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Plan>
+
+    /** @see update */
+    fun update(params: PlanUpdateParams): CompletableFuture<Plan> =
+        update(params, RequestOptions.none())
+
+    /** @see update */
+    fun update(id: String, requestOptions: RequestOptions): CompletableFuture<Plan> =
+        update(id, PlanUpdateParams.none(), requestOptions)
 
     /** Retrieves a paginated list of plans in the environment. */
     fun list(): CompletableFuture<PlanListPageAsync> = list(PlanListParams.none())
@@ -90,6 +126,85 @@ interface PlanServiceAsync {
     fun list(requestOptions: RequestOptions): CompletableFuture<PlanListPageAsync> =
         list(PlanListParams.none(), requestOptions)
 
+    /** Archives a plan, preventing it from being used in new subscriptions. */
+    fun archive(id: String): CompletableFuture<Plan> = archive(id, PlanArchiveParams.none())
+
+    /** @see archive */
+    fun archive(
+        id: String,
+        params: PlanArchiveParams = PlanArchiveParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Plan> = archive(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see archive */
+    fun archive(
+        id: String,
+        params: PlanArchiveParams = PlanArchiveParams.none(),
+    ): CompletableFuture<Plan> = archive(id, params, RequestOptions.none())
+
+    /** @see archive */
+    fun archive(
+        params: PlanArchiveParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Plan>
+
+    /** @see archive */
+    fun archive(params: PlanArchiveParams): CompletableFuture<Plan> =
+        archive(params, RequestOptions.none())
+
+    /** @see archive */
+    fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<Plan> =
+        archive(id, PlanArchiveParams.none(), requestOptions)
+
+    /** Publishes a draft plan, making it available for use in subscriptions. */
+    fun publish(id: String, params: PlanPublishParams): CompletableFuture<PlanPublishResponse> =
+        publish(id, params, RequestOptions.none())
+
+    /** @see publish */
+    fun publish(
+        id: String,
+        params: PlanPublishParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanPublishResponse> =
+        publish(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see publish */
+    fun publish(params: PlanPublishParams): CompletableFuture<PlanPublishResponse> =
+        publish(params, RequestOptions.none())
+
+    /** @see publish */
+    fun publish(
+        params: PlanPublishParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanPublishResponse>
+
+    /**
+     * Sets the pricing configuration for a plan, including pricing models, overage pricing, and
+     * minimum spend.
+     */
+    fun setPricing(
+        id: String,
+        params: PlanSetPricingParams,
+    ): CompletableFuture<SetPackagePricingResponse> = setPricing(id, params, RequestOptions.none())
+
+    /** @see setPricing */
+    fun setPricing(
+        id: String,
+        params: PlanSetPricingParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<SetPackagePricingResponse> =
+        setPricing(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see setPricing */
+    fun setPricing(params: PlanSetPricingParams): CompletableFuture<SetPackagePricingResponse> =
+        setPricing(params, RequestOptions.none())
+
+    /** @see setPricing */
+    fun setPricing(
+        params: PlanSetPricingParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<SetPackagePricingResponse>
+
     /** A view of [PlanServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -100,26 +215,28 @@ interface PlanServiceAsync {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): PlanServiceAsync.WithRawResponse
 
+        fun draft(): DraftServiceAsync.WithRawResponse
+
+        fun entitlements(): EntitlementServiceAsync.WithRawResponse
+
         /**
          * Returns a raw HTTP response for `post /api/v1/plans`, but is otherwise the same as
          * [PlanServiceAsync.create].
          */
-        fun create(
-            params: PlanCreateParams
-        ): CompletableFuture<HttpResponseFor<PlanCreateResponse>> =
+        fun create(params: PlanCreateParams): CompletableFuture<HttpResponseFor<Plan>> =
             create(params, RequestOptions.none())
 
         /** @see create */
         fun create(
             params: PlanCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<PlanCreateResponse>>
+        ): CompletableFuture<HttpResponseFor<Plan>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/plans/{id}`, but is otherwise the same as
          * [PlanServiceAsync.retrieve].
          */
-        fun retrieve(id: String): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>> =
+        fun retrieve(id: String): CompletableFuture<HttpResponseFor<Plan>> =
             retrieve(id, PlanRetrieveParams.none())
 
         /** @see retrieve */
@@ -127,34 +244,69 @@ interface PlanServiceAsync {
             id: String,
             params: PlanRetrieveParams = PlanRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<Plan>> =
             retrieve(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieve */
         fun retrieve(
             id: String,
             params: PlanRetrieveParams = PlanRetrieveParams.none(),
-        ): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>> =
-            retrieve(id, params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<Plan>> = retrieve(id, params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
             params: PlanRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>>
+        ): CompletableFuture<HttpResponseFor<Plan>>
 
         /** @see retrieve */
-        fun retrieve(
-            params: PlanRetrieveParams
-        ): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>> =
+        fun retrieve(params: PlanRetrieveParams): CompletableFuture<HttpResponseFor<Plan>> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
             id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<PlanRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<Plan>> =
             retrieve(id, PlanRetrieveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/plans/{id}`, but is otherwise the same as
+         * [PlanServiceAsync.update].
+         */
+        fun update(id: String): CompletableFuture<HttpResponseFor<Plan>> =
+            update(id, PlanUpdateParams.none())
+
+        /** @see update */
+        fun update(
+            id: String,
+            params: PlanUpdateParams = PlanUpdateParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>> =
+            update(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see update */
+        fun update(
+            id: String,
+            params: PlanUpdateParams = PlanUpdateParams.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>> = update(id, params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            params: PlanUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>>
+
+        /** @see update */
+        fun update(params: PlanUpdateParams): CompletableFuture<HttpResponseFor<Plan>> =
+            update(params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Plan>> =
+            update(id, PlanUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /api/v1/plans`, but is otherwise the same as
@@ -180,5 +332,103 @@ interface PlanServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<PlanListPageAsync>> =
             list(PlanListParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/plans/{id}/archive`, but is otherwise the
+         * same as [PlanServiceAsync.archive].
+         */
+        fun archive(id: String): CompletableFuture<HttpResponseFor<Plan>> =
+            archive(id, PlanArchiveParams.none())
+
+        /** @see archive */
+        fun archive(
+            id: String,
+            params: PlanArchiveParams = PlanArchiveParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>> =
+            archive(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see archive */
+        fun archive(
+            id: String,
+            params: PlanArchiveParams = PlanArchiveParams.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>> = archive(id, params, RequestOptions.none())
+
+        /** @see archive */
+        fun archive(
+            params: PlanArchiveParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<Plan>>
+
+        /** @see archive */
+        fun archive(params: PlanArchiveParams): CompletableFuture<HttpResponseFor<Plan>> =
+            archive(params, RequestOptions.none())
+
+        /** @see archive */
+        fun archive(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<Plan>> =
+            archive(id, PlanArchiveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/plans/{id}/publish`, but is otherwise the
+         * same as [PlanServiceAsync.publish].
+         */
+        fun publish(
+            id: String,
+            params: PlanPublishParams,
+        ): CompletableFuture<HttpResponseFor<PlanPublishResponse>> =
+            publish(id, params, RequestOptions.none())
+
+        /** @see publish */
+        fun publish(
+            id: String,
+            params: PlanPublishParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanPublishResponse>> =
+            publish(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see publish */
+        fun publish(
+            params: PlanPublishParams
+        ): CompletableFuture<HttpResponseFor<PlanPublishResponse>> =
+            publish(params, RequestOptions.none())
+
+        /** @see publish */
+        fun publish(
+            params: PlanPublishParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanPublishResponse>>
+
+        /**
+         * Returns a raw HTTP response for `put /api/v1/plans/{id}/charges`, but is otherwise the
+         * same as [PlanServiceAsync.setPricing].
+         */
+        fun setPricing(
+            id: String,
+            params: PlanSetPricingParams,
+        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
+            setPricing(id, params, RequestOptions.none())
+
+        /** @see setPricing */
+        fun setPricing(
+            id: String,
+            params: PlanSetPricingParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
+            setPricing(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see setPricing */
+        fun setPricing(
+            params: PlanSetPricingParams
+        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
+            setPricing(params, RequestOptions.none())
+
+        /** @see setPricing */
+        fun setPricing(
+            params: PlanSetPricingParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>>
     }
 }

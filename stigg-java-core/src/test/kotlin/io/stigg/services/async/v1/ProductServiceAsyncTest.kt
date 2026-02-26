@@ -18,10 +18,10 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val responseFuture = productServiceAsync.archiveProduct("x")
+        val productFuture = productServiceAsync.archiveProduct("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val product = productFuture.get()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -30,7 +30,7 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val responseFuture =
+        val productFuture =
             productServiceAsync.createProduct(
                 ProductCreateProductParams.builder()
                     .id("id")
@@ -45,8 +45,8 @@ internal class ProductServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val product = productFuture.get()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -55,7 +55,7 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val responseFuture =
+        val productFuture =
             productServiceAsync.duplicateProduct(
                 ProductDuplicateProductParams.builder()
                     .pathId("x")
@@ -65,8 +65,8 @@ internal class ProductServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val product = productFuture.get()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -87,10 +87,10 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val responseFuture = productServiceAsync.unarchiveProduct("x")
+        val productFuture = productServiceAsync.unarchiveProduct("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val product = productFuture.get()
+        product.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -99,7 +99,7 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val responseFuture =
+        val productFuture =
             productServiceAsync.updateProduct(
                 ProductUpdateProductParams.builder()
                     .id("x")
@@ -141,7 +141,7 @@ internal class ProductServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val product = productFuture.get()
+        product.validate()
     }
 }

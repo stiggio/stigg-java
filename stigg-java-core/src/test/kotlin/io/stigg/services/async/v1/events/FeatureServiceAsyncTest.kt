@@ -17,10 +17,10 @@ internal class FeatureServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val featureServiceAsync = client.v1().events().features()
 
-        val responseFuture = featureServiceAsync.archiveFeature("x")
+        val featureFuture = featureServiceAsync.archiveFeature("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val feature = featureFuture.get()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -29,7 +29,7 @@ internal class FeatureServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val featureServiceAsync = client.v1().events().features()
 
-        val responseFuture =
+        val featureFuture =
             featureServiceAsync.createFeature(
                 FeatureCreateFeatureParams.builder()
                     .id("id")
@@ -62,8 +62,8 @@ internal class FeatureServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val feature = featureFuture.get()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -84,10 +84,10 @@ internal class FeatureServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val featureServiceAsync = client.v1().events().features()
 
-        val responseFuture = featureServiceAsync.retrieveFeature("x")
+        val featureFuture = featureServiceAsync.retrieveFeature("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val feature = featureFuture.get()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -96,10 +96,10 @@ internal class FeatureServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val featureServiceAsync = client.v1().events().features()
 
-        val responseFuture = featureServiceAsync.unarchiveFeature("x")
+        val featureFuture = featureServiceAsync.unarchiveFeature("x")
 
-        val response = responseFuture.get()
-        response.validate()
+        val feature = featureFuture.get()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -108,7 +108,7 @@ internal class FeatureServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val featureServiceAsync = client.v1().events().features()
 
-        val responseFuture =
+        val featureFuture =
             featureServiceAsync.updateFeature(
                 FeatureUpdateFeatureParams.builder()
                     .id("x")
@@ -166,7 +166,7 @@ internal class FeatureServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val feature = featureFuture.get()
+        feature.validate()
     }
 }

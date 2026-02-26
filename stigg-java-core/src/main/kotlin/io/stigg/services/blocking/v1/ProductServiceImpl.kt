@@ -16,19 +16,15 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.products.Product
 import io.stigg.models.v1.products.ProductArchiveProductParams
-import io.stigg.models.v1.products.ProductArchiveProductResponse
 import io.stigg.models.v1.products.ProductCreateProductParams
-import io.stigg.models.v1.products.ProductCreateProductResponse
 import io.stigg.models.v1.products.ProductDuplicateProductParams
-import io.stigg.models.v1.products.ProductDuplicateProductResponse
 import io.stigg.models.v1.products.ProductListProductsPage
 import io.stigg.models.v1.products.ProductListProductsPageResponse
 import io.stigg.models.v1.products.ProductListProductsParams
 import io.stigg.models.v1.products.ProductUnarchiveProductParams
-import io.stigg.models.v1.products.ProductUnarchiveProductResponse
 import io.stigg.models.v1.products.ProductUpdateProductParams
-import io.stigg.models.v1.products.ProductUpdateProductResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -47,21 +43,21 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
     override fun archiveProduct(
         params: ProductArchiveProductParams,
         requestOptions: RequestOptions,
-    ): ProductArchiveProductResponse =
+    ): Product =
         // post /api/v1/products/{id}/archive
         withRawResponse().archiveProduct(params, requestOptions).parse()
 
     override fun createProduct(
         params: ProductCreateProductParams,
         requestOptions: RequestOptions,
-    ): ProductCreateProductResponse =
+    ): Product =
         // post /api/v1/products
         withRawResponse().createProduct(params, requestOptions).parse()
 
     override fun duplicateProduct(
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions,
-    ): ProductDuplicateProductResponse =
+    ): Product =
         // post /api/v1/products/{id}/duplicate
         withRawResponse().duplicateProduct(params, requestOptions).parse()
 
@@ -75,14 +71,14 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
     override fun unarchiveProduct(
         params: ProductUnarchiveProductParams,
         requestOptions: RequestOptions,
-    ): ProductUnarchiveProductResponse =
+    ): Product =
         // post /api/v1/products/{id}/unarchive
         withRawResponse().unarchiveProduct(params, requestOptions).parse()
 
     override fun updateProduct(
         params: ProductUpdateProductParams,
         requestOptions: RequestOptions,
-    ): ProductUpdateProductResponse =
+    ): Product =
         // patch /api/v1/products/{id}
         withRawResponse().updateProduct(params, requestOptions).parse()
 
@@ -99,13 +95,13 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val archiveProductHandler: Handler<ProductArchiveProductResponse> =
-            jsonHandler<ProductArchiveProductResponse>(clientOptions.jsonMapper)
+        private val archiveProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun archiveProduct(
             params: ProductArchiveProductParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductArchiveProductResponse> {
+        ): HttpResponseFor<Product> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -130,13 +126,13 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val createProductHandler: Handler<ProductCreateProductResponse> =
-            jsonHandler<ProductCreateProductResponse>(clientOptions.jsonMapper)
+        private val createProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun createProduct(
             params: ProductCreateProductParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductCreateProductResponse> {
+        ): HttpResponseFor<Product> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -158,13 +154,13 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val duplicateProductHandler: Handler<ProductDuplicateProductResponse> =
-            jsonHandler<ProductDuplicateProductResponse>(clientOptions.jsonMapper)
+        private val duplicateProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun duplicateProduct(
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductDuplicateProductResponse> {
+        ): HttpResponseFor<Product> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("pathId", params.pathId().getOrNull())
@@ -223,13 +219,13 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val unarchiveProductHandler: Handler<ProductUnarchiveProductResponse> =
-            jsonHandler<ProductUnarchiveProductResponse>(clientOptions.jsonMapper)
+        private val unarchiveProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun unarchiveProduct(
             params: ProductUnarchiveProductParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductUnarchiveProductResponse> {
+        ): HttpResponseFor<Product> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -254,13 +250,13 @@ class ProductServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val updateProductHandler: Handler<ProductUpdateProductResponse> =
-            jsonHandler<ProductUpdateProductResponse>(clientOptions.jsonMapper)
+        private val updateProductHandler: Handler<Product> =
+            jsonHandler<Product>(clientOptions.jsonMapper)
 
         override fun updateProduct(
             params: ProductUpdateProductParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ProductUpdateProductResponse> {
+        ): HttpResponseFor<Product> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

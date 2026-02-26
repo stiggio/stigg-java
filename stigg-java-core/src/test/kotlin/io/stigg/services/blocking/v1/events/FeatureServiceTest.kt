@@ -17,9 +17,9 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
-        val response = featureService.archiveFeature("x")
+        val feature = featureService.archiveFeature("x")
 
-        response.validate()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -28,7 +28,7 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
-        val response =
+        val feature =
             featureService.createFeature(
                 FeatureCreateFeatureParams.builder()
                     .id("id")
@@ -61,7 +61,7 @@ internal class FeatureServiceTest {
                     .build()
             )
 
-        response.validate()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -81,9 +81,9 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
-        val response = featureService.retrieveFeature("x")
+        val feature = featureService.retrieveFeature("x")
 
-        response.validate()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -92,9 +92,9 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
-        val response = featureService.unarchiveFeature("x")
+        val feature = featureService.unarchiveFeature("x")
 
-        response.validate()
+        feature.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -103,7 +103,7 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().events().features()
 
-        val response =
+        val feature =
             featureService.updateFeature(
                 FeatureUpdateFeatureParams.builder()
                     .id("x")
@@ -161,6 +161,6 @@ internal class FeatureServiceTest {
                     .build()
             )
 
-        response.validate()
+        feature.validate()
     }
 }
