@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.17 (2026-02-26)
+
+Full Changelog: [v0.1.0-alpha.16...v0.1.0-alpha.17](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.16...v0.1.0-alpha.17)
+
+### Features
+
+* **api:** stainless config updates ([0944649](https://github.com/stiggio/stigg-java/commit/09446490fac5c57e88f06243260c382f6a7d4eb1))
+
 ## 0.1.0-alpha.16 (2026-02-26)
 
 Full Changelog: [v0.1.0-alpha.15...v0.1.0-alpha.16](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.15...v0.1.0-alpha.16)
