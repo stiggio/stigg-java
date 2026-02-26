@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.0-alpha.15 (2026-02-26)
+
+Full Changelog: [v0.1.0-alpha.14...v0.1.0-alpha.15](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.14...v0.1.0-alpha.15)
+
+### Features
+
+* **api:** api update ([d023a17](https://github.com/stiggio/stigg-java/commit/d023a177f61a628d7761d6ce6e9e985d18635433))
+
+
+### Chores
+
+* drop apache dependency ([722817c](https://github.com/stiggio/stigg-java/commit/722817c41b41ed7dfccc911905c4de1a84e9c768))
+* **internal:** expand imports ([0d6914c](https://github.com/stiggio/stigg-java/commit/0d6914ca047787be871d798704d63f761f22d423))
+* make `Properties` more resilient to `null` ([678c10e](https://github.com/stiggio/stigg-java/commit/678c10eeb4caac182d41dada0851d040f2a669e6))
+
 ## 0.1.0-alpha.14 (2026-02-22)
 
 Full Changelog: [v0.1.0-alpha.13...v0.1.0-alpha.14](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.13...v0.1.0-alpha.14)
