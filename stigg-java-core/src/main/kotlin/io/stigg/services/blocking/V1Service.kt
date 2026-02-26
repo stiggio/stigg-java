@@ -3,9 +3,12 @@
 package io.stigg.services.blocking
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.blocking.v1.AddonService
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.EventService
+import io.stigg.services.blocking.v1.FeatureService
+import io.stigg.services.blocking.v1.PlanService
 import io.stigg.services.blocking.v1.ProductService
 import io.stigg.services.blocking.v1.SubscriptionService
 import io.stigg.services.blocking.v1.UsageService
@@ -33,6 +36,12 @@ interface V1Service {
 
     fun events(): EventService
 
+    fun features(): FeatureService
+
+    fun addons(): AddonService
+
+    fun plans(): PlanService
+
     fun usage(): UsageService
 
     fun products(): ProductService
@@ -54,6 +63,12 @@ interface V1Service {
         fun coupons(): CouponService.WithRawResponse
 
         fun events(): EventService.WithRawResponse
+
+        fun features(): FeatureService.WithRawResponse
+
+        fun addons(): AddonService.WithRawResponse
+
+        fun plans(): PlanService.WithRawResponse
 
         fun usage(): UsageService.WithRawResponse
 
