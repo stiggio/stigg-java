@@ -3,12 +3,18 @@
 package io.stigg.services.async
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.async.v1.AddonServiceAsync
+import io.stigg.services.async.v1.AddonServiceAsyncImpl
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsyncImpl
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsyncImpl
 import io.stigg.services.async.v1.EventServiceAsync
 import io.stigg.services.async.v1.EventServiceAsyncImpl
+import io.stigg.services.async.v1.FeatureServiceAsync
+import io.stigg.services.async.v1.FeatureServiceAsyncImpl
+import io.stigg.services.async.v1.PlanServiceAsync
+import io.stigg.services.async.v1.PlanServiceAsyncImpl
 import io.stigg.services.async.v1.ProductServiceAsync
 import io.stigg.services.async.v1.ProductServiceAsyncImpl
 import io.stigg.services.async.v1.SubscriptionServiceAsync
@@ -34,6 +40,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
 
+    private val features: FeatureServiceAsync by lazy { FeatureServiceAsyncImpl(clientOptions) }
+
+    private val addons: AddonServiceAsync by lazy { AddonServiceAsyncImpl(clientOptions) }
+
+    private val plans: PlanServiceAsync by lazy { PlanServiceAsyncImpl(clientOptions) }
+
     private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
 
     private val products: ProductServiceAsync by lazy { ProductServiceAsyncImpl(clientOptions) }
@@ -50,6 +62,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun coupons(): CouponServiceAsync = coupons
 
     override fun events(): EventServiceAsync = events
+
+    override fun features(): FeatureServiceAsync = features
+
+    override fun addons(): AddonServiceAsync = addons
+
+    override fun plans(): PlanServiceAsync = plans
 
     override fun usage(): UsageServiceAsync = usage
 
@@ -74,6 +92,18 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val features: FeatureServiceAsync.WithRawResponse by lazy {
+            FeatureServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val addons: AddonServiceAsync.WithRawResponse by lazy {
+            AddonServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val plans: PlanServiceAsync.WithRawResponse by lazy {
+            PlanServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val usage: UsageServiceAsync.WithRawResponse by lazy {
             UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -96,6 +126,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         override fun coupons(): CouponServiceAsync.WithRawResponse = coupons
 
         override fun events(): EventServiceAsync.WithRawResponse = events
+
+        override fun features(): FeatureServiceAsync.WithRawResponse = features
+
+        override fun addons(): AddonServiceAsync.WithRawResponse = addons
+
+        override fun plans(): PlanServiceAsync.WithRawResponse = plans
 
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
 
