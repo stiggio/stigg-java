@@ -34,6 +34,7 @@ private constructor(
     private val pricingType: JsonField<PricingType>,
     private val startDate: JsonField<OffsetDateTime>,
     private val status: JsonField<Status>,
+    private val addons: JsonField<List<Addon>>,
     private val cancellationDate: JsonField<OffsetDateTime>,
     private val cancelReason: JsonField<CancelReason>,
     private val currentBillingPeriodEnd: JsonField<OffsetDateTime>,
@@ -70,6 +71,7 @@ private constructor(
         @ExcludeMissing
         startDate: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("addons") @ExcludeMissing addons: JsonField<List<Addon>> = JsonMissing.of(),
         @JsonProperty("cancellationDate")
         @ExcludeMissing
         cancellationDate: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -112,6 +114,7 @@ private constructor(
         pricingType,
         startDate,
         status,
+        addons,
         cancellationDate,
         cancelReason,
         currentBillingPeriodEnd,
@@ -198,6 +201,12 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun status(): Status = status.getRequired("status")
+
+    /**
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun addons(): Optional<List<Addon>> = addons.getOptional("addons")
 
     /**
      * Subscription cancellation date
@@ -371,6 +380,13 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
+     * Returns the raw JSON value of [addons].
+     *
+     * Unlike [addons], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("addons") @ExcludeMissing fun _addons(): JsonField<List<Addon>> = addons
+
+    /**
      * Returns the raw JSON value of [cancellationDate].
      *
      * Unlike [cancellationDate], this method doesn't throw if the JSON field has an unexpected
@@ -521,6 +537,7 @@ private constructor(
         private var pricingType: JsonField<PricingType>? = null
         private var startDate: JsonField<OffsetDateTime>? = null
         private var status: JsonField<Status>? = null
+        private var addons: JsonField<MutableList<Addon>>? = null
         private var cancellationDate: JsonField<OffsetDateTime> = JsonMissing.of()
         private var cancelReason: JsonField<CancelReason> = JsonMissing.of()
         private var currentBillingPeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -546,6 +563,7 @@ private constructor(
             pricingType = subscriptionListResponse.pricingType
             startDate = subscriptionListResponse.startDate
             status = subscriptionListResponse.status
+            addons = subscriptionListResponse.addons.map { it.toMutableList() }
             cancellationDate = subscriptionListResponse.cancellationDate
             cancelReason = subscriptionListResponse.cancelReason
             currentBillingPeriodEnd = subscriptionListResponse.currentBillingPeriodEnd
@@ -673,6 +691,31 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
+
+        fun addons(addons: List<Addon>) = addons(JsonField.of(addons))
+
+        /**
+         * Sets [Builder.addons] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.addons] with a well-typed `List<Addon>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun addons(addons: JsonField<List<Addon>>) = apply {
+            this.addons = addons.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [Addon] to [addons].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addAddon(addon: Addon) = apply {
+            addons =
+                (addons ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("addons", it).add(addon)
+                }
+        }
 
         /** Subscription cancellation date */
         fun cancellationDate(cancellationDate: OffsetDateTime?) =
@@ -954,6 +997,7 @@ private constructor(
                 checkRequired("pricingType", pricingType),
                 checkRequired("startDate", startDate),
                 checkRequired("status", status),
+                (addons ?: JsonMissing.of()).map { it.toImmutable() },
                 cancellationDate,
                 cancelReason,
                 currentBillingPeriodEnd,
@@ -986,6 +1030,7 @@ private constructor(
         pricingType().validate()
         startDate()
         status().validate()
+        addons().ifPresent { it.forEach { it.validate() } }
         cancellationDate()
         cancelReason().ifPresent { it.validate() }
         currentBillingPeriodEnd()
@@ -1025,6 +1070,7 @@ private constructor(
             (pricingType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (startDate.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
+            (addons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (cancellationDate.asKnown().isPresent) 1 else 0) +
             (cancelReason.asKnown().getOrNull()?.validity() ?: 0) +
             (if (currentBillingPeriodEnd.asKnown().isPresent) 1 else 0) +
@@ -1460,6 +1506,204 @@ private constructor(
         override fun hashCode() = value.hashCode()
 
         override fun toString() = value.toString()
+    }
+
+    /** Addon configuration */
+    class Addon
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val id: JsonField<String>,
+        private val quantity: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<Long> = JsonMissing.of(),
+        ) : this(id, quantity, mutableMapOf())
+
+        /**
+         * Addon ID
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun id(): String = id.getRequired("id")
+
+        /**
+         * Number of addon instances
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun quantity(): Long = quantity.getRequired("quantity")
+
+        /**
+         * Returns the raw JSON value of [id].
+         *
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [quantity].
+         *
+         * Unlike [quantity], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("quantity") @ExcludeMissing fun _quantity(): JsonField<Long> = quantity
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Addon].
+             *
+             * The following fields are required:
+             * ```java
+             * .id()
+             * .quantity()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Addon]. */
+        class Builder internal constructor() {
+
+            private var id: JsonField<String>? = null
+            private var quantity: JsonField<Long>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(addon: Addon) = apply {
+                id = addon.id
+                quantity = addon.quantity
+                additionalProperties = addon.additionalProperties.toMutableMap()
+            }
+
+            /** Addon ID */
+            fun id(id: String) = id(JsonField.of(id))
+
+            /**
+             * Sets [Builder.id] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun id(id: JsonField<String>) = apply { this.id = id }
+
+            /** Number of addon instances */
+            fun quantity(quantity: Long) = quantity(JsonField.of(quantity))
+
+            /**
+             * Sets [Builder.quantity] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.quantity] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun quantity(quantity: JsonField<Long>) = apply { this.quantity = quantity }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Addon].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .id()
+             * .quantity()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Addon =
+                Addon(
+                    checkRequired("id", id),
+                    checkRequired("quantity", quantity),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Addon = apply {
+            if (validated) {
+                return@apply
+            }
+
+            id()
+            quantity()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (id.asKnown().isPresent) 1 else 0) + (if (quantity.asKnown().isPresent) 1 else 0)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Addon &&
+                id == other.id &&
+                quantity == other.quantity &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(id, quantity, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Addon{id=$id, quantity=$quantity, additionalProperties=$additionalProperties}"
     }
 
     /** Subscription cancel reason */
@@ -2138,6 +2382,7 @@ private constructor(
             pricingType == other.pricingType &&
             startDate == other.startDate &&
             status == other.status &&
+            addons == other.addons &&
             cancellationDate == other.cancellationDate &&
             cancelReason == other.cancelReason &&
             currentBillingPeriodEnd == other.currentBillingPeriodEnd &&
@@ -2164,6 +2409,7 @@ private constructor(
             pricingType,
             startDate,
             status,
+            addons,
             cancellationDate,
             cancelReason,
             currentBillingPeriodEnd,
@@ -2183,5 +2429,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SubscriptionListResponse{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
+        "SubscriptionListResponse{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, addons=$addons, cancellationDate=$cancellationDate, cancelReason=$cancelReason, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, metadata=$metadata, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
 }

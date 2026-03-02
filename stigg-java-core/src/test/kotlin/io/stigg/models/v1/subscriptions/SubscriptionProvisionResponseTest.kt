@@ -96,6 +96,12 @@ internal class SubscriptionProvisionResponseTest {
                                     SubscriptionProvisionResponse.Data.Subscription.Status
                                         .PAYMENT_PENDING
                                 )
+                                .addAddon(
+                                    SubscriptionProvisionResponse.Data.Subscription.Addon.builder()
+                                        .id("id")
+                                        .quantity(0L)
+                                        .build()
+                                )
                                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .cancelReason(
                                     SubscriptionProvisionResponse.Data.Subscription.CancelReason
@@ -273,6 +279,12 @@ internal class SubscriptionProvisionResponseTest {
                             .status(
                                 SubscriptionProvisionResponse.Data.Subscription.Status
                                     .PAYMENT_PENDING
+                            )
+                            .addAddon(
+                                SubscriptionProvisionResponse.Data.Subscription.Addon.builder()
+                                    .id("id")
+                                    .quantity(0L)
+                                    .build()
                             )
                             .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .cancelReason(
@@ -461,6 +473,12 @@ internal class SubscriptionProvisionResponseTest {
                                 .status(
                                     SubscriptionProvisionResponse.Data.Subscription.Status
                                         .PAYMENT_PENDING
+                                )
+                                .addAddon(
+                                    SubscriptionProvisionResponse.Data.Subscription.Addon.builder()
+                                        .id("id")
+                                        .quantity(0L)
+                                        .build()
                                 )
                                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .cancelReason(

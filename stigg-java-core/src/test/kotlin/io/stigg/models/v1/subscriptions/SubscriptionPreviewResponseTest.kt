@@ -67,8 +67,8 @@ internal class SubscriptionPreviewResponseTest {
                         )
                         .addFreeItem(
                             SubscriptionPreviewResponse.Data.FreeItem.builder()
-                                .addonId("addonId")
-                                .quantity(0.0)
+                                .id("id")
+                                .quantity(0L)
                                 .build()
                         )
                         .hasScheduledUpdates(true)
@@ -171,8 +171,8 @@ internal class SubscriptionPreviewResponseTest {
                     )
                     .addFreeItem(
                         SubscriptionPreviewResponse.Data.FreeItem.builder()
-                            .addonId("addonId")
-                            .quantity(0.0)
+                            .id("id")
+                            .quantity(0L)
                             .build()
                     )
                     .hasScheduledUpdates(true)
@@ -279,8 +279,8 @@ internal class SubscriptionPreviewResponseTest {
                         )
                         .addFreeItem(
                             SubscriptionPreviewResponse.Data.FreeItem.builder()
-                                .addonId("addonId")
-                                .quantity(0.0)
+                                .id("id")
+                                .quantity(0L)
                                 .build()
                         )
                         .hasScheduledUpdates(true)

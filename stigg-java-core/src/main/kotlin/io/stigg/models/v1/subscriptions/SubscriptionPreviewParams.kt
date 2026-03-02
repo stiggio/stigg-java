@@ -1534,16 +1534,16 @@ private constructor(
     class Addon
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val addonId: JsonField<String>,
+        private val id: JsonField<String>,
         private val quantity: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("addonId") @ExcludeMissing addonId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
             @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<Long> = JsonMissing.of(),
-        ) : this(addonId, quantity, mutableMapOf())
+        ) : this(id, quantity, mutableMapOf())
 
         /**
          * Addon ID
@@ -1551,22 +1551,22 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun addonId(): String = addonId.getRequired("addonId")
+        fun id(): String = id.getRequired("id")
 
         /**
          * Number of addon instances
          *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun quantity(): Optional<Long> = quantity.getOptional("quantity")
+        fun quantity(): Long = quantity.getRequired("quantity")
 
         /**
-         * Returns the raw JSON value of [addonId].
+         * Returns the raw JSON value of [id].
          *
-         * Unlike [addonId], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("addonId") @ExcludeMissing fun _addonId(): JsonField<String> = addonId
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
          * Returns the raw JSON value of [quantity].
@@ -1594,7 +1594,8 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .addonId()
+             * .id()
+             * .quantity()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -1603,28 +1604,28 @@ private constructor(
         /** A builder for [Addon]. */
         class Builder internal constructor() {
 
-            private var addonId: JsonField<String>? = null
-            private var quantity: JsonField<Long> = JsonMissing.of()
+            private var id: JsonField<String>? = null
+            private var quantity: JsonField<Long>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(addon: Addon) = apply {
-                addonId = addon.addonId
+                id = addon.id
                 quantity = addon.quantity
                 additionalProperties = addon.additionalProperties.toMutableMap()
             }
 
             /** Addon ID */
-            fun addonId(addonId: String) = addonId(JsonField.of(addonId))
+            fun id(id: String) = id(JsonField.of(id))
 
             /**
-             * Sets [Builder.addonId] to an arbitrary JSON value.
+             * Sets [Builder.id] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.addonId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun addonId(addonId: JsonField<String>) = apply { this.addonId = addonId }
+            fun id(id: JsonField<String>) = apply { this.id = id }
 
             /** Number of addon instances */
             fun quantity(quantity: Long) = quantity(JsonField.of(quantity))
@@ -1664,15 +1665,16 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .addonId()
+             * .id()
+             * .quantity()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Addon =
                 Addon(
-                    checkRequired("addonId", addonId),
-                    quantity,
+                    checkRequired("id", id),
+                    checkRequired("quantity", quantity),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1684,7 +1686,7 @@ private constructor(
                 return@apply
             }
 
-            addonId()
+            id()
             quantity()
             validated = true
         }
@@ -1705,8 +1707,7 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (addonId.asKnown().isPresent) 1 else 0) +
-                (if (quantity.asKnown().isPresent) 1 else 0)
+            (if (id.asKnown().isPresent) 1 else 0) + (if (quantity.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1714,17 +1715,17 @@ private constructor(
             }
 
             return other is Addon &&
-                addonId == other.addonId &&
+                id == other.id &&
                 quantity == other.quantity &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(addonId, quantity, additionalProperties) }
+        private val hashCode: Int by lazy { Objects.hash(id, quantity, additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Addon{addonId=$addonId, quantity=$quantity, additionalProperties=$additionalProperties}"
+            "Addon{id=$id, quantity=$quantity, additionalProperties=$additionalProperties}"
     }
 
     /** Coupon or discount to apply */

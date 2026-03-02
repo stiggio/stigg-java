@@ -16,9 +16,7 @@ internal class SubscriptionProvisionParamsTest {
             .customerId("customerId")
             .planId("planId")
             .id("id")
-            .addAddon(
-                SubscriptionProvisionParams.Addon.builder().addonId("addonId").quantity(1L).build()
-            )
+            .addAddon(SubscriptionProvisionParams.Addon.builder().id("id").quantity(0L).build())
             .appliedCoupon(
                 SubscriptionProvisionParams.AppliedCoupon.builder()
                     .billingCouponId("billingCouponId")
@@ -215,12 +213,7 @@ internal class SubscriptionProvisionParamsTest {
                 .customerId("customerId")
                 .planId("planId")
                 .id("id")
-                .addAddon(
-                    SubscriptionProvisionParams.Addon.builder()
-                        .addonId("addonId")
-                        .quantity(1L)
-                        .build()
-                )
+                .addAddon(SubscriptionProvisionParams.Addon.builder().id("id").quantity(0L).build())
                 .appliedCoupon(
                     SubscriptionProvisionParams.AppliedCoupon.builder()
                         .billingCouponId("billingCouponId")
@@ -427,7 +420,7 @@ internal class SubscriptionProvisionParamsTest {
         assertThat(body.id()).contains("id")
         assertThat(body.addons().getOrNull())
             .containsExactly(
-                SubscriptionProvisionParams.Addon.builder().addonId("addonId").quantity(1L).build()
+                SubscriptionProvisionParams.Addon.builder().id("id").quantity(0L).build()
             )
         assertThat(body.appliedCoupon())
             .contains(

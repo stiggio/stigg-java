@@ -26,6 +26,9 @@ internal class SubscriptionListPageResponseTest {
                         .pricingType(SubscriptionListResponse.PricingType.FREE)
                         .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .status(SubscriptionListResponse.Status.PAYMENT_PENDING)
+                        .addAddon(
+                            SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build()
+                        )
                         .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
                         .currentBillingPeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -72,6 +75,9 @@ internal class SubscriptionListPageResponseTest {
                     .pricingType(SubscriptionListResponse.PricingType.FREE)
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .status(SubscriptionListResponse.Status.PAYMENT_PENDING)
+                    .addAddon(
+                        SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build()
+                    )
                     .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
                     .currentBillingPeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -123,6 +129,9 @@ internal class SubscriptionListPageResponseTest {
                         .pricingType(SubscriptionListResponse.PricingType.FREE)
                         .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .status(SubscriptionListResponse.Status.PAYMENT_PENDING)
+                        .addAddon(
+                            SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build()
+                        )
                         .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
                         .currentBillingPeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
