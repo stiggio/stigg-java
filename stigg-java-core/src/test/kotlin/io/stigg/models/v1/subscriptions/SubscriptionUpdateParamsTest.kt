@@ -14,9 +14,7 @@ internal class SubscriptionUpdateParamsTest {
     fun create() {
         SubscriptionUpdateParams.builder()
             .id("x")
-            .addAddon(
-                SubscriptionUpdateParams.Addon.builder().addonId("addonId").quantity(0.0).build()
-            )
+            .addAddon(SubscriptionUpdateParams.Addon.builder().id("id").quantity(0L).build())
             .appliedCoupon(
                 SubscriptionUpdateParams.AppliedCoupon.builder()
                     .billingCouponId("billingCouponId")
@@ -189,12 +187,7 @@ internal class SubscriptionUpdateParamsTest {
         val params =
             SubscriptionUpdateParams.builder()
                 .id("x")
-                .addAddon(
-                    SubscriptionUpdateParams.Addon.builder()
-                        .addonId("addonId")
-                        .quantity(0.0)
-                        .build()
-                )
+                .addAddon(SubscriptionUpdateParams.Addon.builder().id("id").quantity(0L).build())
                 .appliedCoupon(
                     SubscriptionUpdateParams.AppliedCoupon.builder()
                         .billingCouponId("billingCouponId")
@@ -363,9 +356,7 @@ internal class SubscriptionUpdateParamsTest {
         val body = params._body()
 
         assertThat(body.addons().getOrNull())
-            .containsExactly(
-                SubscriptionUpdateParams.Addon.builder().addonId("addonId").quantity(0.0).build()
-            )
+            .containsExactly(SubscriptionUpdateParams.Addon.builder().id("id").quantity(0L).build())
         assertThat(body.appliedCoupon())
             .contains(
                 SubscriptionUpdateParams.AppliedCoupon.builder()

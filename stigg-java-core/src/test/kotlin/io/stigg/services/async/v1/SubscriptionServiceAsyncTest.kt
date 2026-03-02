@@ -41,10 +41,7 @@ internal class SubscriptionServiceAsyncTest {
                 SubscriptionUpdateParams.builder()
                     .id("x")
                     .addAddon(
-                        SubscriptionUpdateParams.Addon.builder()
-                            .addonId("addonId")
-                            .quantity(0.0)
-                            .build()
+                        SubscriptionUpdateParams.Addon.builder().id("id").quantity(0L).build()
                     )
                     .appliedCoupon(
                         SubscriptionUpdateParams.AppliedCoupon.builder()
@@ -290,7 +287,23 @@ internal class SubscriptionServiceAsyncTest {
                             .id("id")
                             .customerId("customerId")
                             .planId("planId")
+                            .addAddon(
+                                SubscriptionImportParams.Subscription.Addon.builder()
+                                    .id("id")
+                                    .quantity(0L)
+                                    .build()
+                            )
                             .billingId("billingId")
+                            .billingPeriod(
+                                SubscriptionImportParams.Subscription.BillingPeriod.MONTHLY
+                            )
+                            .addCharge(
+                                SubscriptionImportParams.Subscription.Charge.builder()
+                                    .id("id")
+                                    .quantity(1.0)
+                                    .type(SubscriptionImportParams.Subscription.Charge.Type.FEATURE)
+                                    .build()
+                            )
                             .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .metadata(
                                 SubscriptionImportParams.Subscription.Metadata.builder()
@@ -341,10 +354,7 @@ internal class SubscriptionServiceAsyncTest {
                     .customerId("customerId")
                     .planId("planId")
                     .addAddon(
-                        SubscriptionPreviewParams.Addon.builder()
-                            .addonId("addonId")
-                            .quantity(1L)
-                            .build()
+                        SubscriptionPreviewParams.Addon.builder().id("id").quantity(0L).build()
                     )
                     .appliedCoupon(
                         SubscriptionPreviewParams.AppliedCoupon.builder()
@@ -464,10 +474,7 @@ internal class SubscriptionServiceAsyncTest {
                     .planId("planId")
                     .id("id")
                     .addAddon(
-                        SubscriptionProvisionParams.Addon.builder()
-                            .addonId("addonId")
-                            .quantity(1L)
-                            .build()
+                        SubscriptionProvisionParams.Addon.builder().id("id").quantity(0L).build()
                     )
                     .appliedCoupon(
                         SubscriptionProvisionParams.AppliedCoupon.builder()
