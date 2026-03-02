@@ -51,6 +51,7 @@ internal class SubscriptionProvisionParamsTest {
             )
             .awaitPaymentConfirmation(true)
             .billingCountryCode("billingCountryCode")
+            .billingCycleAnchor(SubscriptionProvisionParams.BillingCycleAnchor.UNCHANGED)
             .billingId("billingId")
             .billingInformation(
                 SubscriptionProvisionParams.BillingInformation.builder()
@@ -248,6 +249,7 @@ internal class SubscriptionProvisionParamsTest {
                 )
                 .awaitPaymentConfirmation(true)
                 .billingCountryCode("billingCountryCode")
+                .billingCycleAnchor(SubscriptionProvisionParams.BillingCycleAnchor.UNCHANGED)
                 .billingId("billingId")
                 .billingInformation(
                     SubscriptionProvisionParams.BillingInformation.builder()
@@ -457,6 +459,8 @@ internal class SubscriptionProvisionParamsTest {
             )
         assertThat(body.awaitPaymentConfirmation()).contains(true)
         assertThat(body.billingCountryCode()).contains("billingCountryCode")
+        assertThat(body.billingCycleAnchor())
+            .contains(SubscriptionProvisionParams.BillingCycleAnchor.UNCHANGED)
         assertThat(body.billingId()).contains("billingId")
         assertThat(body.billingInformation())
             .contains(
