@@ -46,6 +46,7 @@ internal class SubscriptionUpdateParamsTest {
                     .build()
             )
             .awaitPaymentConfirmation(true)
+            .billingCycleAnchor(SubscriptionUpdateParams.BillingCycleAnchor.UNCHANGED)
             .billingInformation(
                 SubscriptionUpdateParams.BillingInformation.builder()
                     .billingAddress(
@@ -221,6 +222,7 @@ internal class SubscriptionUpdateParamsTest {
                         .build()
                 )
                 .awaitPaymentConfirmation(true)
+                .billingCycleAnchor(SubscriptionUpdateParams.BillingCycleAnchor.UNCHANGED)
                 .billingInformation(
                     SubscriptionUpdateParams.BillingInformation.builder()
                         .billingAddress(
@@ -389,6 +391,8 @@ internal class SubscriptionUpdateParamsTest {
                     .build()
             )
         assertThat(body.awaitPaymentConfirmation()).contains(true)
+        assertThat(body.billingCycleAnchor())
+            .contains(SubscriptionUpdateParams.BillingCycleAnchor.UNCHANGED)
         assertThat(body.billingInformation())
             .contains(
                 SubscriptionUpdateParams.BillingInformation.builder()

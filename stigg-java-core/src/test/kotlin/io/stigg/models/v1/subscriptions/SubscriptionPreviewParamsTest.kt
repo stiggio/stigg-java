@@ -54,6 +54,7 @@ internal class SubscriptionPreviewParamsTest {
                     .build()
             )
             .billingCountryCode("billingCountryCode")
+            .billingCycleAnchor(SubscriptionPreviewParams.BillingCycleAnchor.UNCHANGED)
             .billingInformation(
                 SubscriptionPreviewParams.BillingInformation.builder()
                     .billingAddress(
@@ -158,6 +159,7 @@ internal class SubscriptionPreviewParamsTest {
                         .build()
                 )
                 .billingCountryCode("billingCountryCode")
+                .billingCycleAnchor(SubscriptionPreviewParams.BillingCycleAnchor.UNCHANGED)
                 .billingInformation(
                     SubscriptionPreviewParams.BillingInformation.builder()
                         .billingAddress(
@@ -263,6 +265,8 @@ internal class SubscriptionPreviewParamsTest {
                     .build()
             )
         assertThat(body.billingCountryCode()).contains("billingCountryCode")
+        assertThat(body.billingCycleAnchor())
+            .contains(SubscriptionPreviewParams.BillingCycleAnchor.UNCHANGED)
         assertThat(body.billingInformation())
             .contains(
                 SubscriptionPreviewParams.BillingInformation.builder()

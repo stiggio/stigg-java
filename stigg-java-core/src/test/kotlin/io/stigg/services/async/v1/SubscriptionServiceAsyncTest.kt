@@ -76,6 +76,7 @@ internal class SubscriptionServiceAsyncTest {
                             .build()
                     )
                     .awaitPaymentConfirmation(true)
+                    .billingCycleAnchor(SubscriptionUpdateParams.BillingCycleAnchor.UNCHANGED)
                     .billingInformation(
                         SubscriptionUpdateParams.BillingInformation.builder()
                             .billingAddress(
@@ -395,6 +396,7 @@ internal class SubscriptionServiceAsyncTest {
                             .build()
                     )
                     .billingCountryCode("billingCountryCode")
+                    .billingCycleAnchor(SubscriptionPreviewParams.BillingCycleAnchor.UNCHANGED)
                     .billingInformation(
                         SubscriptionPreviewParams.BillingInformation.builder()
                             .billingAddress(
@@ -511,6 +513,7 @@ internal class SubscriptionServiceAsyncTest {
                     )
                     .awaitPaymentConfirmation(true)
                     .billingCountryCode("billingCountryCode")
+                    .billingCycleAnchor(SubscriptionProvisionParams.BillingCycleAnchor.UNCHANGED)
                     .billingId("billingId")
                     .billingInformation(
                         SubscriptionProvisionParams.BillingInformation.builder()
