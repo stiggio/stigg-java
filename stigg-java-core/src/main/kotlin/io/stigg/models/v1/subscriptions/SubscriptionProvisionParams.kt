@@ -90,6 +90,14 @@ private constructor(
     fun billingCountryCode(): Optional<String> = body.billingCountryCode()
 
     /**
+     * Billing cycle anchor behavior for the subscription
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun billingCycleAnchor(): Optional<BillingCycleAnchor> = body.billingCycleAnchor()
+
+    /**
      * External billing system identifier
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -272,6 +280,14 @@ private constructor(
      * type.
      */
     fun _billingCountryCode(): JsonField<String> = body._billingCountryCode()
+
+    /**
+     * Returns the raw JSON value of [billingCycleAnchor].
+     *
+     * Unlike [billingCycleAnchor], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _billingCycleAnchor(): JsonField<BillingCycleAnchor> = body._billingCycleAnchor()
 
     /**
      * Returns the raw JSON value of [billingId].
@@ -564,6 +580,22 @@ private constructor(
          */
         fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
             body.billingCountryCode(billingCountryCode)
+        }
+
+        /** Billing cycle anchor behavior for the subscription */
+        fun billingCycleAnchor(billingCycleAnchor: BillingCycleAnchor) = apply {
+            body.billingCycleAnchor(billingCycleAnchor)
+        }
+
+        /**
+         * Sets [Builder.billingCycleAnchor] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.billingCycleAnchor] with a well-typed
+         * [BillingCycleAnchor] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun billingCycleAnchor(billingCycleAnchor: JsonField<BillingCycleAnchor>) = apply {
+            body.billingCycleAnchor(billingCycleAnchor)
         }
 
         /** External billing system identifier */
@@ -1019,6 +1051,7 @@ private constructor(
         private val appliedCoupon: JsonField<AppliedCoupon>,
         private val awaitPaymentConfirmation: JsonField<Boolean>,
         private val billingCountryCode: JsonField<String>,
+        private val billingCycleAnchor: JsonField<BillingCycleAnchor>,
         private val billingId: JsonField<String>,
         private val billingInformation: JsonField<BillingInformation>,
         private val billingPeriod: JsonField<BillingPeriod>,
@@ -1059,6 +1092,9 @@ private constructor(
             @JsonProperty("billingCountryCode")
             @ExcludeMissing
             billingCountryCode: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("billingCycleAnchor")
+            @ExcludeMissing
+            billingCycleAnchor: JsonField<BillingCycleAnchor> = JsonMissing.of(),
             @JsonProperty("billingId")
             @ExcludeMissing
             billingId: JsonField<String> = JsonMissing.of(),
@@ -1119,6 +1155,7 @@ private constructor(
             appliedCoupon,
             awaitPaymentConfirmation,
             billingCountryCode,
+            billingCycleAnchor,
             billingId,
             billingInformation,
             billingPeriod,
@@ -1195,6 +1232,15 @@ private constructor(
          */
         fun billingCountryCode(): Optional<String> =
             billingCountryCode.getOptional("billingCountryCode")
+
+        /**
+         * Billing cycle anchor behavior for the subscription
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun billingCycleAnchor(): Optional<BillingCycleAnchor> =
+            billingCycleAnchor.getOptional("billingCycleAnchor")
 
         /**
          * External billing system identifier
@@ -1392,6 +1438,16 @@ private constructor(
         @JsonProperty("billingCountryCode")
         @ExcludeMissing
         fun _billingCountryCode(): JsonField<String> = billingCountryCode
+
+        /**
+         * Returns the raw JSON value of [billingCycleAnchor].
+         *
+         * Unlike [billingCycleAnchor], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("billingCycleAnchor")
+        @ExcludeMissing
+        fun _billingCycleAnchor(): JsonField<BillingCycleAnchor> = billingCycleAnchor
 
         /**
          * Returns the raw JSON value of [billingId].
@@ -1597,6 +1653,7 @@ private constructor(
             private var appliedCoupon: JsonField<AppliedCoupon> = JsonMissing.of()
             private var awaitPaymentConfirmation: JsonField<Boolean> = JsonMissing.of()
             private var billingCountryCode: JsonField<String> = JsonMissing.of()
+            private var billingCycleAnchor: JsonField<BillingCycleAnchor> = JsonMissing.of()
             private var billingId: JsonField<String> = JsonMissing.of()
             private var billingInformation: JsonField<BillingInformation> = JsonMissing.of()
             private var billingPeriod: JsonField<BillingPeriod> = JsonMissing.of()
@@ -1629,6 +1686,7 @@ private constructor(
                 appliedCoupon = body.appliedCoupon
                 awaitPaymentConfirmation = body.awaitPaymentConfirmation
                 billingCountryCode = body.billingCountryCode
+                billingCycleAnchor = body.billingCycleAnchor
                 billingId = body.billingId
                 billingInformation = body.billingInformation
                 billingPeriod = body.billingPeriod
@@ -1761,6 +1819,21 @@ private constructor(
              */
             fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
                 this.billingCountryCode = billingCountryCode
+            }
+
+            /** Billing cycle anchor behavior for the subscription */
+            fun billingCycleAnchor(billingCycleAnchor: BillingCycleAnchor) =
+                billingCycleAnchor(JsonField.of(billingCycleAnchor))
+
+            /**
+             * Sets [Builder.billingCycleAnchor] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.billingCycleAnchor] with a well-typed
+             * [BillingCycleAnchor] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun billingCycleAnchor(billingCycleAnchor: JsonField<BillingCycleAnchor>) = apply {
+                this.billingCycleAnchor = billingCycleAnchor
             }
 
             /** External billing system identifier */
@@ -2114,6 +2187,7 @@ private constructor(
                     appliedCoupon,
                     awaitPaymentConfirmation,
                     billingCountryCode,
+                    billingCycleAnchor,
                     billingId,
                     billingInformation,
                     billingPeriod,
@@ -2150,6 +2224,7 @@ private constructor(
             appliedCoupon().ifPresent { it.validate() }
             awaitPaymentConfirmation()
             billingCountryCode()
+            billingCycleAnchor().ifPresent { it.validate() }
             billingId()
             billingInformation().ifPresent { it.validate() }
             billingPeriod().ifPresent { it.validate() }
@@ -2194,6 +2269,7 @@ private constructor(
                 (appliedCoupon.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (awaitPaymentConfirmation.asKnown().isPresent) 1 else 0) +
                 (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
+                (billingCycleAnchor.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (billingId.asKnown().isPresent) 1 else 0) +
                 (billingInformation.asKnown().getOrNull()?.validity() ?: 0) +
                 (billingPeriod.asKnown().getOrNull()?.validity() ?: 0) +
@@ -2227,6 +2303,7 @@ private constructor(
                 appliedCoupon == other.appliedCoupon &&
                 awaitPaymentConfirmation == other.awaitPaymentConfirmation &&
                 billingCountryCode == other.billingCountryCode &&
+                billingCycleAnchor == other.billingCycleAnchor &&
                 billingId == other.billingId &&
                 billingInformation == other.billingInformation &&
                 billingPeriod == other.billingPeriod &&
@@ -2257,6 +2334,7 @@ private constructor(
                 appliedCoupon,
                 awaitPaymentConfirmation,
                 billingCountryCode,
+                billingCycleAnchor,
                 billingId,
                 billingInformation,
                 billingPeriod,
@@ -2282,7 +2360,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{customerId=$customerId, planId=$planId, id=$id, addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCountryCode=$billingCountryCode, billingId=$billingId, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, charges=$charges, checkoutOptions=$checkoutOptions, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, priceOverrides=$priceOverrides, resourceId=$resourceId, salesforceId=$salesforceId, scheduleStrategy=$scheduleStrategy, startDate=$startDate, subscriptionEntitlements=$subscriptionEntitlements, trialOverrideConfiguration=$trialOverrideConfiguration, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
+            "Body{customerId=$customerId, planId=$planId, id=$id, addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCountryCode=$billingCountryCode, billingCycleAnchor=$billingCycleAnchor, billingId=$billingId, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, charges=$charges, checkoutOptions=$checkoutOptions, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, priceOverrides=$priceOverrides, resourceId=$resourceId, salesforceId=$salesforceId, scheduleStrategy=$scheduleStrategy, startDate=$startDate, subscriptionEntitlements=$subscriptionEntitlements, trialOverrideConfiguration=$trialOverrideConfiguration, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
     }
 
     /** Addon configuration */
@@ -4339,6 +4417,136 @@ private constructor(
 
         override fun toString() =
             "AppliedCoupon{billingCouponId=$billingCouponId, configuration=$configuration, couponId=$couponId, discount=$discount, promotionCode=$promotionCode, additionalProperties=$additionalProperties}"
+    }
+
+    /** Billing cycle anchor behavior for the subscription */
+    class BillingCycleAnchor
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val UNCHANGED = of("UNCHANGED")
+
+            @JvmField val NOW = of("NOW")
+
+            @JvmStatic fun of(value: String) = BillingCycleAnchor(JsonField.of(value))
+        }
+
+        /** An enum containing [BillingCycleAnchor]'s known values. */
+        enum class Known {
+            UNCHANGED,
+            NOW,
+        }
+
+        /**
+         * An enum containing [BillingCycleAnchor]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [BillingCycleAnchor] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            UNCHANGED,
+            NOW,
+            /**
+             * An enum member indicating that [BillingCycleAnchor] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                UNCHANGED -> Value.UNCHANGED
+                NOW -> Value.NOW
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                UNCHANGED -> Known.UNCHANGED
+                NOW -> Known.NOW
+                else -> throw StiggInvalidDataException("Unknown BillingCycleAnchor: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): BillingCycleAnchor = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is BillingCycleAnchor && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     class BillingInformation
