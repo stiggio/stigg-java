@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to coupons */
 class CouponServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     CouponServiceAsync {
 

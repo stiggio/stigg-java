@@ -32,18 +32,25 @@ interface V1Service {
 
     fun subscriptions(): SubscriptionService
 
+    /** Operations related to coupons */
     fun coupons(): CouponService
 
+    /** Operations related to usage & metering */
     fun events(): EventService
 
+    /** Operations related to features */
     fun features(): FeatureService
 
+    /** Operations related to addons */
     fun addons(): AddonService
 
+    /** Operations related to plans */
     fun plans(): PlanService
 
+    /** Operations related to usage & metering */
     fun usage(): UsageService
 
+    /** Operations related to products */
     fun products(): ProductService
 
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
@@ -60,18 +67,25 @@ interface V1Service {
 
         fun subscriptions(): SubscriptionService.WithRawResponse
 
+        /** Operations related to coupons */
         fun coupons(): CouponService.WithRawResponse
 
+        /** Operations related to usage & metering */
         fun events(): EventService.WithRawResponse
 
+        /** Operations related to features */
         fun features(): FeatureService.WithRawResponse
 
+        /** Operations related to addons */
         fun addons(): AddonService.WithRawResponse
 
+        /** Operations related to plans */
         fun plans(): PlanService.WithRawResponse
 
+        /** Operations related to usage & metering */
         fun usage(): UsageService.WithRawResponse
 
+        /** Operations related to products */
         fun products(): ProductService.WithRawResponse
     }
 }

@@ -10,6 +10,7 @@ import io.stigg.models.v1.subscriptions.invoice.InvoiceMarkAsPaidResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to subscriptions */
 interface InvoiceServiceAsync {
 
     /**

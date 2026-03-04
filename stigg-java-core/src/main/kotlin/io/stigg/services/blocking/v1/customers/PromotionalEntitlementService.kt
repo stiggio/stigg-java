@@ -14,6 +14,7 @@ import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitleme
 import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitlementRevokeResponse
 import java.util.function.Consumer
 
+/** Operations related to promotional entitlements */
 interface PromotionalEntitlementService {
 
     /**

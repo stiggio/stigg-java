@@ -59,18 +59,25 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     override fun subscriptions(): SubscriptionServiceAsync = subscriptions
 
+    /** Operations related to coupons */
     override fun coupons(): CouponServiceAsync = coupons
 
+    /** Operations related to usage & metering */
     override fun events(): EventServiceAsync = events
 
+    /** Operations related to features */
     override fun features(): FeatureServiceAsync = features
 
+    /** Operations related to addons */
     override fun addons(): AddonServiceAsync = addons
 
+    /** Operations related to plans */
     override fun plans(): PlanServiceAsync = plans
 
+    /** Operations related to usage & metering */
     override fun usage(): UsageServiceAsync = usage
 
+    /** Operations related to products */
     override fun products(): ProductServiceAsync = products
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -123,18 +130,25 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         override fun subscriptions(): SubscriptionServiceAsync.WithRawResponse = subscriptions
 
+        /** Operations related to coupons */
         override fun coupons(): CouponServiceAsync.WithRawResponse = coupons
 
+        /** Operations related to usage & metering */
         override fun events(): EventServiceAsync.WithRawResponse = events
 
+        /** Operations related to features */
         override fun features(): FeatureServiceAsync.WithRawResponse = features
 
+        /** Operations related to addons */
         override fun addons(): AddonServiceAsync.WithRawResponse = addons
 
+        /** Operations related to plans */
         override fun plans(): PlanServiceAsync.WithRawResponse = plans
 
+        /** Operations related to usage & metering */
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
 
+        /** Operations related to products */
         override fun products(): ProductServiceAsync.WithRawResponse = products
     }
 }

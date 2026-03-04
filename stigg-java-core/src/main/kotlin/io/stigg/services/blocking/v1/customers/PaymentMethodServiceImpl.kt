@@ -22,6 +22,7 @@ import io.stigg.models.v1.customers.paymentmethod.PaymentMethodDetachParams
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to customers */
 class PaymentMethodServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     PaymentMethodService {
 

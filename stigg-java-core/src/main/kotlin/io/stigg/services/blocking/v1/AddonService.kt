@@ -23,6 +23,7 @@ import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.services.blocking.v1.addons.EntitlementService
 import java.util.function.Consumer
 
+/** Operations related to addons */
 interface AddonService {
 
     /**

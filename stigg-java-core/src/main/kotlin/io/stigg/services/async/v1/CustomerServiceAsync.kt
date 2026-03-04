@@ -36,8 +36,10 @@ interface CustomerServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync
 
+    /** Operations related to customers */
     fun paymentMethod(): PaymentMethodServiceAsync
 
+    /** Operations related to promotional entitlements */
     fun promotionalEntitlements(): PromotionalEntitlementServiceAsync
 
     /**
@@ -268,8 +270,10 @@ interface CustomerServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse
 
+        /** Operations related to customers */
         fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse
 
+        /** Operations related to promotional entitlements */
         fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse
 
         /**

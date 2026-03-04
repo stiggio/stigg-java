@@ -19,6 +19,7 @@ import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import java.util.function.Consumer
 
+/** Operations related to usage & metering */
 class EventServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     EventService {
 

@@ -57,8 +57,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
         CustomerServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to customers */
     override fun paymentMethod(): PaymentMethodService = paymentMethod
 
+    /** Operations related to promotional entitlements */
     override fun promotionalEntitlements(): PromotionalEntitlementService = promotionalEntitlements
 
     override fun retrieve(
@@ -138,8 +140,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to customers */
         override fun paymentMethod(): PaymentMethodService.WithRawResponse = paymentMethod
 
+        /** Operations related to promotional entitlements */
         override fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse =
             promotionalEntitlements
 
