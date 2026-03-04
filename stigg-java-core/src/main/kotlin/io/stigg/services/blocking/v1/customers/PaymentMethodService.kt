@@ -11,6 +11,7 @@ import io.stigg.models.v1.customers.paymentmethod.PaymentMethodAttachParams
 import io.stigg.models.v1.customers.paymentmethod.PaymentMethodDetachParams
 import java.util.function.Consumer
 
+/** Operations related to customers */
 interface PaymentMethodService {
 
     /**

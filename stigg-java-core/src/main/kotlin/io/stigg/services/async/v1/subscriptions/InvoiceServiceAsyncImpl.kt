@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to subscriptions */
 class InvoiceServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     InvoiceServiceAsync {
 

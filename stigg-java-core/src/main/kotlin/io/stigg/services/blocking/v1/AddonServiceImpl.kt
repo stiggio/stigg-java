@@ -36,6 +36,7 @@ import io.stigg.services.blocking.v1.addons.EntitlementServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to addons */
 class AddonServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     AddonService {
 

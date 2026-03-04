@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to customers */
 class PaymentMethodServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     PaymentMethodServiceAsync {
 

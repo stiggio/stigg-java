@@ -10,6 +10,7 @@ import io.stigg.models.v1.events.EventReportResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to usage & metering */
 interface EventServiceAsync {
 
     /**

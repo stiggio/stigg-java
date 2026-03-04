@@ -23,6 +23,7 @@ import io.stigg.models.v1.subscriptions.usage.UsageSyncResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to subscriptions */
 class UsageServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     UsageService {
 

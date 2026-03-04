@@ -23,6 +23,7 @@ import io.stigg.models.v1.plans.PlanUpdateParams
 import io.stigg.services.blocking.v1.plans.EntitlementService
 import java.util.function.Consumer
 
+/** Operations related to plans */
 interface PlanService {
 
     /**

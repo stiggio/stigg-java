@@ -26,6 +26,7 @@ import io.stigg.models.v1.customers.promotionalentitlements.PromotionalEntitleme
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to promotional entitlements */
 class PromotionalEntitlementServiceImpl
 internal constructor(private val clientOptions: ClientOptions) : PromotionalEntitlementService {
 

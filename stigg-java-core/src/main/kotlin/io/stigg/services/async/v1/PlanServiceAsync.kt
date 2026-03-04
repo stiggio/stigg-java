@@ -23,6 +23,7 @@ import io.stigg.services.async.v1.plans.EntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to plans */
 interface PlanServiceAsync {
 
     /**

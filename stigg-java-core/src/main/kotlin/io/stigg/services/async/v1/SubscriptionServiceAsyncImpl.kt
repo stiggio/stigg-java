@@ -62,10 +62,13 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionServiceAsync =
         SubscriptionServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to subscriptions */
     override fun futureUpdate(): FutureUpdateServiceAsync = futureUpdate
 
+    /** Operations related to subscriptions */
     override fun usage(): UsageServiceAsync = usage
 
+    /** Operations related to subscriptions */
     override fun invoice(): InvoiceServiceAsync = invoice
 
     override fun retrieve(
@@ -163,10 +166,13 @@ class SubscriptionServiceAsyncImpl internal constructor(private val clientOption
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to subscriptions */
         override fun futureUpdate(): FutureUpdateServiceAsync.WithRawResponse = futureUpdate
 
+        /** Operations related to subscriptions */
         override fun usage(): UsageServiceAsync.WithRawResponse = usage
 
+        /** Operations related to subscriptions */
         override fun invoice(): InvoiceServiceAsync.WithRawResponse = invoice
 
         private val retrieveHandler: Handler<Subscription> =
