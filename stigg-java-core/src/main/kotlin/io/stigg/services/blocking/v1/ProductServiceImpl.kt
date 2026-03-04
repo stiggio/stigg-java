@@ -28,6 +28,7 @@ import io.stigg.models.v1.products.ProductUpdateProductParams
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to products */
 class ProductServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ProductService {
 

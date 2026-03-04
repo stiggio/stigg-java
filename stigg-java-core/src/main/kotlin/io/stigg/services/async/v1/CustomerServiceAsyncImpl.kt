@@ -58,8 +58,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
         CustomerServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to customers */
     override fun paymentMethod(): PaymentMethodServiceAsync = paymentMethod
 
+    /** Operations related to promotional entitlements */
     override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync =
         promotionalEntitlements
 
@@ -141,8 +143,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to customers */
         override fun paymentMethod(): PaymentMethodServiceAsync.WithRawResponse = paymentMethod
 
+        /** Operations related to promotional entitlements */
         override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse =
             promotionalEntitlements
 

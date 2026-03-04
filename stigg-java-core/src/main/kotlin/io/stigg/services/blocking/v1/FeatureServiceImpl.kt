@@ -28,6 +28,7 @@ import io.stigg.models.v1.features.FeatureUpdateFeatureParams
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to features */
 class FeatureServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     FeatureService {
 

@@ -58,18 +58,25 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     override fun subscriptions(): SubscriptionService = subscriptions
 
+    /** Operations related to coupons */
     override fun coupons(): CouponService = coupons
 
+    /** Operations related to usage & metering */
     override fun events(): EventService = events
 
+    /** Operations related to features */
     override fun features(): FeatureService = features
 
+    /** Operations related to addons */
     override fun addons(): AddonService = addons
 
+    /** Operations related to plans */
     override fun plans(): PlanService = plans
 
+    /** Operations related to usage & metering */
     override fun usage(): UsageService = usage
 
+    /** Operations related to products */
     override fun products(): ProductService = products
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -122,18 +129,25 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         override fun subscriptions(): SubscriptionService.WithRawResponse = subscriptions
 
+        /** Operations related to coupons */
         override fun coupons(): CouponService.WithRawResponse = coupons
 
+        /** Operations related to usage & metering */
         override fun events(): EventService.WithRawResponse = events
 
+        /** Operations related to features */
         override fun features(): FeatureService.WithRawResponse = features
 
+        /** Operations related to addons */
         override fun addons(): AddonService.WithRawResponse = addons
 
+        /** Operations related to plans */
         override fun plans(): PlanService.WithRawResponse = plans
 
+        /** Operations related to usage & metering */
         override fun usage(): UsageService.WithRawResponse = usage
 
+        /** Operations related to products */
         override fun products(): ProductService.WithRawResponse = products
     }
 }

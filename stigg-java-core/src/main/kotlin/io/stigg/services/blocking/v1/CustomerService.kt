@@ -36,8 +36,10 @@ interface CustomerService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService
 
+    /** Operations related to customers */
     fun paymentMethod(): PaymentMethodService
 
+    /** Operations related to promotional entitlements */
     fun promotionalEntitlements(): PromotionalEntitlementService
 
     /**
@@ -248,8 +250,10 @@ interface CustomerService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService.WithRawResponse
 
+        /** Operations related to customers */
         fun paymentMethod(): PaymentMethodService.WithRawResponse
 
+        /** Operations related to promotional entitlements */
         fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse
 
         /**

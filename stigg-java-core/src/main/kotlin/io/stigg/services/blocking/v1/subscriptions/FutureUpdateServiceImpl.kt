@@ -22,6 +22,7 @@ import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleP
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to subscriptions */
 class FutureUpdateServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     FutureUpdateService {
 

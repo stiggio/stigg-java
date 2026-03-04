@@ -11,6 +11,7 @@ import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelPendingPa
 import io.stigg.models.v1.subscriptions.futureupdate.FutureUpdateCancelScheduleParams
 import java.util.function.Consumer
 
+/** Operations related to subscriptions */
 interface FutureUpdateService {
 
     /**

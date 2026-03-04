@@ -59,10 +59,13 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionService =
         SubscriptionServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Operations related to subscriptions */
     override fun futureUpdate(): FutureUpdateService = futureUpdate
 
+    /** Operations related to subscriptions */
     override fun usage(): UsageService = usage
 
+    /** Operations related to subscriptions */
     override fun invoice(): InvoiceService = invoice
 
     override fun retrieve(
@@ -160,10 +163,13 @@ class SubscriptionServiceImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Operations related to subscriptions */
         override fun futureUpdate(): FutureUpdateService.WithRawResponse = futureUpdate
 
+        /** Operations related to subscriptions */
         override fun usage(): UsageService.WithRawResponse = usage
 
+        /** Operations related to subscriptions */
         override fun invoice(): InvoiceService.WithRawResponse = invoice
 
         private val retrieveHandler: Handler<Subscription> =

@@ -21,6 +21,7 @@ import io.stigg.models.v1.subscriptions.invoice.InvoiceMarkAsPaidResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to subscriptions */
 class InvoiceServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     InvoiceService {
 

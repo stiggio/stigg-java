@@ -16,6 +16,7 @@ import io.stigg.models.v1.products.ProductUpdateProductParams
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Operations related to products */
 interface ProductServiceAsync {
 
     /**

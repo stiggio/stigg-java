@@ -40,10 +40,13 @@ interface SubscriptionServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SubscriptionServiceAsync
 
+    /** Operations related to subscriptions */
     fun futureUpdate(): FutureUpdateServiceAsync
 
+    /** Operations related to subscriptions */
     fun usage(): UsageServiceAsync
 
+    /** Operations related to subscriptions */
     fun invoice(): InvoiceServiceAsync
 
     /**
@@ -306,10 +309,13 @@ interface SubscriptionServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): SubscriptionServiceAsync.WithRawResponse
 
+        /** Operations related to subscriptions */
         fun futureUpdate(): FutureUpdateServiceAsync.WithRawResponse
 
+        /** Operations related to subscriptions */
         fun usage(): UsageServiceAsync.WithRawResponse
 
+        /** Operations related to subscriptions */
         fun invoice(): InvoiceServiceAsync.WithRawResponse
 
         /**

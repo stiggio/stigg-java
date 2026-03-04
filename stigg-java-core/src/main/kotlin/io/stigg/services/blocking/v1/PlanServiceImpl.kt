@@ -36,6 +36,7 @@ import io.stigg.services.blocking.v1.plans.EntitlementServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
+/** Operations related to plans */
 class PlanServiceImpl internal constructor(private val clientOptions: ClientOptions) : PlanService {
 
     private val withRawResponse: PlanService.WithRawResponse by lazy {
