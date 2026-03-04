@@ -102,10 +102,45 @@ internal class SubscriptionProvisionResponseTest {
                                         .quantity(0L)
                                         .build()
                                 )
+                                .billingCycleAnchor(
+                                    OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                )
+                                .budget(
+                                    SubscriptionProvisionResponse.Data.Subscription.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
                                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .cancelReason(
                                     SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                         .UPGRADE_OR_DOWNGRADE
+                                )
+                                .addCoupon(
+                                    SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
+                                        .id("id")
+                                        .name("name")
+                                        .status(
+                                            SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                                .Status
+                                                .ACTIVE
+                                        )
+                                        .addAmountsOff(
+                                            SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                                .AmountsOff
+                                                .builder()
+                                                .amount(0.0)
+                                                .currency(
+                                                    SubscriptionProvisionResponse.Data.Subscription
+                                                        .Coupon
+                                                        .AmountsOff
+                                                        .Currency
+                                                        .USD
+                                                )
+                                                .build()
+                                        )
+                                        .percentOff(0.0)
+                                        .build()
                                 )
                                 .currentBillingPeriodEnd(
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
@@ -115,10 +150,74 @@ internal class SubscriptionProvisionResponseTest {
                                 )
                                 .effectiveEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .addFutureUpdate(
+                                    SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                        .builder()
+                                        .scheduledExecutionTime(
+                                            OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                        )
+                                        .scheduleStatus(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .ScheduleStatus
+                                                .PENDING_PAYMENT
+                                        )
+                                        .subscriptionScheduleType(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .SubscriptionScheduleType
+                                                .DOWNGRADE
+                                        )
+                                        .targetPackage(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .TargetPackage
+                                                .builder()
+                                                .id("id")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .latestInvoice(
+                                    SubscriptionProvisionResponse.Data.Subscription.LatestInvoice
+                                        .builder()
+                                        .billingId("billingId")
+                                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                        .requiresAction(true)
+                                        .status(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .LatestInvoice
+                                                .Status
+                                                .OPEN
+                                        )
+                                        .amountDue(0.0)
+                                        .billingReason(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .LatestInvoice
+                                                .BillingReason
+                                                .BILLING_CYCLE
+                                        )
+                                        .currency("currency")
+                                        .pdfUrl("pdfUrl")
+                                        .total(0.0)
+                                        .build()
+                                )
                                 .metadata(
                                     SubscriptionProvisionResponse.Data.Subscription.Metadata
                                         .builder()
                                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .minimumSpend(
+                                    SubscriptionProvisionResponse.Data.Subscription.MinimumSpend
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .MinimumSpend
+                                                .Currency
+                                                .USD
+                                        )
                                         .build()
                                 )
                                 .payingCustomerId("payingCustomerId")
@@ -130,24 +229,16 @@ internal class SubscriptionProvisionResponseTest {
                                 .addPrice(
                                     SubscriptionProvisionResponse.Data.Subscription.Price.builder()
                                         .addonId("addonId")
+                                        .amount(0.0)
                                         .baseCharge(true)
+                                        .billingCountryCode("billingCountryCode")
                                         .blockSize(0.0)
-                                        .featureId("featureId")
-                                        .price(
+                                        .currency(
                                             SubscriptionProvisionResponse.Data.Subscription.Price
-                                                .InnerPrice
-                                                .builder()
-                                                .amount(0.0)
-                                                .billingCountryCode("billingCountryCode")
-                                                .currency(
-                                                    SubscriptionProvisionResponse.Data.Subscription
-                                                        .Price
-                                                        .InnerPrice
-                                                        .Currency
-                                                        .USD
-                                                )
-                                                .build()
+                                                .Currency
+                                                .USD
                                         )
+                                        .featureId("featureId")
                                         .addTier(
                                             SubscriptionProvisionResponse.Data.Subscription.Price
                                                 .Tier
@@ -159,7 +250,6 @@ internal class SubscriptionProvisionResponseTest {
                                                         .FlatPrice
                                                         .builder()
                                                         .amount(0.0)
-                                                        .billingCountryCode("billingCountryCode")
                                                         .currency(
                                                             SubscriptionProvisionResponse.Data
                                                                 .Subscription
@@ -178,7 +268,6 @@ internal class SubscriptionProvisionResponseTest {
                                                         .UnitPrice
                                                         .builder()
                                                         .amount(0.0)
-                                                        .billingCountryCode("billingCountryCode")
                                                         .currency(
                                                             SubscriptionProvisionResponse.Data
                                                                 .Subscription
@@ -196,6 +285,28 @@ internal class SubscriptionProvisionResponseTest {
                                         .build()
                                 )
                                 .resourceId("resourceId")
+                                .addSubscriptionEntitlement(
+                                    SubscriptionProvisionResponse.Data.Subscription
+                                        .SubscriptionEntitlement
+                                        .builder()
+                                        .id("id")
+                                        .type(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .SubscriptionEntitlement
+                                                .Type
+                                                .FEATURE
+                                        )
+                                        .build()
+                                )
+                                .trial(
+                                    SubscriptionProvisionResponse.Data.Subscription.Trial.builder()
+                                        .trialEndBehavior(
+                                            SubscriptionProvisionResponse.Data.Subscription.Trial
+                                                .TrialEndBehavior
+                                                .CONVERT_TO_PAID
+                                        )
+                                        .build()
+                                )
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
@@ -286,10 +397,43 @@ internal class SubscriptionProvisionResponseTest {
                                     .quantity(0L)
                                     .build()
                             )
+                            .billingCycleAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .budget(
+                                SubscriptionProvisionResponse.Data.Subscription.Budget.builder()
+                                    .hasSoftLimit(true)
+                                    .limit(0.0)
+                                    .build()
+                            )
                             .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .cancelReason(
                                 SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                     .UPGRADE_OR_DOWNGRADE
+                            )
+                            .addCoupon(
+                                SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
+                                    .id("id")
+                                    .name("name")
+                                    .status(
+                                        SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                            .Status
+                                            .ACTIVE
+                                    )
+                                    .addAmountsOff(
+                                        SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                            .AmountsOff
+                                            .builder()
+                                            .amount(0.0)
+                                            .currency(
+                                                SubscriptionProvisionResponse.Data.Subscription
+                                                    .Coupon
+                                                    .AmountsOff
+                                                    .Currency
+                                                    .USD
+                                            )
+                                            .build()
+                                    )
+                                    .percentOff(0.0)
+                                    .build()
                             )
                             .currentBillingPeriodEnd(
                                 OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
@@ -299,9 +443,69 @@ internal class SubscriptionProvisionResponseTest {
                             )
                             .effectiveEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .addFutureUpdate(
+                                SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                    .builder()
+                                    .scheduledExecutionTime(
+                                        OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                    )
+                                    .scheduleStatus(
+                                        SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                            .ScheduleStatus
+                                            .PENDING_PAYMENT
+                                    )
+                                    .subscriptionScheduleType(
+                                        SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                            .SubscriptionScheduleType
+                                            .DOWNGRADE
+                                    )
+                                    .targetPackage(
+                                        SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                            .TargetPackage
+                                            .builder()
+                                            .id("id")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .latestInvoice(
+                                SubscriptionProvisionResponse.Data.Subscription.LatestInvoice
+                                    .builder()
+                                    .billingId("billingId")
+                                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .requiresAction(true)
+                                    .status(
+                                        SubscriptionProvisionResponse.Data.Subscription
+                                            .LatestInvoice
+                                            .Status
+                                            .OPEN
+                                    )
+                                    .amountDue(0.0)
+                                    .billingReason(
+                                        SubscriptionProvisionResponse.Data.Subscription
+                                            .LatestInvoice
+                                            .BillingReason
+                                            .BILLING_CYCLE
+                                    )
+                                    .currency("currency")
+                                    .pdfUrl("pdfUrl")
+                                    .total(0.0)
+                                    .build()
+                            )
                             .metadata(
                                 SubscriptionProvisionResponse.Data.Subscription.Metadata.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
+                            .minimumSpend(
+                                SubscriptionProvisionResponse.Data.Subscription.MinimumSpend
+                                    .builder()
+                                    .amount(0.0)
+                                    .currency(
+                                        SubscriptionProvisionResponse.Data.Subscription.MinimumSpend
+                                            .Currency
+                                            .USD
+                                    )
                                     .build()
                             )
                             .payingCustomerId("payingCustomerId")
@@ -313,24 +517,16 @@ internal class SubscriptionProvisionResponseTest {
                             .addPrice(
                                 SubscriptionProvisionResponse.Data.Subscription.Price.builder()
                                     .addonId("addonId")
+                                    .amount(0.0)
                                     .baseCharge(true)
+                                    .billingCountryCode("billingCountryCode")
                                     .blockSize(0.0)
-                                    .featureId("featureId")
-                                    .price(
+                                    .currency(
                                         SubscriptionProvisionResponse.Data.Subscription.Price
-                                            .InnerPrice
-                                            .builder()
-                                            .amount(0.0)
-                                            .billingCountryCode("billingCountryCode")
-                                            .currency(
-                                                SubscriptionProvisionResponse.Data.Subscription
-                                                    .Price
-                                                    .InnerPrice
-                                                    .Currency
-                                                    .USD
-                                            )
-                                            .build()
+                                            .Currency
+                                            .USD
                                     )
+                                    .featureId("featureId")
                                     .addTier(
                                         SubscriptionProvisionResponse.Data.Subscription.Price.Tier
                                             .builder()
@@ -341,7 +537,6 @@ internal class SubscriptionProvisionResponseTest {
                                                     .FlatPrice
                                                     .builder()
                                                     .amount(0.0)
-                                                    .billingCountryCode("billingCountryCode")
                                                     .currency(
                                                         SubscriptionProvisionResponse.Data
                                                             .Subscription
@@ -360,7 +555,6 @@ internal class SubscriptionProvisionResponseTest {
                                                     .UnitPrice
                                                     .builder()
                                                     .amount(0.0)
-                                                    .billingCountryCode("billingCountryCode")
                                                     .currency(
                                                         SubscriptionProvisionResponse.Data
                                                             .Subscription
@@ -378,6 +572,28 @@ internal class SubscriptionProvisionResponseTest {
                                     .build()
                             )
                             .resourceId("resourceId")
+                            .addSubscriptionEntitlement(
+                                SubscriptionProvisionResponse.Data.Subscription
+                                    .SubscriptionEntitlement
+                                    .builder()
+                                    .id("id")
+                                    .type(
+                                        SubscriptionProvisionResponse.Data.Subscription
+                                            .SubscriptionEntitlement
+                                            .Type
+                                            .FEATURE
+                                    )
+                                    .build()
+                            )
+                            .trial(
+                                SubscriptionProvisionResponse.Data.Subscription.Trial.builder()
+                                    .trialEndBehavior(
+                                        SubscriptionProvisionResponse.Data.Subscription.Trial
+                                            .TrialEndBehavior
+                                            .CONVERT_TO_PAID
+                                    )
+                                    .build()
+                            )
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
@@ -480,10 +696,45 @@ internal class SubscriptionProvisionResponseTest {
                                         .quantity(0L)
                                         .build()
                                 )
+                                .billingCycleAnchor(
+                                    OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                )
+                                .budget(
+                                    SubscriptionProvisionResponse.Data.Subscription.Budget.builder()
+                                        .hasSoftLimit(true)
+                                        .limit(0.0)
+                                        .build()
+                                )
                                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .cancelReason(
                                     SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                         .UPGRADE_OR_DOWNGRADE
+                                )
+                                .addCoupon(
+                                    SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
+                                        .id("id")
+                                        .name("name")
+                                        .status(
+                                            SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                                .Status
+                                                .ACTIVE
+                                        )
+                                        .addAmountsOff(
+                                            SubscriptionProvisionResponse.Data.Subscription.Coupon
+                                                .AmountsOff
+                                                .builder()
+                                                .amount(0.0)
+                                                .currency(
+                                                    SubscriptionProvisionResponse.Data.Subscription
+                                                        .Coupon
+                                                        .AmountsOff
+                                                        .Currency
+                                                        .USD
+                                                )
+                                                .build()
+                                        )
+                                        .percentOff(0.0)
+                                        .build()
                                 )
                                 .currentBillingPeriodEnd(
                                     OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
@@ -493,10 +744,74 @@ internal class SubscriptionProvisionResponseTest {
                                 )
                                 .effectiveEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .addFutureUpdate(
+                                    SubscriptionProvisionResponse.Data.Subscription.FutureUpdate
+                                        .builder()
+                                        .scheduledExecutionTime(
+                                            OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                        )
+                                        .scheduleStatus(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .ScheduleStatus
+                                                .PENDING_PAYMENT
+                                        )
+                                        .subscriptionScheduleType(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .SubscriptionScheduleType
+                                                .DOWNGRADE
+                                        )
+                                        .targetPackage(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .FutureUpdate
+                                                .TargetPackage
+                                                .builder()
+                                                .id("id")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .latestInvoice(
+                                    SubscriptionProvisionResponse.Data.Subscription.LatestInvoice
+                                        .builder()
+                                        .billingId("billingId")
+                                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                        .requiresAction(true)
+                                        .status(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .LatestInvoice
+                                                .Status
+                                                .OPEN
+                                        )
+                                        .amountDue(0.0)
+                                        .billingReason(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .LatestInvoice
+                                                .BillingReason
+                                                .BILLING_CYCLE
+                                        )
+                                        .currency("currency")
+                                        .pdfUrl("pdfUrl")
+                                        .total(0.0)
+                                        .build()
+                                )
                                 .metadata(
                                     SubscriptionProvisionResponse.Data.Subscription.Metadata
                                         .builder()
                                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .minimumSpend(
+                                    SubscriptionProvisionResponse.Data.Subscription.MinimumSpend
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .MinimumSpend
+                                                .Currency
+                                                .USD
+                                        )
                                         .build()
                                 )
                                 .payingCustomerId("payingCustomerId")
@@ -508,24 +823,16 @@ internal class SubscriptionProvisionResponseTest {
                                 .addPrice(
                                     SubscriptionProvisionResponse.Data.Subscription.Price.builder()
                                         .addonId("addonId")
+                                        .amount(0.0)
                                         .baseCharge(true)
+                                        .billingCountryCode("billingCountryCode")
                                         .blockSize(0.0)
-                                        .featureId("featureId")
-                                        .price(
+                                        .currency(
                                             SubscriptionProvisionResponse.Data.Subscription.Price
-                                                .InnerPrice
-                                                .builder()
-                                                .amount(0.0)
-                                                .billingCountryCode("billingCountryCode")
-                                                .currency(
-                                                    SubscriptionProvisionResponse.Data.Subscription
-                                                        .Price
-                                                        .InnerPrice
-                                                        .Currency
-                                                        .USD
-                                                )
-                                                .build()
+                                                .Currency
+                                                .USD
                                         )
+                                        .featureId("featureId")
                                         .addTier(
                                             SubscriptionProvisionResponse.Data.Subscription.Price
                                                 .Tier
@@ -537,7 +844,6 @@ internal class SubscriptionProvisionResponseTest {
                                                         .FlatPrice
                                                         .builder()
                                                         .amount(0.0)
-                                                        .billingCountryCode("billingCountryCode")
                                                         .currency(
                                                             SubscriptionProvisionResponse.Data
                                                                 .Subscription
@@ -556,7 +862,6 @@ internal class SubscriptionProvisionResponseTest {
                                                         .UnitPrice
                                                         .builder()
                                                         .amount(0.0)
-                                                        .billingCountryCode("billingCountryCode")
                                                         .currency(
                                                             SubscriptionProvisionResponse.Data
                                                                 .Subscription
@@ -574,6 +879,28 @@ internal class SubscriptionProvisionResponseTest {
                                         .build()
                                 )
                                 .resourceId("resourceId")
+                                .addSubscriptionEntitlement(
+                                    SubscriptionProvisionResponse.Data.Subscription
+                                        .SubscriptionEntitlement
+                                        .builder()
+                                        .id("id")
+                                        .type(
+                                            SubscriptionProvisionResponse.Data.Subscription
+                                                .SubscriptionEntitlement
+                                                .Type
+                                                .FEATURE
+                                        )
+                                        .build()
+                                )
+                                .trial(
+                                    SubscriptionProvisionResponse.Data.Subscription.Trial.builder()
+                                        .trialEndBehavior(
+                                            SubscriptionProvisionResponse.Data.Subscription.Trial
+                                                .TrialEndBehavior
+                                                .CONVERT_TO_PAID
+                                        )
+                                        .build()
+                                )
                                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
