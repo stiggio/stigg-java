@@ -26,27 +26,122 @@ internal class SubscriptionListResponseTest {
                 .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .status(SubscriptionListResponse.Status.PAYMENT_PENDING)
                 .addAddon(SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build())
+                .billingCycleAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .budget(
+                    SubscriptionListResponse.Budget.builder().hasSoftLimit(true).limit(0.0).build()
+                )
                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+                .addCoupon(
+                    SubscriptionListResponse.Coupon.builder()
+                        .id("id")
+                        .name("name")
+                        .status(SubscriptionListResponse.Coupon.Status.ACTIVE)
+                        .addAmountsOff(
+                            SubscriptionListResponse.Coupon.AmountsOff.builder()
+                                .amount(0.0)
+                                .currency(SubscriptionListResponse.Coupon.AmountsOff.Currency.USD)
+                                .build()
+                        )
+                        .percentOff(0.0)
+                        .build()
+                )
                 .currentBillingPeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .currentBillingPeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .effectiveEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .addFutureUpdate(
+                    SubscriptionListResponse.FutureUpdate.builder()
+                        .scheduledExecutionTime(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .scheduleStatus(
+                            SubscriptionListResponse.FutureUpdate.ScheduleStatus.PENDING_PAYMENT
+                        )
+                        .subscriptionScheduleType(
+                            SubscriptionListResponse.FutureUpdate.SubscriptionScheduleType.DOWNGRADE
+                        )
+                        .targetPackage(
+                            SubscriptionListResponse.FutureUpdate.TargetPackage.builder()
+                                .id("id")
+                                .build()
+                        )
+                        .build()
+                )
+                .latestInvoice(
+                    SubscriptionListResponse.LatestInvoice.builder()
+                        .billingId("billingId")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .requiresAction(true)
+                        .status(SubscriptionListResponse.LatestInvoice.Status.OPEN)
+                        .amountDue(0.0)
+                        .billingReason(
+                            SubscriptionListResponse.LatestInvoice.BillingReason.BILLING_CYCLE
+                        )
+                        .currency("currency")
+                        .pdfUrl("pdfUrl")
+                        .total(0.0)
+                        .build()
+                )
                 .metadata(
                     SubscriptionListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .minimumSpend(
+                    SubscriptionListResponse.MinimumSpend.builder()
+                        .amount(0.0)
+                        .currency(SubscriptionListResponse.MinimumSpend.Currency.USD)
                         .build()
                 )
                 .payingCustomerId("payingCustomerId")
                 .paymentCollectionMethod(SubscriptionListResponse.PaymentCollectionMethod.CHARGE)
                 .addPrice(
                     SubscriptionListResponse.Price.builder()
-                        .id("id")
-                        .createdAt("createdAt")
-                        .updatedAt("updatedAt")
+                        .addonId("addonId")
+                        .amount(0.0)
+                        .baseCharge(true)
+                        .billingCountryCode("billingCountryCode")
+                        .blockSize(0.0)
+                        .currency(SubscriptionListResponse.Price.Currency.USD)
+                        .featureId("featureId")
+                        .addTier(
+                            SubscriptionListResponse.Price.Tier.builder()
+                                .flatPrice(
+                                    SubscriptionListResponse.Price.Tier.FlatPrice.builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionListResponse.Price.Tier.FlatPrice.Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .unitPrice(
+                                    SubscriptionListResponse.Price.Tier.UnitPrice.builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionListResponse.Price.Tier.UnitPrice.Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .upTo(0.0)
+                                .build()
+                        )
                         .build()
                 )
                 .resourceId("resourceId")
+                .addSubscriptionEntitlement(
+                    SubscriptionListResponse.SubscriptionEntitlement.builder()
+                        .id("id")
+                        .type(SubscriptionListResponse.SubscriptionEntitlement.Type.FEATURE)
+                        .build()
+                )
+                .trial(
+                    SubscriptionListResponse.Trial.builder()
+                        .trialEndBehavior(
+                            SubscriptionListResponse.Trial.TrialEndBehavior.CONVERT_TO_PAID
+                        )
+                        .build()
+                )
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 
@@ -66,10 +161,31 @@ internal class SubscriptionListResponseTest {
             .isEqualTo(SubscriptionListResponse.Status.PAYMENT_PENDING)
         assertThat(subscriptionListResponse.addons().getOrNull())
             .containsExactly(SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build())
+        assertThat(subscriptionListResponse.billingCycleAnchor())
+            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(subscriptionListResponse.budget())
+            .contains(
+                SubscriptionListResponse.Budget.builder().hasSoftLimit(true).limit(0.0).build()
+            )
         assertThat(subscriptionListResponse.cancellationDate())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(subscriptionListResponse.cancelReason())
             .contains(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+        assertThat(subscriptionListResponse.coupons().getOrNull())
+            .containsExactly(
+                SubscriptionListResponse.Coupon.builder()
+                    .id("id")
+                    .name("name")
+                    .status(SubscriptionListResponse.Coupon.Status.ACTIVE)
+                    .addAmountsOff(
+                        SubscriptionListResponse.Coupon.AmountsOff.builder()
+                            .amount(0.0)
+                            .currency(SubscriptionListResponse.Coupon.AmountsOff.Currency.USD)
+                            .build()
+                    )
+                    .percentOff(0.0)
+                    .build()
+            )
         assertThat(subscriptionListResponse.currentBillingPeriodEnd())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(subscriptionListResponse.currentBillingPeriodStart())
@@ -78,10 +194,50 @@ internal class SubscriptionListResponseTest {
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(subscriptionListResponse.endDate())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(subscriptionListResponse.futureUpdates().getOrNull())
+            .containsExactly(
+                SubscriptionListResponse.FutureUpdate.builder()
+                    .scheduledExecutionTime(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .scheduleStatus(
+                        SubscriptionListResponse.FutureUpdate.ScheduleStatus.PENDING_PAYMENT
+                    )
+                    .subscriptionScheduleType(
+                        SubscriptionListResponse.FutureUpdate.SubscriptionScheduleType.DOWNGRADE
+                    )
+                    .targetPackage(
+                        SubscriptionListResponse.FutureUpdate.TargetPackage.builder()
+                            .id("id")
+                            .build()
+                    )
+                    .build()
+            )
+        assertThat(subscriptionListResponse.latestInvoice())
+            .contains(
+                SubscriptionListResponse.LatestInvoice.builder()
+                    .billingId("billingId")
+                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .requiresAction(true)
+                    .status(SubscriptionListResponse.LatestInvoice.Status.OPEN)
+                    .amountDue(0.0)
+                    .billingReason(
+                        SubscriptionListResponse.LatestInvoice.BillingReason.BILLING_CYCLE
+                    )
+                    .currency("currency")
+                    .pdfUrl("pdfUrl")
+                    .total(0.0)
+                    .build()
+            )
         assertThat(subscriptionListResponse.metadata())
             .contains(
                 SubscriptionListResponse.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
+        assertThat(subscriptionListResponse.minimumSpend())
+            .contains(
+                SubscriptionListResponse.MinimumSpend.builder()
+                    .amount(0.0)
+                    .currency(SubscriptionListResponse.MinimumSpend.Currency.USD)
                     .build()
             )
         assertThat(subscriptionListResponse.payingCustomerId()).contains("payingCustomerId")
@@ -90,12 +246,52 @@ internal class SubscriptionListResponseTest {
         assertThat(subscriptionListResponse.prices().getOrNull())
             .containsExactly(
                 SubscriptionListResponse.Price.builder()
-                    .id("id")
-                    .createdAt("createdAt")
-                    .updatedAt("updatedAt")
+                    .addonId("addonId")
+                    .amount(0.0)
+                    .baseCharge(true)
+                    .billingCountryCode("billingCountryCode")
+                    .blockSize(0.0)
+                    .currency(SubscriptionListResponse.Price.Currency.USD)
+                    .featureId("featureId")
+                    .addTier(
+                        SubscriptionListResponse.Price.Tier.builder()
+                            .flatPrice(
+                                SubscriptionListResponse.Price.Tier.FlatPrice.builder()
+                                    .amount(0.0)
+                                    .currency(
+                                        SubscriptionListResponse.Price.Tier.FlatPrice.Currency.USD
+                                    )
+                                    .build()
+                            )
+                            .unitPrice(
+                                SubscriptionListResponse.Price.Tier.UnitPrice.builder()
+                                    .amount(0.0)
+                                    .currency(
+                                        SubscriptionListResponse.Price.Tier.UnitPrice.Currency.USD
+                                    )
+                                    .build()
+                            )
+                            .upTo(0.0)
+                            .build()
+                    )
                     .build()
             )
         assertThat(subscriptionListResponse.resourceId()).contains("resourceId")
+        assertThat(subscriptionListResponse.subscriptionEntitlements().getOrNull())
+            .containsExactly(
+                SubscriptionListResponse.SubscriptionEntitlement.builder()
+                    .id("id")
+                    .type(SubscriptionListResponse.SubscriptionEntitlement.Type.FEATURE)
+                    .build()
+            )
+        assertThat(subscriptionListResponse.trial())
+            .contains(
+                SubscriptionListResponse.Trial.builder()
+                    .trialEndBehavior(
+                        SubscriptionListResponse.Trial.TrialEndBehavior.CONVERT_TO_PAID
+                    )
+                    .build()
+            )
         assertThat(subscriptionListResponse.trialEndDate())
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
     }
@@ -115,27 +311,122 @@ internal class SubscriptionListResponseTest {
                 .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .status(SubscriptionListResponse.Status.PAYMENT_PENDING)
                 .addAddon(SubscriptionListResponse.Addon.builder().id("id").quantity(0L).build())
+                .billingCycleAnchor(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .budget(
+                    SubscriptionListResponse.Budget.builder().hasSoftLimit(true).limit(0.0).build()
+                )
                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+                .addCoupon(
+                    SubscriptionListResponse.Coupon.builder()
+                        .id("id")
+                        .name("name")
+                        .status(SubscriptionListResponse.Coupon.Status.ACTIVE)
+                        .addAmountsOff(
+                            SubscriptionListResponse.Coupon.AmountsOff.builder()
+                                .amount(0.0)
+                                .currency(SubscriptionListResponse.Coupon.AmountsOff.Currency.USD)
+                                .build()
+                        )
+                        .percentOff(0.0)
+                        .build()
+                )
                 .currentBillingPeriodEnd(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .currentBillingPeriodStart(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .effectiveEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .addFutureUpdate(
+                    SubscriptionListResponse.FutureUpdate.builder()
+                        .scheduledExecutionTime(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .scheduleStatus(
+                            SubscriptionListResponse.FutureUpdate.ScheduleStatus.PENDING_PAYMENT
+                        )
+                        .subscriptionScheduleType(
+                            SubscriptionListResponse.FutureUpdate.SubscriptionScheduleType.DOWNGRADE
+                        )
+                        .targetPackage(
+                            SubscriptionListResponse.FutureUpdate.TargetPackage.builder()
+                                .id("id")
+                                .build()
+                        )
+                        .build()
+                )
+                .latestInvoice(
+                    SubscriptionListResponse.LatestInvoice.builder()
+                        .billingId("billingId")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .requiresAction(true)
+                        .status(SubscriptionListResponse.LatestInvoice.Status.OPEN)
+                        .amountDue(0.0)
+                        .billingReason(
+                            SubscriptionListResponse.LatestInvoice.BillingReason.BILLING_CYCLE
+                        )
+                        .currency("currency")
+                        .pdfUrl("pdfUrl")
+                        .total(0.0)
+                        .build()
+                )
                 .metadata(
                     SubscriptionListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .minimumSpend(
+                    SubscriptionListResponse.MinimumSpend.builder()
+                        .amount(0.0)
+                        .currency(SubscriptionListResponse.MinimumSpend.Currency.USD)
                         .build()
                 )
                 .payingCustomerId("payingCustomerId")
                 .paymentCollectionMethod(SubscriptionListResponse.PaymentCollectionMethod.CHARGE)
                 .addPrice(
                     SubscriptionListResponse.Price.builder()
-                        .id("id")
-                        .createdAt("createdAt")
-                        .updatedAt("updatedAt")
+                        .addonId("addonId")
+                        .amount(0.0)
+                        .baseCharge(true)
+                        .billingCountryCode("billingCountryCode")
+                        .blockSize(0.0)
+                        .currency(SubscriptionListResponse.Price.Currency.USD)
+                        .featureId("featureId")
+                        .addTier(
+                            SubscriptionListResponse.Price.Tier.builder()
+                                .flatPrice(
+                                    SubscriptionListResponse.Price.Tier.FlatPrice.builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionListResponse.Price.Tier.FlatPrice.Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .unitPrice(
+                                    SubscriptionListResponse.Price.Tier.UnitPrice.builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionListResponse.Price.Tier.UnitPrice.Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .upTo(0.0)
+                                .build()
+                        )
                         .build()
                 )
                 .resourceId("resourceId")
+                .addSubscriptionEntitlement(
+                    SubscriptionListResponse.SubscriptionEntitlement.builder()
+                        .id("id")
+                        .type(SubscriptionListResponse.SubscriptionEntitlement.Type.FEATURE)
+                        .build()
+                )
+                .trial(
+                    SubscriptionListResponse.Trial.builder()
+                        .trialEndBehavior(
+                            SubscriptionListResponse.Trial.TrialEndBehavior.CONVERT_TO_PAID
+                        )
+                        .build()
+                )
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 

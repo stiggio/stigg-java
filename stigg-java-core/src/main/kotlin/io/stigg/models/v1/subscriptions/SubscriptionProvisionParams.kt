@@ -148,6 +148,8 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
+     * Minimum spend amount
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -703,6 +705,7 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
+        /** Minimum spend amount */
         fun minimumSpend(minimumSpend: MinimumSpend?) = apply { body.minimumSpend(minimumSpend) }
 
         /** Alias for calling [Builder.minimumSpend] with `minimumSpend.orElse(null)`. */
@@ -1295,6 +1298,8 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
+         * Minimum spend amount
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1946,6 +1951,7 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
+            /** Minimum spend amount */
             fun minimumSpend(minimumSpend: MinimumSpend?) =
                 minimumSpend(JsonField.ofNullable(minimumSpend))
 
@@ -7195,32 +7201,52 @@ private constructor(
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
     }
 
+    /** Minimum spend amount */
     class MinimumSpend
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val minimum: JsonField<Minimum>,
+        private val amount: JsonField<Double>,
+        private val currency: JsonField<Currency>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("minimum") @ExcludeMissing minimum: JsonField<Minimum> = JsonMissing.of()
-        ) : this(minimum, mutableMapOf())
+            @JsonProperty("amount") @ExcludeMissing amount: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("currency")
+            @ExcludeMissing
+            currency: JsonField<Currency> = JsonMissing.of(),
+        ) : this(amount, currency, mutableMapOf())
 
         /**
-         * Minimum spend amount
+         * The price amount
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun minimum(): Optional<Minimum> = minimum.getOptional("minimum")
+        fun amount(): Optional<Double> = amount.getOptional("amount")
 
         /**
-         * Returns the raw JSON value of [minimum].
+         * The price currency
          *
-         * Unlike [minimum], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        @JsonProperty("minimum") @ExcludeMissing fun _minimum(): JsonField<Minimum> = minimum
+        fun currency(): Optional<Currency> = currency.getOptional("currency")
+
+        /**
+         * Returns the raw JSON value of [amount].
+         *
+         * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
+
+        /**
+         * Returns the raw JSON value of [currency].
+         *
+         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<Currency> = currency
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -7243,29 +7269,40 @@ private constructor(
         /** A builder for [MinimumSpend]. */
         class Builder internal constructor() {
 
-            private var minimum: JsonField<Minimum> = JsonMissing.of()
+            private var amount: JsonField<Double> = JsonMissing.of()
+            private var currency: JsonField<Currency> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(minimumSpend: MinimumSpend) = apply {
-                minimum = minimumSpend.minimum
+                amount = minimumSpend.amount
+                currency = minimumSpend.currency
                 additionalProperties = minimumSpend.additionalProperties.toMutableMap()
             }
 
-            /** Minimum spend amount */
-            fun minimum(minimum: Minimum?) = minimum(JsonField.ofNullable(minimum))
-
-            /** Alias for calling [Builder.minimum] with `minimum.orElse(null)`. */
-            fun minimum(minimum: Optional<Minimum>) = minimum(minimum.getOrNull())
+            /** The price amount */
+            fun amount(amount: Double) = amount(JsonField.of(amount))
 
             /**
-             * Sets [Builder.minimum] to an arbitrary JSON value.
+             * Sets [Builder.amount] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.minimum] with a well-typed [Minimum] value instead.
+             * You should usually call [Builder.amount] with a well-typed [Double] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun minimum(minimum: JsonField<Minimum>) = apply { this.minimum = minimum }
+            fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
+
+            /** The price currency */
+            fun currency(currency: Currency) = currency(JsonField.of(currency))
+
+            /**
+             * Sets [Builder.currency] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currency] with a well-typed [Currency] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -7291,7 +7328,8 @@ private constructor(
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): MinimumSpend = MinimumSpend(minimum, additionalProperties.toMutableMap())
+            fun build(): MinimumSpend =
+                MinimumSpend(amount, currency, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -7301,7 +7339,8 @@ private constructor(
                 return@apply
             }
 
-            minimum().ifPresent { it.validate() }
+            amount()
+            currency().ifPresent { it.validate() }
             validated = true
         }
 
@@ -7320,209 +7359,793 @@ private constructor(
          * Used for best match union deserialization.
          */
         @JvmSynthetic
-        internal fun validity(): Int = (minimum.asKnown().getOrNull()?.validity() ?: 0)
+        internal fun validity(): Int =
+            (if (amount.asKnown().isPresent) 1 else 0) +
+                (currency.asKnown().getOrNull()?.validity() ?: 0)
 
-        /** Minimum spend amount */
-        class Minimum
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val amount: JsonField<Double>,
-            private val billingCountryCode: JsonField<String>,
-            private val currency: JsonField<Currency>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("amount")
-                @ExcludeMissing
-                amount: JsonField<Double> = JsonMissing.of(),
-                @JsonProperty("billingCountryCode")
-                @ExcludeMissing
-                billingCountryCode: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("currency")
-                @ExcludeMissing
-                currency: JsonField<Currency> = JsonMissing.of(),
-            ) : this(amount, billingCountryCode, currency, mutableMapOf())
+        /** The price currency */
+        class Currency @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
 
             /**
-             * The price amount
+             * Returns this class instance's raw value.
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
              */
-            fun amount(): Optional<Double> = amount.getOptional("amount")
-
-            /**
-             * The billing country code of the price
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun billingCountryCode(): Optional<String> =
-                billingCountryCode.getOptional("billingCountryCode")
-
-            /**
-             * The price currency
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun currency(): Optional<Currency> = currency.getOptional("currency")
-
-            /**
-             * Returns the raw JSON value of [amount].
-             *
-             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
-
-            /**
-             * Returns the raw JSON value of [billingCountryCode].
-             *
-             * Unlike [billingCountryCode], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("billingCountryCode")
-            @ExcludeMissing
-            fun _billingCountryCode(): JsonField<String> = billingCountryCode
-
-            /**
-             * Returns the raw JSON value of [currency].
-             *
-             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("currency")
-            @ExcludeMissing
-            fun _currency(): JsonField<Currency> = currency
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
 
             companion object {
 
-                /** Returns a mutable builder for constructing an instance of [Minimum]. */
-                @JvmStatic fun builder() = Builder()
+                @JvmField val USD = of("usd")
+
+                @JvmField val AED = of("aed")
+
+                @JvmField val ALL = of("all")
+
+                @JvmField val AMD = of("amd")
+
+                @JvmField val ANG = of("ang")
+
+                @JvmField val AUD = of("aud")
+
+                @JvmField val AWG = of("awg")
+
+                @JvmField val AZN = of("azn")
+
+                @JvmField val BAM = of("bam")
+
+                @JvmField val BBD = of("bbd")
+
+                @JvmField val BDT = of("bdt")
+
+                @JvmField val BGN = of("bgn")
+
+                @JvmField val BIF = of("bif")
+
+                @JvmField val BMD = of("bmd")
+
+                @JvmField val BND = of("bnd")
+
+                @JvmField val BSD = of("bsd")
+
+                @JvmField val BWP = of("bwp")
+
+                @JvmField val BYN = of("byn")
+
+                @JvmField val BZD = of("bzd")
+
+                @JvmField val BRL = of("brl")
+
+                @JvmField val CAD = of("cad")
+
+                @JvmField val CDF = of("cdf")
+
+                @JvmField val CHF = of("chf")
+
+                @JvmField val CNY = of("cny")
+
+                @JvmField val CZK = of("czk")
+
+                @JvmField val DKK = of("dkk")
+
+                @JvmField val DOP = of("dop")
+
+                @JvmField val DZD = of("dzd")
+
+                @JvmField val EGP = of("egp")
+
+                @JvmField val ETB = of("etb")
+
+                @JvmField val EUR = of("eur")
+
+                @JvmField val FJD = of("fjd")
+
+                @JvmField val GBP = of("gbp")
+
+                @JvmField val GEL = of("gel")
+
+                @JvmField val GIP = of("gip")
+
+                @JvmField val GMD = of("gmd")
+
+                @JvmField val GYD = of("gyd")
+
+                @JvmField val HKD = of("hkd")
+
+                @JvmField val HRK = of("hrk")
+
+                @JvmField val HTG = of("htg")
+
+                @JvmField val IDR = of("idr")
+
+                @JvmField val ILS = of("ils")
+
+                @JvmField val INR = of("inr")
+
+                @JvmField val ISK = of("isk")
+
+                @JvmField val JMD = of("jmd")
+
+                @JvmField val JPY = of("jpy")
+
+                @JvmField val KES = of("kes")
+
+                @JvmField val KGS = of("kgs")
+
+                @JvmField val KHR = of("khr")
+
+                @JvmField val KMF = of("kmf")
+
+                @JvmField val KRW = of("krw")
+
+                @JvmField val KYD = of("kyd")
+
+                @JvmField val KZT = of("kzt")
+
+                @JvmField val LBP = of("lbp")
+
+                @JvmField val LKR = of("lkr")
+
+                @JvmField val LRD = of("lrd")
+
+                @JvmField val LSL = of("lsl")
+
+                @JvmField val MAD = of("mad")
+
+                @JvmField val MDL = of("mdl")
+
+                @JvmField val MGA = of("mga")
+
+                @JvmField val MKD = of("mkd")
+
+                @JvmField val MMK = of("mmk")
+
+                @JvmField val MNT = of("mnt")
+
+                @JvmField val MOP = of("mop")
+
+                @JvmField val MRO = of("mro")
+
+                @JvmField val MVR = of("mvr")
+
+                @JvmField val MWK = of("mwk")
+
+                @JvmField val MXN = of("mxn")
+
+                @JvmField val MYR = of("myr")
+
+                @JvmField val MZN = of("mzn")
+
+                @JvmField val NAD = of("nad")
+
+                @JvmField val NGN = of("ngn")
+
+                @JvmField val NOK = of("nok")
+
+                @JvmField val NPR = of("npr")
+
+                @JvmField val NZD = of("nzd")
+
+                @JvmField val PGK = of("pgk")
+
+                @JvmField val PHP = of("php")
+
+                @JvmField val PKR = of("pkr")
+
+                @JvmField val PLN = of("pln")
+
+                @JvmField val QAR = of("qar")
+
+                @JvmField val RON = of("ron")
+
+                @JvmField val RSD = of("rsd")
+
+                @JvmField val RUB = of("rub")
+
+                @JvmField val RWF = of("rwf")
+
+                @JvmField val SAR = of("sar")
+
+                @JvmField val SBD = of("sbd")
+
+                @JvmField val SCR = of("scr")
+
+                @JvmField val SEK = of("sek")
+
+                @JvmField val SGD = of("sgd")
+
+                @JvmField val SLE = of("sle")
+
+                @JvmField val SLL = of("sll")
+
+                @JvmField val SOS = of("sos")
+
+                @JvmField val SZL = of("szl")
+
+                @JvmField val THB = of("thb")
+
+                @JvmField val TJS = of("tjs")
+
+                @JvmField val TOP = of("top")
+
+                @JvmField val TRY = of("try")
+
+                @JvmField val TTD = of("ttd")
+
+                @JvmField val TZS = of("tzs")
+
+                @JvmField val UAH = of("uah")
+
+                @JvmField val UZS = of("uzs")
+
+                @JvmField val VND = of("vnd")
+
+                @JvmField val VUV = of("vuv")
+
+                @JvmField val WST = of("wst")
+
+                @JvmField val XAF = of("xaf")
+
+                @JvmField val XCD = of("xcd")
+
+                @JvmField val YER = of("yer")
+
+                @JvmField val ZAR = of("zar")
+
+                @JvmField val ZMW = of("zmw")
+
+                @JvmField val CLP = of("clp")
+
+                @JvmField val DJF = of("djf")
+
+                @JvmField val GNF = of("gnf")
+
+                @JvmField val UGX = of("ugx")
+
+                @JvmField val PYG = of("pyg")
+
+                @JvmField val XOF = of("xof")
+
+                @JvmField val XPF = of("xpf")
+
+                @JvmStatic fun of(value: String) = Currency(JsonField.of(value))
             }
 
-            /** A builder for [Minimum]. */
-            class Builder internal constructor() {
-
-                private var amount: JsonField<Double> = JsonMissing.of()
-                private var billingCountryCode: JsonField<String> = JsonMissing.of()
-                private var currency: JsonField<Currency> = JsonMissing.of()
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(minimum: Minimum) = apply {
-                    amount = minimum.amount
-                    billingCountryCode = minimum.billingCountryCode
-                    currency = minimum.currency
-                    additionalProperties = minimum.additionalProperties.toMutableMap()
-                }
-
-                /** The price amount */
-                fun amount(amount: Double) = amount(JsonField.of(amount))
-
-                /**
-                 * Sets [Builder.amount] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.amount] with a well-typed [Double] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
-
-                /** The billing country code of the price */
-                fun billingCountryCode(billingCountryCode: String?) =
-                    billingCountryCode(JsonField.ofNullable(billingCountryCode))
-
-                /**
-                 * Alias for calling [Builder.billingCountryCode] with
-                 * `billingCountryCode.orElse(null)`.
-                 */
-                fun billingCountryCode(billingCountryCode: Optional<String>) =
-                    billingCountryCode(billingCountryCode.getOrNull())
-
-                /**
-                 * Sets [Builder.billingCountryCode] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.billingCountryCode] with a well-typed [String]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
-                    this.billingCountryCode = billingCountryCode
-                }
-
-                /** The price currency */
-                fun currency(currency: Currency) = currency(JsonField.of(currency))
-
-                /**
-                 * Sets [Builder.currency] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.currency] with a well-typed [Currency] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Minimum].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Minimum =
-                    Minimum(
-                        amount,
-                        billingCountryCode,
-                        currency,
-                        additionalProperties.toMutableMap(),
-                    )
+            /** An enum containing [Currency]'s known values. */
+            enum class Known {
+                USD,
+                AED,
+                ALL,
+                AMD,
+                ANG,
+                AUD,
+                AWG,
+                AZN,
+                BAM,
+                BBD,
+                BDT,
+                BGN,
+                BIF,
+                BMD,
+                BND,
+                BSD,
+                BWP,
+                BYN,
+                BZD,
+                BRL,
+                CAD,
+                CDF,
+                CHF,
+                CNY,
+                CZK,
+                DKK,
+                DOP,
+                DZD,
+                EGP,
+                ETB,
+                EUR,
+                FJD,
+                GBP,
+                GEL,
+                GIP,
+                GMD,
+                GYD,
+                HKD,
+                HRK,
+                HTG,
+                IDR,
+                ILS,
+                INR,
+                ISK,
+                JMD,
+                JPY,
+                KES,
+                KGS,
+                KHR,
+                KMF,
+                KRW,
+                KYD,
+                KZT,
+                LBP,
+                LKR,
+                LRD,
+                LSL,
+                MAD,
+                MDL,
+                MGA,
+                MKD,
+                MMK,
+                MNT,
+                MOP,
+                MRO,
+                MVR,
+                MWK,
+                MXN,
+                MYR,
+                MZN,
+                NAD,
+                NGN,
+                NOK,
+                NPR,
+                NZD,
+                PGK,
+                PHP,
+                PKR,
+                PLN,
+                QAR,
+                RON,
+                RSD,
+                RUB,
+                RWF,
+                SAR,
+                SBD,
+                SCR,
+                SEK,
+                SGD,
+                SLE,
+                SLL,
+                SOS,
+                SZL,
+                THB,
+                TJS,
+                TOP,
+                TRY,
+                TTD,
+                TZS,
+                UAH,
+                UZS,
+                VND,
+                VUV,
+                WST,
+                XAF,
+                XCD,
+                YER,
+                ZAR,
+                ZMW,
+                CLP,
+                DJF,
+                GNF,
+                UGX,
+                PYG,
+                XOF,
+                XPF,
             }
+
+            /**
+             * An enum containing [Currency]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Currency] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                USD,
+                AED,
+                ALL,
+                AMD,
+                ANG,
+                AUD,
+                AWG,
+                AZN,
+                BAM,
+                BBD,
+                BDT,
+                BGN,
+                BIF,
+                BMD,
+                BND,
+                BSD,
+                BWP,
+                BYN,
+                BZD,
+                BRL,
+                CAD,
+                CDF,
+                CHF,
+                CNY,
+                CZK,
+                DKK,
+                DOP,
+                DZD,
+                EGP,
+                ETB,
+                EUR,
+                FJD,
+                GBP,
+                GEL,
+                GIP,
+                GMD,
+                GYD,
+                HKD,
+                HRK,
+                HTG,
+                IDR,
+                ILS,
+                INR,
+                ISK,
+                JMD,
+                JPY,
+                KES,
+                KGS,
+                KHR,
+                KMF,
+                KRW,
+                KYD,
+                KZT,
+                LBP,
+                LKR,
+                LRD,
+                LSL,
+                MAD,
+                MDL,
+                MGA,
+                MKD,
+                MMK,
+                MNT,
+                MOP,
+                MRO,
+                MVR,
+                MWK,
+                MXN,
+                MYR,
+                MZN,
+                NAD,
+                NGN,
+                NOK,
+                NPR,
+                NZD,
+                PGK,
+                PHP,
+                PKR,
+                PLN,
+                QAR,
+                RON,
+                RSD,
+                RUB,
+                RWF,
+                SAR,
+                SBD,
+                SCR,
+                SEK,
+                SGD,
+                SLE,
+                SLL,
+                SOS,
+                SZL,
+                THB,
+                TJS,
+                TOP,
+                TRY,
+                TTD,
+                TZS,
+                UAH,
+                UZS,
+                VND,
+                VUV,
+                WST,
+                XAF,
+                XCD,
+                YER,
+                ZAR,
+                ZMW,
+                CLP,
+                DJF,
+                GNF,
+                UGX,
+                PYG,
+                XOF,
+                XPF,
+                /**
+                 * An enum member indicating that [Currency] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    USD -> Value.USD
+                    AED -> Value.AED
+                    ALL -> Value.ALL
+                    AMD -> Value.AMD
+                    ANG -> Value.ANG
+                    AUD -> Value.AUD
+                    AWG -> Value.AWG
+                    AZN -> Value.AZN
+                    BAM -> Value.BAM
+                    BBD -> Value.BBD
+                    BDT -> Value.BDT
+                    BGN -> Value.BGN
+                    BIF -> Value.BIF
+                    BMD -> Value.BMD
+                    BND -> Value.BND
+                    BSD -> Value.BSD
+                    BWP -> Value.BWP
+                    BYN -> Value.BYN
+                    BZD -> Value.BZD
+                    BRL -> Value.BRL
+                    CAD -> Value.CAD
+                    CDF -> Value.CDF
+                    CHF -> Value.CHF
+                    CNY -> Value.CNY
+                    CZK -> Value.CZK
+                    DKK -> Value.DKK
+                    DOP -> Value.DOP
+                    DZD -> Value.DZD
+                    EGP -> Value.EGP
+                    ETB -> Value.ETB
+                    EUR -> Value.EUR
+                    FJD -> Value.FJD
+                    GBP -> Value.GBP
+                    GEL -> Value.GEL
+                    GIP -> Value.GIP
+                    GMD -> Value.GMD
+                    GYD -> Value.GYD
+                    HKD -> Value.HKD
+                    HRK -> Value.HRK
+                    HTG -> Value.HTG
+                    IDR -> Value.IDR
+                    ILS -> Value.ILS
+                    INR -> Value.INR
+                    ISK -> Value.ISK
+                    JMD -> Value.JMD
+                    JPY -> Value.JPY
+                    KES -> Value.KES
+                    KGS -> Value.KGS
+                    KHR -> Value.KHR
+                    KMF -> Value.KMF
+                    KRW -> Value.KRW
+                    KYD -> Value.KYD
+                    KZT -> Value.KZT
+                    LBP -> Value.LBP
+                    LKR -> Value.LKR
+                    LRD -> Value.LRD
+                    LSL -> Value.LSL
+                    MAD -> Value.MAD
+                    MDL -> Value.MDL
+                    MGA -> Value.MGA
+                    MKD -> Value.MKD
+                    MMK -> Value.MMK
+                    MNT -> Value.MNT
+                    MOP -> Value.MOP
+                    MRO -> Value.MRO
+                    MVR -> Value.MVR
+                    MWK -> Value.MWK
+                    MXN -> Value.MXN
+                    MYR -> Value.MYR
+                    MZN -> Value.MZN
+                    NAD -> Value.NAD
+                    NGN -> Value.NGN
+                    NOK -> Value.NOK
+                    NPR -> Value.NPR
+                    NZD -> Value.NZD
+                    PGK -> Value.PGK
+                    PHP -> Value.PHP
+                    PKR -> Value.PKR
+                    PLN -> Value.PLN
+                    QAR -> Value.QAR
+                    RON -> Value.RON
+                    RSD -> Value.RSD
+                    RUB -> Value.RUB
+                    RWF -> Value.RWF
+                    SAR -> Value.SAR
+                    SBD -> Value.SBD
+                    SCR -> Value.SCR
+                    SEK -> Value.SEK
+                    SGD -> Value.SGD
+                    SLE -> Value.SLE
+                    SLL -> Value.SLL
+                    SOS -> Value.SOS
+                    SZL -> Value.SZL
+                    THB -> Value.THB
+                    TJS -> Value.TJS
+                    TOP -> Value.TOP
+                    TRY -> Value.TRY
+                    TTD -> Value.TTD
+                    TZS -> Value.TZS
+                    UAH -> Value.UAH
+                    UZS -> Value.UZS
+                    VND -> Value.VND
+                    VUV -> Value.VUV
+                    WST -> Value.WST
+                    XAF -> Value.XAF
+                    XCD -> Value.XCD
+                    YER -> Value.YER
+                    ZAR -> Value.ZAR
+                    ZMW -> Value.ZMW
+                    CLP -> Value.CLP
+                    DJF -> Value.DJF
+                    GNF -> Value.GNF
+                    UGX -> Value.UGX
+                    PYG -> Value.PYG
+                    XOF -> Value.XOF
+                    XPF -> Value.XPF
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    USD -> Known.USD
+                    AED -> Known.AED
+                    ALL -> Known.ALL
+                    AMD -> Known.AMD
+                    ANG -> Known.ANG
+                    AUD -> Known.AUD
+                    AWG -> Known.AWG
+                    AZN -> Known.AZN
+                    BAM -> Known.BAM
+                    BBD -> Known.BBD
+                    BDT -> Known.BDT
+                    BGN -> Known.BGN
+                    BIF -> Known.BIF
+                    BMD -> Known.BMD
+                    BND -> Known.BND
+                    BSD -> Known.BSD
+                    BWP -> Known.BWP
+                    BYN -> Known.BYN
+                    BZD -> Known.BZD
+                    BRL -> Known.BRL
+                    CAD -> Known.CAD
+                    CDF -> Known.CDF
+                    CHF -> Known.CHF
+                    CNY -> Known.CNY
+                    CZK -> Known.CZK
+                    DKK -> Known.DKK
+                    DOP -> Known.DOP
+                    DZD -> Known.DZD
+                    EGP -> Known.EGP
+                    ETB -> Known.ETB
+                    EUR -> Known.EUR
+                    FJD -> Known.FJD
+                    GBP -> Known.GBP
+                    GEL -> Known.GEL
+                    GIP -> Known.GIP
+                    GMD -> Known.GMD
+                    GYD -> Known.GYD
+                    HKD -> Known.HKD
+                    HRK -> Known.HRK
+                    HTG -> Known.HTG
+                    IDR -> Known.IDR
+                    ILS -> Known.ILS
+                    INR -> Known.INR
+                    ISK -> Known.ISK
+                    JMD -> Known.JMD
+                    JPY -> Known.JPY
+                    KES -> Known.KES
+                    KGS -> Known.KGS
+                    KHR -> Known.KHR
+                    KMF -> Known.KMF
+                    KRW -> Known.KRW
+                    KYD -> Known.KYD
+                    KZT -> Known.KZT
+                    LBP -> Known.LBP
+                    LKR -> Known.LKR
+                    LRD -> Known.LRD
+                    LSL -> Known.LSL
+                    MAD -> Known.MAD
+                    MDL -> Known.MDL
+                    MGA -> Known.MGA
+                    MKD -> Known.MKD
+                    MMK -> Known.MMK
+                    MNT -> Known.MNT
+                    MOP -> Known.MOP
+                    MRO -> Known.MRO
+                    MVR -> Known.MVR
+                    MWK -> Known.MWK
+                    MXN -> Known.MXN
+                    MYR -> Known.MYR
+                    MZN -> Known.MZN
+                    NAD -> Known.NAD
+                    NGN -> Known.NGN
+                    NOK -> Known.NOK
+                    NPR -> Known.NPR
+                    NZD -> Known.NZD
+                    PGK -> Known.PGK
+                    PHP -> Known.PHP
+                    PKR -> Known.PKR
+                    PLN -> Known.PLN
+                    QAR -> Known.QAR
+                    RON -> Known.RON
+                    RSD -> Known.RSD
+                    RUB -> Known.RUB
+                    RWF -> Known.RWF
+                    SAR -> Known.SAR
+                    SBD -> Known.SBD
+                    SCR -> Known.SCR
+                    SEK -> Known.SEK
+                    SGD -> Known.SGD
+                    SLE -> Known.SLE
+                    SLL -> Known.SLL
+                    SOS -> Known.SOS
+                    SZL -> Known.SZL
+                    THB -> Known.THB
+                    TJS -> Known.TJS
+                    TOP -> Known.TOP
+                    TRY -> Known.TRY
+                    TTD -> Known.TTD
+                    TZS -> Known.TZS
+                    UAH -> Known.UAH
+                    UZS -> Known.UZS
+                    VND -> Known.VND
+                    VUV -> Known.VUV
+                    WST -> Known.WST
+                    XAF -> Known.XAF
+                    XCD -> Known.XCD
+                    YER -> Known.YER
+                    ZAR -> Known.ZAR
+                    ZMW -> Known.ZMW
+                    CLP -> Known.CLP
+                    DJF -> Known.DJF
+                    GNF -> Known.GNF
+                    UGX -> Known.UGX
+                    PYG -> Known.PYG
+                    XOF -> Known.XOF
+                    XPF -> Known.XPF
+                    else -> throw StiggInvalidDataException("Unknown Currency: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
 
             private var validated: Boolean = false
 
-            fun validate(): Minimum = apply {
+            fun validate(): Currency = apply {
                 if (validated) {
                     return@apply
                 }
 
-                amount()
-                billingCountryCode()
-                currency().ifPresent { it.validate() }
+                known()
                 validated = true
             }
 
@@ -7540,848 +8163,19 @@ private constructor(
              *
              * Used for best match union deserialization.
              */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                (if (amount.asKnown().isPresent) 1 else 0) +
-                    (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
-                    (currency.asKnown().getOrNull()?.validity() ?: 0)
-
-            /** The price currency */
-            class Currency @JsonCreator private constructor(private val value: JsonField<String>) :
-                Enum {
-
-                /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
-                 */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-                companion object {
-
-                    @JvmField val USD = of("usd")
-
-                    @JvmField val AED = of("aed")
-
-                    @JvmField val ALL = of("all")
-
-                    @JvmField val AMD = of("amd")
-
-                    @JvmField val ANG = of("ang")
-
-                    @JvmField val AUD = of("aud")
-
-                    @JvmField val AWG = of("awg")
-
-                    @JvmField val AZN = of("azn")
-
-                    @JvmField val BAM = of("bam")
-
-                    @JvmField val BBD = of("bbd")
-
-                    @JvmField val BDT = of("bdt")
-
-                    @JvmField val BGN = of("bgn")
-
-                    @JvmField val BIF = of("bif")
-
-                    @JvmField val BMD = of("bmd")
-
-                    @JvmField val BND = of("bnd")
-
-                    @JvmField val BSD = of("bsd")
-
-                    @JvmField val BWP = of("bwp")
-
-                    @JvmField val BYN = of("byn")
-
-                    @JvmField val BZD = of("bzd")
-
-                    @JvmField val BRL = of("brl")
-
-                    @JvmField val CAD = of("cad")
-
-                    @JvmField val CDF = of("cdf")
-
-                    @JvmField val CHF = of("chf")
-
-                    @JvmField val CNY = of("cny")
-
-                    @JvmField val CZK = of("czk")
-
-                    @JvmField val DKK = of("dkk")
-
-                    @JvmField val DOP = of("dop")
-
-                    @JvmField val DZD = of("dzd")
-
-                    @JvmField val EGP = of("egp")
-
-                    @JvmField val ETB = of("etb")
-
-                    @JvmField val EUR = of("eur")
-
-                    @JvmField val FJD = of("fjd")
-
-                    @JvmField val GBP = of("gbp")
-
-                    @JvmField val GEL = of("gel")
-
-                    @JvmField val GIP = of("gip")
-
-                    @JvmField val GMD = of("gmd")
-
-                    @JvmField val GYD = of("gyd")
-
-                    @JvmField val HKD = of("hkd")
-
-                    @JvmField val HRK = of("hrk")
-
-                    @JvmField val HTG = of("htg")
-
-                    @JvmField val IDR = of("idr")
-
-                    @JvmField val ILS = of("ils")
-
-                    @JvmField val INR = of("inr")
-
-                    @JvmField val ISK = of("isk")
-
-                    @JvmField val JMD = of("jmd")
-
-                    @JvmField val JPY = of("jpy")
-
-                    @JvmField val KES = of("kes")
-
-                    @JvmField val KGS = of("kgs")
-
-                    @JvmField val KHR = of("khr")
-
-                    @JvmField val KMF = of("kmf")
-
-                    @JvmField val KRW = of("krw")
-
-                    @JvmField val KYD = of("kyd")
-
-                    @JvmField val KZT = of("kzt")
-
-                    @JvmField val LBP = of("lbp")
-
-                    @JvmField val LKR = of("lkr")
-
-                    @JvmField val LRD = of("lrd")
-
-                    @JvmField val LSL = of("lsl")
-
-                    @JvmField val MAD = of("mad")
-
-                    @JvmField val MDL = of("mdl")
-
-                    @JvmField val MGA = of("mga")
-
-                    @JvmField val MKD = of("mkd")
-
-                    @JvmField val MMK = of("mmk")
-
-                    @JvmField val MNT = of("mnt")
-
-                    @JvmField val MOP = of("mop")
-
-                    @JvmField val MRO = of("mro")
-
-                    @JvmField val MVR = of("mvr")
-
-                    @JvmField val MWK = of("mwk")
-
-                    @JvmField val MXN = of("mxn")
-
-                    @JvmField val MYR = of("myr")
-
-                    @JvmField val MZN = of("mzn")
-
-                    @JvmField val NAD = of("nad")
-
-                    @JvmField val NGN = of("ngn")
-
-                    @JvmField val NOK = of("nok")
-
-                    @JvmField val NPR = of("npr")
-
-                    @JvmField val NZD = of("nzd")
-
-                    @JvmField val PGK = of("pgk")
-
-                    @JvmField val PHP = of("php")
-
-                    @JvmField val PKR = of("pkr")
-
-                    @JvmField val PLN = of("pln")
-
-                    @JvmField val QAR = of("qar")
-
-                    @JvmField val RON = of("ron")
-
-                    @JvmField val RSD = of("rsd")
-
-                    @JvmField val RUB = of("rub")
-
-                    @JvmField val RWF = of("rwf")
-
-                    @JvmField val SAR = of("sar")
-
-                    @JvmField val SBD = of("sbd")
-
-                    @JvmField val SCR = of("scr")
-
-                    @JvmField val SEK = of("sek")
-
-                    @JvmField val SGD = of("sgd")
-
-                    @JvmField val SLE = of("sle")
-
-                    @JvmField val SLL = of("sll")
-
-                    @JvmField val SOS = of("sos")
-
-                    @JvmField val SZL = of("szl")
-
-                    @JvmField val THB = of("thb")
-
-                    @JvmField val TJS = of("tjs")
-
-                    @JvmField val TOP = of("top")
-
-                    @JvmField val TRY = of("try")
-
-                    @JvmField val TTD = of("ttd")
-
-                    @JvmField val TZS = of("tzs")
-
-                    @JvmField val UAH = of("uah")
-
-                    @JvmField val UZS = of("uzs")
-
-                    @JvmField val VND = of("vnd")
-
-                    @JvmField val VUV = of("vuv")
-
-                    @JvmField val WST = of("wst")
-
-                    @JvmField val XAF = of("xaf")
-
-                    @JvmField val XCD = of("xcd")
-
-                    @JvmField val YER = of("yer")
-
-                    @JvmField val ZAR = of("zar")
-
-                    @JvmField val ZMW = of("zmw")
-
-                    @JvmField val CLP = of("clp")
-
-                    @JvmField val DJF = of("djf")
-
-                    @JvmField val GNF = of("gnf")
-
-                    @JvmField val UGX = of("ugx")
-
-                    @JvmField val PYG = of("pyg")
-
-                    @JvmField val XOF = of("xof")
-
-                    @JvmField val XPF = of("xpf")
-
-                    @JvmStatic fun of(value: String) = Currency(JsonField.of(value))
-                }
-
-                /** An enum containing [Currency]'s known values. */
-                enum class Known {
-                    USD,
-                    AED,
-                    ALL,
-                    AMD,
-                    ANG,
-                    AUD,
-                    AWG,
-                    AZN,
-                    BAM,
-                    BBD,
-                    BDT,
-                    BGN,
-                    BIF,
-                    BMD,
-                    BND,
-                    BSD,
-                    BWP,
-                    BYN,
-                    BZD,
-                    BRL,
-                    CAD,
-                    CDF,
-                    CHF,
-                    CNY,
-                    CZK,
-                    DKK,
-                    DOP,
-                    DZD,
-                    EGP,
-                    ETB,
-                    EUR,
-                    FJD,
-                    GBP,
-                    GEL,
-                    GIP,
-                    GMD,
-                    GYD,
-                    HKD,
-                    HRK,
-                    HTG,
-                    IDR,
-                    ILS,
-                    INR,
-                    ISK,
-                    JMD,
-                    JPY,
-                    KES,
-                    KGS,
-                    KHR,
-                    KMF,
-                    KRW,
-                    KYD,
-                    KZT,
-                    LBP,
-                    LKR,
-                    LRD,
-                    LSL,
-                    MAD,
-                    MDL,
-                    MGA,
-                    MKD,
-                    MMK,
-                    MNT,
-                    MOP,
-                    MRO,
-                    MVR,
-                    MWK,
-                    MXN,
-                    MYR,
-                    MZN,
-                    NAD,
-                    NGN,
-                    NOK,
-                    NPR,
-                    NZD,
-                    PGK,
-                    PHP,
-                    PKR,
-                    PLN,
-                    QAR,
-                    RON,
-                    RSD,
-                    RUB,
-                    RWF,
-                    SAR,
-                    SBD,
-                    SCR,
-                    SEK,
-                    SGD,
-                    SLE,
-                    SLL,
-                    SOS,
-                    SZL,
-                    THB,
-                    TJS,
-                    TOP,
-                    TRY,
-                    TTD,
-                    TZS,
-                    UAH,
-                    UZS,
-                    VND,
-                    VUV,
-                    WST,
-                    XAF,
-                    XCD,
-                    YER,
-                    ZAR,
-                    ZMW,
-                    CLP,
-                    DJF,
-                    GNF,
-                    UGX,
-                    PYG,
-                    XOF,
-                    XPF,
-                }
-
-                /**
-                 * An enum containing [Currency]'s known values, as well as an [_UNKNOWN] member.
-                 *
-                 * An instance of [Currency] can contain an unknown value in a couple of cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    USD,
-                    AED,
-                    ALL,
-                    AMD,
-                    ANG,
-                    AUD,
-                    AWG,
-                    AZN,
-                    BAM,
-                    BBD,
-                    BDT,
-                    BGN,
-                    BIF,
-                    BMD,
-                    BND,
-                    BSD,
-                    BWP,
-                    BYN,
-                    BZD,
-                    BRL,
-                    CAD,
-                    CDF,
-                    CHF,
-                    CNY,
-                    CZK,
-                    DKK,
-                    DOP,
-                    DZD,
-                    EGP,
-                    ETB,
-                    EUR,
-                    FJD,
-                    GBP,
-                    GEL,
-                    GIP,
-                    GMD,
-                    GYD,
-                    HKD,
-                    HRK,
-                    HTG,
-                    IDR,
-                    ILS,
-                    INR,
-                    ISK,
-                    JMD,
-                    JPY,
-                    KES,
-                    KGS,
-                    KHR,
-                    KMF,
-                    KRW,
-                    KYD,
-                    KZT,
-                    LBP,
-                    LKR,
-                    LRD,
-                    LSL,
-                    MAD,
-                    MDL,
-                    MGA,
-                    MKD,
-                    MMK,
-                    MNT,
-                    MOP,
-                    MRO,
-                    MVR,
-                    MWK,
-                    MXN,
-                    MYR,
-                    MZN,
-                    NAD,
-                    NGN,
-                    NOK,
-                    NPR,
-                    NZD,
-                    PGK,
-                    PHP,
-                    PKR,
-                    PLN,
-                    QAR,
-                    RON,
-                    RSD,
-                    RUB,
-                    RWF,
-                    SAR,
-                    SBD,
-                    SCR,
-                    SEK,
-                    SGD,
-                    SLE,
-                    SLL,
-                    SOS,
-                    SZL,
-                    THB,
-                    TJS,
-                    TOP,
-                    TRY,
-                    TTD,
-                    TZS,
-                    UAH,
-                    UZS,
-                    VND,
-                    VUV,
-                    WST,
-                    XAF,
-                    XCD,
-                    YER,
-                    ZAR,
-                    ZMW,
-                    CLP,
-                    DJF,
-                    GNF,
-                    UGX,
-                    PYG,
-                    XOF,
-                    XPF,
-                    /**
-                     * An enum member indicating that [Currency] was instantiated with an unknown
-                     * value.
-                     */
-                    _UNKNOWN,
-                }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        USD -> Value.USD
-                        AED -> Value.AED
-                        ALL -> Value.ALL
-                        AMD -> Value.AMD
-                        ANG -> Value.ANG
-                        AUD -> Value.AUD
-                        AWG -> Value.AWG
-                        AZN -> Value.AZN
-                        BAM -> Value.BAM
-                        BBD -> Value.BBD
-                        BDT -> Value.BDT
-                        BGN -> Value.BGN
-                        BIF -> Value.BIF
-                        BMD -> Value.BMD
-                        BND -> Value.BND
-                        BSD -> Value.BSD
-                        BWP -> Value.BWP
-                        BYN -> Value.BYN
-                        BZD -> Value.BZD
-                        BRL -> Value.BRL
-                        CAD -> Value.CAD
-                        CDF -> Value.CDF
-                        CHF -> Value.CHF
-                        CNY -> Value.CNY
-                        CZK -> Value.CZK
-                        DKK -> Value.DKK
-                        DOP -> Value.DOP
-                        DZD -> Value.DZD
-                        EGP -> Value.EGP
-                        ETB -> Value.ETB
-                        EUR -> Value.EUR
-                        FJD -> Value.FJD
-                        GBP -> Value.GBP
-                        GEL -> Value.GEL
-                        GIP -> Value.GIP
-                        GMD -> Value.GMD
-                        GYD -> Value.GYD
-                        HKD -> Value.HKD
-                        HRK -> Value.HRK
-                        HTG -> Value.HTG
-                        IDR -> Value.IDR
-                        ILS -> Value.ILS
-                        INR -> Value.INR
-                        ISK -> Value.ISK
-                        JMD -> Value.JMD
-                        JPY -> Value.JPY
-                        KES -> Value.KES
-                        KGS -> Value.KGS
-                        KHR -> Value.KHR
-                        KMF -> Value.KMF
-                        KRW -> Value.KRW
-                        KYD -> Value.KYD
-                        KZT -> Value.KZT
-                        LBP -> Value.LBP
-                        LKR -> Value.LKR
-                        LRD -> Value.LRD
-                        LSL -> Value.LSL
-                        MAD -> Value.MAD
-                        MDL -> Value.MDL
-                        MGA -> Value.MGA
-                        MKD -> Value.MKD
-                        MMK -> Value.MMK
-                        MNT -> Value.MNT
-                        MOP -> Value.MOP
-                        MRO -> Value.MRO
-                        MVR -> Value.MVR
-                        MWK -> Value.MWK
-                        MXN -> Value.MXN
-                        MYR -> Value.MYR
-                        MZN -> Value.MZN
-                        NAD -> Value.NAD
-                        NGN -> Value.NGN
-                        NOK -> Value.NOK
-                        NPR -> Value.NPR
-                        NZD -> Value.NZD
-                        PGK -> Value.PGK
-                        PHP -> Value.PHP
-                        PKR -> Value.PKR
-                        PLN -> Value.PLN
-                        QAR -> Value.QAR
-                        RON -> Value.RON
-                        RSD -> Value.RSD
-                        RUB -> Value.RUB
-                        RWF -> Value.RWF
-                        SAR -> Value.SAR
-                        SBD -> Value.SBD
-                        SCR -> Value.SCR
-                        SEK -> Value.SEK
-                        SGD -> Value.SGD
-                        SLE -> Value.SLE
-                        SLL -> Value.SLL
-                        SOS -> Value.SOS
-                        SZL -> Value.SZL
-                        THB -> Value.THB
-                        TJS -> Value.TJS
-                        TOP -> Value.TOP
-                        TRY -> Value.TRY
-                        TTD -> Value.TTD
-                        TZS -> Value.TZS
-                        UAH -> Value.UAH
-                        UZS -> Value.UZS
-                        VND -> Value.VND
-                        VUV -> Value.VUV
-                        WST -> Value.WST
-                        XAF -> Value.XAF
-                        XCD -> Value.XCD
-                        YER -> Value.YER
-                        ZAR -> Value.ZAR
-                        ZMW -> Value.ZMW
-                        CLP -> Value.CLP
-                        DJF -> Value.DJF
-                        GNF -> Value.GNF
-                        UGX -> Value.UGX
-                        PYG -> Value.PYG
-                        XOF -> Value.XOF
-                        XPF -> Value.XPF
-                        else -> Value._UNKNOWN
-                    }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        USD -> Known.USD
-                        AED -> Known.AED
-                        ALL -> Known.ALL
-                        AMD -> Known.AMD
-                        ANG -> Known.ANG
-                        AUD -> Known.AUD
-                        AWG -> Known.AWG
-                        AZN -> Known.AZN
-                        BAM -> Known.BAM
-                        BBD -> Known.BBD
-                        BDT -> Known.BDT
-                        BGN -> Known.BGN
-                        BIF -> Known.BIF
-                        BMD -> Known.BMD
-                        BND -> Known.BND
-                        BSD -> Known.BSD
-                        BWP -> Known.BWP
-                        BYN -> Known.BYN
-                        BZD -> Known.BZD
-                        BRL -> Known.BRL
-                        CAD -> Known.CAD
-                        CDF -> Known.CDF
-                        CHF -> Known.CHF
-                        CNY -> Known.CNY
-                        CZK -> Known.CZK
-                        DKK -> Known.DKK
-                        DOP -> Known.DOP
-                        DZD -> Known.DZD
-                        EGP -> Known.EGP
-                        ETB -> Known.ETB
-                        EUR -> Known.EUR
-                        FJD -> Known.FJD
-                        GBP -> Known.GBP
-                        GEL -> Known.GEL
-                        GIP -> Known.GIP
-                        GMD -> Known.GMD
-                        GYD -> Known.GYD
-                        HKD -> Known.HKD
-                        HRK -> Known.HRK
-                        HTG -> Known.HTG
-                        IDR -> Known.IDR
-                        ILS -> Known.ILS
-                        INR -> Known.INR
-                        ISK -> Known.ISK
-                        JMD -> Known.JMD
-                        JPY -> Known.JPY
-                        KES -> Known.KES
-                        KGS -> Known.KGS
-                        KHR -> Known.KHR
-                        KMF -> Known.KMF
-                        KRW -> Known.KRW
-                        KYD -> Known.KYD
-                        KZT -> Known.KZT
-                        LBP -> Known.LBP
-                        LKR -> Known.LKR
-                        LRD -> Known.LRD
-                        LSL -> Known.LSL
-                        MAD -> Known.MAD
-                        MDL -> Known.MDL
-                        MGA -> Known.MGA
-                        MKD -> Known.MKD
-                        MMK -> Known.MMK
-                        MNT -> Known.MNT
-                        MOP -> Known.MOP
-                        MRO -> Known.MRO
-                        MVR -> Known.MVR
-                        MWK -> Known.MWK
-                        MXN -> Known.MXN
-                        MYR -> Known.MYR
-                        MZN -> Known.MZN
-                        NAD -> Known.NAD
-                        NGN -> Known.NGN
-                        NOK -> Known.NOK
-                        NPR -> Known.NPR
-                        NZD -> Known.NZD
-                        PGK -> Known.PGK
-                        PHP -> Known.PHP
-                        PKR -> Known.PKR
-                        PLN -> Known.PLN
-                        QAR -> Known.QAR
-                        RON -> Known.RON
-                        RSD -> Known.RSD
-                        RUB -> Known.RUB
-                        RWF -> Known.RWF
-                        SAR -> Known.SAR
-                        SBD -> Known.SBD
-                        SCR -> Known.SCR
-                        SEK -> Known.SEK
-                        SGD -> Known.SGD
-                        SLE -> Known.SLE
-                        SLL -> Known.SLL
-                        SOS -> Known.SOS
-                        SZL -> Known.SZL
-                        THB -> Known.THB
-                        TJS -> Known.TJS
-                        TOP -> Known.TOP
-                        TRY -> Known.TRY
-                        TTD -> Known.TTD
-                        TZS -> Known.TZS
-                        UAH -> Known.UAH
-                        UZS -> Known.UZS
-                        VND -> Known.VND
-                        VUV -> Known.VUV
-                        WST -> Known.WST
-                        XAF -> Known.XAF
-                        XCD -> Known.XCD
-                        YER -> Known.YER
-                        ZAR -> Known.ZAR
-                        ZMW -> Known.ZMW
-                        CLP -> Known.CLP
-                        DJF -> Known.DJF
-                        GNF -> Known.GNF
-                        UGX -> Known.UGX
-                        PYG -> Known.PYG
-                        XOF -> Known.XOF
-                        XPF -> Known.XPF
-                        else -> throw StiggInvalidDataException("Unknown Currency: $value")
-                    }
-
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
-                    }
-
-                private var validated: Boolean = false
-
-                fun validate(): Currency = apply {
-                    if (validated) {
-                        return@apply
-                    }
-
-                    known()
-                    validated = true
-                }
-
-                fun isValid(): Boolean =
-                    try {
-                        validate()
-                        true
-                    } catch (e: StiggInvalidDataException) {
-                        false
-                    }
-
-                /**
-                 * Returns a score indicating how many valid values are contained in this object
-                 * recursively.
-                 *
-                 * Used for best match union deserialization.
-                 */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) {
-                        return true
-                    }
-
-                    return other is Currency && value == other.value
-                }
-
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
                 }
 
-                return other is Minimum &&
-                    amount == other.amount &&
-                    billingCountryCode == other.billingCountryCode &&
-                    currency == other.currency &&
-                    additionalProperties == other.additionalProperties
+                return other is Currency && value == other.value
             }
 
-            private val hashCode: Int by lazy {
-                Objects.hash(amount, billingCountryCode, currency, additionalProperties)
-            }
+            override fun hashCode() = value.hashCode()
 
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "Minimum{amount=$amount, billingCountryCode=$billingCountryCode, currency=$currency, additionalProperties=$additionalProperties}"
+            override fun toString() = value.toString()
         }
 
         override fun equals(other: Any?): Boolean {
@@ -8390,16 +8184,17 @@ private constructor(
             }
 
             return other is MinimumSpend &&
-                minimum == other.minimum &&
+                amount == other.amount &&
+                currency == other.currency &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(minimum, additionalProperties) }
+        private val hashCode: Int by lazy { Objects.hash(amount, currency, additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "MinimumSpend{minimum=$minimum, additionalProperties=$additionalProperties}"
+            "MinimumSpend{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
     }
 
     /** How payments should be collected for this subscription */
@@ -8544,12 +8339,14 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val addonId: JsonField<String>,
+        private val amount: JsonField<Double>,
         private val baseCharge: JsonField<Boolean>,
+        private val billingCountryCode: JsonField<String>,
         private val blockSize: JsonField<Double>,
         private val creditGrantCadence: JsonField<CreditGrantCadence>,
         private val creditRate: JsonField<CreditRate>,
+        private val currency: JsonField<Currency>,
         private val featureId: JsonField<String>,
-        private val price: JsonField<Price>,
         private val tiers: JsonField<List<Tier>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -8557,9 +8354,13 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("addonId") @ExcludeMissing addonId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("amount") @ExcludeMissing amount: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("baseCharge")
             @ExcludeMissing
             baseCharge: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("billingCountryCode")
+            @ExcludeMissing
+            billingCountryCode: JsonField<String> = JsonMissing.of(),
             @JsonProperty("blockSize")
             @ExcludeMissing
             blockSize: JsonField<Double> = JsonMissing.of(),
@@ -8569,19 +8370,23 @@ private constructor(
             @JsonProperty("creditRate")
             @ExcludeMissing
             creditRate: JsonField<CreditRate> = JsonMissing.of(),
+            @JsonProperty("currency")
+            @ExcludeMissing
+            currency: JsonField<Currency> = JsonMissing.of(),
             @JsonProperty("featureId")
             @ExcludeMissing
             featureId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("price") @ExcludeMissing price: JsonField<Price> = JsonMissing.of(),
             @JsonProperty("tiers") @ExcludeMissing tiers: JsonField<List<Tier>> = JsonMissing.of(),
         ) : this(
             addonId,
+            amount,
             baseCharge,
+            billingCountryCode,
             blockSize,
             creditGrantCadence,
             creditRate,
+            currency,
             featureId,
-            price,
             tiers,
             mutableMapOf(),
         )
@@ -8595,12 +8400,29 @@ private constructor(
         fun addonId(): Optional<String> = addonId.getOptional("addonId")
 
         /**
+         * The price amount
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun amount(): Optional<Double> = amount.getOptional("amount")
+
+        /**
          * Whether this is a base charge override
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun baseCharge(): Optional<Boolean> = baseCharge.getOptional("baseCharge")
+
+        /**
+         * The billing country code of the price
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun billingCountryCode(): Optional<String> =
+            billingCountryCode.getOptional("billingCountryCode")
 
         /**
          * Block size for pricing
@@ -8624,20 +8446,20 @@ private constructor(
         fun creditRate(): Optional<CreditRate> = creditRate.getOptional("creditRate")
 
         /**
+         * The price currency
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun currency(): Optional<Currency> = currency.getOptional("currency")
+
+        /**
          * Feature identifier for the price override
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun featureId(): Optional<String> = featureId.getOptional("featureId")
-
-        /**
-         * Override price amount
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun price(): Optional<Price> = price.getOptional("price")
 
         /**
          * Pricing tiers configuration
@@ -8655,6 +8477,13 @@ private constructor(
         @JsonProperty("addonId") @ExcludeMissing fun _addonId(): JsonField<String> = addonId
 
         /**
+         * Returns the raw JSON value of [amount].
+         *
+         * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
+
+        /**
          * Returns the raw JSON value of [baseCharge].
          *
          * Unlike [baseCharge], this method doesn't throw if the JSON field has an unexpected type.
@@ -8662,6 +8491,16 @@ private constructor(
         @JsonProperty("baseCharge")
         @ExcludeMissing
         fun _baseCharge(): JsonField<Boolean> = baseCharge
+
+        /**
+         * Returns the raw JSON value of [billingCountryCode].
+         *
+         * Unlike [billingCountryCode], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("billingCountryCode")
+        @ExcludeMissing
+        fun _billingCountryCode(): JsonField<String> = billingCountryCode
 
         /**
          * Returns the raw JSON value of [blockSize].
@@ -8690,18 +8529,18 @@ private constructor(
         fun _creditRate(): JsonField<CreditRate> = creditRate
 
         /**
+         * Returns the raw JSON value of [currency].
+         *
+         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<Currency> = currency
+
+        /**
          * Returns the raw JSON value of [featureId].
          *
          * Unlike [featureId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("featureId") @ExcludeMissing fun _featureId(): JsonField<String> = featureId
-
-        /**
-         * Returns the raw JSON value of [price].
-         *
-         * Unlike [price], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("price") @ExcludeMissing fun _price(): JsonField<Price> = price
 
         /**
          * Returns the raw JSON value of [tiers].
@@ -8732,24 +8571,28 @@ private constructor(
         class Builder internal constructor() {
 
             private var addonId: JsonField<String> = JsonMissing.of()
+            private var amount: JsonField<Double> = JsonMissing.of()
             private var baseCharge: JsonField<Boolean> = JsonMissing.of()
+            private var billingCountryCode: JsonField<String> = JsonMissing.of()
             private var blockSize: JsonField<Double> = JsonMissing.of()
             private var creditGrantCadence: JsonField<CreditGrantCadence> = JsonMissing.of()
             private var creditRate: JsonField<CreditRate> = JsonMissing.of()
+            private var currency: JsonField<Currency> = JsonMissing.of()
             private var featureId: JsonField<String> = JsonMissing.of()
-            private var price: JsonField<Price> = JsonMissing.of()
             private var tiers: JsonField<MutableList<Tier>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(priceOverride: PriceOverride) = apply {
                 addonId = priceOverride.addonId
+                amount = priceOverride.amount
                 baseCharge = priceOverride.baseCharge
+                billingCountryCode = priceOverride.billingCountryCode
                 blockSize = priceOverride.blockSize
                 creditGrantCadence = priceOverride.creditGrantCadence
                 creditRate = priceOverride.creditRate
+                currency = priceOverride.currency
                 featureId = priceOverride.featureId
-                price = priceOverride.price
                 tiers = priceOverride.tiers.map { it.toMutableList() }
                 additionalProperties = priceOverride.additionalProperties.toMutableMap()
             }
@@ -8769,6 +8612,18 @@ private constructor(
              */
             fun addonId(addonId: JsonField<String>) = apply { this.addonId = addonId }
 
+            /** The price amount */
+            fun amount(amount: Double) = amount(JsonField.of(amount))
+
+            /**
+             * Sets [Builder.amount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.amount] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
+
             /** Whether this is a base charge override */
             fun baseCharge(baseCharge: Boolean) = baseCharge(JsonField.of(baseCharge))
 
@@ -8780,6 +8635,21 @@ private constructor(
              * supported value.
              */
             fun baseCharge(baseCharge: JsonField<Boolean>) = apply { this.baseCharge = baseCharge }
+
+            /** The billing country code of the price */
+            fun billingCountryCode(billingCountryCode: String) =
+                billingCountryCode(JsonField.of(billingCountryCode))
+
+            /**
+             * Sets [Builder.billingCountryCode] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.billingCountryCode] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
+                this.billingCountryCode = billingCountryCode
+            }
 
             /** Block size for pricing */
             fun blockSize(blockSize: Double) = blockSize(JsonField.of(blockSize))
@@ -8820,6 +8690,18 @@ private constructor(
                 this.creditRate = creditRate
             }
 
+            /** The price currency */
+            fun currency(currency: Currency) = currency(JsonField.of(currency))
+
+            /**
+             * Sets [Builder.currency] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currency] with a well-typed [Currency] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
+
             /** Feature identifier for the price override */
             fun featureId(featureId: String?) = featureId(JsonField.ofNullable(featureId))
 
@@ -8834,18 +8716,6 @@ private constructor(
              * supported value.
              */
             fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
-
-            /** Override price amount */
-            fun price(price: Price) = price(JsonField.of(price))
-
-            /**
-             * Sets [Builder.price] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.price] with a well-typed [Price] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun price(price: JsonField<Price>) = apply { this.price = price }
 
             /** Pricing tiers configuration */
             fun tiers(tiers: List<Tier>) = tiers(JsonField.of(tiers))
@@ -8900,12 +8770,14 @@ private constructor(
             fun build(): PriceOverride =
                 PriceOverride(
                     addonId,
+                    amount,
                     baseCharge,
+                    billingCountryCode,
                     blockSize,
                     creditGrantCadence,
                     creditRate,
+                    currency,
                     featureId,
-                    price,
                     (tiers ?: JsonMissing.of()).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
@@ -8919,12 +8791,14 @@ private constructor(
             }
 
             addonId()
+            amount()
             baseCharge()
+            billingCountryCode()
             blockSize()
             creditGrantCadence().ifPresent { it.validate() }
             creditRate().ifPresent { it.validate() }
+            currency().ifPresent { it.validate() }
             featureId()
-            price().ifPresent { it.validate() }
             tiers().ifPresent { it.forEach { it.validate() } }
             validated = true
         }
@@ -8946,12 +8820,14 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (addonId.asKnown().isPresent) 1 else 0) +
+                (if (amount.asKnown().isPresent) 1 else 0) +
                 (if (baseCharge.asKnown().isPresent) 1 else 0) +
+                (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
                 (if (blockSize.asKnown().isPresent) 1 else 0) +
                 (creditGrantCadence.asKnown().getOrNull()?.validity() ?: 0) +
                 (creditRate.asKnown().getOrNull()?.validity() ?: 0) +
+                (currency.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (featureId.asKnown().isPresent) 1 else 0) +
-                (price.asKnown().getOrNull()?.validity() ?: 0) +
                 (tiers.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
         class CreditGrantCadence
@@ -9349,202 +9225,789 @@ private constructor(
                 "CreditRate{amount=$amount, currencyId=$currencyId, costFormula=$costFormula, additionalProperties=$additionalProperties}"
         }
 
-        /** Override price amount */
-        class Price
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val amount: JsonField<Double>,
-            private val billingCountryCode: JsonField<String>,
-            private val currency: JsonField<Currency>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("amount")
-                @ExcludeMissing
-                amount: JsonField<Double> = JsonMissing.of(),
-                @JsonProperty("billingCountryCode")
-                @ExcludeMissing
-                billingCountryCode: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("currency")
-                @ExcludeMissing
-                currency: JsonField<Currency> = JsonMissing.of(),
-            ) : this(amount, billingCountryCode, currency, mutableMapOf())
+        /** The price currency */
+        class Currency @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
 
             /**
-             * The price amount
+             * Returns this class instance's raw value.
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
              */
-            fun amount(): Optional<Double> = amount.getOptional("amount")
-
-            /**
-             * The billing country code of the price
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun billingCountryCode(): Optional<String> =
-                billingCountryCode.getOptional("billingCountryCode")
-
-            /**
-             * The price currency
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun currency(): Optional<Currency> = currency.getOptional("currency")
-
-            /**
-             * Returns the raw JSON value of [amount].
-             *
-             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
-
-            /**
-             * Returns the raw JSON value of [billingCountryCode].
-             *
-             * Unlike [billingCountryCode], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("billingCountryCode")
-            @ExcludeMissing
-            fun _billingCountryCode(): JsonField<String> = billingCountryCode
-
-            /**
-             * Returns the raw JSON value of [currency].
-             *
-             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("currency")
-            @ExcludeMissing
-            fun _currency(): JsonField<Currency> = currency
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
 
             companion object {
 
-                /** Returns a mutable builder for constructing an instance of [Price]. */
-                @JvmStatic fun builder() = Builder()
+                @JvmField val USD = of("usd")
+
+                @JvmField val AED = of("aed")
+
+                @JvmField val ALL = of("all")
+
+                @JvmField val AMD = of("amd")
+
+                @JvmField val ANG = of("ang")
+
+                @JvmField val AUD = of("aud")
+
+                @JvmField val AWG = of("awg")
+
+                @JvmField val AZN = of("azn")
+
+                @JvmField val BAM = of("bam")
+
+                @JvmField val BBD = of("bbd")
+
+                @JvmField val BDT = of("bdt")
+
+                @JvmField val BGN = of("bgn")
+
+                @JvmField val BIF = of("bif")
+
+                @JvmField val BMD = of("bmd")
+
+                @JvmField val BND = of("bnd")
+
+                @JvmField val BSD = of("bsd")
+
+                @JvmField val BWP = of("bwp")
+
+                @JvmField val BYN = of("byn")
+
+                @JvmField val BZD = of("bzd")
+
+                @JvmField val BRL = of("brl")
+
+                @JvmField val CAD = of("cad")
+
+                @JvmField val CDF = of("cdf")
+
+                @JvmField val CHF = of("chf")
+
+                @JvmField val CNY = of("cny")
+
+                @JvmField val CZK = of("czk")
+
+                @JvmField val DKK = of("dkk")
+
+                @JvmField val DOP = of("dop")
+
+                @JvmField val DZD = of("dzd")
+
+                @JvmField val EGP = of("egp")
+
+                @JvmField val ETB = of("etb")
+
+                @JvmField val EUR = of("eur")
+
+                @JvmField val FJD = of("fjd")
+
+                @JvmField val GBP = of("gbp")
+
+                @JvmField val GEL = of("gel")
+
+                @JvmField val GIP = of("gip")
+
+                @JvmField val GMD = of("gmd")
+
+                @JvmField val GYD = of("gyd")
+
+                @JvmField val HKD = of("hkd")
+
+                @JvmField val HRK = of("hrk")
+
+                @JvmField val HTG = of("htg")
+
+                @JvmField val IDR = of("idr")
+
+                @JvmField val ILS = of("ils")
+
+                @JvmField val INR = of("inr")
+
+                @JvmField val ISK = of("isk")
+
+                @JvmField val JMD = of("jmd")
+
+                @JvmField val JPY = of("jpy")
+
+                @JvmField val KES = of("kes")
+
+                @JvmField val KGS = of("kgs")
+
+                @JvmField val KHR = of("khr")
+
+                @JvmField val KMF = of("kmf")
+
+                @JvmField val KRW = of("krw")
+
+                @JvmField val KYD = of("kyd")
+
+                @JvmField val KZT = of("kzt")
+
+                @JvmField val LBP = of("lbp")
+
+                @JvmField val LKR = of("lkr")
+
+                @JvmField val LRD = of("lrd")
+
+                @JvmField val LSL = of("lsl")
+
+                @JvmField val MAD = of("mad")
+
+                @JvmField val MDL = of("mdl")
+
+                @JvmField val MGA = of("mga")
+
+                @JvmField val MKD = of("mkd")
+
+                @JvmField val MMK = of("mmk")
+
+                @JvmField val MNT = of("mnt")
+
+                @JvmField val MOP = of("mop")
+
+                @JvmField val MRO = of("mro")
+
+                @JvmField val MVR = of("mvr")
+
+                @JvmField val MWK = of("mwk")
+
+                @JvmField val MXN = of("mxn")
+
+                @JvmField val MYR = of("myr")
+
+                @JvmField val MZN = of("mzn")
+
+                @JvmField val NAD = of("nad")
+
+                @JvmField val NGN = of("ngn")
+
+                @JvmField val NOK = of("nok")
+
+                @JvmField val NPR = of("npr")
+
+                @JvmField val NZD = of("nzd")
+
+                @JvmField val PGK = of("pgk")
+
+                @JvmField val PHP = of("php")
+
+                @JvmField val PKR = of("pkr")
+
+                @JvmField val PLN = of("pln")
+
+                @JvmField val QAR = of("qar")
+
+                @JvmField val RON = of("ron")
+
+                @JvmField val RSD = of("rsd")
+
+                @JvmField val RUB = of("rub")
+
+                @JvmField val RWF = of("rwf")
+
+                @JvmField val SAR = of("sar")
+
+                @JvmField val SBD = of("sbd")
+
+                @JvmField val SCR = of("scr")
+
+                @JvmField val SEK = of("sek")
+
+                @JvmField val SGD = of("sgd")
+
+                @JvmField val SLE = of("sle")
+
+                @JvmField val SLL = of("sll")
+
+                @JvmField val SOS = of("sos")
+
+                @JvmField val SZL = of("szl")
+
+                @JvmField val THB = of("thb")
+
+                @JvmField val TJS = of("tjs")
+
+                @JvmField val TOP = of("top")
+
+                @JvmField val TRY = of("try")
+
+                @JvmField val TTD = of("ttd")
+
+                @JvmField val TZS = of("tzs")
+
+                @JvmField val UAH = of("uah")
+
+                @JvmField val UZS = of("uzs")
+
+                @JvmField val VND = of("vnd")
+
+                @JvmField val VUV = of("vuv")
+
+                @JvmField val WST = of("wst")
+
+                @JvmField val XAF = of("xaf")
+
+                @JvmField val XCD = of("xcd")
+
+                @JvmField val YER = of("yer")
+
+                @JvmField val ZAR = of("zar")
+
+                @JvmField val ZMW = of("zmw")
+
+                @JvmField val CLP = of("clp")
+
+                @JvmField val DJF = of("djf")
+
+                @JvmField val GNF = of("gnf")
+
+                @JvmField val UGX = of("ugx")
+
+                @JvmField val PYG = of("pyg")
+
+                @JvmField val XOF = of("xof")
+
+                @JvmField val XPF = of("xpf")
+
+                @JvmStatic fun of(value: String) = Currency(JsonField.of(value))
             }
 
-            /** A builder for [Price]. */
-            class Builder internal constructor() {
-
-                private var amount: JsonField<Double> = JsonMissing.of()
-                private var billingCountryCode: JsonField<String> = JsonMissing.of()
-                private var currency: JsonField<Currency> = JsonMissing.of()
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(price: Price) = apply {
-                    amount = price.amount
-                    billingCountryCode = price.billingCountryCode
-                    currency = price.currency
-                    additionalProperties = price.additionalProperties.toMutableMap()
-                }
-
-                /** The price amount */
-                fun amount(amount: Double) = amount(JsonField.of(amount))
-
-                /**
-                 * Sets [Builder.amount] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.amount] with a well-typed [Double] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
-
-                /** The billing country code of the price */
-                fun billingCountryCode(billingCountryCode: String?) =
-                    billingCountryCode(JsonField.ofNullable(billingCountryCode))
-
-                /**
-                 * Alias for calling [Builder.billingCountryCode] with
-                 * `billingCountryCode.orElse(null)`.
-                 */
-                fun billingCountryCode(billingCountryCode: Optional<String>) =
-                    billingCountryCode(billingCountryCode.getOrNull())
-
-                /**
-                 * Sets [Builder.billingCountryCode] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.billingCountryCode] with a well-typed [String]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
-                    this.billingCountryCode = billingCountryCode
-                }
-
-                /** The price currency */
-                fun currency(currency: Currency) = currency(JsonField.of(currency))
-
-                /**
-                 * Sets [Builder.currency] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.currency] with a well-typed [Currency] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Price].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): Price =
-                    Price(amount, billingCountryCode, currency, additionalProperties.toMutableMap())
+            /** An enum containing [Currency]'s known values. */
+            enum class Known {
+                USD,
+                AED,
+                ALL,
+                AMD,
+                ANG,
+                AUD,
+                AWG,
+                AZN,
+                BAM,
+                BBD,
+                BDT,
+                BGN,
+                BIF,
+                BMD,
+                BND,
+                BSD,
+                BWP,
+                BYN,
+                BZD,
+                BRL,
+                CAD,
+                CDF,
+                CHF,
+                CNY,
+                CZK,
+                DKK,
+                DOP,
+                DZD,
+                EGP,
+                ETB,
+                EUR,
+                FJD,
+                GBP,
+                GEL,
+                GIP,
+                GMD,
+                GYD,
+                HKD,
+                HRK,
+                HTG,
+                IDR,
+                ILS,
+                INR,
+                ISK,
+                JMD,
+                JPY,
+                KES,
+                KGS,
+                KHR,
+                KMF,
+                KRW,
+                KYD,
+                KZT,
+                LBP,
+                LKR,
+                LRD,
+                LSL,
+                MAD,
+                MDL,
+                MGA,
+                MKD,
+                MMK,
+                MNT,
+                MOP,
+                MRO,
+                MVR,
+                MWK,
+                MXN,
+                MYR,
+                MZN,
+                NAD,
+                NGN,
+                NOK,
+                NPR,
+                NZD,
+                PGK,
+                PHP,
+                PKR,
+                PLN,
+                QAR,
+                RON,
+                RSD,
+                RUB,
+                RWF,
+                SAR,
+                SBD,
+                SCR,
+                SEK,
+                SGD,
+                SLE,
+                SLL,
+                SOS,
+                SZL,
+                THB,
+                TJS,
+                TOP,
+                TRY,
+                TTD,
+                TZS,
+                UAH,
+                UZS,
+                VND,
+                VUV,
+                WST,
+                XAF,
+                XCD,
+                YER,
+                ZAR,
+                ZMW,
+                CLP,
+                DJF,
+                GNF,
+                UGX,
+                PYG,
+                XOF,
+                XPF,
             }
+
+            /**
+             * An enum containing [Currency]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Currency] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                USD,
+                AED,
+                ALL,
+                AMD,
+                ANG,
+                AUD,
+                AWG,
+                AZN,
+                BAM,
+                BBD,
+                BDT,
+                BGN,
+                BIF,
+                BMD,
+                BND,
+                BSD,
+                BWP,
+                BYN,
+                BZD,
+                BRL,
+                CAD,
+                CDF,
+                CHF,
+                CNY,
+                CZK,
+                DKK,
+                DOP,
+                DZD,
+                EGP,
+                ETB,
+                EUR,
+                FJD,
+                GBP,
+                GEL,
+                GIP,
+                GMD,
+                GYD,
+                HKD,
+                HRK,
+                HTG,
+                IDR,
+                ILS,
+                INR,
+                ISK,
+                JMD,
+                JPY,
+                KES,
+                KGS,
+                KHR,
+                KMF,
+                KRW,
+                KYD,
+                KZT,
+                LBP,
+                LKR,
+                LRD,
+                LSL,
+                MAD,
+                MDL,
+                MGA,
+                MKD,
+                MMK,
+                MNT,
+                MOP,
+                MRO,
+                MVR,
+                MWK,
+                MXN,
+                MYR,
+                MZN,
+                NAD,
+                NGN,
+                NOK,
+                NPR,
+                NZD,
+                PGK,
+                PHP,
+                PKR,
+                PLN,
+                QAR,
+                RON,
+                RSD,
+                RUB,
+                RWF,
+                SAR,
+                SBD,
+                SCR,
+                SEK,
+                SGD,
+                SLE,
+                SLL,
+                SOS,
+                SZL,
+                THB,
+                TJS,
+                TOP,
+                TRY,
+                TTD,
+                TZS,
+                UAH,
+                UZS,
+                VND,
+                VUV,
+                WST,
+                XAF,
+                XCD,
+                YER,
+                ZAR,
+                ZMW,
+                CLP,
+                DJF,
+                GNF,
+                UGX,
+                PYG,
+                XOF,
+                XPF,
+                /**
+                 * An enum member indicating that [Currency] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    USD -> Value.USD
+                    AED -> Value.AED
+                    ALL -> Value.ALL
+                    AMD -> Value.AMD
+                    ANG -> Value.ANG
+                    AUD -> Value.AUD
+                    AWG -> Value.AWG
+                    AZN -> Value.AZN
+                    BAM -> Value.BAM
+                    BBD -> Value.BBD
+                    BDT -> Value.BDT
+                    BGN -> Value.BGN
+                    BIF -> Value.BIF
+                    BMD -> Value.BMD
+                    BND -> Value.BND
+                    BSD -> Value.BSD
+                    BWP -> Value.BWP
+                    BYN -> Value.BYN
+                    BZD -> Value.BZD
+                    BRL -> Value.BRL
+                    CAD -> Value.CAD
+                    CDF -> Value.CDF
+                    CHF -> Value.CHF
+                    CNY -> Value.CNY
+                    CZK -> Value.CZK
+                    DKK -> Value.DKK
+                    DOP -> Value.DOP
+                    DZD -> Value.DZD
+                    EGP -> Value.EGP
+                    ETB -> Value.ETB
+                    EUR -> Value.EUR
+                    FJD -> Value.FJD
+                    GBP -> Value.GBP
+                    GEL -> Value.GEL
+                    GIP -> Value.GIP
+                    GMD -> Value.GMD
+                    GYD -> Value.GYD
+                    HKD -> Value.HKD
+                    HRK -> Value.HRK
+                    HTG -> Value.HTG
+                    IDR -> Value.IDR
+                    ILS -> Value.ILS
+                    INR -> Value.INR
+                    ISK -> Value.ISK
+                    JMD -> Value.JMD
+                    JPY -> Value.JPY
+                    KES -> Value.KES
+                    KGS -> Value.KGS
+                    KHR -> Value.KHR
+                    KMF -> Value.KMF
+                    KRW -> Value.KRW
+                    KYD -> Value.KYD
+                    KZT -> Value.KZT
+                    LBP -> Value.LBP
+                    LKR -> Value.LKR
+                    LRD -> Value.LRD
+                    LSL -> Value.LSL
+                    MAD -> Value.MAD
+                    MDL -> Value.MDL
+                    MGA -> Value.MGA
+                    MKD -> Value.MKD
+                    MMK -> Value.MMK
+                    MNT -> Value.MNT
+                    MOP -> Value.MOP
+                    MRO -> Value.MRO
+                    MVR -> Value.MVR
+                    MWK -> Value.MWK
+                    MXN -> Value.MXN
+                    MYR -> Value.MYR
+                    MZN -> Value.MZN
+                    NAD -> Value.NAD
+                    NGN -> Value.NGN
+                    NOK -> Value.NOK
+                    NPR -> Value.NPR
+                    NZD -> Value.NZD
+                    PGK -> Value.PGK
+                    PHP -> Value.PHP
+                    PKR -> Value.PKR
+                    PLN -> Value.PLN
+                    QAR -> Value.QAR
+                    RON -> Value.RON
+                    RSD -> Value.RSD
+                    RUB -> Value.RUB
+                    RWF -> Value.RWF
+                    SAR -> Value.SAR
+                    SBD -> Value.SBD
+                    SCR -> Value.SCR
+                    SEK -> Value.SEK
+                    SGD -> Value.SGD
+                    SLE -> Value.SLE
+                    SLL -> Value.SLL
+                    SOS -> Value.SOS
+                    SZL -> Value.SZL
+                    THB -> Value.THB
+                    TJS -> Value.TJS
+                    TOP -> Value.TOP
+                    TRY -> Value.TRY
+                    TTD -> Value.TTD
+                    TZS -> Value.TZS
+                    UAH -> Value.UAH
+                    UZS -> Value.UZS
+                    VND -> Value.VND
+                    VUV -> Value.VUV
+                    WST -> Value.WST
+                    XAF -> Value.XAF
+                    XCD -> Value.XCD
+                    YER -> Value.YER
+                    ZAR -> Value.ZAR
+                    ZMW -> Value.ZMW
+                    CLP -> Value.CLP
+                    DJF -> Value.DJF
+                    GNF -> Value.GNF
+                    UGX -> Value.UGX
+                    PYG -> Value.PYG
+                    XOF -> Value.XOF
+                    XPF -> Value.XPF
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    USD -> Known.USD
+                    AED -> Known.AED
+                    ALL -> Known.ALL
+                    AMD -> Known.AMD
+                    ANG -> Known.ANG
+                    AUD -> Known.AUD
+                    AWG -> Known.AWG
+                    AZN -> Known.AZN
+                    BAM -> Known.BAM
+                    BBD -> Known.BBD
+                    BDT -> Known.BDT
+                    BGN -> Known.BGN
+                    BIF -> Known.BIF
+                    BMD -> Known.BMD
+                    BND -> Known.BND
+                    BSD -> Known.BSD
+                    BWP -> Known.BWP
+                    BYN -> Known.BYN
+                    BZD -> Known.BZD
+                    BRL -> Known.BRL
+                    CAD -> Known.CAD
+                    CDF -> Known.CDF
+                    CHF -> Known.CHF
+                    CNY -> Known.CNY
+                    CZK -> Known.CZK
+                    DKK -> Known.DKK
+                    DOP -> Known.DOP
+                    DZD -> Known.DZD
+                    EGP -> Known.EGP
+                    ETB -> Known.ETB
+                    EUR -> Known.EUR
+                    FJD -> Known.FJD
+                    GBP -> Known.GBP
+                    GEL -> Known.GEL
+                    GIP -> Known.GIP
+                    GMD -> Known.GMD
+                    GYD -> Known.GYD
+                    HKD -> Known.HKD
+                    HRK -> Known.HRK
+                    HTG -> Known.HTG
+                    IDR -> Known.IDR
+                    ILS -> Known.ILS
+                    INR -> Known.INR
+                    ISK -> Known.ISK
+                    JMD -> Known.JMD
+                    JPY -> Known.JPY
+                    KES -> Known.KES
+                    KGS -> Known.KGS
+                    KHR -> Known.KHR
+                    KMF -> Known.KMF
+                    KRW -> Known.KRW
+                    KYD -> Known.KYD
+                    KZT -> Known.KZT
+                    LBP -> Known.LBP
+                    LKR -> Known.LKR
+                    LRD -> Known.LRD
+                    LSL -> Known.LSL
+                    MAD -> Known.MAD
+                    MDL -> Known.MDL
+                    MGA -> Known.MGA
+                    MKD -> Known.MKD
+                    MMK -> Known.MMK
+                    MNT -> Known.MNT
+                    MOP -> Known.MOP
+                    MRO -> Known.MRO
+                    MVR -> Known.MVR
+                    MWK -> Known.MWK
+                    MXN -> Known.MXN
+                    MYR -> Known.MYR
+                    MZN -> Known.MZN
+                    NAD -> Known.NAD
+                    NGN -> Known.NGN
+                    NOK -> Known.NOK
+                    NPR -> Known.NPR
+                    NZD -> Known.NZD
+                    PGK -> Known.PGK
+                    PHP -> Known.PHP
+                    PKR -> Known.PKR
+                    PLN -> Known.PLN
+                    QAR -> Known.QAR
+                    RON -> Known.RON
+                    RSD -> Known.RSD
+                    RUB -> Known.RUB
+                    RWF -> Known.RWF
+                    SAR -> Known.SAR
+                    SBD -> Known.SBD
+                    SCR -> Known.SCR
+                    SEK -> Known.SEK
+                    SGD -> Known.SGD
+                    SLE -> Known.SLE
+                    SLL -> Known.SLL
+                    SOS -> Known.SOS
+                    SZL -> Known.SZL
+                    THB -> Known.THB
+                    TJS -> Known.TJS
+                    TOP -> Known.TOP
+                    TRY -> Known.TRY
+                    TTD -> Known.TTD
+                    TZS -> Known.TZS
+                    UAH -> Known.UAH
+                    UZS -> Known.UZS
+                    VND -> Known.VND
+                    VUV -> Known.VUV
+                    WST -> Known.WST
+                    XAF -> Known.XAF
+                    XCD -> Known.XCD
+                    YER -> Known.YER
+                    ZAR -> Known.ZAR
+                    ZMW -> Known.ZMW
+                    CLP -> Known.CLP
+                    DJF -> Known.DJF
+                    GNF -> Known.GNF
+                    UGX -> Known.UGX
+                    PYG -> Known.PYG
+                    XOF -> Known.XOF
+                    XPF -> Known.XPF
+                    else -> throw StiggInvalidDataException("Unknown Currency: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
 
             private var validated: Boolean = false
 
-            fun validate(): Price = apply {
+            fun validate(): Currency = apply {
                 if (validated) {
                     return@apply
                 }
 
-                amount()
-                billingCountryCode()
-                currency().ifPresent { it.validate() }
+                known()
                 validated = true
             }
 
@@ -9562,848 +10025,19 @@ private constructor(
              *
              * Used for best match union deserialization.
              */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                (if (amount.asKnown().isPresent) 1 else 0) +
-                    (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
-                    (currency.asKnown().getOrNull()?.validity() ?: 0)
-
-            /** The price currency */
-            class Currency @JsonCreator private constructor(private val value: JsonField<String>) :
-                Enum {
-
-                /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
-                 */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-                companion object {
-
-                    @JvmField val USD = of("usd")
-
-                    @JvmField val AED = of("aed")
-
-                    @JvmField val ALL = of("all")
-
-                    @JvmField val AMD = of("amd")
-
-                    @JvmField val ANG = of("ang")
-
-                    @JvmField val AUD = of("aud")
-
-                    @JvmField val AWG = of("awg")
-
-                    @JvmField val AZN = of("azn")
-
-                    @JvmField val BAM = of("bam")
-
-                    @JvmField val BBD = of("bbd")
-
-                    @JvmField val BDT = of("bdt")
-
-                    @JvmField val BGN = of("bgn")
-
-                    @JvmField val BIF = of("bif")
-
-                    @JvmField val BMD = of("bmd")
-
-                    @JvmField val BND = of("bnd")
-
-                    @JvmField val BSD = of("bsd")
-
-                    @JvmField val BWP = of("bwp")
-
-                    @JvmField val BYN = of("byn")
-
-                    @JvmField val BZD = of("bzd")
-
-                    @JvmField val BRL = of("brl")
-
-                    @JvmField val CAD = of("cad")
-
-                    @JvmField val CDF = of("cdf")
-
-                    @JvmField val CHF = of("chf")
-
-                    @JvmField val CNY = of("cny")
-
-                    @JvmField val CZK = of("czk")
-
-                    @JvmField val DKK = of("dkk")
-
-                    @JvmField val DOP = of("dop")
-
-                    @JvmField val DZD = of("dzd")
-
-                    @JvmField val EGP = of("egp")
-
-                    @JvmField val ETB = of("etb")
-
-                    @JvmField val EUR = of("eur")
-
-                    @JvmField val FJD = of("fjd")
-
-                    @JvmField val GBP = of("gbp")
-
-                    @JvmField val GEL = of("gel")
-
-                    @JvmField val GIP = of("gip")
-
-                    @JvmField val GMD = of("gmd")
-
-                    @JvmField val GYD = of("gyd")
-
-                    @JvmField val HKD = of("hkd")
-
-                    @JvmField val HRK = of("hrk")
-
-                    @JvmField val HTG = of("htg")
-
-                    @JvmField val IDR = of("idr")
-
-                    @JvmField val ILS = of("ils")
-
-                    @JvmField val INR = of("inr")
-
-                    @JvmField val ISK = of("isk")
-
-                    @JvmField val JMD = of("jmd")
-
-                    @JvmField val JPY = of("jpy")
-
-                    @JvmField val KES = of("kes")
-
-                    @JvmField val KGS = of("kgs")
-
-                    @JvmField val KHR = of("khr")
-
-                    @JvmField val KMF = of("kmf")
-
-                    @JvmField val KRW = of("krw")
-
-                    @JvmField val KYD = of("kyd")
-
-                    @JvmField val KZT = of("kzt")
-
-                    @JvmField val LBP = of("lbp")
-
-                    @JvmField val LKR = of("lkr")
-
-                    @JvmField val LRD = of("lrd")
-
-                    @JvmField val LSL = of("lsl")
-
-                    @JvmField val MAD = of("mad")
-
-                    @JvmField val MDL = of("mdl")
-
-                    @JvmField val MGA = of("mga")
-
-                    @JvmField val MKD = of("mkd")
-
-                    @JvmField val MMK = of("mmk")
-
-                    @JvmField val MNT = of("mnt")
-
-                    @JvmField val MOP = of("mop")
-
-                    @JvmField val MRO = of("mro")
-
-                    @JvmField val MVR = of("mvr")
-
-                    @JvmField val MWK = of("mwk")
-
-                    @JvmField val MXN = of("mxn")
-
-                    @JvmField val MYR = of("myr")
-
-                    @JvmField val MZN = of("mzn")
-
-                    @JvmField val NAD = of("nad")
-
-                    @JvmField val NGN = of("ngn")
-
-                    @JvmField val NOK = of("nok")
-
-                    @JvmField val NPR = of("npr")
-
-                    @JvmField val NZD = of("nzd")
-
-                    @JvmField val PGK = of("pgk")
-
-                    @JvmField val PHP = of("php")
-
-                    @JvmField val PKR = of("pkr")
-
-                    @JvmField val PLN = of("pln")
-
-                    @JvmField val QAR = of("qar")
-
-                    @JvmField val RON = of("ron")
-
-                    @JvmField val RSD = of("rsd")
-
-                    @JvmField val RUB = of("rub")
-
-                    @JvmField val RWF = of("rwf")
-
-                    @JvmField val SAR = of("sar")
-
-                    @JvmField val SBD = of("sbd")
-
-                    @JvmField val SCR = of("scr")
-
-                    @JvmField val SEK = of("sek")
-
-                    @JvmField val SGD = of("sgd")
-
-                    @JvmField val SLE = of("sle")
-
-                    @JvmField val SLL = of("sll")
-
-                    @JvmField val SOS = of("sos")
-
-                    @JvmField val SZL = of("szl")
-
-                    @JvmField val THB = of("thb")
-
-                    @JvmField val TJS = of("tjs")
-
-                    @JvmField val TOP = of("top")
-
-                    @JvmField val TRY = of("try")
-
-                    @JvmField val TTD = of("ttd")
-
-                    @JvmField val TZS = of("tzs")
-
-                    @JvmField val UAH = of("uah")
-
-                    @JvmField val UZS = of("uzs")
-
-                    @JvmField val VND = of("vnd")
-
-                    @JvmField val VUV = of("vuv")
-
-                    @JvmField val WST = of("wst")
-
-                    @JvmField val XAF = of("xaf")
-
-                    @JvmField val XCD = of("xcd")
-
-                    @JvmField val YER = of("yer")
-
-                    @JvmField val ZAR = of("zar")
-
-                    @JvmField val ZMW = of("zmw")
-
-                    @JvmField val CLP = of("clp")
-
-                    @JvmField val DJF = of("djf")
-
-                    @JvmField val GNF = of("gnf")
-
-                    @JvmField val UGX = of("ugx")
-
-                    @JvmField val PYG = of("pyg")
-
-                    @JvmField val XOF = of("xof")
-
-                    @JvmField val XPF = of("xpf")
-
-                    @JvmStatic fun of(value: String) = Currency(JsonField.of(value))
-                }
-
-                /** An enum containing [Currency]'s known values. */
-                enum class Known {
-                    USD,
-                    AED,
-                    ALL,
-                    AMD,
-                    ANG,
-                    AUD,
-                    AWG,
-                    AZN,
-                    BAM,
-                    BBD,
-                    BDT,
-                    BGN,
-                    BIF,
-                    BMD,
-                    BND,
-                    BSD,
-                    BWP,
-                    BYN,
-                    BZD,
-                    BRL,
-                    CAD,
-                    CDF,
-                    CHF,
-                    CNY,
-                    CZK,
-                    DKK,
-                    DOP,
-                    DZD,
-                    EGP,
-                    ETB,
-                    EUR,
-                    FJD,
-                    GBP,
-                    GEL,
-                    GIP,
-                    GMD,
-                    GYD,
-                    HKD,
-                    HRK,
-                    HTG,
-                    IDR,
-                    ILS,
-                    INR,
-                    ISK,
-                    JMD,
-                    JPY,
-                    KES,
-                    KGS,
-                    KHR,
-                    KMF,
-                    KRW,
-                    KYD,
-                    KZT,
-                    LBP,
-                    LKR,
-                    LRD,
-                    LSL,
-                    MAD,
-                    MDL,
-                    MGA,
-                    MKD,
-                    MMK,
-                    MNT,
-                    MOP,
-                    MRO,
-                    MVR,
-                    MWK,
-                    MXN,
-                    MYR,
-                    MZN,
-                    NAD,
-                    NGN,
-                    NOK,
-                    NPR,
-                    NZD,
-                    PGK,
-                    PHP,
-                    PKR,
-                    PLN,
-                    QAR,
-                    RON,
-                    RSD,
-                    RUB,
-                    RWF,
-                    SAR,
-                    SBD,
-                    SCR,
-                    SEK,
-                    SGD,
-                    SLE,
-                    SLL,
-                    SOS,
-                    SZL,
-                    THB,
-                    TJS,
-                    TOP,
-                    TRY,
-                    TTD,
-                    TZS,
-                    UAH,
-                    UZS,
-                    VND,
-                    VUV,
-                    WST,
-                    XAF,
-                    XCD,
-                    YER,
-                    ZAR,
-                    ZMW,
-                    CLP,
-                    DJF,
-                    GNF,
-                    UGX,
-                    PYG,
-                    XOF,
-                    XPF,
-                }
-
-                /**
-                 * An enum containing [Currency]'s known values, as well as an [_UNKNOWN] member.
-                 *
-                 * An instance of [Currency] can contain an unknown value in a couple of cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    USD,
-                    AED,
-                    ALL,
-                    AMD,
-                    ANG,
-                    AUD,
-                    AWG,
-                    AZN,
-                    BAM,
-                    BBD,
-                    BDT,
-                    BGN,
-                    BIF,
-                    BMD,
-                    BND,
-                    BSD,
-                    BWP,
-                    BYN,
-                    BZD,
-                    BRL,
-                    CAD,
-                    CDF,
-                    CHF,
-                    CNY,
-                    CZK,
-                    DKK,
-                    DOP,
-                    DZD,
-                    EGP,
-                    ETB,
-                    EUR,
-                    FJD,
-                    GBP,
-                    GEL,
-                    GIP,
-                    GMD,
-                    GYD,
-                    HKD,
-                    HRK,
-                    HTG,
-                    IDR,
-                    ILS,
-                    INR,
-                    ISK,
-                    JMD,
-                    JPY,
-                    KES,
-                    KGS,
-                    KHR,
-                    KMF,
-                    KRW,
-                    KYD,
-                    KZT,
-                    LBP,
-                    LKR,
-                    LRD,
-                    LSL,
-                    MAD,
-                    MDL,
-                    MGA,
-                    MKD,
-                    MMK,
-                    MNT,
-                    MOP,
-                    MRO,
-                    MVR,
-                    MWK,
-                    MXN,
-                    MYR,
-                    MZN,
-                    NAD,
-                    NGN,
-                    NOK,
-                    NPR,
-                    NZD,
-                    PGK,
-                    PHP,
-                    PKR,
-                    PLN,
-                    QAR,
-                    RON,
-                    RSD,
-                    RUB,
-                    RWF,
-                    SAR,
-                    SBD,
-                    SCR,
-                    SEK,
-                    SGD,
-                    SLE,
-                    SLL,
-                    SOS,
-                    SZL,
-                    THB,
-                    TJS,
-                    TOP,
-                    TRY,
-                    TTD,
-                    TZS,
-                    UAH,
-                    UZS,
-                    VND,
-                    VUV,
-                    WST,
-                    XAF,
-                    XCD,
-                    YER,
-                    ZAR,
-                    ZMW,
-                    CLP,
-                    DJF,
-                    GNF,
-                    UGX,
-                    PYG,
-                    XOF,
-                    XPF,
-                    /**
-                     * An enum member indicating that [Currency] was instantiated with an unknown
-                     * value.
-                     */
-                    _UNKNOWN,
-                }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        USD -> Value.USD
-                        AED -> Value.AED
-                        ALL -> Value.ALL
-                        AMD -> Value.AMD
-                        ANG -> Value.ANG
-                        AUD -> Value.AUD
-                        AWG -> Value.AWG
-                        AZN -> Value.AZN
-                        BAM -> Value.BAM
-                        BBD -> Value.BBD
-                        BDT -> Value.BDT
-                        BGN -> Value.BGN
-                        BIF -> Value.BIF
-                        BMD -> Value.BMD
-                        BND -> Value.BND
-                        BSD -> Value.BSD
-                        BWP -> Value.BWP
-                        BYN -> Value.BYN
-                        BZD -> Value.BZD
-                        BRL -> Value.BRL
-                        CAD -> Value.CAD
-                        CDF -> Value.CDF
-                        CHF -> Value.CHF
-                        CNY -> Value.CNY
-                        CZK -> Value.CZK
-                        DKK -> Value.DKK
-                        DOP -> Value.DOP
-                        DZD -> Value.DZD
-                        EGP -> Value.EGP
-                        ETB -> Value.ETB
-                        EUR -> Value.EUR
-                        FJD -> Value.FJD
-                        GBP -> Value.GBP
-                        GEL -> Value.GEL
-                        GIP -> Value.GIP
-                        GMD -> Value.GMD
-                        GYD -> Value.GYD
-                        HKD -> Value.HKD
-                        HRK -> Value.HRK
-                        HTG -> Value.HTG
-                        IDR -> Value.IDR
-                        ILS -> Value.ILS
-                        INR -> Value.INR
-                        ISK -> Value.ISK
-                        JMD -> Value.JMD
-                        JPY -> Value.JPY
-                        KES -> Value.KES
-                        KGS -> Value.KGS
-                        KHR -> Value.KHR
-                        KMF -> Value.KMF
-                        KRW -> Value.KRW
-                        KYD -> Value.KYD
-                        KZT -> Value.KZT
-                        LBP -> Value.LBP
-                        LKR -> Value.LKR
-                        LRD -> Value.LRD
-                        LSL -> Value.LSL
-                        MAD -> Value.MAD
-                        MDL -> Value.MDL
-                        MGA -> Value.MGA
-                        MKD -> Value.MKD
-                        MMK -> Value.MMK
-                        MNT -> Value.MNT
-                        MOP -> Value.MOP
-                        MRO -> Value.MRO
-                        MVR -> Value.MVR
-                        MWK -> Value.MWK
-                        MXN -> Value.MXN
-                        MYR -> Value.MYR
-                        MZN -> Value.MZN
-                        NAD -> Value.NAD
-                        NGN -> Value.NGN
-                        NOK -> Value.NOK
-                        NPR -> Value.NPR
-                        NZD -> Value.NZD
-                        PGK -> Value.PGK
-                        PHP -> Value.PHP
-                        PKR -> Value.PKR
-                        PLN -> Value.PLN
-                        QAR -> Value.QAR
-                        RON -> Value.RON
-                        RSD -> Value.RSD
-                        RUB -> Value.RUB
-                        RWF -> Value.RWF
-                        SAR -> Value.SAR
-                        SBD -> Value.SBD
-                        SCR -> Value.SCR
-                        SEK -> Value.SEK
-                        SGD -> Value.SGD
-                        SLE -> Value.SLE
-                        SLL -> Value.SLL
-                        SOS -> Value.SOS
-                        SZL -> Value.SZL
-                        THB -> Value.THB
-                        TJS -> Value.TJS
-                        TOP -> Value.TOP
-                        TRY -> Value.TRY
-                        TTD -> Value.TTD
-                        TZS -> Value.TZS
-                        UAH -> Value.UAH
-                        UZS -> Value.UZS
-                        VND -> Value.VND
-                        VUV -> Value.VUV
-                        WST -> Value.WST
-                        XAF -> Value.XAF
-                        XCD -> Value.XCD
-                        YER -> Value.YER
-                        ZAR -> Value.ZAR
-                        ZMW -> Value.ZMW
-                        CLP -> Value.CLP
-                        DJF -> Value.DJF
-                        GNF -> Value.GNF
-                        UGX -> Value.UGX
-                        PYG -> Value.PYG
-                        XOF -> Value.XOF
-                        XPF -> Value.XPF
-                        else -> Value._UNKNOWN
-                    }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        USD -> Known.USD
-                        AED -> Known.AED
-                        ALL -> Known.ALL
-                        AMD -> Known.AMD
-                        ANG -> Known.ANG
-                        AUD -> Known.AUD
-                        AWG -> Known.AWG
-                        AZN -> Known.AZN
-                        BAM -> Known.BAM
-                        BBD -> Known.BBD
-                        BDT -> Known.BDT
-                        BGN -> Known.BGN
-                        BIF -> Known.BIF
-                        BMD -> Known.BMD
-                        BND -> Known.BND
-                        BSD -> Known.BSD
-                        BWP -> Known.BWP
-                        BYN -> Known.BYN
-                        BZD -> Known.BZD
-                        BRL -> Known.BRL
-                        CAD -> Known.CAD
-                        CDF -> Known.CDF
-                        CHF -> Known.CHF
-                        CNY -> Known.CNY
-                        CZK -> Known.CZK
-                        DKK -> Known.DKK
-                        DOP -> Known.DOP
-                        DZD -> Known.DZD
-                        EGP -> Known.EGP
-                        ETB -> Known.ETB
-                        EUR -> Known.EUR
-                        FJD -> Known.FJD
-                        GBP -> Known.GBP
-                        GEL -> Known.GEL
-                        GIP -> Known.GIP
-                        GMD -> Known.GMD
-                        GYD -> Known.GYD
-                        HKD -> Known.HKD
-                        HRK -> Known.HRK
-                        HTG -> Known.HTG
-                        IDR -> Known.IDR
-                        ILS -> Known.ILS
-                        INR -> Known.INR
-                        ISK -> Known.ISK
-                        JMD -> Known.JMD
-                        JPY -> Known.JPY
-                        KES -> Known.KES
-                        KGS -> Known.KGS
-                        KHR -> Known.KHR
-                        KMF -> Known.KMF
-                        KRW -> Known.KRW
-                        KYD -> Known.KYD
-                        KZT -> Known.KZT
-                        LBP -> Known.LBP
-                        LKR -> Known.LKR
-                        LRD -> Known.LRD
-                        LSL -> Known.LSL
-                        MAD -> Known.MAD
-                        MDL -> Known.MDL
-                        MGA -> Known.MGA
-                        MKD -> Known.MKD
-                        MMK -> Known.MMK
-                        MNT -> Known.MNT
-                        MOP -> Known.MOP
-                        MRO -> Known.MRO
-                        MVR -> Known.MVR
-                        MWK -> Known.MWK
-                        MXN -> Known.MXN
-                        MYR -> Known.MYR
-                        MZN -> Known.MZN
-                        NAD -> Known.NAD
-                        NGN -> Known.NGN
-                        NOK -> Known.NOK
-                        NPR -> Known.NPR
-                        NZD -> Known.NZD
-                        PGK -> Known.PGK
-                        PHP -> Known.PHP
-                        PKR -> Known.PKR
-                        PLN -> Known.PLN
-                        QAR -> Known.QAR
-                        RON -> Known.RON
-                        RSD -> Known.RSD
-                        RUB -> Known.RUB
-                        RWF -> Known.RWF
-                        SAR -> Known.SAR
-                        SBD -> Known.SBD
-                        SCR -> Known.SCR
-                        SEK -> Known.SEK
-                        SGD -> Known.SGD
-                        SLE -> Known.SLE
-                        SLL -> Known.SLL
-                        SOS -> Known.SOS
-                        SZL -> Known.SZL
-                        THB -> Known.THB
-                        TJS -> Known.TJS
-                        TOP -> Known.TOP
-                        TRY -> Known.TRY
-                        TTD -> Known.TTD
-                        TZS -> Known.TZS
-                        UAH -> Known.UAH
-                        UZS -> Known.UZS
-                        VND -> Known.VND
-                        VUV -> Known.VUV
-                        WST -> Known.WST
-                        XAF -> Known.XAF
-                        XCD -> Known.XCD
-                        YER -> Known.YER
-                        ZAR -> Known.ZAR
-                        ZMW -> Known.ZMW
-                        CLP -> Known.CLP
-                        DJF -> Known.DJF
-                        GNF -> Known.GNF
-                        UGX -> Known.UGX
-                        PYG -> Known.PYG
-                        XOF -> Known.XOF
-                        XPF -> Known.XPF
-                        else -> throw StiggInvalidDataException("Unknown Currency: $value")
-                    }
-
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
-                    }
-
-                private var validated: Boolean = false
-
-                fun validate(): Currency = apply {
-                    if (validated) {
-                        return@apply
-                    }
-
-                    known()
-                    validated = true
-                }
-
-                fun isValid(): Boolean =
-                    try {
-                        validate()
-                        true
-                    } catch (e: StiggInvalidDataException) {
-                        false
-                    }
-
-                /**
-                 * Returns a score indicating how many valid values are contained in this object
-                 * recursively.
-                 *
-                 * Used for best match union deserialization.
-                 */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) {
-                        return true
-                    }
-
-                    return other is Currency && value == other.value
-                }
-
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
                 }
 
-                return other is Price &&
-                    amount == other.amount &&
-                    billingCountryCode == other.billingCountryCode &&
-                    currency == other.currency &&
-                    additionalProperties == other.additionalProperties
+                return other is Currency && value == other.value
             }
 
-            private val hashCode: Int by lazy {
-                Objects.hash(amount, billingCountryCode, currency, additionalProperties)
-            }
+            override fun hashCode() = value.hashCode()
 
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "Price{amount=$amount, billingCountryCode=$billingCountryCode, currency=$currency, additionalProperties=$additionalProperties}"
+            override fun toString() = value.toString()
         }
 
         class Tier
@@ -10620,7 +10254,6 @@ private constructor(
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
                 private val amount: JsonField<Double>,
-                private val billingCountryCode: JsonField<String>,
                 private val currency: JsonField<Currency>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -10630,38 +10263,28 @@ private constructor(
                     @JsonProperty("amount")
                     @ExcludeMissing
                     amount: JsonField<Double> = JsonMissing.of(),
-                    @JsonProperty("billingCountryCode")
-                    @ExcludeMissing
-                    billingCountryCode: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("currency")
                     @ExcludeMissing
                     currency: JsonField<Currency> = JsonMissing.of(),
-                ) : this(amount, billingCountryCode, currency, mutableMapOf())
+                ) : this(amount, currency, mutableMapOf())
 
                 /**
                  * The price amount
                  *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun amount(): Optional<Double> = amount.getOptional("amount")
-
-                /**
-                 * The billing country code of the price
-                 *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
-                 */
-                fun billingCountryCode(): Optional<String> =
-                    billingCountryCode.getOptional("billingCountryCode")
+                fun amount(): Double = amount.getRequired("amount")
 
                 /**
                  * The price currency
                  *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun currency(): Optional<Currency> = currency.getOptional("currency")
+                fun currency(): Currency = currency.getRequired("currency")
 
                 /**
                  * Returns the raw JSON value of [amount].
@@ -10670,16 +10293,6 @@ private constructor(
                  * type.
                  */
                 @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
-
-                /**
-                 * Returns the raw JSON value of [billingCountryCode].
-                 *
-                 * Unlike [billingCountryCode], this method doesn't throw if the JSON field has an
-                 * unexpected type.
-                 */
-                @JsonProperty("billingCountryCode")
-                @ExcludeMissing
-                fun _billingCountryCode(): JsonField<String> = billingCountryCode
 
                 /**
                  * Returns the raw JSON value of [currency].
@@ -10705,22 +10318,28 @@ private constructor(
 
                 companion object {
 
-                    /** Returns a mutable builder for constructing an instance of [FlatPrice]. */
+                    /**
+                     * Returns a mutable builder for constructing an instance of [FlatPrice].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .currency()
+                     * ```
+                     */
                     @JvmStatic fun builder() = Builder()
                 }
 
                 /** A builder for [FlatPrice]. */
                 class Builder internal constructor() {
 
-                    private var amount: JsonField<Double> = JsonMissing.of()
-                    private var billingCountryCode: JsonField<String> = JsonMissing.of()
-                    private var currency: JsonField<Currency> = JsonMissing.of()
+                    private var amount: JsonField<Double>? = null
+                    private var currency: JsonField<Currency>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
                     internal fun from(flatPrice: FlatPrice) = apply {
                         amount = flatPrice.amount
-                        billingCountryCode = flatPrice.billingCountryCode
                         currency = flatPrice.currency
                         additionalProperties = flatPrice.additionalProperties.toMutableMap()
                     }
@@ -10736,28 +10355,6 @@ private constructor(
                      * not yet supported value.
                      */
                     fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
-
-                    /** The billing country code of the price */
-                    fun billingCountryCode(billingCountryCode: String?) =
-                        billingCountryCode(JsonField.ofNullable(billingCountryCode))
-
-                    /**
-                     * Alias for calling [Builder.billingCountryCode] with
-                     * `billingCountryCode.orElse(null)`.
-                     */
-                    fun billingCountryCode(billingCountryCode: Optional<String>) =
-                        billingCountryCode(billingCountryCode.getOrNull())
-
-                    /**
-                     * Sets [Builder.billingCountryCode] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.billingCountryCode] with a well-typed
-                     * [String] value instead. This method is primarily for setting the field to an
-                     * undocumented or not yet supported value.
-                     */
-                    fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
-                        this.billingCountryCode = billingCountryCode
-                    }
 
                     /** The price currency */
                     fun currency(currency: Currency) = currency(JsonField.of(currency))
@@ -10797,12 +10394,19 @@ private constructor(
                      * Returns an immutable instance of [FlatPrice].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .currency()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
                      */
                     fun build(): FlatPrice =
                         FlatPrice(
-                            amount,
-                            billingCountryCode,
-                            currency,
+                            checkRequired("amount", amount),
+                            checkRequired("currency", currency),
                             additionalProperties.toMutableMap(),
                         )
                 }
@@ -10815,8 +10419,7 @@ private constructor(
                     }
 
                     amount()
-                    billingCountryCode()
-                    currency().ifPresent { it.validate() }
+                    currency().validate()
                     validated = true
                 }
 
@@ -10837,7 +10440,6 @@ private constructor(
                 @JvmSynthetic
                 internal fun validity(): Int =
                     (if (amount.asKnown().isPresent) 1 else 0) +
-                        (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
                         (currency.asKnown().getOrNull()?.validity() ?: 0)
 
                 /** The price currency */
@@ -11667,19 +11269,18 @@ private constructor(
 
                     return other is FlatPrice &&
                         amount == other.amount &&
-                        billingCountryCode == other.billingCountryCode &&
                         currency == other.currency &&
                         additionalProperties == other.additionalProperties
                 }
 
                 private val hashCode: Int by lazy {
-                    Objects.hash(amount, billingCountryCode, currency, additionalProperties)
+                    Objects.hash(amount, currency, additionalProperties)
                 }
 
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "FlatPrice{amount=$amount, billingCountryCode=$billingCountryCode, currency=$currency, additionalProperties=$additionalProperties}"
+                    "FlatPrice{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
             }
 
             /** The unit price of the price tier */
@@ -11687,7 +11288,6 @@ private constructor(
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
                 private val amount: JsonField<Double>,
-                private val billingCountryCode: JsonField<String>,
                 private val currency: JsonField<Currency>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -11697,38 +11297,28 @@ private constructor(
                     @JsonProperty("amount")
                     @ExcludeMissing
                     amount: JsonField<Double> = JsonMissing.of(),
-                    @JsonProperty("billingCountryCode")
-                    @ExcludeMissing
-                    billingCountryCode: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("currency")
                     @ExcludeMissing
                     currency: JsonField<Currency> = JsonMissing.of(),
-                ) : this(amount, billingCountryCode, currency, mutableMapOf())
+                ) : this(amount, currency, mutableMapOf())
 
                 /**
                  * The price amount
                  *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun amount(): Optional<Double> = amount.getOptional("amount")
-
-                /**
-                 * The billing country code of the price
-                 *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
-                 */
-                fun billingCountryCode(): Optional<String> =
-                    billingCountryCode.getOptional("billingCountryCode")
+                fun amount(): Double = amount.getRequired("amount")
 
                 /**
                  * The price currency
                  *
-                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
-                 *   if the server responded with an unexpected value).
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
                  */
-                fun currency(): Optional<Currency> = currency.getOptional("currency")
+                fun currency(): Currency = currency.getRequired("currency")
 
                 /**
                  * Returns the raw JSON value of [amount].
@@ -11737,16 +11327,6 @@ private constructor(
                  * type.
                  */
                 @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
-
-                /**
-                 * Returns the raw JSON value of [billingCountryCode].
-                 *
-                 * Unlike [billingCountryCode], this method doesn't throw if the JSON field has an
-                 * unexpected type.
-                 */
-                @JsonProperty("billingCountryCode")
-                @ExcludeMissing
-                fun _billingCountryCode(): JsonField<String> = billingCountryCode
 
                 /**
                  * Returns the raw JSON value of [currency].
@@ -11772,22 +11352,28 @@ private constructor(
 
                 companion object {
 
-                    /** Returns a mutable builder for constructing an instance of [UnitPrice]. */
+                    /**
+                     * Returns a mutable builder for constructing an instance of [UnitPrice].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .currency()
+                     * ```
+                     */
                     @JvmStatic fun builder() = Builder()
                 }
 
                 /** A builder for [UnitPrice]. */
                 class Builder internal constructor() {
 
-                    private var amount: JsonField<Double> = JsonMissing.of()
-                    private var billingCountryCode: JsonField<String> = JsonMissing.of()
-                    private var currency: JsonField<Currency> = JsonMissing.of()
+                    private var amount: JsonField<Double>? = null
+                    private var currency: JsonField<Currency>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
                     internal fun from(unitPrice: UnitPrice) = apply {
                         amount = unitPrice.amount
-                        billingCountryCode = unitPrice.billingCountryCode
                         currency = unitPrice.currency
                         additionalProperties = unitPrice.additionalProperties.toMutableMap()
                     }
@@ -11803,28 +11389,6 @@ private constructor(
                      * not yet supported value.
                      */
                     fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
-
-                    /** The billing country code of the price */
-                    fun billingCountryCode(billingCountryCode: String?) =
-                        billingCountryCode(JsonField.ofNullable(billingCountryCode))
-
-                    /**
-                     * Alias for calling [Builder.billingCountryCode] with
-                     * `billingCountryCode.orElse(null)`.
-                     */
-                    fun billingCountryCode(billingCountryCode: Optional<String>) =
-                        billingCountryCode(billingCountryCode.getOrNull())
-
-                    /**
-                     * Sets [Builder.billingCountryCode] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.billingCountryCode] with a well-typed
-                     * [String] value instead. This method is primarily for setting the field to an
-                     * undocumented or not yet supported value.
-                     */
-                    fun billingCountryCode(billingCountryCode: JsonField<String>) = apply {
-                        this.billingCountryCode = billingCountryCode
-                    }
 
                     /** The price currency */
                     fun currency(currency: Currency) = currency(JsonField.of(currency))
@@ -11864,12 +11428,19 @@ private constructor(
                      * Returns an immutable instance of [UnitPrice].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .currency()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
                      */
                     fun build(): UnitPrice =
                         UnitPrice(
-                            amount,
-                            billingCountryCode,
-                            currency,
+                            checkRequired("amount", amount),
+                            checkRequired("currency", currency),
                             additionalProperties.toMutableMap(),
                         )
                 }
@@ -11882,8 +11453,7 @@ private constructor(
                     }
 
                     amount()
-                    billingCountryCode()
-                    currency().ifPresent { it.validate() }
+                    currency().validate()
                     validated = true
                 }
 
@@ -11904,7 +11474,6 @@ private constructor(
                 @JvmSynthetic
                 internal fun validity(): Int =
                     (if (amount.asKnown().isPresent) 1 else 0) +
-                        (if (billingCountryCode.asKnown().isPresent) 1 else 0) +
                         (currency.asKnown().getOrNull()?.validity() ?: 0)
 
                 /** The price currency */
@@ -12734,19 +12303,18 @@ private constructor(
 
                     return other is UnitPrice &&
                         amount == other.amount &&
-                        billingCountryCode == other.billingCountryCode &&
                         currency == other.currency &&
                         additionalProperties == other.additionalProperties
                 }
 
                 private val hashCode: Int by lazy {
-                    Objects.hash(amount, billingCountryCode, currency, additionalProperties)
+                    Objects.hash(amount, currency, additionalProperties)
                 }
 
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "UnitPrice{amount=$amount, billingCountryCode=$billingCountryCode, currency=$currency, additionalProperties=$additionalProperties}"
+                    "UnitPrice{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
             }
 
             override fun equals(other: Any?): Boolean {
@@ -12778,12 +12346,14 @@ private constructor(
 
             return other is PriceOverride &&
                 addonId == other.addonId &&
+                amount == other.amount &&
                 baseCharge == other.baseCharge &&
+                billingCountryCode == other.billingCountryCode &&
                 blockSize == other.blockSize &&
                 creditGrantCadence == other.creditGrantCadence &&
                 creditRate == other.creditRate &&
+                currency == other.currency &&
                 featureId == other.featureId &&
-                price == other.price &&
                 tiers == other.tiers &&
                 additionalProperties == other.additionalProperties
         }
@@ -12791,12 +12361,14 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 addonId,
+                amount,
                 baseCharge,
+                billingCountryCode,
                 blockSize,
                 creditGrantCadence,
                 creditRate,
+                currency,
                 featureId,
-                price,
                 tiers,
                 additionalProperties,
             )
@@ -12805,7 +12377,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "PriceOverride{addonId=$addonId, baseCharge=$baseCharge, blockSize=$blockSize, creditGrantCadence=$creditGrantCadence, creditRate=$creditRate, featureId=$featureId, price=$price, tiers=$tiers, additionalProperties=$additionalProperties}"
+            "PriceOverride{addonId=$addonId, amount=$amount, baseCharge=$baseCharge, billingCountryCode=$billingCountryCode, blockSize=$blockSize, creditGrantCadence=$creditGrantCadence, creditRate=$creditRate, currency=$currency, featureId=$featureId, tiers=$tiers, additionalProperties=$additionalProperties}"
     }
 
     /** Strategy for scheduling subscription changes */

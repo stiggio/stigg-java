@@ -118,13 +118,8 @@ internal class SubscriptionProvisionParamsTest {
             )
             .minimumSpend(
                 SubscriptionProvisionParams.MinimumSpend.builder()
-                    .minimum(
-                        SubscriptionProvisionParams.MinimumSpend.Minimum.builder()
-                            .amount(0.0)
-                            .billingCountryCode("billingCountryCode")
-                            .currency(SubscriptionProvisionParams.MinimumSpend.Minimum.Currency.USD)
-                            .build()
-                    )
+                    .amount(0.0)
+                    .currency(SubscriptionProvisionParams.MinimumSpend.Currency.USD)
                     .build()
             )
             .payingCustomerId("payingCustomerId")
@@ -132,7 +127,9 @@ internal class SubscriptionProvisionParamsTest {
             .addPriceOverride(
                 SubscriptionProvisionParams.PriceOverride.builder()
                     .addonId("addonId")
+                    .amount(0.0)
                     .baseCharge(true)
+                    .billingCountryCode("billingCountryCode")
                     .blockSize(0.0)
                     .creditGrantCadence(
                         SubscriptionProvisionParams.PriceOverride.CreditGrantCadence
@@ -145,20 +142,13 @@ internal class SubscriptionProvisionParamsTest {
                             .costFormula("costFormula")
                             .build()
                     )
+                    .currency(SubscriptionProvisionParams.PriceOverride.Currency.USD)
                     .featureId("featureId")
-                    .price(
-                        SubscriptionProvisionParams.PriceOverride.Price.builder()
-                            .amount(0.0)
-                            .billingCountryCode("billingCountryCode")
-                            .currency(SubscriptionProvisionParams.PriceOverride.Price.Currency.USD)
-                            .build()
-                    )
                     .addTier(
                         SubscriptionProvisionParams.PriceOverride.Tier.builder()
                             .flatPrice(
                                 SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice.builder()
                                     .amount(0.0)
-                                    .billingCountryCode("billingCountryCode")
                                     .currency(
                                         SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
                                             .Currency
@@ -169,7 +159,6 @@ internal class SubscriptionProvisionParamsTest {
                             .unitPrice(
                                 SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice.builder()
                                     .amount(0.0)
-                                    .billingCountryCode("billingCountryCode")
                                     .currency(
                                         SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
                                             .Currency
@@ -319,15 +308,8 @@ internal class SubscriptionProvisionParamsTest {
                 )
                 .minimumSpend(
                     SubscriptionProvisionParams.MinimumSpend.builder()
-                        .minimum(
-                            SubscriptionProvisionParams.MinimumSpend.Minimum.builder()
-                                .amount(0.0)
-                                .billingCountryCode("billingCountryCode")
-                                .currency(
-                                    SubscriptionProvisionParams.MinimumSpend.Minimum.Currency.USD
-                                )
-                                .build()
-                        )
+                        .amount(0.0)
+                        .currency(SubscriptionProvisionParams.MinimumSpend.Currency.USD)
                         .build()
                 )
                 .payingCustomerId("payingCustomerId")
@@ -335,7 +317,9 @@ internal class SubscriptionProvisionParamsTest {
                 .addPriceOverride(
                     SubscriptionProvisionParams.PriceOverride.builder()
                         .addonId("addonId")
+                        .amount(0.0)
                         .baseCharge(true)
+                        .billingCountryCode("billingCountryCode")
                         .blockSize(0.0)
                         .creditGrantCadence(
                             SubscriptionProvisionParams.PriceOverride.CreditGrantCadence
@@ -348,23 +332,14 @@ internal class SubscriptionProvisionParamsTest {
                                 .costFormula("costFormula")
                                 .build()
                         )
+                        .currency(SubscriptionProvisionParams.PriceOverride.Currency.USD)
                         .featureId("featureId")
-                        .price(
-                            SubscriptionProvisionParams.PriceOverride.Price.builder()
-                                .amount(0.0)
-                                .billingCountryCode("billingCountryCode")
-                                .currency(
-                                    SubscriptionProvisionParams.PriceOverride.Price.Currency.USD
-                                )
-                                .build()
-                        )
                         .addTier(
                             SubscriptionProvisionParams.PriceOverride.Tier.builder()
                                 .flatPrice(
                                     SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
                                         .builder()
                                         .amount(0.0)
-                                        .billingCountryCode("billingCountryCode")
                                         .currency(
                                             SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
                                                 .Currency
@@ -376,7 +351,6 @@ internal class SubscriptionProvisionParamsTest {
                                     SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
                                         .builder()
                                         .amount(0.0)
-                                        .billingCountryCode("billingCountryCode")
                                         .currency(
                                             SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
                                                 .Currency
@@ -533,13 +507,8 @@ internal class SubscriptionProvisionParamsTest {
         assertThat(body.minimumSpend())
             .contains(
                 SubscriptionProvisionParams.MinimumSpend.builder()
-                    .minimum(
-                        SubscriptionProvisionParams.MinimumSpend.Minimum.builder()
-                            .amount(0.0)
-                            .billingCountryCode("billingCountryCode")
-                            .currency(SubscriptionProvisionParams.MinimumSpend.Minimum.Currency.USD)
-                            .build()
-                    )
+                    .amount(0.0)
+                    .currency(SubscriptionProvisionParams.MinimumSpend.Currency.USD)
                     .build()
             )
         assertThat(body.payingCustomerId()).contains("payingCustomerId")
@@ -549,7 +518,9 @@ internal class SubscriptionProvisionParamsTest {
             .containsExactly(
                 SubscriptionProvisionParams.PriceOverride.builder()
                     .addonId("addonId")
+                    .amount(0.0)
                     .baseCharge(true)
+                    .billingCountryCode("billingCountryCode")
                     .blockSize(0.0)
                     .creditGrantCadence(
                         SubscriptionProvisionParams.PriceOverride.CreditGrantCadence
@@ -562,20 +533,13 @@ internal class SubscriptionProvisionParamsTest {
                             .costFormula("costFormula")
                             .build()
                     )
+                    .currency(SubscriptionProvisionParams.PriceOverride.Currency.USD)
                     .featureId("featureId")
-                    .price(
-                        SubscriptionProvisionParams.PriceOverride.Price.builder()
-                            .amount(0.0)
-                            .billingCountryCode("billingCountryCode")
-                            .currency(SubscriptionProvisionParams.PriceOverride.Price.Currency.USD)
-                            .build()
-                    )
                     .addTier(
                         SubscriptionProvisionParams.PriceOverride.Tier.builder()
                             .flatPrice(
                                 SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice.builder()
                                     .amount(0.0)
-                                    .billingCountryCode("billingCountryCode")
                                     .currency(
                                         SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
                                             .Currency
@@ -586,7 +550,6 @@ internal class SubscriptionProvisionParamsTest {
                             .unitPrice(
                                 SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice.builder()
                                     .amount(0.0)
-                                    .billingCountryCode("billingCountryCode")
                                     .currency(
                                         SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
                                             .Currency
