@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.stigg.core.Enum
 import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
@@ -81,6 +82,14 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
+     * The status of the package
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun status(): Optional<Status> = body.status()
+
+    /**
      * Returns the raw JSON value of [billingId].
      *
      * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected type.
@@ -121,6 +130,13 @@ private constructor(
      * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _metadata(): JsonField<Metadata> = body._metadata()
+
+    /**
+     * Returns the raw JSON value of [status].
+     *
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _status(): JsonField<Status> = body._status()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -276,6 +292,17 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
+        /** The status of the package */
+        fun status(status: Status) = apply { body.status(status) }
+
+        /**
+         * Sets [Builder.status] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun status(status: JsonField<Status>) = apply { body.status(status) }
+
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
         }
@@ -429,6 +456,7 @@ private constructor(
         private val displayName: JsonField<String>,
         private val maxQuantity: JsonField<Long>,
         private val metadata: JsonField<Metadata>,
+        private val status: JsonField<Status>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -452,6 +480,7 @@ private constructor(
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
+            @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         ) : this(
             billingId,
             dependencies,
@@ -459,6 +488,7 @@ private constructor(
             displayName,
             maxQuantity,
             metadata,
+            status,
             mutableMapOf(),
         )
 
@@ -511,6 +541,14 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
+         * The status of the package
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun status(): Optional<Status> = status.getOptional("status")
+
+        /**
          * Returns the raw JSON value of [billingId].
          *
          * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected type.
@@ -561,6 +599,13 @@ private constructor(
          */
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
 
+        /**
+         * Returns the raw JSON value of [status].
+         *
+         * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -588,6 +633,7 @@ private constructor(
             private var displayName: JsonField<String> = JsonMissing.of()
             private var maxQuantity: JsonField<Long> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
+            private var status: JsonField<Status> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -598,6 +644,7 @@ private constructor(
                 displayName = body.displayName
                 maxQuantity = body.maxQuantity
                 metadata = body.metadata
+                status = body.status
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -712,6 +759,18 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
+            /** The status of the package */
+            fun status(status: Status) = status(JsonField.of(status))
+
+            /**
+             * Sets [Builder.status] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.status] with a well-typed [Status] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun status(status: JsonField<Status>) = apply { this.status = status }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -744,6 +803,7 @@ private constructor(
                     displayName,
                     maxQuantity,
                     metadata,
+                    status,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -761,6 +821,7 @@ private constructor(
             displayName()
             maxQuantity()
             metadata().ifPresent { it.validate() }
+            status().ifPresent { it.validate() }
             validated = true
         }
 
@@ -785,7 +846,8 @@ private constructor(
                 (if (description.asKnown().isPresent) 1 else 0) +
                 (if (displayName.asKnown().isPresent) 1 else 0) +
                 (if (maxQuantity.asKnown().isPresent) 1 else 0) +
-                (metadata.asKnown().getOrNull()?.validity() ?: 0)
+                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+                (status.asKnown().getOrNull()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -799,6 +861,7 @@ private constructor(
                 displayName == other.displayName &&
                 maxQuantity == other.maxQuantity &&
                 metadata == other.metadata &&
+                status == other.status &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -810,6 +873,7 @@ private constructor(
                 displayName,
                 maxQuantity,
                 metadata,
+                status,
                 additionalProperties,
             )
         }
@@ -817,7 +881,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{billingId=$billingId, dependencies=$dependencies, description=$description, displayName=$displayName, maxQuantity=$maxQuantity, metadata=$metadata, additionalProperties=$additionalProperties}"
+            "Body{billingId=$billingId, dependencies=$dependencies, description=$description, displayName=$displayName, maxQuantity=$maxQuantity, metadata=$metadata, status=$status, additionalProperties=$additionalProperties}"
     }
 
     /** Metadata associated with the entity */
@@ -918,6 +982,137 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
+    }
+
+    /** The status of the package */
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val DRAFT = of("DRAFT")
+
+            @JvmField val PUBLISHED = of("PUBLISHED")
+
+            @JvmField val ARCHIVED = of("ARCHIVED")
+
+            @JvmStatic fun of(value: String) = Status(JsonField.of(value))
+        }
+
+        /** An enum containing [Status]'s known values. */
+        enum class Known {
+            DRAFT,
+            PUBLISHED,
+            ARCHIVED,
+        }
+
+        /**
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Status] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            DRAFT,
+            PUBLISHED,
+            ARCHIVED,
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                DRAFT -> Value.DRAFT
+                PUBLISHED -> Value.PUBLISHED
+                ARCHIVED -> Value.ARCHIVED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                DRAFT -> Known.DRAFT
+                PUBLISHED -> Known.PUBLISHED
+                ARCHIVED -> Known.ARCHIVED
+                else -> throw StiggInvalidDataException("Unknown Status: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): Status = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Status && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     override fun equals(other: Any?): Boolean {

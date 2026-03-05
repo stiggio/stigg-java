@@ -75,6 +75,7 @@ internal class AddonServiceAsyncTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .status(AddonUpdateParams.Status.DRAFT)
                     .build()
             )
 
