@@ -73,6 +73,7 @@ internal class AddonServiceTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .status(AddonUpdateParams.Status.DRAFT)
                     .build()
             )
 

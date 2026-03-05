@@ -23,6 +23,7 @@ internal class AddonUpdateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+            .status(AddonUpdateParams.Status.DRAFT)
             .build()
     }
 
@@ -50,6 +51,7 @@ internal class AddonUpdateParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .status(AddonUpdateParams.Status.DRAFT)
                 .build()
 
         val body = params._body()
@@ -65,6 +67,7 @@ internal class AddonUpdateParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+        assertThat(body.status()).contains(AddonUpdateParams.Status.DRAFT)
     }
 
     @Test
