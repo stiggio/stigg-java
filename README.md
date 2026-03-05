@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.stigg/stigg-java)](https://central.sonatype.com/artifact/io.stigg/stigg-java/0.1.0-alpha.20)
-[![javadoc](https://javadoc.io/badge2/io.stigg/stigg-java/0.1.0-alpha.20/javadoc.svg)](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.20)
+[![Maven Central](https://img.shields.io/maven-central/v/io.stigg/stigg-java)](https://central.sonatype.com/artifact/io.stigg/stigg-java/0.1.0-alpha.21)
+[![javadoc](https://javadoc.io/badge2/io.stigg/stigg-java/0.1.0-alpha.21/javadoc.svg)](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.21)
 
 <!-- x-release-please-end -->
 
@@ -22,7 +22,7 @@ Use the Stigg MCP Server to enable AI assistants to interact with this API, allo
 
 <!-- x-release-please-start-version -->
 
-Javadocs are available on [javadoc.io](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.20).
+Javadocs are available on [javadoc.io](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-alpha.21).
 
 <!-- x-release-please-end -->
 
@@ -33,7 +33,7 @@ Javadocs are available on [javadoc.io](https://javadoc.io/doc/io.stigg/stigg-jav
 ### Gradle
 
 ```kotlin
-implementation("io.stigg:stigg-java:0.1.0-alpha.20")
+implementation("io.stigg:stigg-java:0.1.0-alpha.21")
 ```
 
 ### Maven
@@ -42,7 +42,7 @@ implementation("io.stigg:stigg-java:0.1.0-alpha.20")
 <dependency>
   <groupId>io.stigg</groupId>
   <artifactId>stigg-java</artifactId>
-  <version>0.1.0-alpha.20</version>
+  <version>0.1.0-alpha.21</version>
 </dependency>
 ```
 
