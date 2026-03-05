@@ -26,6 +26,7 @@ internal class UsageServiceTest {
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .groupBy("groupBy")
+                    .includeHistoricalUsage(true)
                     .resourceId("resourceId")
                     .build()
             )
