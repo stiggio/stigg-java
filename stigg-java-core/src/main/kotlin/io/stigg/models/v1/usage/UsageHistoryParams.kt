@@ -20,6 +20,7 @@ private constructor(
     private val startDate: OffsetDateTime,
     private val endDate: OffsetDateTime?,
     private val groupBy: String?,
+    private val includeHistoricalUsage: Boolean?,
     private val resourceId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -36,6 +37,9 @@ private constructor(
     fun endDate(): Optional<OffsetDateTime> = Optional.ofNullable(endDate)
 
     fun groupBy(): Optional<String> = Optional.ofNullable(groupBy)
+
+    /** When true, includes usage data from the most recent cancelled or expired subscription */
+    fun includeHistoricalUsage(): Optional<Boolean> = Optional.ofNullable(includeHistoricalUsage)
 
     /** Resource id */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
@@ -70,6 +74,7 @@ private constructor(
         private var startDate: OffsetDateTime? = null
         private var endDate: OffsetDateTime? = null
         private var groupBy: String? = null
+        private var includeHistoricalUsage: Boolean? = null
         private var resourceId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -81,6 +86,7 @@ private constructor(
             startDate = usageHistoryParams.startDate
             endDate = usageHistoryParams.endDate
             groupBy = usageHistoryParams.groupBy
+            includeHistoricalUsage = usageHistoryParams.includeHistoricalUsage
             resourceId = usageHistoryParams.resourceId
             additionalHeaders = usageHistoryParams.additionalHeaders.toBuilder()
             additionalQueryParams = usageHistoryParams.additionalQueryParams.toBuilder()
@@ -106,6 +112,26 @@ private constructor(
 
         /** Alias for calling [Builder.groupBy] with `groupBy.orElse(null)`. */
         fun groupBy(groupBy: Optional<String>) = groupBy(groupBy.getOrNull())
+
+        /** When true, includes usage data from the most recent cancelled or expired subscription */
+        fun includeHistoricalUsage(includeHistoricalUsage: Boolean?) = apply {
+            this.includeHistoricalUsage = includeHistoricalUsage
+        }
+
+        /**
+         * Alias for [Builder.includeHistoricalUsage].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun includeHistoricalUsage(includeHistoricalUsage: Boolean) =
+            includeHistoricalUsage(includeHistoricalUsage as Boolean?)
+
+        /**
+         * Alias for calling [Builder.includeHistoricalUsage] with
+         * `includeHistoricalUsage.orElse(null)`.
+         */
+        fun includeHistoricalUsage(includeHistoricalUsage: Optional<Boolean>) =
+            includeHistoricalUsage(includeHistoricalUsage.getOrNull())
 
         /** Resource id */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
@@ -231,6 +257,7 @@ private constructor(
                 checkRequired("startDate", startDate),
                 endDate,
                 groupBy,
+                includeHistoricalUsage,
                 resourceId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -252,6 +279,7 @@ private constructor(
                 put("startDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(startDate))
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 groupBy?.let { put("groupBy", it) }
+                includeHistoricalUsage?.let { put("includeHistoricalUsage", it.toString()) }
                 resourceId?.let { put("resourceId", it) }
                 putAll(additionalQueryParams)
             }
@@ -268,6 +296,7 @@ private constructor(
             startDate == other.startDate &&
             endDate == other.endDate &&
             groupBy == other.groupBy &&
+            includeHistoricalUsage == other.includeHistoricalUsage &&
             resourceId == other.resourceId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
@@ -280,11 +309,12 @@ private constructor(
             startDate,
             endDate,
             groupBy,
+            includeHistoricalUsage,
             resourceId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "UsageHistoryParams{customerId=$customerId, featureId=$featureId, startDate=$startDate, endDate=$endDate, groupBy=$groupBy, resourceId=$resourceId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "UsageHistoryParams{customerId=$customerId, featureId=$featureId, startDate=$startDate, endDate=$endDate, groupBy=$groupBy, includeHistoricalUsage=$includeHistoricalUsage, resourceId=$resourceId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
