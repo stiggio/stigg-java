@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.0-alpha.23 (2026-03-08)
+
+Full Changelog: [v0.1.0-alpha.22...v0.1.0-alpha.23](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.22...v0.1.0-alpha.23)
+
+### Features
+
+* **api:** api update ([385d133](https://github.com/stiggio/stigg-java/commit/385d1332f2eb975770ea9d97bc4dfa0fc9ea9d69))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([0ac1033](https://github.com/stiggio/stigg-java/commit/0ac1033b423f2225453919c35bc10e557b240556))
+* **internal:** bump palantir-java-format ([04123fb](https://github.com/stiggio/stigg-java/commit/04123fb10aa678e18d58d851e3a5cf46478e93c5))
+* **internal:** codegen related update ([b741626](https://github.com/stiggio/stigg-java/commit/b74162665cc02e1f09354c8a946e0bea90e0ca1f))
+
 ## 0.1.0-alpha.22 (2026-03-05)
 
 Full Changelog: [v0.1.0-alpha.21...v0.1.0-alpha.22](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.21...v0.1.0-alpha.22)
