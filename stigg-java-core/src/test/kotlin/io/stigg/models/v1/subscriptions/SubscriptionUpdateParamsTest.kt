@@ -93,6 +93,64 @@ internal class SubscriptionUpdateParamsTest {
                     .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                     .build()
             )
+            .addEntitlement(
+                SubscriptionUpdateParams.Entitlement.builder()
+                    .credit(
+                        SubscriptionUpdateParams.Entitlement.Credit.builder()
+                            .amount(1.0)
+                            .cadence(SubscriptionUpdateParams.Entitlement.Credit.Cadence.MONTH)
+                            .currencyId("currencyId")
+                            .build()
+                    )
+                    .feature(
+                        SubscriptionUpdateParams.Entitlement.Feature.builder()
+                            .featureId("featureId")
+                            .hasSoftLimit(true)
+                            .hasUnlimitedUsage(true)
+                            .monthlyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .MonthlyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .MonthlyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .resetPeriod(
+                                SubscriptionUpdateParams.Entitlement.Feature.ResetPeriod.YEAR
+                            )
+                            .usageLimit(0L)
+                            .weeklyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .WeeklyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .WeeklyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .yearlyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .YearlyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .YearlyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
             .metadata(
                 SubscriptionUpdateParams.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -116,52 +174,6 @@ internal class SubscriptionUpdateParamsTest {
             )
             .promotionCode("promotionCode")
             .scheduleStrategy(SubscriptionUpdateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
-            .addSubscriptionEntitlement(
-                SubscriptionUpdateParams.SubscriptionEntitlement.builder()
-                    .id("id")
-                    .featureId("featureId")
-                    .hasSoftLimit(true)
-                    .hasUnlimitedUsage(true)
-                    .monthlyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .MonthlyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .MonthlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .resetPeriod(SubscriptionUpdateParams.SubscriptionEntitlement.ResetPeriod.YEAR)
-                    .usageLimit(0.0)
-                    .weeklyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .WeeklyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .WeeklyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .yearlyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .YearlyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .YearlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .build()
-            )
             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .build()
     }
@@ -263,6 +275,64 @@ internal class SubscriptionUpdateParamsTest {
                         .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                         .build()
                 )
+                .addEntitlement(
+                    SubscriptionUpdateParams.Entitlement.builder()
+                        .credit(
+                            SubscriptionUpdateParams.Entitlement.Credit.builder()
+                                .amount(1.0)
+                                .cadence(SubscriptionUpdateParams.Entitlement.Credit.Cadence.MONTH)
+                                .currencyId("currencyId")
+                                .build()
+                        )
+                        .feature(
+                            SubscriptionUpdateParams.Entitlement.Feature.builder()
+                                .featureId("featureId")
+                                .hasSoftLimit(true)
+                                .hasUnlimitedUsage(true)
+                                .monthlyResetPeriodConfiguration(
+                                    SubscriptionUpdateParams.Entitlement.Feature
+                                        .MonthlyResetPeriodConfiguration
+                                        .builder()
+                                        .accordingTo(
+                                            SubscriptionUpdateParams.Entitlement.Feature
+                                                .MonthlyResetPeriodConfiguration
+                                                .AccordingTo
+                                                .SUBSCRIPTION_START
+                                        )
+                                        .build()
+                                )
+                                .resetPeriod(
+                                    SubscriptionUpdateParams.Entitlement.Feature.ResetPeriod.YEAR
+                                )
+                                .usageLimit(0L)
+                                .weeklyResetPeriodConfiguration(
+                                    SubscriptionUpdateParams.Entitlement.Feature
+                                        .WeeklyResetPeriodConfiguration
+                                        .builder()
+                                        .accordingTo(
+                                            SubscriptionUpdateParams.Entitlement.Feature
+                                                .WeeklyResetPeriodConfiguration
+                                                .AccordingTo
+                                                .SUBSCRIPTION_START
+                                        )
+                                        .build()
+                                )
+                                .yearlyResetPeriodConfiguration(
+                                    SubscriptionUpdateParams.Entitlement.Feature
+                                        .YearlyResetPeriodConfiguration
+                                        .builder()
+                                        .accordingTo(
+                                            SubscriptionUpdateParams.Entitlement.Feature
+                                                .YearlyResetPeriodConfiguration
+                                                .AccordingTo
+                                                .SUBSCRIPTION_START
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .metadata(
                     SubscriptionUpdateParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -286,54 +356,6 @@ internal class SubscriptionUpdateParamsTest {
                 )
                 .promotionCode("promotionCode")
                 .scheduleStrategy(SubscriptionUpdateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
-                .addSubscriptionEntitlement(
-                    SubscriptionUpdateParams.SubscriptionEntitlement.builder()
-                        .id("id")
-                        .featureId("featureId")
-                        .hasSoftLimit(true)
-                        .hasUnlimitedUsage(true)
-                        .monthlyResetPeriodConfiguration(
-                            SubscriptionUpdateParams.SubscriptionEntitlement
-                                .MonthlyResetPeriodConfiguration
-                                .builder()
-                                .accordingTo(
-                                    SubscriptionUpdateParams.SubscriptionEntitlement
-                                        .MonthlyResetPeriodConfiguration
-                                        .AccordingTo
-                                        .SUBSCRIPTION_START
-                                )
-                                .build()
-                        )
-                        .resetPeriod(
-                            SubscriptionUpdateParams.SubscriptionEntitlement.ResetPeriod.YEAR
-                        )
-                        .usageLimit(0.0)
-                        .weeklyResetPeriodConfiguration(
-                            SubscriptionUpdateParams.SubscriptionEntitlement
-                                .WeeklyResetPeriodConfiguration
-                                .builder()
-                                .accordingTo(
-                                    SubscriptionUpdateParams.SubscriptionEntitlement
-                                        .WeeklyResetPeriodConfiguration
-                                        .AccordingTo
-                                        .SUBSCRIPTION_START
-                                )
-                                .build()
-                        )
-                        .yearlyResetPeriodConfiguration(
-                            SubscriptionUpdateParams.SubscriptionEntitlement
-                                .YearlyResetPeriodConfiguration
-                                .builder()
-                                .accordingTo(
-                                    SubscriptionUpdateParams.SubscriptionEntitlement
-                                        .YearlyResetPeriodConfiguration
-                                        .AccordingTo
-                                        .SUBSCRIPTION_START
-                                )
-                                .build()
-                        )
-                        .build()
-                )
                 .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 
@@ -426,6 +448,65 @@ internal class SubscriptionUpdateParamsTest {
                     .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                     .build()
             )
+        assertThat(body.entitlements().getOrNull())
+            .containsExactly(
+                SubscriptionUpdateParams.Entitlement.builder()
+                    .credit(
+                        SubscriptionUpdateParams.Entitlement.Credit.builder()
+                            .amount(1.0)
+                            .cadence(SubscriptionUpdateParams.Entitlement.Credit.Cadence.MONTH)
+                            .currencyId("currencyId")
+                            .build()
+                    )
+                    .feature(
+                        SubscriptionUpdateParams.Entitlement.Feature.builder()
+                            .featureId("featureId")
+                            .hasSoftLimit(true)
+                            .hasUnlimitedUsage(true)
+                            .monthlyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .MonthlyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .MonthlyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .resetPeriod(
+                                SubscriptionUpdateParams.Entitlement.Feature.ResetPeriod.YEAR
+                            )
+                            .usageLimit(0L)
+                            .weeklyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .WeeklyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .WeeklyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .yearlyResetPeriodConfiguration(
+                                SubscriptionUpdateParams.Entitlement.Feature
+                                    .YearlyResetPeriodConfiguration
+                                    .builder()
+                                    .accordingTo(
+                                        SubscriptionUpdateParams.Entitlement.Feature
+                                            .YearlyResetPeriodConfiguration
+                                            .AccordingTo
+                                            .SUBSCRIPTION_START
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(body.metadata())
             .contains(
                 SubscriptionUpdateParams.Metadata.builder()
@@ -453,53 +534,6 @@ internal class SubscriptionUpdateParamsTest {
         assertThat(body.promotionCode()).contains("promotionCode")
         assertThat(body.scheduleStrategy())
             .contains(SubscriptionUpdateParams.ScheduleStrategy.END_OF_BILLING_PERIOD)
-        assertThat(body.subscriptionEntitlements().getOrNull())
-            .containsExactly(
-                SubscriptionUpdateParams.SubscriptionEntitlement.builder()
-                    .id("id")
-                    .featureId("featureId")
-                    .hasSoftLimit(true)
-                    .hasUnlimitedUsage(true)
-                    .monthlyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .MonthlyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .MonthlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .resetPeriod(SubscriptionUpdateParams.SubscriptionEntitlement.ResetPeriod.YEAR)
-                    .usageLimit(0.0)
-                    .weeklyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .WeeklyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .WeeklyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .yearlyResetPeriodConfiguration(
-                        SubscriptionUpdateParams.SubscriptionEntitlement
-                            .YearlyResetPeriodConfiguration
-                            .builder()
-                            .accordingTo(
-                                SubscriptionUpdateParams.SubscriptionEntitlement
-                                    .YearlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .build()
-            )
         assertThat(body.trialEndDate()).contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
     }
 
