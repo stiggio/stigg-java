@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.25 (2026-03-09)
+
+Full Changelog: [v0.1.0-alpha.24...v0.1.0-alpha.25](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.24...v0.1.0-alpha.25)
+
+### Features
+
+* **api:** api update ([0b5f992](https://github.com/stiggio/stigg-java/commit/0b5f99275fb539a0eeec67e1a4d3bcca91fcb644))
+
 ## 0.1.0-alpha.24 (2026-03-09)
 
 Full Changelog: [v0.1.0-alpha.23...v0.1.0-alpha.24](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.23...v0.1.0-alpha.24)
