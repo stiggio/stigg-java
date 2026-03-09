@@ -15,39 +15,34 @@ internal class EntitlementCreateResponseTest {
         val entitlementCreateResponse =
             EntitlementCreateResponse.builder()
                 .addData(
-                    EntitlementCreateResponse.Data.builder()
+                    EntitlementCreateResponse.Data.Feature.builder()
                         .id("id")
-                        .amount(0.0)
-                        .behavior(EntitlementCreateResponse.Data.Behavior.INCREMENT)
-                        .cadence(EntitlementCreateResponse.Data.Cadence.MONTH)
+                        .behavior(EntitlementCreateResponse.Data.Feature.Behavior.INCREMENT)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .customCurrencyId("customCurrencyId")
                         .description("description")
                         .displayNameOverride("displayNameOverride")
                         .addEnumValue("string")
-                        .featureId("featureId")
                         .hasSoftLimit(true)
                         .hasUnlimitedUsage(true)
                         .addHiddenFromWidget(
-                            EntitlementCreateResponse.Data.HiddenFromWidget.PAYWALL
+                            EntitlementCreateResponse.Data.Feature.HiddenFromWidget.PAYWALL
                         )
                         .isCustom(true)
                         .isGranted(true)
                         .order(0.0)
-                        .resetPeriod(EntitlementCreateResponse.Data.ResetPeriod.YEAR)
+                        .resetPeriod(EntitlementCreateResponse.Data.Feature.ResetPeriod.YEAR)
                         .resetPeriodConfiguration(
-                            EntitlementCreateResponse.Data.ResetPeriodConfiguration
+                            EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
                                 .YearlyResetPeriodConfig
                                 .builder()
                                 .accordingTo(
-                                    EntitlementCreateResponse.Data.ResetPeriodConfiguration
+                                    EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
                                         .YearlyResetPeriodConfig
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
-                        .type(EntitlementCreateResponse.Data.Type.FEATURE)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .usageLimit(0.0)
                         .build()
@@ -56,40 +51,39 @@ internal class EntitlementCreateResponseTest {
 
         assertThat(entitlementCreateResponse.data())
             .containsExactly(
-                EntitlementCreateResponse.Data.builder()
-                    .id("id")
-                    .amount(0.0)
-                    .behavior(EntitlementCreateResponse.Data.Behavior.INCREMENT)
-                    .cadence(EntitlementCreateResponse.Data.Cadence.MONTH)
-                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .customCurrencyId("customCurrencyId")
-                    .description("description")
-                    .displayNameOverride("displayNameOverride")
-                    .addEnumValue("string")
-                    .featureId("featureId")
-                    .hasSoftLimit(true)
-                    .hasUnlimitedUsage(true)
-                    .addHiddenFromWidget(EntitlementCreateResponse.Data.HiddenFromWidget.PAYWALL)
-                    .isCustom(true)
-                    .isGranted(true)
-                    .order(0.0)
-                    .resetPeriod(EntitlementCreateResponse.Data.ResetPeriod.YEAR)
-                    .resetPeriodConfiguration(
-                        EntitlementCreateResponse.Data.ResetPeriodConfiguration
-                            .YearlyResetPeriodConfig
-                            .builder()
-                            .accordingTo(
-                                EntitlementCreateResponse.Data.ResetPeriodConfiguration
-                                    .YearlyResetPeriodConfig
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .type(EntitlementCreateResponse.Data.Type.FEATURE)
-                    .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .usageLimit(0.0)
-                    .build()
+                EntitlementCreateResponse.Data.ofFeature(
+                    EntitlementCreateResponse.Data.Feature.builder()
+                        .id("id")
+                        .behavior(EntitlementCreateResponse.Data.Feature.Behavior.INCREMENT)
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .description("description")
+                        .displayNameOverride("displayNameOverride")
+                        .addEnumValue("string")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .addHiddenFromWidget(
+                            EntitlementCreateResponse.Data.Feature.HiddenFromWidget.PAYWALL
+                        )
+                        .isCustom(true)
+                        .isGranted(true)
+                        .order(0.0)
+                        .resetPeriod(EntitlementCreateResponse.Data.Feature.ResetPeriod.YEAR)
+                        .resetPeriodConfiguration(
+                            EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
+                                .YearlyResetPeriodConfig
+                                .builder()
+                                .accordingTo(
+                                    EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
+                                        .YearlyResetPeriodConfig
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .usageLimit(0.0)
+                        .build()
+                )
             )
     }
 
@@ -99,39 +93,34 @@ internal class EntitlementCreateResponseTest {
         val entitlementCreateResponse =
             EntitlementCreateResponse.builder()
                 .addData(
-                    EntitlementCreateResponse.Data.builder()
+                    EntitlementCreateResponse.Data.Feature.builder()
                         .id("id")
-                        .amount(0.0)
-                        .behavior(EntitlementCreateResponse.Data.Behavior.INCREMENT)
-                        .cadence(EntitlementCreateResponse.Data.Cadence.MONTH)
+                        .behavior(EntitlementCreateResponse.Data.Feature.Behavior.INCREMENT)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .customCurrencyId("customCurrencyId")
                         .description("description")
                         .displayNameOverride("displayNameOverride")
                         .addEnumValue("string")
-                        .featureId("featureId")
                         .hasSoftLimit(true)
                         .hasUnlimitedUsage(true)
                         .addHiddenFromWidget(
-                            EntitlementCreateResponse.Data.HiddenFromWidget.PAYWALL
+                            EntitlementCreateResponse.Data.Feature.HiddenFromWidget.PAYWALL
                         )
                         .isCustom(true)
                         .isGranted(true)
                         .order(0.0)
-                        .resetPeriod(EntitlementCreateResponse.Data.ResetPeriod.YEAR)
+                        .resetPeriod(EntitlementCreateResponse.Data.Feature.ResetPeriod.YEAR)
                         .resetPeriodConfiguration(
-                            EntitlementCreateResponse.Data.ResetPeriodConfiguration
+                            EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
                                 .YearlyResetPeriodConfig
                                 .builder()
                                 .accordingTo(
-                                    EntitlementCreateResponse.Data.ResetPeriodConfiguration
+                                    EntitlementCreateResponse.Data.Feature.ResetPeriodConfiguration
                                         .YearlyResetPeriodConfig
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
-                        .type(EntitlementCreateResponse.Data.Type.FEATURE)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .usageLimit(0.0)
                         .build()

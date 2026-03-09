@@ -15,36 +15,32 @@ internal class PlanEntitlementTest {
         val planEntitlement =
             PlanEntitlement.builder()
                 .data(
-                    PlanEntitlement.Data.builder()
+                    PlanEntitlement.Data.Feature.builder()
                         .id("id")
-                        .amount(0.0)
-                        .behavior(PlanEntitlement.Data.Behavior.INCREMENT)
-                        .cadence(PlanEntitlement.Data.Cadence.MONTH)
+                        .behavior(PlanEntitlement.Data.Feature.Behavior.INCREMENT)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .customCurrencyId("customCurrencyId")
                         .description("description")
                         .displayNameOverride("displayNameOverride")
                         .addEnumValue("string")
-                        .featureId("featureId")
                         .hasSoftLimit(true)
                         .hasUnlimitedUsage(true)
-                        .addHiddenFromWidget(PlanEntitlement.Data.HiddenFromWidget.PAYWALL)
+                        .addHiddenFromWidget(PlanEntitlement.Data.Feature.HiddenFromWidget.PAYWALL)
                         .isCustom(true)
                         .isGranted(true)
                         .order(0.0)
-                        .resetPeriod(PlanEntitlement.Data.ResetPeriod.YEAR)
+                        .resetPeriod(PlanEntitlement.Data.Feature.ResetPeriod.YEAR)
                         .resetPeriodConfiguration(
-                            PlanEntitlement.Data.ResetPeriodConfiguration.YearlyResetPeriodConfig
+                            PlanEntitlement.Data.Feature.ResetPeriodConfiguration
+                                .YearlyResetPeriodConfig
                                 .builder()
                                 .accordingTo(
-                                    PlanEntitlement.Data.ResetPeriodConfiguration
+                                    PlanEntitlement.Data.Feature.ResetPeriodConfiguration
                                         .YearlyResetPeriodConfig
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
-                        .type(PlanEntitlement.Data.Type.FEATURE)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .usageLimit(0.0)
                         .build()
@@ -53,39 +49,37 @@ internal class PlanEntitlementTest {
 
         assertThat(planEntitlement.data())
             .isEqualTo(
-                PlanEntitlement.Data.builder()
-                    .id("id")
-                    .amount(0.0)
-                    .behavior(PlanEntitlement.Data.Behavior.INCREMENT)
-                    .cadence(PlanEntitlement.Data.Cadence.MONTH)
-                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .customCurrencyId("customCurrencyId")
-                    .description("description")
-                    .displayNameOverride("displayNameOverride")
-                    .addEnumValue("string")
-                    .featureId("featureId")
-                    .hasSoftLimit(true)
-                    .hasUnlimitedUsage(true)
-                    .addHiddenFromWidget(PlanEntitlement.Data.HiddenFromWidget.PAYWALL)
-                    .isCustom(true)
-                    .isGranted(true)
-                    .order(0.0)
-                    .resetPeriod(PlanEntitlement.Data.ResetPeriod.YEAR)
-                    .resetPeriodConfiguration(
-                        PlanEntitlement.Data.ResetPeriodConfiguration.YearlyResetPeriodConfig
-                            .builder()
-                            .accordingTo(
-                                PlanEntitlement.Data.ResetPeriodConfiguration
-                                    .YearlyResetPeriodConfig
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .type(PlanEntitlement.Data.Type.FEATURE)
-                    .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .usageLimit(0.0)
-                    .build()
+                PlanEntitlement.Data.ofFeature(
+                    PlanEntitlement.Data.Feature.builder()
+                        .id("id")
+                        .behavior(PlanEntitlement.Data.Feature.Behavior.INCREMENT)
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .description("description")
+                        .displayNameOverride("displayNameOverride")
+                        .addEnumValue("string")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .addHiddenFromWidget(PlanEntitlement.Data.Feature.HiddenFromWidget.PAYWALL)
+                        .isCustom(true)
+                        .isGranted(true)
+                        .order(0.0)
+                        .resetPeriod(PlanEntitlement.Data.Feature.ResetPeriod.YEAR)
+                        .resetPeriodConfiguration(
+                            PlanEntitlement.Data.Feature.ResetPeriodConfiguration
+                                .YearlyResetPeriodConfig
+                                .builder()
+                                .accordingTo(
+                                    PlanEntitlement.Data.Feature.ResetPeriodConfiguration
+                                        .YearlyResetPeriodConfig
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .usageLimit(0.0)
+                        .build()
+                )
             )
     }
 
@@ -95,36 +89,32 @@ internal class PlanEntitlementTest {
         val planEntitlement =
             PlanEntitlement.builder()
                 .data(
-                    PlanEntitlement.Data.builder()
+                    PlanEntitlement.Data.Feature.builder()
                         .id("id")
-                        .amount(0.0)
-                        .behavior(PlanEntitlement.Data.Behavior.INCREMENT)
-                        .cadence(PlanEntitlement.Data.Cadence.MONTH)
+                        .behavior(PlanEntitlement.Data.Feature.Behavior.INCREMENT)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .customCurrencyId("customCurrencyId")
                         .description("description")
                         .displayNameOverride("displayNameOverride")
                         .addEnumValue("string")
-                        .featureId("featureId")
                         .hasSoftLimit(true)
                         .hasUnlimitedUsage(true)
-                        .addHiddenFromWidget(PlanEntitlement.Data.HiddenFromWidget.PAYWALL)
+                        .addHiddenFromWidget(PlanEntitlement.Data.Feature.HiddenFromWidget.PAYWALL)
                         .isCustom(true)
                         .isGranted(true)
                         .order(0.0)
-                        .resetPeriod(PlanEntitlement.Data.ResetPeriod.YEAR)
+                        .resetPeriod(PlanEntitlement.Data.Feature.ResetPeriod.YEAR)
                         .resetPeriodConfiguration(
-                            PlanEntitlement.Data.ResetPeriodConfiguration.YearlyResetPeriodConfig
+                            PlanEntitlement.Data.Feature.ResetPeriodConfiguration
+                                .YearlyResetPeriodConfig
                                 .builder()
                                 .accordingTo(
-                                    PlanEntitlement.Data.ResetPeriodConfiguration
+                                    PlanEntitlement.Data.Feature.ResetPeriodConfiguration
                                         .YearlyResetPeriodConfig
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
-                        .type(PlanEntitlement.Data.Type.FEATURE)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .usageLimit(0.0)
                         .build()
