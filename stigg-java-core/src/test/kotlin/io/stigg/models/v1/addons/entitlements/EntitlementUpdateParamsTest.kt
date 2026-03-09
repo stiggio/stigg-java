@@ -12,55 +12,47 @@ internal class EntitlementUpdateParamsTest {
         EntitlementUpdateParams.builder()
             .addonId("addonId")
             .id("id")
-            .credit(
-                EntitlementUpdateParams.Credit.builder()
-                    .amount(1.0)
-                    .behavior(EntitlementUpdateParams.Credit.Behavior.INCREMENT)
-                    .cadence(EntitlementUpdateParams.Credit.Cadence.MONTH)
-                    .description("description")
-                    .displayNameOverride("displayNameOverride")
-                    .addHiddenFromWidget(EntitlementUpdateParams.Credit.HiddenFromWidget.PAYWALL)
-                    .isCustom(true)
-                    .isGranted(true)
-                    .order(0.0)
-                    .build()
-            )
-            .feature(
-                EntitlementUpdateParams.Feature.builder()
-                    .behavior(EntitlementUpdateParams.Feature.Behavior.INCREMENT)
+            .body(
+                EntitlementUpdateParams.Body.Feature.builder()
+                    .behavior(EntitlementUpdateParams.Body.Feature.Behavior.INCREMENT)
                     .description("description")
                     .displayNameOverride("displayNameOverride")
                     .addEnumValue("string")
                     .hasSoftLimit(true)
                     .hasUnlimitedUsage(true)
-                    .addHiddenFromWidget(EntitlementUpdateParams.Feature.HiddenFromWidget.PAYWALL)
+                    .addHiddenFromWidget(
+                        EntitlementUpdateParams.Body.Feature.HiddenFromWidget.PAYWALL
+                    )
                     .isCustom(true)
                     .isGranted(true)
                     .monthlyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration.builder()
+                        EntitlementUpdateParams.Body.Feature.MonthlyResetPeriodConfiguration
+                            .builder()
                             .accordingTo(
-                                EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration
+                                EntitlementUpdateParams.Body.Feature.MonthlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
                             )
                             .build()
                     )
                     .order(0.0)
-                    .resetPeriod(EntitlementUpdateParams.Feature.ResetPeriod.YEAR)
+                    .resetPeriod(EntitlementUpdateParams.Body.Feature.ResetPeriod.YEAR)
                     .usageLimit(0L)
                     .weeklyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration.builder()
+                        EntitlementUpdateParams.Body.Feature.WeeklyResetPeriodConfiguration
+                            .builder()
                             .accordingTo(
-                                EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration
+                                EntitlementUpdateParams.Body.Feature.WeeklyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
                             )
                             .build()
                     )
                     .yearlyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration.builder()
+                        EntitlementUpdateParams.Body.Feature.YearlyResetPeriodConfiguration
+                            .builder()
                             .accordingTo(
-                                EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration
+                                EntitlementUpdateParams.Body.Feature.YearlyResetPeriodConfiguration
                                     .AccordingTo
                                     .SUBSCRIPTION_START
                             )
@@ -73,7 +65,12 @@ internal class EntitlementUpdateParamsTest {
 
     @Test
     fun pathParams() {
-        val params = EntitlementUpdateParams.builder().addonId("addonId").id("id").build()
+        val params =
+            EntitlementUpdateParams.builder()
+                .addonId("addonId")
+                .id("id")
+                .body(EntitlementUpdateParams.Body.Feature.builder().build())
+                .build()
 
         assertThat(params._pathParam(0)).isEqualTo("addonId")
         assertThat(params._pathParam(1)).isEqualTo("id")
@@ -87,60 +84,50 @@ internal class EntitlementUpdateParamsTest {
             EntitlementUpdateParams.builder()
                 .addonId("addonId")
                 .id("id")
-                .credit(
-                    EntitlementUpdateParams.Credit.builder()
-                        .amount(1.0)
-                        .behavior(EntitlementUpdateParams.Credit.Behavior.INCREMENT)
-                        .cadence(EntitlementUpdateParams.Credit.Cadence.MONTH)
-                        .description("description")
-                        .displayNameOverride("displayNameOverride")
-                        .addHiddenFromWidget(
-                            EntitlementUpdateParams.Credit.HiddenFromWidget.PAYWALL
-                        )
-                        .isCustom(true)
-                        .isGranted(true)
-                        .order(0.0)
-                        .build()
-                )
-                .feature(
-                    EntitlementUpdateParams.Feature.builder()
-                        .behavior(EntitlementUpdateParams.Feature.Behavior.INCREMENT)
+                .body(
+                    EntitlementUpdateParams.Body.Feature.builder()
+                        .behavior(EntitlementUpdateParams.Body.Feature.Behavior.INCREMENT)
                         .description("description")
                         .displayNameOverride("displayNameOverride")
                         .addEnumValue("string")
                         .hasSoftLimit(true)
                         .hasUnlimitedUsage(true)
                         .addHiddenFromWidget(
-                            EntitlementUpdateParams.Feature.HiddenFromWidget.PAYWALL
+                            EntitlementUpdateParams.Body.Feature.HiddenFromWidget.PAYWALL
                         )
                         .isCustom(true)
                         .isGranted(true)
                         .monthlyResetPeriodConfiguration(
-                            EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration
+                            EntitlementUpdateParams.Body.Feature.MonthlyResetPeriodConfiguration
                                 .builder()
                                 .accordingTo(
-                                    EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration
+                                    EntitlementUpdateParams.Body.Feature
+                                        .MonthlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
                         .order(0.0)
-                        .resetPeriod(EntitlementUpdateParams.Feature.ResetPeriod.YEAR)
+                        .resetPeriod(EntitlementUpdateParams.Body.Feature.ResetPeriod.YEAR)
                         .usageLimit(0L)
                         .weeklyResetPeriodConfiguration(
-                            EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration.builder()
+                            EntitlementUpdateParams.Body.Feature.WeeklyResetPeriodConfiguration
+                                .builder()
                                 .accordingTo(
-                                    EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration
+                                    EntitlementUpdateParams.Body.Feature
+                                        .WeeklyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
                                 .build()
                         )
                         .yearlyResetPeriodConfiguration(
-                            EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration.builder()
+                            EntitlementUpdateParams.Body.Feature.YearlyResetPeriodConfiguration
+                                .builder()
                                 .accordingTo(
-                                    EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration
+                                    EntitlementUpdateParams.Body.Feature
+                                        .YearlyResetPeriodConfiguration
                                         .AccordingTo
                                         .SUBSCRIPTION_START
                                 )
@@ -152,70 +139,78 @@ internal class EntitlementUpdateParamsTest {
 
         val body = params._body()
 
-        assertThat(body.credit())
-            .contains(
-                EntitlementUpdateParams.Credit.builder()
-                    .amount(1.0)
-                    .behavior(EntitlementUpdateParams.Credit.Behavior.INCREMENT)
-                    .cadence(EntitlementUpdateParams.Credit.Cadence.MONTH)
-                    .description("description")
-                    .displayNameOverride("displayNameOverride")
-                    .addHiddenFromWidget(EntitlementUpdateParams.Credit.HiddenFromWidget.PAYWALL)
-                    .isCustom(true)
-                    .isGranted(true)
-                    .order(0.0)
-                    .build()
-            )
-        assertThat(body.feature())
-            .contains(
-                EntitlementUpdateParams.Feature.builder()
-                    .behavior(EntitlementUpdateParams.Feature.Behavior.INCREMENT)
-                    .description("description")
-                    .displayNameOverride("displayNameOverride")
-                    .addEnumValue("string")
-                    .hasSoftLimit(true)
-                    .hasUnlimitedUsage(true)
-                    .addHiddenFromWidget(EntitlementUpdateParams.Feature.HiddenFromWidget.PAYWALL)
-                    .isCustom(true)
-                    .isGranted(true)
-                    .monthlyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration.builder()
-                            .accordingTo(
-                                EntitlementUpdateParams.Feature.MonthlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .order(0.0)
-                    .resetPeriod(EntitlementUpdateParams.Feature.ResetPeriod.YEAR)
-                    .usageLimit(0L)
-                    .weeklyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration.builder()
-                            .accordingTo(
-                                EntitlementUpdateParams.Feature.WeeklyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .yearlyResetPeriodConfiguration(
-                        EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration.builder()
-                            .accordingTo(
-                                EntitlementUpdateParams.Feature.YearlyResetPeriodConfiguration
-                                    .AccordingTo
-                                    .SUBSCRIPTION_START
-                            )
-                            .build()
-                    )
-                    .build()
+        assertThat(body)
+            .isEqualTo(
+                EntitlementUpdateParams.Body.ofFeature(
+                    EntitlementUpdateParams.Body.Feature.builder()
+                        .behavior(EntitlementUpdateParams.Body.Feature.Behavior.INCREMENT)
+                        .description("description")
+                        .displayNameOverride("displayNameOverride")
+                        .addEnumValue("string")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .addHiddenFromWidget(
+                            EntitlementUpdateParams.Body.Feature.HiddenFromWidget.PAYWALL
+                        )
+                        .isCustom(true)
+                        .isGranted(true)
+                        .monthlyResetPeriodConfiguration(
+                            EntitlementUpdateParams.Body.Feature.MonthlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    EntitlementUpdateParams.Body.Feature
+                                        .MonthlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .order(0.0)
+                        .resetPeriod(EntitlementUpdateParams.Body.Feature.ResetPeriod.YEAR)
+                        .usageLimit(0L)
+                        .weeklyResetPeriodConfiguration(
+                            EntitlementUpdateParams.Body.Feature.WeeklyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    EntitlementUpdateParams.Body.Feature
+                                        .WeeklyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .yearlyResetPeriodConfiguration(
+                            EntitlementUpdateParams.Body.Feature.YearlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    EntitlementUpdateParams.Body.Feature
+                                        .YearlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .build()
+                )
             )
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = EntitlementUpdateParams.builder().addonId("addonId").id("id").build()
+        val params =
+            EntitlementUpdateParams.builder()
+                .addonId("addonId")
+                .id("id")
+                .body(EntitlementUpdateParams.Body.Feature.builder().build())
+                .build()
 
         val body = params._body()
+
+        assertThat(body)
+            .isEqualTo(
+                EntitlementUpdateParams.Body.ofFeature(
+                    EntitlementUpdateParams.Body.Feature.builder().build()
+                )
+            )
     }
 }
