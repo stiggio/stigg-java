@@ -3,6 +3,7 @@
 package io.stigg.models.v1.coupons
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
@@ -26,9 +27,14 @@ internal class CouponListResponseTest {
                 .billingLinkUrl("billingLinkUrl")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .description("description")
-                .durationInMonths(0.0)
+                .durationInMonths(1L)
+                .metadata(
+                    CouponListResponse.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .name("name")
-                .percentOff(0.0)
+                .percentOff(1L)
                 .source(CouponListResponse.Source.STIGG)
                 .status(CouponListResponse.Status.ACTIVE)
                 .type(CouponListResponse.Type.FIXED)
@@ -48,9 +54,15 @@ internal class CouponListResponseTest {
         assertThat(couponListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(couponListResponse.description()).contains("description")
-        assertThat(couponListResponse.durationInMonths()).contains(0.0)
+        assertThat(couponListResponse.durationInMonths()).contains(1L)
+        assertThat(couponListResponse.metadata())
+            .contains(
+                CouponListResponse.Metadata.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
         assertThat(couponListResponse.name()).isEqualTo("name")
-        assertThat(couponListResponse.percentOff()).contains(0.0)
+        assertThat(couponListResponse.percentOff()).contains(1L)
         assertThat(couponListResponse.source()).contains(CouponListResponse.Source.STIGG)
         assertThat(couponListResponse.status()).isEqualTo(CouponListResponse.Status.ACTIVE)
         assertThat(couponListResponse.type()).isEqualTo(CouponListResponse.Type.FIXED)
@@ -74,9 +86,14 @@ internal class CouponListResponseTest {
                 .billingLinkUrl("billingLinkUrl")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .description("description")
-                .durationInMonths(0.0)
+                .durationInMonths(1L)
+                .metadata(
+                    CouponListResponse.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .name("name")
-                .percentOff(0.0)
+                .percentOff(1L)
                 .source(CouponListResponse.Source.STIGG)
                 .status(CouponListResponse.Status.ACTIVE)
                 .type(CouponListResponse.Type.FIXED)

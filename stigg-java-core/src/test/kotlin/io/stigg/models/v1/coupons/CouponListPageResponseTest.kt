@@ -3,6 +3,7 @@
 package io.stigg.models.v1.coupons
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -27,9 +28,14 @@ internal class CouponListPageResponseTest {
                         .billingLinkUrl("billingLinkUrl")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .description("description")
-                        .durationInMonths(0.0)
+                        .durationInMonths(1L)
+                        .metadata(
+                            CouponListResponse.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
                         .name("name")
-                        .percentOff(0.0)
+                        .percentOff(1L)
                         .source(CouponListResponse.Source.STIGG)
                         .status(CouponListResponse.Status.ACTIVE)
                         .type(CouponListResponse.Type.FIXED)
@@ -58,9 +64,14 @@ internal class CouponListPageResponseTest {
                     .billingLinkUrl("billingLinkUrl")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .description("description")
-                    .durationInMonths(0.0)
+                    .durationInMonths(1L)
+                    .metadata(
+                        CouponListResponse.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .name("name")
-                    .percentOff(0.0)
+                    .percentOff(1L)
                     .source(CouponListResponse.Source.STIGG)
                     .status(CouponListResponse.Status.ACTIVE)
                     .type(CouponListResponse.Type.FIXED)
@@ -94,9 +105,14 @@ internal class CouponListPageResponseTest {
                         .billingLinkUrl("billingLinkUrl")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .description("description")
-                        .durationInMonths(0.0)
+                        .durationInMonths(1L)
+                        .metadata(
+                            CouponListResponse.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
                         .name("name")
-                        .percentOff(0.0)
+                        .percentOff(1L)
                         .source(CouponListResponse.Source.STIGG)
                         .status(CouponListResponse.Status.ACTIVE)
                         .type(CouponListResponse.Type.FIXED)
