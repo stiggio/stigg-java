@@ -29,6 +29,7 @@ private constructor(
     private val archivedAt: JsonField<OffsetDateTime>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val billingId: JsonField<String>,
     private val couponId: JsonField<String>,
     private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
     private val email: JsonField<String>,
@@ -50,6 +51,7 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("billingId") @ExcludeMissing billingId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("couponId") @ExcludeMissing couponId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("defaultPaymentMethod")
         @ExcludeMissing
@@ -65,6 +67,7 @@ private constructor(
         archivedAt,
         createdAt,
         updatedAt,
+        billingId,
         couponId,
         defaultPaymentMethod,
         email,
@@ -105,6 +108,14 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * The unique identifier for the entity in the billing provider
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun billingId(): Optional<String> = billingId.getOptional("billingId")
 
     /**
      * Customer level coupon
@@ -190,6 +201,13 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [billingId].
+     *
+     * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("billingId") @ExcludeMissing fun _billingId(): JsonField<String> = billingId
+
+    /**
      * Returns the raw JSON value of [couponId].
      *
      * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
@@ -271,6 +289,7 @@ private constructor(
         private var archivedAt: JsonField<OffsetDateTime>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var billingId: JsonField<String> = JsonMissing.of()
         private var couponId: JsonField<String> = JsonMissing.of()
         private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
@@ -285,6 +304,7 @@ private constructor(
             archivedAt = customerListResponse.archivedAt
             createdAt = customerListResponse.createdAt
             updatedAt = customerListResponse.updatedAt
+            billingId = customerListResponse.billingId
             couponId = customerListResponse.couponId
             defaultPaymentMethod = customerListResponse.defaultPaymentMethod
             email = customerListResponse.email
@@ -345,6 +365,21 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        /** The unique identifier for the entity in the billing provider */
+        fun billingId(billingId: String?) = billingId(JsonField.ofNullable(billingId))
+
+        /** Alias for calling [Builder.billingId] with `billingId.orElse(null)`. */
+        fun billingId(billingId: Optional<String>) = billingId(billingId.getOrNull())
+
+        /**
+         * Sets [Builder.billingId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.billingId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
         /** Customer level coupon */
         fun couponId(couponId: String?) = couponId(JsonField.ofNullable(couponId))
@@ -488,6 +523,7 @@ private constructor(
                 checkRequired("archivedAt", archivedAt),
                 checkRequired("createdAt", createdAt),
                 checkRequired("updatedAt", updatedAt),
+                billingId,
                 couponId,
                 defaultPaymentMethod,
                 email,
@@ -509,6 +545,7 @@ private constructor(
         archivedAt()
         createdAt()
         updatedAt()
+        billingId()
         couponId()
         defaultPaymentMethod().ifPresent { it.validate() }
         email()
@@ -537,6 +574,7 @@ private constructor(
             (if (archivedAt.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
+            (if (billingId.asKnown().isPresent) 1 else 0) +
             (if (couponId.asKnown().isPresent) 1 else 0) +
             (defaultPaymentMethod.asKnown().getOrNull()?.validity() ?: 0) +
             (if (email.asKnown().isPresent) 1 else 0) +
@@ -1603,6 +1641,7 @@ private constructor(
             archivedAt == other.archivedAt &&
             createdAt == other.createdAt &&
             updatedAt == other.updatedAt &&
+            billingId == other.billingId &&
             couponId == other.couponId &&
             defaultPaymentMethod == other.defaultPaymentMethod &&
             email == other.email &&
@@ -1618,6 +1657,7 @@ private constructor(
             archivedAt,
             createdAt,
             updatedAt,
+            billingId,
             couponId,
             defaultPaymentMethod,
             email,
@@ -1631,5 +1671,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+        "CustomerListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, billingId=$billingId, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
 }
