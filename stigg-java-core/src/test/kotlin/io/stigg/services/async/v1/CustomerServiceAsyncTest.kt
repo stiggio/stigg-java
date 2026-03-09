@@ -35,6 +35,7 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .billingId("billingId")
                     .couponId("couponId")
                     .email("dev@stainless.com")
                     .addIntegration(
@@ -135,6 +136,7 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.provision(
                 CustomerProvisionParams.builder()
                     .id("id")
+                    .billingId("billingId")
                     .couponId("couponId")
                     .defaultPaymentMethod(
                         CustomerProvisionParams.DefaultPaymentMethod.builder()

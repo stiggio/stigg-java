@@ -13,6 +13,7 @@ internal class CustomerProvisionParamsTest {
     fun create() {
         CustomerProvisionParams.builder()
             .id("id")
+            .billingId("billingId")
             .couponId("couponId")
             .defaultPaymentMethod(
                 CustomerProvisionParams.DefaultPaymentMethod.builder()
@@ -45,6 +46,7 @@ internal class CustomerProvisionParamsTest {
         val params =
             CustomerProvisionParams.builder()
                 .id("id")
+                .billingId("billingId")
                 .couponId("couponId")
                 .defaultPaymentMethod(
                     CustomerProvisionParams.DefaultPaymentMethod.builder()
@@ -76,6 +78,7 @@ internal class CustomerProvisionParamsTest {
         val body = params._body()
 
         assertThat(body.id()).isEqualTo("id")
+        assertThat(body.billingId()).contains("billingId")
         assertThat(body.couponId()).contains("couponId")
         assertThat(body.defaultPaymentMethod())
             .contains(
