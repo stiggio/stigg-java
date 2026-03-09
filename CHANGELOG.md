@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.27 (2026-03-09)
+
+Full Changelog: [v0.1.0-alpha.26...v0.1.0-alpha.27](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.26...v0.1.0-alpha.27)
+
+### Features
+
+* **api:** added credits resources ([21a2ba2](https://github.com/stiggio/stigg-java/commit/21a2ba2f2c40b46ba8003d9efd914cfd056c0c2e))
+
 ## 0.1.0-alpha.26 (2026-03-09)
 
 Full Changelog: [v0.1.0-alpha.25...v0.1.0-alpha.26](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.25...v0.1.0-alpha.26)
