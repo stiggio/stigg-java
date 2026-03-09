@@ -6,6 +6,15 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.stigg.core.BaseDeserializer
+import io.stigg.core.BaseSerializer
 import io.stigg.core.Enum
 import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
@@ -14,6 +23,7 @@ import io.stigg.core.JsonValue
 import io.stigg.core.Params
 import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
+import io.stigg.core.getOrThrow
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import io.stigg.core.toImmutable
@@ -441,6 +451,22 @@ private constructor(
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
         fun addEntitlement(entitlement: Entitlement) = apply { body.addEntitlement(entitlement) }
+
+        /** Alias for calling [addEntitlement] with `Entitlement.ofFeature(feature)`. */
+        fun addEntitlement(feature: Entitlement.Feature) = apply { body.addEntitlement(feature) }
+
+        /**
+         * Alias for calling [addEntitlement] with the following:
+         * ```java
+         * Entitlement.Feature.builder()
+         *     .id(id)
+         *     .build()
+         * ```
+         */
+        fun addFeatureEntitlement(id: String) = apply { body.addFeatureEntitlement(id) }
+
+        /** Alias for calling [addEntitlement] with `Entitlement.ofCredit(credit)`. */
+        fun addEntitlement(credit: Entitlement.Credit) = apply { body.addEntitlement(credit) }
 
         /** Additional metadata for the subscription */
         fun metadata(metadata: Metadata) = apply { body.metadata(metadata) }
@@ -1223,6 +1249,25 @@ private constructor(
                         checkKnown("entitlements", it).add(entitlement)
                     }
             }
+
+            /** Alias for calling [addEntitlement] with `Entitlement.ofFeature(feature)`. */
+            fun addEntitlement(feature: Entitlement.Feature) =
+                addEntitlement(Entitlement.ofFeature(feature))
+
+            /**
+             * Alias for calling [addEntitlement] with the following:
+             * ```java
+             * Entitlement.Feature.builder()
+             *     .id(id)
+             *     .build()
+             * ```
+             */
+            fun addFeatureEntitlement(id: String) =
+                addEntitlement(Entitlement.Feature.builder().id(id).build())
+
+            /** Alias for calling [addEntitlement] with `Entitlement.ofCredit(credit)`. */
+            fun addEntitlement(credit: Entitlement.Credit) =
+                addEntitlement(Entitlement.ofCredit(credit))
 
             /** Additional metadata for the subscription */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
@@ -5735,134 +5780,40 @@ private constructor(
             "Charge{id=$id, quantity=$quantity, type=$type, additionalProperties=$additionalProperties}"
     }
 
-    /** A single subscription entitlement. Provide exactly one of feature or credit. */
+    /** Feature entitlement configuration for a subscription */
+    @JsonDeserialize(using = Entitlement.Deserializer::class)
+    @JsonSerialize(using = Entitlement.Serializer::class)
     class Entitlement
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val credit: JsonField<Credit>,
-        private val feature: JsonField<Feature>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
+        private val feature: Feature? = null,
+        private val credit: Credit? = null,
+        private val _json: JsonValue? = null,
     ) {
 
-        @JsonCreator
-        private constructor(
-            @JsonProperty("credit") @ExcludeMissing credit: JsonField<Credit> = JsonMissing.of(),
-            @JsonProperty("feature") @ExcludeMissing feature: JsonField<Feature> = JsonMissing.of(),
-        ) : this(credit, feature, mutableMapOf())
+        /** Feature entitlement configuration for a subscription */
+        fun feature(): Optional<Feature> = Optional.ofNullable(feature)
 
-        /**
-         * Credit entitlement configuration
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun credit(): Optional<Credit> = credit.getOptional("credit")
+        /** Credit entitlement configuration for a subscription */
+        fun credit(): Optional<Credit> = Optional.ofNullable(credit)
 
-        /**
-         * Feature entitlement configuration
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun feature(): Optional<Feature> = feature.getOptional("feature")
+        fun isFeature(): Boolean = feature != null
 
-        /**
-         * Returns the raw JSON value of [credit].
-         *
-         * Unlike [credit], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("credit") @ExcludeMissing fun _credit(): JsonField<Credit> = credit
+        fun isCredit(): Boolean = credit != null
 
-        /**
-         * Returns the raw JSON value of [feature].
-         *
-         * Unlike [feature], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("feature") @ExcludeMissing fun _feature(): JsonField<Feature> = feature
+        /** Feature entitlement configuration for a subscription */
+        fun asFeature(): Feature = feature.getOrThrow("feature")
 
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
+        /** Credit entitlement configuration for a subscription */
+        fun asCredit(): Credit = credit.getOrThrow("credit")
 
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
+        fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /** Returns a mutable builder for constructing an instance of [Entitlement]. */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [Entitlement]. */
-        class Builder internal constructor() {
-
-            private var credit: JsonField<Credit> = JsonMissing.of()
-            private var feature: JsonField<Feature> = JsonMissing.of()
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(entitlement: Entitlement) = apply {
-                credit = entitlement.credit
-                feature = entitlement.feature
-                additionalProperties = entitlement.additionalProperties.toMutableMap()
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                feature != null -> visitor.visitFeature(feature)
+                credit != null -> visitor.visitCredit(credit)
+                else -> visitor.unknown(_json)
             }
-
-            /** Credit entitlement configuration */
-            fun credit(credit: Credit) = credit(JsonField.of(credit))
-
-            /**
-             * Sets [Builder.credit] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.credit] with a well-typed [Credit] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun credit(credit: JsonField<Credit>) = apply { this.credit = credit }
-
-            /** Feature entitlement configuration */
-            fun feature(feature: Feature) = feature(JsonField.of(feature))
-
-            /**
-             * Sets [Builder.feature] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.feature] with a well-typed [Feature] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun feature(feature: JsonField<Feature>) = apply { this.feature = feature }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Entitlement].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): Entitlement =
-                Entitlement(credit, feature, additionalProperties.toMutableMap())
-        }
 
         private var validated: Boolean = false
 
@@ -5871,8 +5822,17 @@ private constructor(
                 return@apply
             }
 
-            credit().ifPresent { it.validate() }
-            feature().ifPresent { it.validate() }
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitFeature(feature: Feature) {
+                        feature.validate()
+                    }
+
+                    override fun visitCredit(credit: Credit) {
+                        credit.validate()
+                    }
+                }
+            )
             validated = true
         }
 
@@ -5892,401 +5852,115 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (credit.asKnown().getOrNull()?.validity() ?: 0) +
-                (feature.asKnown().getOrNull()?.validity() ?: 0)
+            accept(
+                object : Visitor<Int> {
+                    override fun visitFeature(feature: Feature) = feature.validity()
 
-        /** Credit entitlement configuration */
-        class Credit
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val amount: JsonField<Double>,
-            private val cadence: JsonField<Cadence>,
-            private val currencyId: JsonField<String>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
+                    override fun visitCredit(credit: Credit) = credit.validity()
 
-            @JsonCreator
-            private constructor(
-                @JsonProperty("amount")
-                @ExcludeMissing
-                amount: JsonField<Double> = JsonMissing.of(),
-                @JsonProperty("cadence")
-                @ExcludeMissing
-                cadence: JsonField<Cadence> = JsonMissing.of(),
-                @JsonProperty("currencyId")
-                @ExcludeMissing
-                currencyId: JsonField<String> = JsonMissing.of(),
-            ) : this(amount, cadence, currencyId, mutableMapOf())
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
 
-            /**
-             * Credit grant amount
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun amount(): Double = amount.getRequired("amount")
-
-            /**
-             * Credit grant cadence (MONTH or YEAR)
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun cadence(): Cadence = cadence.getRequired("cadence")
-
-            /**
-             * The custom currency ID for the credit entitlement
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun currencyId(): String = currencyId.getRequired("currencyId")
-
-            /**
-             * Returns the raw JSON value of [amount].
-             *
-             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
-
-            /**
-             * Returns the raw JSON value of [cadence].
-             *
-             * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("cadence") @ExcludeMissing fun _cadence(): JsonField<Cadence> = cadence
-
-            /**
-             * Returns the raw JSON value of [currencyId].
-             *
-             * Unlike [currencyId], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("currencyId")
-            @ExcludeMissing
-            fun _currencyId(): JsonField<String> = currencyId
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
             }
 
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of [Credit].
-                 *
-                 * The following fields are required:
-                 * ```java
-                 * .amount()
-                 * .cadence()
-                 * .currencyId()
-                 * ```
-                 */
-                @JvmStatic fun builder() = Builder()
-            }
-
-            /** A builder for [Credit]. */
-            class Builder internal constructor() {
-
-                private var amount: JsonField<Double>? = null
-                private var cadence: JsonField<Cadence>? = null
-                private var currencyId: JsonField<String>? = null
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                @JvmSynthetic
-                internal fun from(credit: Credit) = apply {
-                    amount = credit.amount
-                    cadence = credit.cadence
-                    currencyId = credit.currencyId
-                    additionalProperties = credit.additionalProperties.toMutableMap()
-                }
-
-                /** Credit grant amount */
-                fun amount(amount: Double) = amount(JsonField.of(amount))
-
-                /**
-                 * Sets [Builder.amount] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.amount] with a well-typed [Double] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
-
-                /** Credit grant cadence (MONTH or YEAR) */
-                fun cadence(cadence: Cadence) = cadence(JsonField.of(cadence))
-
-                /**
-                 * Sets [Builder.cadence] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.cadence] with a well-typed [Cadence] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun cadence(cadence: JsonField<Cadence>) = apply { this.cadence = cadence }
-
-                /** The custom currency ID for the credit entitlement */
-                fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
-
-                /**
-                 * Sets [Builder.currencyId] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.currencyId] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun currencyId(currencyId: JsonField<String>) = apply {
-                    this.currencyId = currencyId
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [Credit].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```java
-                 * .amount()
-                 * .cadence()
-                 * .currencyId()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
-                 */
-                fun build(): Credit =
-                    Credit(
-                        checkRequired("amount", amount),
-                        checkRequired("cadence", cadence),
-                        checkRequired("currencyId", currencyId),
-                        additionalProperties.toMutableMap(),
-                    )
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): Credit = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                amount()
-                cadence().validate()
-                currencyId()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: StiggInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic
-            internal fun validity(): Int =
-                (if (amount.asKnown().isPresent) 1 else 0) +
-                    (cadence.asKnown().getOrNull()?.validity() ?: 0) +
-                    (if (currencyId.asKnown().isPresent) 1 else 0)
-
-            /** Credit grant cadence (MONTH or YEAR) */
-            class Cadence @JsonCreator private constructor(private val value: JsonField<String>) :
-                Enum {
-
-                /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
-                 */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-                companion object {
-
-                    @JvmField val MONTH = of("MONTH")
-
-                    @JvmField val YEAR = of("YEAR")
-
-                    @JvmStatic fun of(value: String) = Cadence(JsonField.of(value))
-                }
-
-                /** An enum containing [Cadence]'s known values. */
-                enum class Known {
-                    MONTH,
-                    YEAR,
-                }
-
-                /**
-                 * An enum containing [Cadence]'s known values, as well as an [_UNKNOWN] member.
-                 *
-                 * An instance of [Cadence] can contain an unknown value in a couple of cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    MONTH,
-                    YEAR,
-                    /**
-                     * An enum member indicating that [Cadence] was instantiated with an unknown
-                     * value.
-                     */
-                    _UNKNOWN,
-                }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        MONTH -> Value.MONTH
-                        YEAR -> Value.YEAR
-                        else -> Value._UNKNOWN
-                    }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        MONTH -> Known.MONTH
-                        YEAR -> Known.YEAR
-                        else -> throw StiggInvalidDataException("Unknown Cadence: $value")
-                    }
-
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
-                    }
-
-                private var validated: Boolean = false
-
-                fun validate(): Cadence = apply {
-                    if (validated) {
-                        return@apply
-                    }
-
-                    known()
-                    validated = true
-                }
-
-                fun isValid(): Boolean =
-                    try {
-                        validate()
-                        true
-                    } catch (e: StiggInvalidDataException) {
-                        false
-                    }
-
-                /**
-                 * Returns a score indicating how many valid values are contained in this object
-                 * recursively.
-                 *
-                 * Used for best match union deserialization.
-                 */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) {
-                        return true
-                    }
-
-                    return other is Cadence && value == other.value
-                }
-
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Credit &&
-                    amount == other.amount &&
-                    cadence == other.cadence &&
-                    currencyId == other.currencyId &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(amount, cadence, currencyId, additionalProperties)
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "Credit{amount=$amount, cadence=$cadence, currencyId=$currencyId, additionalProperties=$additionalProperties}"
+            return other is Entitlement && feature == other.feature && credit == other.credit
         }
 
-        /** Feature entitlement configuration */
+        override fun hashCode(): Int = Objects.hash(feature, credit)
+
+        override fun toString(): String =
+            when {
+                feature != null -> "Entitlement{feature=$feature}"
+                credit != null -> "Entitlement{credit=$credit}"
+                _json != null -> "Entitlement{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid Entitlement")
+            }
+
+        companion object {
+
+            /** Feature entitlement configuration for a subscription */
+            @JvmStatic fun ofFeature(feature: Feature) = Entitlement(feature = feature)
+
+            /** Credit entitlement configuration for a subscription */
+            @JvmStatic fun ofCredit(credit: Credit) = Entitlement(credit = credit)
+        }
+
+        /**
+         * An interface that defines how to map each variant of [Entitlement] to a value of type
+         * [T].
+         */
+        interface Visitor<out T> {
+
+            /** Feature entitlement configuration for a subscription */
+            fun visitFeature(feature: Feature): T
+
+            /** Credit entitlement configuration for a subscription */
+            fun visitCredit(credit: Credit): T
+
+            /**
+             * Maps an unknown variant of [Entitlement] to a value of type [T].
+             *
+             * An instance of [Entitlement] can contain an unknown variant if it was deserialized
+             * from data that doesn't match any known variant. For example, if the SDK is on an
+             * older version than the API, then the API may respond with new variants that the SDK
+             * is unaware of.
+             *
+             * @throws StiggInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw StiggInvalidDataException("Unknown Entitlement: $json")
+            }
+        }
+
+        internal class Deserializer : BaseDeserializer<Entitlement>(Entitlement::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): Entitlement {
+                val json = JsonValue.fromJsonNode(node)
+                val type = json.asObject().getOrNull()?.get("type")?.asString()?.getOrNull()
+
+                when (type) {
+                    "FEATURE" -> {
+                        return tryDeserialize(node, jacksonTypeRef<Feature>())?.let {
+                            Entitlement(feature = it, _json = json)
+                        } ?: Entitlement(_json = json)
+                    }
+                    "CREDIT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<Credit>())?.let {
+                            Entitlement(credit = it, _json = json)
+                        } ?: Entitlement(_json = json)
+                    }
+                }
+
+                return Entitlement(_json = json)
+            }
+        }
+
+        internal class Serializer : BaseSerializer<Entitlement>(Entitlement::class) {
+
+            override fun serialize(
+                value: Entitlement,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.feature != null -> generator.writeObject(value.feature)
+                    value.credit != null -> generator.writeObject(value.credit)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid Entitlement")
+                }
+            }
+        }
+
+        /** Feature entitlement configuration for a subscription */
         class Feature
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
-            private val featureId: JsonField<String>,
+            private val id: JsonField<String>,
+            private val type: JsonValue,
             private val hasSoftLimit: JsonField<Boolean>,
             private val hasUnlimitedUsage: JsonField<Boolean>,
             private val monthlyResetPeriodConfiguration: JsonField<MonthlyResetPeriodConfiguration>,
@@ -6299,9 +5973,8 @@ private constructor(
 
             @JsonCreator
             private constructor(
-                @JsonProperty("featureId")
-                @ExcludeMissing
-                featureId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
                 @JsonProperty("hasSoftLimit")
                 @ExcludeMissing
                 hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
@@ -6327,7 +6000,8 @@ private constructor(
                 yearlyResetPeriodConfiguration: JsonField<YearlyResetPeriodConfiguration> =
                     JsonMissing.of(),
             ) : this(
-                featureId,
+                id,
+                type,
                 hasSoftLimit,
                 hasUnlimitedUsage,
                 monthlyResetPeriodConfiguration,
@@ -6345,7 +6019,20 @@ private constructor(
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
              */
-            fun featureId(): String = featureId.getRequired("featureId")
+            fun id(): String = id.getRequired("id")
+
+            /**
+             * SubscriptionFeatureEntitlementRequest
+             *
+             * Expected to always return the following:
+             * ```java
+             * JsonValue.from("FEATURE")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
             /**
              * Whether the usage limit is a soft limit
@@ -6408,14 +6095,11 @@ private constructor(
                 yearlyResetPeriodConfiguration.getOptional("yearlyResetPeriodConfiguration")
 
             /**
-             * Returns the raw JSON value of [featureId].
+             * Returns the raw JSON value of [id].
              *
-             * Unlike [featureId], this method doesn't throw if the JSON field has an unexpected
-             * type.
+             * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
              */
-            @JsonProperty("featureId")
-            @ExcludeMissing
-            fun _featureId(): JsonField<String> = featureId
+            @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
             /**
              * Returns the raw JSON value of [hasSoftLimit].
@@ -6509,7 +6193,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
-                 * .featureId()
+                 * .id()
                  * ```
                  */
                 @JvmStatic fun builder() = Builder()
@@ -6518,7 +6202,8 @@ private constructor(
             /** A builder for [Feature]. */
             class Builder internal constructor() {
 
-                private var featureId: JsonField<String>? = null
+                private var id: JsonField<String>? = null
+                private var type: JsonValue = JsonValue.from("FEATURE")
                 private var hasSoftLimit: JsonField<Boolean> = JsonMissing.of()
                 private var hasUnlimitedUsage: JsonField<Boolean> = JsonMissing.of()
                 private var monthlyResetPeriodConfiguration:
@@ -6536,7 +6221,8 @@ private constructor(
 
                 @JvmSynthetic
                 internal fun from(feature: Feature) = apply {
-                    featureId = feature.featureId
+                    id = feature.id
+                    type = feature.type
                     hasSoftLimit = feature.hasSoftLimit
                     hasUnlimitedUsage = feature.hasUnlimitedUsage
                     monthlyResetPeriodConfiguration = feature.monthlyResetPeriodConfiguration
@@ -6548,16 +6234,30 @@ private constructor(
                 }
 
                 /** The feature ID to attach the entitlement to */
-                fun featureId(featureId: String) = featureId(JsonField.of(featureId))
+                fun id(id: String) = id(JsonField.of(id))
 
                 /**
-                 * Sets [Builder.featureId] to an arbitrary JSON value.
+                 * Sets [Builder.id] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.featureId] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
+                 * You should usually call [Builder.id] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
                  */
-                fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
+                fun id(id: JsonField<String>) = apply { this.id = id }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```java
+                 * JsonValue.from("FEATURE")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun type(type: JsonValue) = apply { this.type = type }
 
                 /** Whether the usage limit is a soft limit */
                 fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(JsonField.of(hasSoftLimit))
@@ -6724,14 +6424,15 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
-                 * .featureId()
+                 * .id()
                  * ```
                  *
                  * @throws IllegalStateException if any required field is unset.
                  */
                 fun build(): Feature =
                     Feature(
-                        checkRequired("featureId", featureId),
+                        checkRequired("id", id),
+                        type,
                         hasSoftLimit,
                         hasUnlimitedUsage,
                         monthlyResetPeriodConfiguration,
@@ -6750,7 +6451,12 @@ private constructor(
                     return@apply
                 }
 
-                featureId()
+                id()
+                _type().let {
+                    if (it != JsonValue.from("FEATURE")) {
+                        throw StiggInvalidDataException("'type' is invalid, received $it")
+                    }
+                }
                 hasSoftLimit()
                 hasUnlimitedUsage()
                 monthlyResetPeriodConfiguration().ifPresent { it.validate() }
@@ -6777,7 +6483,8 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (if (featureId.asKnown().isPresent) 1 else 0) +
+                (if (id.asKnown().isPresent) 1 else 0) +
+                    type.let { if (it == JsonValue.from("FEATURE")) 1 else 0 } +
                     (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                     (if (hasUnlimitedUsage.asKnown().isPresent) 1 else 0) +
                     (monthlyResetPeriodConfiguration.asKnown().getOrNull()?.validity() ?: 0) +
@@ -7921,7 +7628,8 @@ private constructor(
                 }
 
                 return other is Feature &&
-                    featureId == other.featureId &&
+                    id == other.id &&
+                    type == other.type &&
                     hasSoftLimit == other.hasSoftLimit &&
                     hasUnlimitedUsage == other.hasUnlimitedUsage &&
                     monthlyResetPeriodConfiguration == other.monthlyResetPeriodConfiguration &&
@@ -7934,7 +7642,8 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
-                    featureId,
+                    id,
+                    type,
                     hasSoftLimit,
                     hasUnlimitedUsage,
                     monthlyResetPeriodConfiguration,
@@ -7949,26 +7658,427 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Feature{featureId=$featureId, hasSoftLimit=$hasSoftLimit, hasUnlimitedUsage=$hasUnlimitedUsage, monthlyResetPeriodConfiguration=$monthlyResetPeriodConfiguration, resetPeriod=$resetPeriod, usageLimit=$usageLimit, weeklyResetPeriodConfiguration=$weeklyResetPeriodConfiguration, yearlyResetPeriodConfiguration=$yearlyResetPeriodConfiguration, additionalProperties=$additionalProperties}"
+                "Feature{id=$id, type=$type, hasSoftLimit=$hasSoftLimit, hasUnlimitedUsage=$hasUnlimitedUsage, monthlyResetPeriodConfiguration=$monthlyResetPeriodConfiguration, resetPeriod=$resetPeriod, usageLimit=$usageLimit, weeklyResetPeriodConfiguration=$weeklyResetPeriodConfiguration, yearlyResetPeriodConfiguration=$yearlyResetPeriodConfiguration, additionalProperties=$additionalProperties}"
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
+        /** Credit entitlement configuration for a subscription */
+        class Credit
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val id: JsonField<String>,
+            private val amount: JsonField<Double>,
+            private val cadence: JsonField<Cadence>,
+            private val type: JsonValue,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("amount")
+                @ExcludeMissing
+                amount: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("cadence")
+                @ExcludeMissing
+                cadence: JsonField<Cadence> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
+            ) : this(id, amount, cadence, type, mutableMapOf())
+
+            /**
+             * The custom currency ID for the credit entitlement
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun id(): String = id.getRequired("id")
+
+            /**
+             * Credit grant amount
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun amount(): Double = amount.getRequired("amount")
+
+            /**
+             * Credit grant cadence (MONTH or YEAR)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun cadence(): Cadence = cadence.getRequired("cadence")
+
+            /**
+             * SubscriptionCreditEntitlementRequest
+             *
+             * Expected to always return the following:
+             * ```java
+             * JsonValue.from("CREDIT")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
+
+            /**
+             * Returns the raw JSON value of [id].
+             *
+             * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+            /**
+             * Returns the raw JSON value of [amount].
+             *
+             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
+
+            /**
+             * Returns the raw JSON value of [cadence].
+             *
+             * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("cadence") @ExcludeMissing fun _cadence(): JsonField<Cadence> = cadence
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
             }
 
-            return other is Entitlement &&
-                credit == other.credit &&
-                feature == other.feature &&
-                additionalProperties == other.additionalProperties
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Credit].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .id()
+                 * .amount()
+                 * .cadence()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Credit]. */
+            class Builder internal constructor() {
+
+                private var id: JsonField<String>? = null
+                private var amount: JsonField<Double>? = null
+                private var cadence: JsonField<Cadence>? = null
+                private var type: JsonValue = JsonValue.from("CREDIT")
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(credit: Credit) = apply {
+                    id = credit.id
+                    amount = credit.amount
+                    cadence = credit.cadence
+                    type = credit.type
+                    additionalProperties = credit.additionalProperties.toMutableMap()
+                }
+
+                /** The custom currency ID for the credit entitlement */
+                fun id(id: String) = id(JsonField.of(id))
+
+                /**
+                 * Sets [Builder.id] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.id] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun id(id: JsonField<String>) = apply { this.id = id }
+
+                /** Credit grant amount */
+                fun amount(amount: Double) = amount(JsonField.of(amount))
+
+                /**
+                 * Sets [Builder.amount] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.amount] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
+
+                /** Credit grant cadence (MONTH or YEAR) */
+                fun cadence(cadence: Cadence) = cadence(JsonField.of(cadence))
+
+                /**
+                 * Sets [Builder.cadence] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.cadence] with a well-typed [Cadence] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun cadence(cadence: JsonField<Cadence>) = apply { this.cadence = cadence }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```java
+                 * JsonValue.from("CREDIT")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun type(type: JsonValue) = apply { this.type = type }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Credit].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .id()
+                 * .amount()
+                 * .cadence()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Credit =
+                    Credit(
+                        checkRequired("id", id),
+                        checkRequired("amount", amount),
+                        checkRequired("cadence", cadence),
+                        type,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Credit = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                id()
+                amount()
+                cadence().validate()
+                _type().let {
+                    if (it != JsonValue.from("CREDIT")) {
+                        throw StiggInvalidDataException("'type' is invalid, received $it")
+                    }
+                }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (id.asKnown().isPresent) 1 else 0) +
+                    (if (amount.asKnown().isPresent) 1 else 0) +
+                    (cadence.asKnown().getOrNull()?.validity() ?: 0) +
+                    type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 }
+
+            /** Credit grant cadence (MONTH or YEAR) */
+            class Cadence @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val MONTH = of("MONTH")
+
+                    @JvmField val YEAR = of("YEAR")
+
+                    @JvmStatic fun of(value: String) = Cadence(JsonField.of(value))
+                }
+
+                /** An enum containing [Cadence]'s known values. */
+                enum class Known {
+                    MONTH,
+                    YEAR,
+                }
+
+                /**
+                 * An enum containing [Cadence]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Cadence] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    MONTH,
+                    YEAR,
+                    /**
+                     * An enum member indicating that [Cadence] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        MONTH -> Value.MONTH
+                        YEAR -> Value.YEAR
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value is a not a known
+                 *   member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        MONTH -> Known.MONTH
+                        YEAR -> Known.YEAR
+                        else -> throw StiggInvalidDataException("Unknown Cadence: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        StiggInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): Cadence = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Cadence && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Credit &&
+                    id == other.id &&
+                    amount == other.amount &&
+                    cadence == other.cadence &&
+                    type == other.type &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(id, amount, cadence, type, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, additionalProperties=$additionalProperties}"
         }
-
-        private val hashCode: Int by lazy { Objects.hash(credit, feature, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Entitlement{credit=$credit, feature=$feature, additionalProperties=$additionalProperties}"
     }
 
     /** Additional metadata for the subscription */
