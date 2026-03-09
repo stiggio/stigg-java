@@ -168,9 +168,10 @@ private constructor(
         private val billingLinkUrl: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
-        private val durationInMonths: JsonField<Double>,
+        private val durationInMonths: JsonField<Long>,
+        private val metadata: JsonField<Metadata>,
         private val name: JsonField<String>,
-        private val percentOff: JsonField<Double>,
+        private val percentOff: JsonField<Long>,
         private val source: JsonField<Source>,
         private val status: JsonField<Status>,
         private val type: JsonField<Type>,
@@ -198,11 +199,14 @@ private constructor(
             description: JsonField<String> = JsonMissing.of(),
             @JsonProperty("durationInMonths")
             @ExcludeMissing
-            durationInMonths: JsonField<Double> = JsonMissing.of(),
+            durationInMonths: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("metadata")
+            @ExcludeMissing
+            metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("percentOff")
             @ExcludeMissing
-            percentOff: JsonField<Double> = JsonMissing.of(),
+            percentOff: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("source") @ExcludeMissing source: JsonField<Source> = JsonMissing.of(),
             @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
             @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
@@ -217,6 +221,7 @@ private constructor(
             createdAt,
             description,
             durationInMonths,
+            metadata,
             name,
             percentOff,
             source,
@@ -280,7 +285,15 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun durationInMonths(): Optional<Double> = durationInMonths.getOptional("durationInMonths")
+        fun durationInMonths(): Optional<Long> = durationInMonths.getOptional("durationInMonths")
+
+        /**
+         * Metadata associated with the entity
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
          * Name of the coupon
@@ -296,7 +309,7 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun percentOff(): Optional<Double> = percentOff.getOptional("percentOff")
+        fun percentOff(): Optional<Long> = percentOff.getOptional("percentOff")
 
         /**
          * The source of the coupon
@@ -389,7 +402,14 @@ private constructor(
          */
         @JsonProperty("durationInMonths")
         @ExcludeMissing
-        fun _durationInMonths(): JsonField<Double> = durationInMonths
+        fun _durationInMonths(): JsonField<Long> = durationInMonths
+
+        /**
+         * Returns the raw JSON value of [metadata].
+         *
+         * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
 
         /**
          * Returns the raw JSON value of [name].
@@ -403,9 +423,7 @@ private constructor(
          *
          * Unlike [percentOff], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("percentOff")
-        @ExcludeMissing
-        fun _percentOff(): JsonField<Double> = percentOff
+        @JsonProperty("percentOff") @ExcludeMissing fun _percentOff(): JsonField<Long> = percentOff
 
         /**
          * Returns the raw JSON value of [source].
@@ -463,6 +481,7 @@ private constructor(
              * .createdAt()
              * .description()
              * .durationInMonths()
+             * .metadata()
              * .name()
              * .percentOff()
              * .source()
@@ -483,9 +502,10 @@ private constructor(
             private var billingLinkUrl: JsonField<String>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
             private var description: JsonField<String>? = null
-            private var durationInMonths: JsonField<Double>? = null
+            private var durationInMonths: JsonField<Long>? = null
+            private var metadata: JsonField<Metadata>? = null
             private var name: JsonField<String>? = null
-            private var percentOff: JsonField<Double>? = null
+            private var percentOff: JsonField<Long>? = null
             private var source: JsonField<Source>? = null
             private var status: JsonField<Status>? = null
             private var type: JsonField<Type>? = null
@@ -501,6 +521,7 @@ private constructor(
                 createdAt = data.createdAt
                 description = data.description
                 durationInMonths = data.durationInMonths
+                metadata = data.metadata
                 name = data.name
                 percentOff = data.percentOff
                 source = data.source
@@ -619,7 +640,7 @@ private constructor(
             }
 
             /** Duration of the coupon validity in months */
-            fun durationInMonths(durationInMonths: Double?) =
+            fun durationInMonths(durationInMonths: Long?) =
                 durationInMonths(JsonField.ofNullable(durationInMonths))
 
             /**
@@ -627,25 +648,40 @@ private constructor(
              *
              * This unboxed primitive overload exists for backwards compatibility.
              */
-            fun durationInMonths(durationInMonths: Double) =
-                durationInMonths(durationInMonths as Double?)
+            fun durationInMonths(durationInMonths: Long) =
+                durationInMonths(durationInMonths as Long?)
 
             /**
              * Alias for calling [Builder.durationInMonths] with `durationInMonths.orElse(null)`.
              */
-            fun durationInMonths(durationInMonths: Optional<Double>) =
+            fun durationInMonths(durationInMonths: Optional<Long>) =
                 durationInMonths(durationInMonths.getOrNull())
 
             /**
              * Sets [Builder.durationInMonths] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.durationInMonths] with a well-typed [Double] value
+             * You should usually call [Builder.durationInMonths] with a well-typed [Long] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun durationInMonths(durationInMonths: JsonField<Double>) = apply {
+            fun durationInMonths(durationInMonths: JsonField<Long>) = apply {
                 this.durationInMonths = durationInMonths
             }
+
+            /** Metadata associated with the entity */
+            fun metadata(metadata: Metadata?) = metadata(JsonField.ofNullable(metadata))
+
+            /** Alias for calling [Builder.metadata] with `metadata.orElse(null)`. */
+            fun metadata(metadata: Optional<Metadata>) = metadata(metadata.getOrNull())
+
+            /**
+             * Sets [Builder.metadata] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.metadata] with a well-typed [Metadata] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
             /** Name of the coupon */
             fun name(name: String) = name(JsonField.of(name))
@@ -660,26 +696,26 @@ private constructor(
             fun name(name: JsonField<String>) = apply { this.name = name }
 
             /** Percentage discount off the original price */
-            fun percentOff(percentOff: Double?) = percentOff(JsonField.ofNullable(percentOff))
+            fun percentOff(percentOff: Long?) = percentOff(JsonField.ofNullable(percentOff))
 
             /**
              * Alias for [Builder.percentOff].
              *
              * This unboxed primitive overload exists for backwards compatibility.
              */
-            fun percentOff(percentOff: Double) = percentOff(percentOff as Double?)
+            fun percentOff(percentOff: Long) = percentOff(percentOff as Long?)
 
             /** Alias for calling [Builder.percentOff] with `percentOff.orElse(null)`. */
-            fun percentOff(percentOff: Optional<Double>) = percentOff(percentOff.getOrNull())
+            fun percentOff(percentOff: Optional<Long>) = percentOff(percentOff.getOrNull())
 
             /**
              * Sets [Builder.percentOff] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.percentOff] with a well-typed [Double] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.percentOff] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun percentOff(percentOff: JsonField<Double>) = apply { this.percentOff = percentOff }
+            fun percentOff(percentOff: JsonField<Long>) = apply { this.percentOff = percentOff }
 
             /** The source of the coupon */
             fun source(source: Source?) = source(JsonField.ofNullable(source))
@@ -767,6 +803,7 @@ private constructor(
              * .createdAt()
              * .description()
              * .durationInMonths()
+             * .metadata()
              * .name()
              * .percentOff()
              * .source()
@@ -786,6 +823,7 @@ private constructor(
                     checkRequired("createdAt", createdAt),
                     checkRequired("description", description),
                     checkRequired("durationInMonths", durationInMonths),
+                    checkRequired("metadata", metadata),
                     checkRequired("name", name),
                     checkRequired("percentOff", percentOff),
                     checkRequired("source", source),
@@ -810,6 +848,7 @@ private constructor(
             createdAt()
             description()
             durationInMonths()
+            metadata().ifPresent { it.validate() }
             name()
             percentOff()
             source().ifPresent { it.validate() }
@@ -842,6 +881,7 @@ private constructor(
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (if (description.asKnown().isPresent) 1 else 0) +
                 (if (durationInMonths.asKnown().isPresent) 1 else 0) +
+                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
                 (if (percentOff.asKnown().isPresent) 1 else 0) +
                 (source.asKnown().getOrNull()?.validity() ?: 0) +
@@ -1878,6 +1918,109 @@ private constructor(
                 "AmountsOff{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
         }
 
+        /** Metadata associated with the entity */
+        class Metadata
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Metadata]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Metadata]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(metadata: Metadata) = apply {
+                    additionalProperties = metadata.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Metadata].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Metadata = Metadata(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Metadata = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Metadata && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
+        }
+
         /** The source of the coupon */
         class Source @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -2285,6 +2428,7 @@ private constructor(
                 createdAt == other.createdAt &&
                 description == other.description &&
                 durationInMonths == other.durationInMonths &&
+                metadata == other.metadata &&
                 name == other.name &&
                 percentOff == other.percentOff &&
                 source == other.source &&
@@ -2303,6 +2447,7 @@ private constructor(
                 createdAt,
                 description,
                 durationInMonths,
+                metadata,
                 name,
                 percentOff,
                 source,
@@ -2316,7 +2461,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, amountsOff=$amountsOff, billingId=$billingId, billingLinkUrl=$billingLinkUrl, createdAt=$createdAt, description=$description, durationInMonths=$durationInMonths, name=$name, percentOff=$percentOff, source=$source, status=$status, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+            "Data{id=$id, amountsOff=$amountsOff, billingId=$billingId, billingLinkUrl=$billingLinkUrl, createdAt=$createdAt, description=$description, durationInMonths=$durationInMonths, metadata=$metadata, name=$name, percentOff=$percentOff, source=$source, status=$status, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -35,7 +35,7 @@ internal class CouponServiceAsyncTest {
                             .build()
                     )
                     .name("name")
-                    .percentOff(1.0)
+                    .percentOff(1L)
                     .build()
             )
 
