@@ -34,6 +34,7 @@ internal class CustomerServiceTest {
             customerService.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .billingId("billingId")
                     .couponId("couponId")
                     .email("dev@stainless.com")
                     .addIntegration(
@@ -129,6 +130,7 @@ internal class CustomerServiceTest {
             customerService.provision(
                 CustomerProvisionParams.builder()
                     .id("id")
+                    .billingId("billingId")
                     .couponId("couponId")
                     .defaultPaymentMethod(
                         CustomerProvisionParams.DefaultPaymentMethod.builder()
