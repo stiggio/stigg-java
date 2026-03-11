@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.29 (2026-03-11)
+
+Full Changelog: [v0.1.0-alpha.28...v0.1.0-alpha.29](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.28...v0.1.0-alpha.29)
+
+### Bug Fixes
+
+* **client:** incorrect `Retry-After` parsing ([4b34538](https://github.com/stiggio/stigg-java/commit/4b345382d0108b5c1fadd81c8ad9a4f9d467f7eb))
+
 ## 0.1.0-alpha.28 (2026-03-09)
 
 Full Changelog: [v0.1.0-alpha.27...v0.1.0-alpha.28](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.27...v0.1.0-alpha.28)
