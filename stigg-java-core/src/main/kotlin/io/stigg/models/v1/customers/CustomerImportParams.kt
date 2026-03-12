@@ -40,11 +40,26 @@ private constructor(
     fun customers(): List<Customer> = body.customers()
 
     /**
+     * Integration details
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun integrationId(): Optional<String> = body.integrationId()
+
+    /**
      * Returns the raw JSON value of [customers].
      *
      * Unlike [customers], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _customers(): JsonField<List<Customer>> = body._customers()
+
+    /**
+     * Returns the raw JSON value of [integrationId].
+     *
+     * Unlike [integrationId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _integrationId(): JsonField<String> = body._integrationId()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -89,6 +104,7 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [customers]
+         * - [integrationId]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -110,6 +126,20 @@ private constructor(
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
         fun addCustomer(customer: Customer) = apply { body.addCustomer(customer) }
+
+        /** Integration details */
+        fun integrationId(integrationId: String) = apply { body.integrationId(integrationId) }
+
+        /**
+         * Sets [Builder.integrationId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.integrationId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun integrationId(integrationId: JsonField<String>) = apply {
+            body.integrationId(integrationId)
+        }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -259,6 +289,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val customers: JsonField<List<Customer>>,
+        private val integrationId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -266,8 +297,11 @@ private constructor(
         private constructor(
             @JsonProperty("customers")
             @ExcludeMissing
-            customers: JsonField<List<Customer>> = JsonMissing.of()
-        ) : this(customers, mutableMapOf())
+            customers: JsonField<List<Customer>> = JsonMissing.of(),
+            @JsonProperty("integrationId")
+            @ExcludeMissing
+            integrationId: JsonField<String> = JsonMissing.of(),
+        ) : this(customers, integrationId, mutableMapOf())
 
         /**
          * List of customer objects to import
@@ -278,6 +312,14 @@ private constructor(
         fun customers(): List<Customer> = customers.getRequired("customers")
 
         /**
+         * Integration details
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun integrationId(): Optional<String> = integrationId.getOptional("integrationId")
+
+        /**
          * Returns the raw JSON value of [customers].
          *
          * Unlike [customers], this method doesn't throw if the JSON field has an unexpected type.
@@ -285,6 +327,16 @@ private constructor(
         @JsonProperty("customers")
         @ExcludeMissing
         fun _customers(): JsonField<List<Customer>> = customers
+
+        /**
+         * Returns the raw JSON value of [integrationId].
+         *
+         * Unlike [integrationId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("integrationId")
+        @ExcludeMissing
+        fun _integrationId(): JsonField<String> = integrationId
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -315,11 +367,13 @@ private constructor(
         class Builder internal constructor() {
 
             private var customers: JsonField<MutableList<Customer>>? = null
+            private var integrationId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 customers = body.customers.map { it.toMutableList() }
+                integrationId = body.integrationId
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -347,6 +401,20 @@ private constructor(
                     (customers ?: JsonField.of(mutableListOf())).also {
                         checkKnown("customers", it).add(customer)
                     }
+            }
+
+            /** Integration details */
+            fun integrationId(integrationId: String) = integrationId(JsonField.of(integrationId))
+
+            /**
+             * Sets [Builder.integrationId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.integrationId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun integrationId(integrationId: JsonField<String>) = apply {
+                this.integrationId = integrationId
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -383,6 +451,7 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("customers", customers).map { it.toImmutable() },
+                    integrationId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -395,6 +464,7 @@ private constructor(
             }
 
             customers().forEach { it.validate() }
+            integrationId()
             validated = true
         }
 
@@ -414,7 +484,8 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (customers.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (customers.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (integrationId.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -423,15 +494,18 @@ private constructor(
 
             return other is Body &&
                 customers == other.customers &&
+                integrationId == other.integrationId &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(customers, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(customers, integrationId, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{customers=$customers, additionalProperties=$additionalProperties}"
+            "Body{customers=$customers, integrationId=$integrationId, additionalProperties=$additionalProperties}"
     }
 
     class Customer
@@ -440,8 +514,10 @@ private constructor(
         private val id: JsonField<String>,
         private val email: JsonField<String>,
         private val name: JsonField<String>,
+        private val billingId: JsonField<String>,
         private val metadata: JsonField<Metadata>,
         private val paymentMethodId: JsonField<String>,
+        private val salesforceId: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -451,16 +527,32 @@ private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
             @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("billingId")
+            @ExcludeMissing
+            billingId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("paymentMethodId")
             @ExcludeMissing
             paymentMethodId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("salesforceId")
+            @ExcludeMissing
+            salesforceId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(id, email, name, metadata, paymentMethodId, updatedAt, mutableMapOf())
+        ) : this(
+            id,
+            email,
+            name,
+            billingId,
+            metadata,
+            paymentMethodId,
+            salesforceId,
+            updatedAt,
+            mutableMapOf(),
+        )
 
         /**
          * Customer slug
@@ -487,6 +579,14 @@ private constructor(
         fun name(): Optional<String> = name.getOptional("name")
 
         /**
+         * Id in the billing provider
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun billingId(): Optional<String> = billingId.getOptional("billingId")
+
+        /**
          * Additional metadata
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -501,6 +601,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun paymentMethodId(): Optional<String> = paymentMethodId.getOptional("paymentMethodId")
+
+        /**
+         * The unique identifier for the customer in Salesforce integration
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun salesforceId(): Optional<String> = salesforceId.getOptional("salesforceId")
 
         /**
          * Timestamp of when the record was last updated
@@ -532,6 +640,13 @@ private constructor(
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
         /**
+         * Returns the raw JSON value of [billingId].
+         *
+         * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("billingId") @ExcludeMissing fun _billingId(): JsonField<String> = billingId
+
+        /**
          * Returns the raw JSON value of [metadata].
          *
          * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
@@ -547,6 +662,16 @@ private constructor(
         @JsonProperty("paymentMethodId")
         @ExcludeMissing
         fun _paymentMethodId(): JsonField<String> = paymentMethodId
+
+        /**
+         * Returns the raw JSON value of [salesforceId].
+         *
+         * Unlike [salesforceId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("salesforceId")
+        @ExcludeMissing
+        fun _salesforceId(): JsonField<String> = salesforceId
 
         /**
          * Returns the raw JSON value of [updatedAt].
@@ -590,8 +715,10 @@ private constructor(
             private var id: JsonField<String>? = null
             private var email: JsonField<String>? = null
             private var name: JsonField<String>? = null
+            private var billingId: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var paymentMethodId: JsonField<String> = JsonMissing.of()
+            private var salesforceId: JsonField<String> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -600,8 +727,10 @@ private constructor(
                 id = customer.id
                 email = customer.email
                 name = customer.name
+                billingId = customer.billingId
                 metadata = customer.metadata
                 paymentMethodId = customer.paymentMethodId
+                salesforceId = customer.salesforceId
                 updatedAt = customer.updatedAt
                 additionalProperties = customer.additionalProperties.toMutableMap()
             }
@@ -648,6 +777,18 @@ private constructor(
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
 
+            /** Id in the billing provider */
+            fun billingId(billingId: String) = billingId(JsonField.of(billingId))
+
+            /**
+             * Sets [Builder.billingId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.billingId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
+
             /** Additional metadata */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
@@ -673,6 +814,20 @@ private constructor(
              */
             fun paymentMethodId(paymentMethodId: JsonField<String>) = apply {
                 this.paymentMethodId = paymentMethodId
+            }
+
+            /** The unique identifier for the customer in Salesforce integration */
+            fun salesforceId(salesforceId: String) = salesforceId(JsonField.of(salesforceId))
+
+            /**
+             * Sets [Builder.salesforceId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.salesforceId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun salesforceId(salesforceId: JsonField<String>) = apply {
+                this.salesforceId = salesforceId
             }
 
             /** Timestamp of when the record was last updated */
@@ -727,8 +882,10 @@ private constructor(
                     checkRequired("id", id),
                     checkRequired("email", email),
                     checkRequired("name", name),
+                    billingId,
                     metadata,
                     paymentMethodId,
+                    salesforceId,
                     updatedAt,
                     additionalProperties.toMutableMap(),
                 )
@@ -744,8 +901,10 @@ private constructor(
             id()
             email()
             name()
+            billingId()
             metadata().ifPresent { it.validate() }
             paymentMethodId()
+            salesforceId()
             updatedAt()
             validated = true
         }
@@ -769,8 +928,10 @@ private constructor(
             (if (id.asKnown().isPresent) 1 else 0) +
                 (if (email.asKnown().isPresent) 1 else 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
+                (if (billingId.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (paymentMethodId.asKnown().isPresent) 1 else 0) +
+                (if (salesforceId.asKnown().isPresent) 1 else 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0)
 
         /** Additional metadata */
@@ -885,8 +1046,10 @@ private constructor(
                 id == other.id &&
                 email == other.email &&
                 name == other.name &&
+                billingId == other.billingId &&
                 metadata == other.metadata &&
                 paymentMethodId == other.paymentMethodId &&
+                salesforceId == other.salesforceId &&
                 updatedAt == other.updatedAt &&
                 additionalProperties == other.additionalProperties
         }
@@ -896,8 +1059,10 @@ private constructor(
                 id,
                 email,
                 name,
+                billingId,
                 metadata,
                 paymentMethodId,
+                salesforceId,
                 updatedAt,
                 additionalProperties,
             )
@@ -906,7 +1071,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Customer{id=$id, email=$email, name=$name, metadata=$metadata, paymentMethodId=$paymentMethodId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+            "Customer{id=$id, email=$email, name=$name, billingId=$billingId, metadata=$metadata, paymentMethodId=$paymentMethodId, salesforceId=$salesforceId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

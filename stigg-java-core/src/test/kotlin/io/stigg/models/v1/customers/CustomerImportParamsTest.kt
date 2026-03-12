@@ -17,15 +17,18 @@ internal class CustomerImportParamsTest {
                     .id("id")
                     .email("dev@stainless.com")
                     .name("name")
+                    .billingId("billingId")
                     .metadata(
                         CustomerImportParams.Customer.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .paymentMethodId("paymentMethodId")
+                    .salesforceId("salesforceId")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+            .integrationId("integrationId")
             .build()
     }
 
@@ -38,15 +41,18 @@ internal class CustomerImportParamsTest {
                         .id("id")
                         .email("dev@stainless.com")
                         .name("name")
+                        .billingId("billingId")
                         .metadata(
                             CustomerImportParams.Customer.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
                         .paymentMethodId("paymentMethodId")
+                        .salesforceId("salesforceId")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
+                .integrationId("integrationId")
                 .build()
 
         val body = params._body()
@@ -57,15 +63,18 @@ internal class CustomerImportParamsTest {
                     .id("id")
                     .email("dev@stainless.com")
                     .name("name")
+                    .billingId("billingId")
                     .metadata(
                         CustomerImportParams.Customer.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .paymentMethodId("paymentMethodId")
+                    .salesforceId("salesforceId")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
+        assertThat(body.integrationId()).contains("integrationId")
     }
 
     @Test
