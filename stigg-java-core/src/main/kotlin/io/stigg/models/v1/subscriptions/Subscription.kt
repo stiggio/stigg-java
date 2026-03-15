@@ -8621,7 +8621,7 @@ private constructor(
                     fun amount(): Double = amount.getRequired("amount")
 
                     /**
-                     * The price currency
+                     * ISO 4217 currency code
                      *
                      * @throws StiggInvalidDataException if the JSON field has an unexpected type or
                      *   is unexpectedly missing or null (e.g. if the server responded with an
@@ -8702,7 +8702,7 @@ private constructor(
                          */
                         fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
 
-                        /** The price currency */
+                        /** ISO 4217 currency code */
                         fun currency(currency: Currency) = currency(JsonField.of(currency))
 
                         /**
@@ -8790,7 +8790,7 @@ private constructor(
                         (if (amount.asKnown().isPresent) 1 else 0) +
                             (currency.asKnown().getOrNull()?.validity() ?: 0)
 
-                    /** The price currency */
+                    /** ISO 4217 currency code */
                     class Currency
                     @JsonCreator
                     private constructor(private val value: JsonField<String>) : Enum {
@@ -9661,7 +9661,7 @@ private constructor(
                     fun amount(): Double = amount.getRequired("amount")
 
                     /**
-                     * The price currency
+                     * ISO 4217 currency code
                      *
                      * @throws StiggInvalidDataException if the JSON field has an unexpected type or
                      *   is unexpectedly missing or null (e.g. if the server responded with an
@@ -9742,7 +9742,7 @@ private constructor(
                          */
                         fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
 
-                        /** The price currency */
+                        /** ISO 4217 currency code */
                         fun currency(currency: Currency) = currency(JsonField.of(currency))
 
                         /**
@@ -9830,7 +9830,7 @@ private constructor(
                         (if (amount.asKnown().isPresent) 1 else 0) +
                             (currency.asKnown().getOrNull()?.validity() ?: 0)
 
-                    /** The price currency */
+                    /** ISO 4217 currency code */
                     class Currency
                     @JsonCreator
                     private constructor(private val value: JsonField<String>) : Enum {
