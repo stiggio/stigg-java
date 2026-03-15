@@ -29,6 +29,7 @@ private constructor(
     private val archivedAt: JsonField<OffsetDateTime>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val billingCurrency: JsonField<BillingCurrency>,
     private val billingId: JsonField<String>,
     private val couponId: JsonField<String>,
     private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
@@ -51,6 +52,9 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("billingCurrency")
+        @ExcludeMissing
+        billingCurrency: JsonField<BillingCurrency> = JsonMissing.of(),
         @JsonProperty("billingId") @ExcludeMissing billingId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("couponId") @ExcludeMissing couponId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("defaultPaymentMethod")
@@ -67,6 +71,7 @@ private constructor(
         archivedAt,
         createdAt,
         updatedAt,
+        billingCurrency,
         billingId,
         couponId,
         defaultPaymentMethod,
@@ -108,6 +113,15 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * The billing currency of the customer
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun billingCurrency(): Optional<BillingCurrency> =
+        billingCurrency.getOptional("billingCurrency")
 
     /**
      * The unique identifier for the entity in the billing provider
@@ -201,6 +215,15 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [billingCurrency].
+     *
+     * Unlike [billingCurrency], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("billingCurrency")
+    @ExcludeMissing
+    fun _billingCurrency(): JsonField<BillingCurrency> = billingCurrency
+
+    /**
      * Returns the raw JSON value of [billingId].
      *
      * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected type.
@@ -289,6 +312,7 @@ private constructor(
         private var archivedAt: JsonField<OffsetDateTime>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var billingCurrency: JsonField<BillingCurrency> = JsonMissing.of()
         private var billingId: JsonField<String> = JsonMissing.of()
         private var couponId: JsonField<String> = JsonMissing.of()
         private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
@@ -304,6 +328,7 @@ private constructor(
             archivedAt = customerListResponse.archivedAt
             createdAt = customerListResponse.createdAt
             updatedAt = customerListResponse.updatedAt
+            billingCurrency = customerListResponse.billingCurrency
             billingId = customerListResponse.billingId
             couponId = customerListResponse.couponId
             defaultPaymentMethod = customerListResponse.defaultPaymentMethod
@@ -365,6 +390,25 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        /** The billing currency of the customer */
+        fun billingCurrency(billingCurrency: BillingCurrency?) =
+            billingCurrency(JsonField.ofNullable(billingCurrency))
+
+        /** Alias for calling [Builder.billingCurrency] with `billingCurrency.orElse(null)`. */
+        fun billingCurrency(billingCurrency: Optional<BillingCurrency>) =
+            billingCurrency(billingCurrency.getOrNull())
+
+        /**
+         * Sets [Builder.billingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.billingCurrency] with a well-typed [BillingCurrency]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun billingCurrency(billingCurrency: JsonField<BillingCurrency>) = apply {
+            this.billingCurrency = billingCurrency
+        }
 
         /** The unique identifier for the entity in the billing provider */
         fun billingId(billingId: String?) = billingId(JsonField.ofNullable(billingId))
@@ -523,6 +567,7 @@ private constructor(
                 checkRequired("archivedAt", archivedAt),
                 checkRequired("createdAt", createdAt),
                 checkRequired("updatedAt", updatedAt),
+                billingCurrency,
                 billingId,
                 couponId,
                 defaultPaymentMethod,
@@ -545,6 +590,7 @@ private constructor(
         archivedAt()
         createdAt()
         updatedAt()
+        billingCurrency().ifPresent { it.validate() }
         billingId()
         couponId()
         defaultPaymentMethod().ifPresent { it.validate() }
@@ -574,6 +620,7 @@ private constructor(
             (if (archivedAt.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
+            (billingCurrency.asKnown().getOrNull()?.validity() ?: 0) +
             (if (billingId.asKnown().isPresent) 1 else 0) +
             (if (couponId.asKnown().isPresent) 1 else 0) +
             (defaultPaymentMethod.asKnown().getOrNull()?.validity() ?: 0) +
@@ -581,6 +628,819 @@ private constructor(
             (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0)
+
+    /** The billing currency of the customer */
+    class BillingCurrency @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val USD = of("usd")
+
+            @JvmField val AED = of("aed")
+
+            @JvmField val ALL = of("all")
+
+            @JvmField val AMD = of("amd")
+
+            @JvmField val ANG = of("ang")
+
+            @JvmField val AUD = of("aud")
+
+            @JvmField val AWG = of("awg")
+
+            @JvmField val AZN = of("azn")
+
+            @JvmField val BAM = of("bam")
+
+            @JvmField val BBD = of("bbd")
+
+            @JvmField val BDT = of("bdt")
+
+            @JvmField val BGN = of("bgn")
+
+            @JvmField val BIF = of("bif")
+
+            @JvmField val BMD = of("bmd")
+
+            @JvmField val BND = of("bnd")
+
+            @JvmField val BSD = of("bsd")
+
+            @JvmField val BWP = of("bwp")
+
+            @JvmField val BYN = of("byn")
+
+            @JvmField val BZD = of("bzd")
+
+            @JvmField val BRL = of("brl")
+
+            @JvmField val CAD = of("cad")
+
+            @JvmField val CDF = of("cdf")
+
+            @JvmField val CHF = of("chf")
+
+            @JvmField val CNY = of("cny")
+
+            @JvmField val CZK = of("czk")
+
+            @JvmField val DKK = of("dkk")
+
+            @JvmField val DOP = of("dop")
+
+            @JvmField val DZD = of("dzd")
+
+            @JvmField val EGP = of("egp")
+
+            @JvmField val ETB = of("etb")
+
+            @JvmField val EUR = of("eur")
+
+            @JvmField val FJD = of("fjd")
+
+            @JvmField val GBP = of("gbp")
+
+            @JvmField val GEL = of("gel")
+
+            @JvmField val GIP = of("gip")
+
+            @JvmField val GMD = of("gmd")
+
+            @JvmField val GYD = of("gyd")
+
+            @JvmField val HKD = of("hkd")
+
+            @JvmField val HRK = of("hrk")
+
+            @JvmField val HTG = of("htg")
+
+            @JvmField val IDR = of("idr")
+
+            @JvmField val ILS = of("ils")
+
+            @JvmField val INR = of("inr")
+
+            @JvmField val ISK = of("isk")
+
+            @JvmField val JMD = of("jmd")
+
+            @JvmField val JPY = of("jpy")
+
+            @JvmField val KES = of("kes")
+
+            @JvmField val KGS = of("kgs")
+
+            @JvmField val KHR = of("khr")
+
+            @JvmField val KMF = of("kmf")
+
+            @JvmField val KRW = of("krw")
+
+            @JvmField val KYD = of("kyd")
+
+            @JvmField val KZT = of("kzt")
+
+            @JvmField val LBP = of("lbp")
+
+            @JvmField val LKR = of("lkr")
+
+            @JvmField val LRD = of("lrd")
+
+            @JvmField val LSL = of("lsl")
+
+            @JvmField val MAD = of("mad")
+
+            @JvmField val MDL = of("mdl")
+
+            @JvmField val MGA = of("mga")
+
+            @JvmField val MKD = of("mkd")
+
+            @JvmField val MMK = of("mmk")
+
+            @JvmField val MNT = of("mnt")
+
+            @JvmField val MOP = of("mop")
+
+            @JvmField val MRO = of("mro")
+
+            @JvmField val MVR = of("mvr")
+
+            @JvmField val MWK = of("mwk")
+
+            @JvmField val MXN = of("mxn")
+
+            @JvmField val MYR = of("myr")
+
+            @JvmField val MZN = of("mzn")
+
+            @JvmField val NAD = of("nad")
+
+            @JvmField val NGN = of("ngn")
+
+            @JvmField val NOK = of("nok")
+
+            @JvmField val NPR = of("npr")
+
+            @JvmField val NZD = of("nzd")
+
+            @JvmField val PGK = of("pgk")
+
+            @JvmField val PHP = of("php")
+
+            @JvmField val PKR = of("pkr")
+
+            @JvmField val PLN = of("pln")
+
+            @JvmField val QAR = of("qar")
+
+            @JvmField val RON = of("ron")
+
+            @JvmField val RSD = of("rsd")
+
+            @JvmField val RUB = of("rub")
+
+            @JvmField val RWF = of("rwf")
+
+            @JvmField val SAR = of("sar")
+
+            @JvmField val SBD = of("sbd")
+
+            @JvmField val SCR = of("scr")
+
+            @JvmField val SEK = of("sek")
+
+            @JvmField val SGD = of("sgd")
+
+            @JvmField val SLE = of("sle")
+
+            @JvmField val SLL = of("sll")
+
+            @JvmField val SOS = of("sos")
+
+            @JvmField val SZL = of("szl")
+
+            @JvmField val THB = of("thb")
+
+            @JvmField val TJS = of("tjs")
+
+            @JvmField val TOP = of("top")
+
+            @JvmField val TRY = of("try")
+
+            @JvmField val TTD = of("ttd")
+
+            @JvmField val TZS = of("tzs")
+
+            @JvmField val UAH = of("uah")
+
+            @JvmField val UZS = of("uzs")
+
+            @JvmField val VND = of("vnd")
+
+            @JvmField val VUV = of("vuv")
+
+            @JvmField val WST = of("wst")
+
+            @JvmField val XAF = of("xaf")
+
+            @JvmField val XCD = of("xcd")
+
+            @JvmField val YER = of("yer")
+
+            @JvmField val ZAR = of("zar")
+
+            @JvmField val ZMW = of("zmw")
+
+            @JvmField val CLP = of("clp")
+
+            @JvmField val DJF = of("djf")
+
+            @JvmField val GNF = of("gnf")
+
+            @JvmField val UGX = of("ugx")
+
+            @JvmField val PYG = of("pyg")
+
+            @JvmField val XOF = of("xof")
+
+            @JvmField val XPF = of("xpf")
+
+            @JvmStatic fun of(value: String) = BillingCurrency(JsonField.of(value))
+        }
+
+        /** An enum containing [BillingCurrency]'s known values. */
+        enum class Known {
+            USD,
+            AED,
+            ALL,
+            AMD,
+            ANG,
+            AUD,
+            AWG,
+            AZN,
+            BAM,
+            BBD,
+            BDT,
+            BGN,
+            BIF,
+            BMD,
+            BND,
+            BSD,
+            BWP,
+            BYN,
+            BZD,
+            BRL,
+            CAD,
+            CDF,
+            CHF,
+            CNY,
+            CZK,
+            DKK,
+            DOP,
+            DZD,
+            EGP,
+            ETB,
+            EUR,
+            FJD,
+            GBP,
+            GEL,
+            GIP,
+            GMD,
+            GYD,
+            HKD,
+            HRK,
+            HTG,
+            IDR,
+            ILS,
+            INR,
+            ISK,
+            JMD,
+            JPY,
+            KES,
+            KGS,
+            KHR,
+            KMF,
+            KRW,
+            KYD,
+            KZT,
+            LBP,
+            LKR,
+            LRD,
+            LSL,
+            MAD,
+            MDL,
+            MGA,
+            MKD,
+            MMK,
+            MNT,
+            MOP,
+            MRO,
+            MVR,
+            MWK,
+            MXN,
+            MYR,
+            MZN,
+            NAD,
+            NGN,
+            NOK,
+            NPR,
+            NZD,
+            PGK,
+            PHP,
+            PKR,
+            PLN,
+            QAR,
+            RON,
+            RSD,
+            RUB,
+            RWF,
+            SAR,
+            SBD,
+            SCR,
+            SEK,
+            SGD,
+            SLE,
+            SLL,
+            SOS,
+            SZL,
+            THB,
+            TJS,
+            TOP,
+            TRY,
+            TTD,
+            TZS,
+            UAH,
+            UZS,
+            VND,
+            VUV,
+            WST,
+            XAF,
+            XCD,
+            YER,
+            ZAR,
+            ZMW,
+            CLP,
+            DJF,
+            GNF,
+            UGX,
+            PYG,
+            XOF,
+            XPF,
+        }
+
+        /**
+         * An enum containing [BillingCurrency]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [BillingCurrency] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            USD,
+            AED,
+            ALL,
+            AMD,
+            ANG,
+            AUD,
+            AWG,
+            AZN,
+            BAM,
+            BBD,
+            BDT,
+            BGN,
+            BIF,
+            BMD,
+            BND,
+            BSD,
+            BWP,
+            BYN,
+            BZD,
+            BRL,
+            CAD,
+            CDF,
+            CHF,
+            CNY,
+            CZK,
+            DKK,
+            DOP,
+            DZD,
+            EGP,
+            ETB,
+            EUR,
+            FJD,
+            GBP,
+            GEL,
+            GIP,
+            GMD,
+            GYD,
+            HKD,
+            HRK,
+            HTG,
+            IDR,
+            ILS,
+            INR,
+            ISK,
+            JMD,
+            JPY,
+            KES,
+            KGS,
+            KHR,
+            KMF,
+            KRW,
+            KYD,
+            KZT,
+            LBP,
+            LKR,
+            LRD,
+            LSL,
+            MAD,
+            MDL,
+            MGA,
+            MKD,
+            MMK,
+            MNT,
+            MOP,
+            MRO,
+            MVR,
+            MWK,
+            MXN,
+            MYR,
+            MZN,
+            NAD,
+            NGN,
+            NOK,
+            NPR,
+            NZD,
+            PGK,
+            PHP,
+            PKR,
+            PLN,
+            QAR,
+            RON,
+            RSD,
+            RUB,
+            RWF,
+            SAR,
+            SBD,
+            SCR,
+            SEK,
+            SGD,
+            SLE,
+            SLL,
+            SOS,
+            SZL,
+            THB,
+            TJS,
+            TOP,
+            TRY,
+            TTD,
+            TZS,
+            UAH,
+            UZS,
+            VND,
+            VUV,
+            WST,
+            XAF,
+            XCD,
+            YER,
+            ZAR,
+            ZMW,
+            CLP,
+            DJF,
+            GNF,
+            UGX,
+            PYG,
+            XOF,
+            XPF,
+            /**
+             * An enum member indicating that [BillingCurrency] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                USD -> Value.USD
+                AED -> Value.AED
+                ALL -> Value.ALL
+                AMD -> Value.AMD
+                ANG -> Value.ANG
+                AUD -> Value.AUD
+                AWG -> Value.AWG
+                AZN -> Value.AZN
+                BAM -> Value.BAM
+                BBD -> Value.BBD
+                BDT -> Value.BDT
+                BGN -> Value.BGN
+                BIF -> Value.BIF
+                BMD -> Value.BMD
+                BND -> Value.BND
+                BSD -> Value.BSD
+                BWP -> Value.BWP
+                BYN -> Value.BYN
+                BZD -> Value.BZD
+                BRL -> Value.BRL
+                CAD -> Value.CAD
+                CDF -> Value.CDF
+                CHF -> Value.CHF
+                CNY -> Value.CNY
+                CZK -> Value.CZK
+                DKK -> Value.DKK
+                DOP -> Value.DOP
+                DZD -> Value.DZD
+                EGP -> Value.EGP
+                ETB -> Value.ETB
+                EUR -> Value.EUR
+                FJD -> Value.FJD
+                GBP -> Value.GBP
+                GEL -> Value.GEL
+                GIP -> Value.GIP
+                GMD -> Value.GMD
+                GYD -> Value.GYD
+                HKD -> Value.HKD
+                HRK -> Value.HRK
+                HTG -> Value.HTG
+                IDR -> Value.IDR
+                ILS -> Value.ILS
+                INR -> Value.INR
+                ISK -> Value.ISK
+                JMD -> Value.JMD
+                JPY -> Value.JPY
+                KES -> Value.KES
+                KGS -> Value.KGS
+                KHR -> Value.KHR
+                KMF -> Value.KMF
+                KRW -> Value.KRW
+                KYD -> Value.KYD
+                KZT -> Value.KZT
+                LBP -> Value.LBP
+                LKR -> Value.LKR
+                LRD -> Value.LRD
+                LSL -> Value.LSL
+                MAD -> Value.MAD
+                MDL -> Value.MDL
+                MGA -> Value.MGA
+                MKD -> Value.MKD
+                MMK -> Value.MMK
+                MNT -> Value.MNT
+                MOP -> Value.MOP
+                MRO -> Value.MRO
+                MVR -> Value.MVR
+                MWK -> Value.MWK
+                MXN -> Value.MXN
+                MYR -> Value.MYR
+                MZN -> Value.MZN
+                NAD -> Value.NAD
+                NGN -> Value.NGN
+                NOK -> Value.NOK
+                NPR -> Value.NPR
+                NZD -> Value.NZD
+                PGK -> Value.PGK
+                PHP -> Value.PHP
+                PKR -> Value.PKR
+                PLN -> Value.PLN
+                QAR -> Value.QAR
+                RON -> Value.RON
+                RSD -> Value.RSD
+                RUB -> Value.RUB
+                RWF -> Value.RWF
+                SAR -> Value.SAR
+                SBD -> Value.SBD
+                SCR -> Value.SCR
+                SEK -> Value.SEK
+                SGD -> Value.SGD
+                SLE -> Value.SLE
+                SLL -> Value.SLL
+                SOS -> Value.SOS
+                SZL -> Value.SZL
+                THB -> Value.THB
+                TJS -> Value.TJS
+                TOP -> Value.TOP
+                TRY -> Value.TRY
+                TTD -> Value.TTD
+                TZS -> Value.TZS
+                UAH -> Value.UAH
+                UZS -> Value.UZS
+                VND -> Value.VND
+                VUV -> Value.VUV
+                WST -> Value.WST
+                XAF -> Value.XAF
+                XCD -> Value.XCD
+                YER -> Value.YER
+                ZAR -> Value.ZAR
+                ZMW -> Value.ZMW
+                CLP -> Value.CLP
+                DJF -> Value.DJF
+                GNF -> Value.GNF
+                UGX -> Value.UGX
+                PYG -> Value.PYG
+                XOF -> Value.XOF
+                XPF -> Value.XPF
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                USD -> Known.USD
+                AED -> Known.AED
+                ALL -> Known.ALL
+                AMD -> Known.AMD
+                ANG -> Known.ANG
+                AUD -> Known.AUD
+                AWG -> Known.AWG
+                AZN -> Known.AZN
+                BAM -> Known.BAM
+                BBD -> Known.BBD
+                BDT -> Known.BDT
+                BGN -> Known.BGN
+                BIF -> Known.BIF
+                BMD -> Known.BMD
+                BND -> Known.BND
+                BSD -> Known.BSD
+                BWP -> Known.BWP
+                BYN -> Known.BYN
+                BZD -> Known.BZD
+                BRL -> Known.BRL
+                CAD -> Known.CAD
+                CDF -> Known.CDF
+                CHF -> Known.CHF
+                CNY -> Known.CNY
+                CZK -> Known.CZK
+                DKK -> Known.DKK
+                DOP -> Known.DOP
+                DZD -> Known.DZD
+                EGP -> Known.EGP
+                ETB -> Known.ETB
+                EUR -> Known.EUR
+                FJD -> Known.FJD
+                GBP -> Known.GBP
+                GEL -> Known.GEL
+                GIP -> Known.GIP
+                GMD -> Known.GMD
+                GYD -> Known.GYD
+                HKD -> Known.HKD
+                HRK -> Known.HRK
+                HTG -> Known.HTG
+                IDR -> Known.IDR
+                ILS -> Known.ILS
+                INR -> Known.INR
+                ISK -> Known.ISK
+                JMD -> Known.JMD
+                JPY -> Known.JPY
+                KES -> Known.KES
+                KGS -> Known.KGS
+                KHR -> Known.KHR
+                KMF -> Known.KMF
+                KRW -> Known.KRW
+                KYD -> Known.KYD
+                KZT -> Known.KZT
+                LBP -> Known.LBP
+                LKR -> Known.LKR
+                LRD -> Known.LRD
+                LSL -> Known.LSL
+                MAD -> Known.MAD
+                MDL -> Known.MDL
+                MGA -> Known.MGA
+                MKD -> Known.MKD
+                MMK -> Known.MMK
+                MNT -> Known.MNT
+                MOP -> Known.MOP
+                MRO -> Known.MRO
+                MVR -> Known.MVR
+                MWK -> Known.MWK
+                MXN -> Known.MXN
+                MYR -> Known.MYR
+                MZN -> Known.MZN
+                NAD -> Known.NAD
+                NGN -> Known.NGN
+                NOK -> Known.NOK
+                NPR -> Known.NPR
+                NZD -> Known.NZD
+                PGK -> Known.PGK
+                PHP -> Known.PHP
+                PKR -> Known.PKR
+                PLN -> Known.PLN
+                QAR -> Known.QAR
+                RON -> Known.RON
+                RSD -> Known.RSD
+                RUB -> Known.RUB
+                RWF -> Known.RWF
+                SAR -> Known.SAR
+                SBD -> Known.SBD
+                SCR -> Known.SCR
+                SEK -> Known.SEK
+                SGD -> Known.SGD
+                SLE -> Known.SLE
+                SLL -> Known.SLL
+                SOS -> Known.SOS
+                SZL -> Known.SZL
+                THB -> Known.THB
+                TJS -> Known.TJS
+                TOP -> Known.TOP
+                TRY -> Known.TRY
+                TTD -> Known.TTD
+                TZS -> Known.TZS
+                UAH -> Known.UAH
+                UZS -> Known.UZS
+                VND -> Known.VND
+                VUV -> Known.VUV
+                WST -> Known.WST
+                XAF -> Known.XAF
+                XCD -> Known.XCD
+                YER -> Known.YER
+                ZAR -> Known.ZAR
+                ZMW -> Known.ZMW
+                CLP -> Known.CLP
+                DJF -> Known.DJF
+                GNF -> Known.GNF
+                UGX -> Known.UGX
+                PYG -> Known.PYG
+                XOF -> Known.XOF
+                XPF -> Known.XPF
+                else -> throw StiggInvalidDataException("Unknown BillingCurrency: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        fun validate(): BillingCurrency = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is BillingCurrency && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /** The default payment method details */
     class DefaultPaymentMethod
@@ -1641,6 +2501,7 @@ private constructor(
             archivedAt == other.archivedAt &&
             createdAt == other.createdAt &&
             updatedAt == other.updatedAt &&
+            billingCurrency == other.billingCurrency &&
             billingId == other.billingId &&
             couponId == other.couponId &&
             defaultPaymentMethod == other.defaultPaymentMethod &&
@@ -1657,6 +2518,7 @@ private constructor(
             archivedAt,
             createdAt,
             updatedAt,
+            billingCurrency,
             billingId,
             couponId,
             defaultPaymentMethod,
@@ -1671,5 +2533,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, billingId=$billingId, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+        "CustomerListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, billingCurrency=$billingCurrency, billingId=$billingId, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
 }

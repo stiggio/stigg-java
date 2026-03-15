@@ -20,6 +20,7 @@ internal class CustomerListResponseTest {
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                 .billingId("billingId")
                 .couponId("couponId")
                 .defaultPaymentMethod(
@@ -54,6 +55,8 @@ internal class CustomerListResponseTest {
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(customerListResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(customerListResponse.billingCurrency())
+            .contains(CustomerListResponse.BillingCurrency.USD)
         assertThat(customerListResponse.billingId()).contains("billingId")
         assertThat(customerListResponse.couponId()).contains("couponId")
         assertThat(customerListResponse.defaultPaymentMethod())
@@ -93,6 +96,7 @@ internal class CustomerListResponseTest {
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                 .billingId("billingId")
                 .couponId("couponId")
                 .defaultPaymentMethod(
