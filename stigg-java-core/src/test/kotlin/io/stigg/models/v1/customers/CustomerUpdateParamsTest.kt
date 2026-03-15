@@ -13,6 +13,7 @@ internal class CustomerUpdateParamsTest {
     fun create() {
         CustomerUpdateParams.builder()
             .id("x")
+            .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
             .billingId("billingId")
             .couponId("couponId")
             .email("dev@stainless.com")
@@ -46,6 +47,7 @@ internal class CustomerUpdateParamsTest {
         val params =
             CustomerUpdateParams.builder()
                 .id("x")
+                .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                 .billingId("billingId")
                 .couponId("couponId")
                 .email("dev@stainless.com")
@@ -66,6 +68,7 @@ internal class CustomerUpdateParamsTest {
 
         val body = params._body()
 
+        assertThat(body.billingCurrency()).contains(CustomerUpdateParams.BillingCurrency.USD)
         assertThat(body.billingId()).contains("billingId")
         assertThat(body.couponId()).contains("couponId")
         assertThat(body.email()).contains("dev@stainless.com")
