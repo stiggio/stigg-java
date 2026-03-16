@@ -48,12 +48,85 @@ internal class CustomerServiceAsyncTest {
                             )
                             .build()
                     )
+                    .language("language")
                     .metadata(
                         CustomerUpdateParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .name("name")
+                    .passthrough(
+                        CustomerUpdateParams.Passthrough.builder()
+                            .stripe(
+                                CustomerUpdateParams.Passthrough.Stripe.builder()
+                                    .billingAddress(
+                                        CustomerUpdateParams.Passthrough.Stripe.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .customerName("customerName")
+                                    .invoiceCustomFields(
+                                        CustomerUpdateParams.Passthrough.Stripe.InvoiceCustomFields
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .metadata(
+                                        CustomerUpdateParams.Passthrough.Stripe.Metadata.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .shippingAddress(
+                                        CustomerUpdateParams.Passthrough.Stripe.ShippingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .addTaxId(
+                                        CustomerUpdateParams.Passthrough.Stripe.TaxId.builder()
+                                            .type("type")
+                                            .value("value")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .zuora(
+                                CustomerUpdateParams.Passthrough.Zuora.builder()
+                                    .billingAddress(
+                                        CustomerUpdateParams.Passthrough.Zuora.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .currency(CustomerUpdateParams.Passthrough.Zuora.Currency.USD)
+                                    .metadata(
+                                        CustomerUpdateParams.Passthrough.Zuora.Metadata.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .timezone("timezone")
                     .build()
             )
 
@@ -162,12 +235,89 @@ internal class CustomerServiceAsyncTest {
                             )
                             .build()
                     )
+                    .language("language")
                     .metadata(
                         CustomerProvisionParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .name("name")
+                    .passthrough(
+                        CustomerProvisionParams.Passthrough.builder()
+                            .stripe(
+                                CustomerProvisionParams.Passthrough.Stripe.builder()
+                                    .billingAddress(
+                                        CustomerProvisionParams.Passthrough.Stripe.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .customerName("customerName")
+                                    .invoiceCustomFields(
+                                        CustomerProvisionParams.Passthrough.Stripe
+                                            .InvoiceCustomFields
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .metadata(
+                                        CustomerProvisionParams.Passthrough.Stripe.Metadata
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .shippingAddress(
+                                        CustomerProvisionParams.Passthrough.Stripe.ShippingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .addTaxId(
+                                        CustomerProvisionParams.Passthrough.Stripe.TaxId.builder()
+                                            .type("type")
+                                            .value("value")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .zuora(
+                                CustomerProvisionParams.Passthrough.Zuora.builder()
+                                    .billingAddress(
+                                        CustomerProvisionParams.Passthrough.Zuora.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .currency(
+                                        CustomerProvisionParams.Passthrough.Zuora.Currency.USD
+                                    )
+                                    .metadata(
+                                        CustomerProvisionParams.Passthrough.Zuora.Metadata.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .timezone("timezone")
                     .build()
             )
 

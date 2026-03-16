@@ -43,12 +43,99 @@ internal class CustomerListPageResponseTest {
                                 )
                                 .build()
                         )
+                        .language("language")
                         .metadata(
                             CustomerListResponse.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
                         .name("name")
+                        .passthrough(
+                            CustomerListResponse.Passthrough.builder()
+                                .stripe(
+                                    CustomerListResponse.Passthrough.Stripe.builder()
+                                        .billingAddress(
+                                            CustomerListResponse.Passthrough.Stripe.BillingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .customerName("customerName")
+                                        .invoiceCustomFields(
+                                            CustomerListResponse.Passthrough.Stripe
+                                                .InvoiceCustomFields
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .metadata(
+                                            CustomerListResponse.Passthrough.Stripe.Metadata
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .paymentMethodId("paymentMethodId")
+                                        .shippingAddress(
+                                            CustomerListResponse.Passthrough.Stripe.ShippingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .addTaxId(
+                                            CustomerListResponse.Passthrough.Stripe.TaxId.builder()
+                                                .type("type")
+                                                .value("value")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .zuora(
+                                    CustomerListResponse.Passthrough.Zuora.builder()
+                                        .billingAddress(
+                                            CustomerListResponse.Passthrough.Zuora.BillingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .currency(
+                                            CustomerListResponse.Passthrough.Zuora.Currency.USD
+                                        )
+                                        .metadata(
+                                            CustomerListResponse.Passthrough.Zuora.Metadata
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .paymentMethodId("paymentMethodId")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .timezone("timezone")
                         .build()
                 )
                 .pagination(
@@ -88,12 +175,85 @@ internal class CustomerListPageResponseTest {
                             )
                             .build()
                     )
+                    .language("language")
                     .metadata(
                         CustomerListResponse.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .name("name")
+                    .passthrough(
+                        CustomerListResponse.Passthrough.builder()
+                            .stripe(
+                                CustomerListResponse.Passthrough.Stripe.builder()
+                                    .billingAddress(
+                                        CustomerListResponse.Passthrough.Stripe.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .customerName("customerName")
+                                    .invoiceCustomFields(
+                                        CustomerListResponse.Passthrough.Stripe.InvoiceCustomFields
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .metadata(
+                                        CustomerListResponse.Passthrough.Stripe.Metadata.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .shippingAddress(
+                                        CustomerListResponse.Passthrough.Stripe.ShippingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .addTaxId(
+                                        CustomerListResponse.Passthrough.Stripe.TaxId.builder()
+                                            .type("type")
+                                            .value("value")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .zuora(
+                                CustomerListResponse.Passthrough.Zuora.builder()
+                                    .billingAddress(
+                                        CustomerListResponse.Passthrough.Zuora.BillingAddress
+                                            .builder()
+                                            .city("city")
+                                            .country("country")
+                                            .line1("line1")
+                                            .line2("line2")
+                                            .postalCode("postalCode")
+                                            .state("state")
+                                            .build()
+                                    )
+                                    .currency(CustomerListResponse.Passthrough.Zuora.Currency.USD)
+                                    .metadata(
+                                        CustomerListResponse.Passthrough.Zuora.Metadata.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .paymentMethodId("paymentMethodId")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .timezone("timezone")
                     .build()
             )
         assertThat(customerListPageResponse.pagination())
@@ -138,12 +298,99 @@ internal class CustomerListPageResponseTest {
                                 )
                                 .build()
                         )
+                        .language("language")
                         .metadata(
                             CustomerListResponse.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
                         .name("name")
+                        .passthrough(
+                            CustomerListResponse.Passthrough.builder()
+                                .stripe(
+                                    CustomerListResponse.Passthrough.Stripe.builder()
+                                        .billingAddress(
+                                            CustomerListResponse.Passthrough.Stripe.BillingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .customerName("customerName")
+                                        .invoiceCustomFields(
+                                            CustomerListResponse.Passthrough.Stripe
+                                                .InvoiceCustomFields
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .metadata(
+                                            CustomerListResponse.Passthrough.Stripe.Metadata
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .paymentMethodId("paymentMethodId")
+                                        .shippingAddress(
+                                            CustomerListResponse.Passthrough.Stripe.ShippingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .addTaxId(
+                                            CustomerListResponse.Passthrough.Stripe.TaxId.builder()
+                                                .type("type")
+                                                .value("value")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .zuora(
+                                    CustomerListResponse.Passthrough.Zuora.builder()
+                                        .billingAddress(
+                                            CustomerListResponse.Passthrough.Zuora.BillingAddress
+                                                .builder()
+                                                .city("city")
+                                                .country("country")
+                                                .line1("line1")
+                                                .line2("line2")
+                                                .postalCode("postalCode")
+                                                .state("state")
+                                                .build()
+                                        )
+                                        .currency(
+                                            CustomerListResponse.Passthrough.Zuora.Currency.USD
+                                        )
+                                        .metadata(
+                                            CustomerListResponse.Passthrough.Zuora.Metadata
+                                                .builder()
+                                                .putAdditionalProperty(
+                                                    "foo",
+                                                    JsonValue.from("string"),
+                                                )
+                                                .build()
+                                        )
+                                        .paymentMethodId("paymentMethodId")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .timezone("timezone")
                         .build()
                 )
                 .pagination(

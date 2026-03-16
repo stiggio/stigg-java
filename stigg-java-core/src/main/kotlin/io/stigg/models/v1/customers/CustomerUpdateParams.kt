@@ -75,6 +75,14 @@ private constructor(
     fun integrations(): Optional<List<Integration>> = body.integrations()
 
     /**
+     * Language to use for this customer
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun language(): Optional<String> = body.language()
+
+    /**
      * Additional metadata
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -89,6 +97,22 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun name(): Optional<String> = body.name()
+
+    /**
+     * Vendor-specific billing passthrough fields.
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun passthrough(): Optional<Passthrough> = body.passthrough()
+
+    /**
+     * Timezone to use for this customer
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun timezone(): Optional<String> = body.timezone()
 
     /**
      * Returns the raw JSON value of [billingCurrency].
@@ -126,6 +150,13 @@ private constructor(
     fun _integrations(): JsonField<List<Integration>> = body._integrations()
 
     /**
+     * Returns the raw JSON value of [language].
+     *
+     * Unlike [language], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _language(): JsonField<String> = body._language()
+
+    /**
      * Returns the raw JSON value of [metadata].
      *
      * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
@@ -138,6 +169,20 @@ private constructor(
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _name(): JsonField<String> = body._name()
+
+    /**
+     * Returns the raw JSON value of [passthrough].
+     *
+     * Unlike [passthrough], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _passthrough(): JsonField<Passthrough> = body._passthrough()
+
+    /**
+     * Returns the raw JSON value of [timezone].
+     *
+     * Unlike [timezone], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _timezone(): JsonField<String> = body._timezone()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -278,6 +323,20 @@ private constructor(
          */
         fun addIntegration(integration: Integration) = apply { body.addIntegration(integration) }
 
+        /** Language to use for this customer */
+        fun language(language: String?) = apply { body.language(language) }
+
+        /** Alias for calling [Builder.language] with `language.orElse(null)`. */
+        fun language(language: Optional<String>) = language(language.getOrNull())
+
+        /**
+         * Sets [Builder.language] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.language] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun language(language: JsonField<String>) = apply { body.language(language) }
+
         /** Additional metadata */
         fun metadata(metadata: Metadata) = apply { body.metadata(metadata) }
 
@@ -303,6 +362,34 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
+
+        /** Vendor-specific billing passthrough fields. */
+        fun passthrough(passthrough: Passthrough) = apply { body.passthrough(passthrough) }
+
+        /**
+         * Sets [Builder.passthrough] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.passthrough] with a well-typed [Passthrough] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun passthrough(passthrough: JsonField<Passthrough>) = apply {
+            body.passthrough(passthrough)
+        }
+
+        /** Timezone to use for this customer */
+        fun timezone(timezone: String?) = apply { body.timezone(timezone) }
+
+        /** Alias for calling [Builder.timezone] with `timezone.orElse(null)`. */
+        fun timezone(timezone: Optional<String>) = timezone(timezone.getOrNull())
+
+        /**
+         * Sets [Builder.timezone] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.timezone] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun timezone(timezone: JsonField<String>) = apply { body.timezone(timezone) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -456,8 +543,11 @@ private constructor(
         private val couponId: JsonField<String>,
         private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
+        private val language: JsonField<String>,
         private val metadata: JsonField<Metadata>,
         private val name: JsonField<String>,
+        private val passthrough: JsonField<Passthrough>,
+        private val timezone: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -476,18 +566,28 @@ private constructor(
             @JsonProperty("integrations")
             @ExcludeMissing
             integrations: JsonField<List<Integration>> = JsonMissing.of(),
+            @JsonProperty("language")
+            @ExcludeMissing
+            language: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("passthrough")
+            @ExcludeMissing
+            passthrough: JsonField<Passthrough> = JsonMissing.of(),
+            @JsonProperty("timezone") @ExcludeMissing timezone: JsonField<String> = JsonMissing.of(),
         ) : this(
             billingCurrency,
             billingId,
             couponId,
             email,
             integrations,
+            language,
             metadata,
             name,
+            passthrough,
+            timezone,
             mutableMapOf(),
         )
 
@@ -533,6 +633,14 @@ private constructor(
         fun integrations(): Optional<List<Integration>> = integrations.getOptional("integrations")
 
         /**
+         * Language to use for this customer
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun language(): Optional<String> = language.getOptional("language")
+
+        /**
          * Additional metadata
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -547,6 +655,22 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun name(): Optional<String> = name.getOptional("name")
+
+        /**
+         * Vendor-specific billing passthrough fields.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun passthrough(): Optional<Passthrough> = passthrough.getOptional("passthrough")
+
+        /**
+         * Timezone to use for this customer
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun timezone(): Optional<String> = timezone.getOptional("timezone")
 
         /**
          * Returns the raw JSON value of [billingCurrency].
@@ -590,6 +714,13 @@ private constructor(
         fun _integrations(): JsonField<List<Integration>> = integrations
 
         /**
+         * Returns the raw JSON value of [language].
+         *
+         * Unlike [language], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("language") @ExcludeMissing fun _language(): JsonField<String> = language
+
+        /**
          * Returns the raw JSON value of [metadata].
          *
          * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
@@ -602,6 +733,22 @@ private constructor(
          * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
+
+        /**
+         * Returns the raw JSON value of [passthrough].
+         *
+         * Unlike [passthrough], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("passthrough")
+        @ExcludeMissing
+        fun _passthrough(): JsonField<Passthrough> = passthrough
+
+        /**
+         * Returns the raw JSON value of [timezone].
+         *
+         * Unlike [timezone], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("timezone") @ExcludeMissing fun _timezone(): JsonField<String> = timezone
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -629,8 +776,11 @@ private constructor(
             private var couponId: JsonField<String> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
+            private var language: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var name: JsonField<String> = JsonMissing.of()
+            private var passthrough: JsonField<Passthrough> = JsonMissing.of()
+            private var timezone: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -640,8 +790,11 @@ private constructor(
                 couponId = body.couponId
                 email = body.email
                 integrations = body.integrations.map { it.toMutableList() }
+                language = body.language
                 metadata = body.metadata
                 name = body.name
+                passthrough = body.passthrough
+                timezone = body.timezone
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -736,6 +889,21 @@ private constructor(
                     }
             }
 
+            /** Language to use for this customer */
+            fun language(language: String?) = language(JsonField.ofNullable(language))
+
+            /** Alias for calling [Builder.language] with `language.orElse(null)`. */
+            fun language(language: Optional<String>) = language(language.getOrNull())
+
+            /**
+             * Sets [Builder.language] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.language] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun language(language: JsonField<String>) = apply { this.language = language }
+
             /** Additional metadata */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
@@ -762,6 +930,35 @@ private constructor(
              * value.
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
+
+            /** Vendor-specific billing passthrough fields. */
+            fun passthrough(passthrough: Passthrough) = passthrough(JsonField.of(passthrough))
+
+            /**
+             * Sets [Builder.passthrough] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.passthrough] with a well-typed [Passthrough] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun passthrough(passthrough: JsonField<Passthrough>) = apply {
+                this.passthrough = passthrough
+            }
+
+            /** Timezone to use for this customer */
+            fun timezone(timezone: String?) = timezone(JsonField.ofNullable(timezone))
+
+            /** Alias for calling [Builder.timezone] with `timezone.orElse(null)`. */
+            fun timezone(timezone: Optional<String>) = timezone(timezone.getOrNull())
+
+            /**
+             * Sets [Builder.timezone] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.timezone] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun timezone(timezone: JsonField<String>) = apply { this.timezone = timezone }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -794,8 +991,11 @@ private constructor(
                     couponId,
                     email,
                     (integrations ?: JsonMissing.of()).map { it.toImmutable() },
+                    language,
                     metadata,
                     name,
+                    passthrough,
+                    timezone,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -812,8 +1012,11 @@ private constructor(
             couponId()
             email()
             integrations().ifPresent { it.forEach { it.validate() } }
+            language()
             metadata().ifPresent { it.validate() }
             name()
+            passthrough().ifPresent { it.validate() }
+            timezone()
             validated = true
         }
 
@@ -838,8 +1041,11 @@ private constructor(
                 (if (couponId.asKnown().isPresent) 1 else 0) +
                 (if (email.asKnown().isPresent) 1 else 0) +
                 (integrations.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (language.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (name.asKnown().isPresent) 1 else 0)
+                (if (name.asKnown().isPresent) 1 else 0) +
+                (passthrough.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (timezone.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -852,8 +1058,11 @@ private constructor(
                 couponId == other.couponId &&
                 email == other.email &&
                 integrations == other.integrations &&
+                language == other.language &&
                 metadata == other.metadata &&
                 name == other.name &&
+                passthrough == other.passthrough &&
+                timezone == other.timezone &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -864,8 +1073,11 @@ private constructor(
                 couponId,
                 email,
                 integrations,
+                language,
                 metadata,
                 name,
+                passthrough,
+                timezone,
                 additionalProperties,
             )
         }
@@ -873,7 +1085,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{billingCurrency=$billingCurrency, billingId=$billingId, couponId=$couponId, email=$email, integrations=$integrations, metadata=$metadata, name=$name, additionalProperties=$additionalProperties}"
+            "Body{billingCurrency=$billingCurrency, billingId=$billingId, couponId=$couponId, email=$email, integrations=$integrations, language=$language, metadata=$metadata, name=$name, passthrough=$passthrough, timezone=$timezone, additionalProperties=$additionalProperties}"
     }
 
     /** The billing currency of the customer */
@@ -2227,6 +2439,3351 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
+    }
+
+    /** Vendor-specific billing passthrough fields. */
+    class Passthrough
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val stripe: JsonField<Stripe>,
+        private val zuora: JsonField<Zuora>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("stripe") @ExcludeMissing stripe: JsonField<Stripe> = JsonMissing.of(),
+            @JsonProperty("zuora") @ExcludeMissing zuora: JsonField<Zuora> = JsonMissing.of(),
+        ) : this(stripe, zuora, mutableMapOf())
+
+        /**
+         * Stripe-specific billing fields for the customer.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun stripe(): Optional<Stripe> = stripe.getOptional("stripe")
+
+        /**
+         * Zuora-specific billing fields for the customer.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun zuora(): Optional<Zuora> = zuora.getOptional("zuora")
+
+        /**
+         * Returns the raw JSON value of [stripe].
+         *
+         * Unlike [stripe], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("stripe") @ExcludeMissing fun _stripe(): JsonField<Stripe> = stripe
+
+        /**
+         * Returns the raw JSON value of [zuora].
+         *
+         * Unlike [zuora], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("zuora") @ExcludeMissing fun _zuora(): JsonField<Zuora> = zuora
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Passthrough]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Passthrough]. */
+        class Builder internal constructor() {
+
+            private var stripe: JsonField<Stripe> = JsonMissing.of()
+            private var zuora: JsonField<Zuora> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(passthrough: Passthrough) = apply {
+                stripe = passthrough.stripe
+                zuora = passthrough.zuora
+                additionalProperties = passthrough.additionalProperties.toMutableMap()
+            }
+
+            /** Stripe-specific billing fields for the customer. */
+            fun stripe(stripe: Stripe) = stripe(JsonField.of(stripe))
+
+            /**
+             * Sets [Builder.stripe] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.stripe] with a well-typed [Stripe] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun stripe(stripe: JsonField<Stripe>) = apply { this.stripe = stripe }
+
+            /** Zuora-specific billing fields for the customer. */
+            fun zuora(zuora: Zuora) = zuora(JsonField.of(zuora))
+
+            /**
+             * Sets [Builder.zuora] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.zuora] with a well-typed [Zuora] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun zuora(zuora: JsonField<Zuora>) = apply { this.zuora = zuora }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Passthrough].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Passthrough =
+                Passthrough(stripe, zuora, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Passthrough = apply {
+            if (validated) {
+                return@apply
+            }
+
+            stripe().ifPresent { it.validate() }
+            zuora().ifPresent { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (stripe.asKnown().getOrNull()?.validity() ?: 0) +
+                (zuora.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Stripe-specific billing fields for the customer. */
+        class Stripe
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val billingAddress: JsonField<BillingAddress>,
+            private val customerName: JsonField<String>,
+            private val invoiceCustomFields: JsonField<InvoiceCustomFields>,
+            private val metadata: JsonField<Metadata>,
+            private val paymentMethodId: JsonField<String>,
+            private val shippingAddress: JsonField<ShippingAddress>,
+            private val taxIds: JsonField<List<TaxId>>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("billingAddress")
+                @ExcludeMissing
+                billingAddress: JsonField<BillingAddress> = JsonMissing.of(),
+                @JsonProperty("customerName")
+                @ExcludeMissing
+                customerName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("invoiceCustomFields")
+                @ExcludeMissing
+                invoiceCustomFields: JsonField<InvoiceCustomFields> = JsonMissing.of(),
+                @JsonProperty("metadata")
+                @ExcludeMissing
+                metadata: JsonField<Metadata> = JsonMissing.of(),
+                @JsonProperty("paymentMethodId")
+                @ExcludeMissing
+                paymentMethodId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("shippingAddress")
+                @ExcludeMissing
+                shippingAddress: JsonField<ShippingAddress> = JsonMissing.of(),
+                @JsonProperty("taxIds")
+                @ExcludeMissing
+                taxIds: JsonField<List<TaxId>> = JsonMissing.of(),
+            ) : this(
+                billingAddress,
+                customerName,
+                invoiceCustomFields,
+                metadata,
+                paymentMethodId,
+                shippingAddress,
+                taxIds,
+                mutableMapOf(),
+            )
+
+            /**
+             * Physical address
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun billingAddress(): Optional<BillingAddress> =
+                billingAddress.getOptional("billingAddress")
+
+            /**
+             * Customer name
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun customerName(): Optional<String> = customerName.getOptional("customerName")
+
+            /**
+             * Invoice custom fields
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun invoiceCustomFields(): Optional<InvoiceCustomFields> =
+                invoiceCustomFields.getOptional("invoiceCustomFields")
+
+            /**
+             * Additional metadata
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
+
+            /**
+             * Billing provider payment method id, attached to this customer
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun paymentMethodId(): Optional<String> = paymentMethodId.getOptional("paymentMethodId")
+
+            /**
+             * Physical address
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun shippingAddress(): Optional<ShippingAddress> =
+                shippingAddress.getOptional("shippingAddress")
+
+            /**
+             * Tax IDs
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun taxIds(): Optional<List<TaxId>> = taxIds.getOptional("taxIds")
+
+            /**
+             * Returns the raw JSON value of [billingAddress].
+             *
+             * Unlike [billingAddress], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("billingAddress")
+            @ExcludeMissing
+            fun _billingAddress(): JsonField<BillingAddress> = billingAddress
+
+            /**
+             * Returns the raw JSON value of [customerName].
+             *
+             * Unlike [customerName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("customerName")
+            @ExcludeMissing
+            fun _customerName(): JsonField<String> = customerName
+
+            /**
+             * Returns the raw JSON value of [invoiceCustomFields].
+             *
+             * Unlike [invoiceCustomFields], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("invoiceCustomFields")
+            @ExcludeMissing
+            fun _invoiceCustomFields(): JsonField<InvoiceCustomFields> = invoiceCustomFields
+
+            /**
+             * Returns the raw JSON value of [metadata].
+             *
+             * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("metadata")
+            @ExcludeMissing
+            fun _metadata(): JsonField<Metadata> = metadata
+
+            /**
+             * Returns the raw JSON value of [paymentMethodId].
+             *
+             * Unlike [paymentMethodId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("paymentMethodId")
+            @ExcludeMissing
+            fun _paymentMethodId(): JsonField<String> = paymentMethodId
+
+            /**
+             * Returns the raw JSON value of [shippingAddress].
+             *
+             * Unlike [shippingAddress], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("shippingAddress")
+            @ExcludeMissing
+            fun _shippingAddress(): JsonField<ShippingAddress> = shippingAddress
+
+            /**
+             * Returns the raw JSON value of [taxIds].
+             *
+             * Unlike [taxIds], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("taxIds") @ExcludeMissing fun _taxIds(): JsonField<List<TaxId>> = taxIds
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Stripe]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Stripe]. */
+            class Builder internal constructor() {
+
+                private var billingAddress: JsonField<BillingAddress> = JsonMissing.of()
+                private var customerName: JsonField<String> = JsonMissing.of()
+                private var invoiceCustomFields: JsonField<InvoiceCustomFields> = JsonMissing.of()
+                private var metadata: JsonField<Metadata> = JsonMissing.of()
+                private var paymentMethodId: JsonField<String> = JsonMissing.of()
+                private var shippingAddress: JsonField<ShippingAddress> = JsonMissing.of()
+                private var taxIds: JsonField<MutableList<TaxId>>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(stripe: Stripe) = apply {
+                    billingAddress = stripe.billingAddress
+                    customerName = stripe.customerName
+                    invoiceCustomFields = stripe.invoiceCustomFields
+                    metadata = stripe.metadata
+                    paymentMethodId = stripe.paymentMethodId
+                    shippingAddress = stripe.shippingAddress
+                    taxIds = stripe.taxIds.map { it.toMutableList() }
+                    additionalProperties = stripe.additionalProperties.toMutableMap()
+                }
+
+                /** Physical address */
+                fun billingAddress(billingAddress: BillingAddress) =
+                    billingAddress(JsonField.of(billingAddress))
+
+                /**
+                 * Sets [Builder.billingAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.billingAddress] with a well-typed
+                 * [BillingAddress] value instead. This method is primarily for setting the field to
+                 * an undocumented or not yet supported value.
+                 */
+                fun billingAddress(billingAddress: JsonField<BillingAddress>) = apply {
+                    this.billingAddress = billingAddress
+                }
+
+                /** Customer name */
+                fun customerName(customerName: String) = customerName(JsonField.of(customerName))
+
+                /**
+                 * Sets [Builder.customerName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.customerName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun customerName(customerName: JsonField<String>) = apply {
+                    this.customerName = customerName
+                }
+
+                /** Invoice custom fields */
+                fun invoiceCustomFields(invoiceCustomFields: InvoiceCustomFields) =
+                    invoiceCustomFields(JsonField.of(invoiceCustomFields))
+
+                /**
+                 * Sets [Builder.invoiceCustomFields] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.invoiceCustomFields] with a well-typed
+                 * [InvoiceCustomFields] value instead. This method is primarily for setting the
+                 * field to an undocumented or not yet supported value.
+                 */
+                fun invoiceCustomFields(invoiceCustomFields: JsonField<InvoiceCustomFields>) =
+                    apply {
+                        this.invoiceCustomFields = invoiceCustomFields
+                    }
+
+                /** Additional metadata */
+                fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
+
+                /**
+                 * Sets [Builder.metadata] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.metadata] with a well-typed [Metadata] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
+
+                /** Billing provider payment method id, attached to this customer */
+                fun paymentMethodId(paymentMethodId: String) =
+                    paymentMethodId(JsonField.of(paymentMethodId))
+
+                /**
+                 * Sets [Builder.paymentMethodId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.paymentMethodId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun paymentMethodId(paymentMethodId: JsonField<String>) = apply {
+                    this.paymentMethodId = paymentMethodId
+                }
+
+                /** Physical address */
+                fun shippingAddress(shippingAddress: ShippingAddress) =
+                    shippingAddress(JsonField.of(shippingAddress))
+
+                /**
+                 * Sets [Builder.shippingAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.shippingAddress] with a well-typed
+                 * [ShippingAddress] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun shippingAddress(shippingAddress: JsonField<ShippingAddress>) = apply {
+                    this.shippingAddress = shippingAddress
+                }
+
+                /** Tax IDs */
+                fun taxIds(taxIds: List<TaxId>) = taxIds(JsonField.of(taxIds))
+
+                /**
+                 * Sets [Builder.taxIds] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.taxIds] with a well-typed `List<TaxId>` value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun taxIds(taxIds: JsonField<List<TaxId>>) = apply {
+                    this.taxIds = taxIds.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [TaxId] to [taxIds].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addTaxId(taxId: TaxId) = apply {
+                    taxIds =
+                        (taxIds ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("taxIds", it).add(taxId)
+                        }
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Stripe].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Stripe =
+                    Stripe(
+                        billingAddress,
+                        customerName,
+                        invoiceCustomFields,
+                        metadata,
+                        paymentMethodId,
+                        shippingAddress,
+                        (taxIds ?: JsonMissing.of()).map { it.toImmutable() },
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Stripe = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                billingAddress().ifPresent { it.validate() }
+                customerName()
+                invoiceCustomFields().ifPresent { it.validate() }
+                metadata().ifPresent { it.validate() }
+                paymentMethodId()
+                shippingAddress().ifPresent { it.validate() }
+                taxIds().ifPresent { it.forEach { it.validate() } }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (billingAddress.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (customerName.asKnown().isPresent) 1 else 0) +
+                    (invoiceCustomFields.asKnown().getOrNull()?.validity() ?: 0) +
+                    (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (paymentMethodId.asKnown().isPresent) 1 else 0) +
+                    (shippingAddress.asKnown().getOrNull()?.validity() ?: 0) +
+                    (taxIds.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+
+            /** Physical address */
+            class BillingAddress
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val city: JsonField<String>,
+                private val country: JsonField<String>,
+                private val line1: JsonField<String>,
+                private val line2: JsonField<String>,
+                private val postalCode: JsonField<String>,
+                private val state: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("city")
+                    @ExcludeMissing
+                    city: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("country")
+                    @ExcludeMissing
+                    country: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line1")
+                    @ExcludeMissing
+                    line1: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line2")
+                    @ExcludeMissing
+                    line2: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("postalCode")
+                    @ExcludeMissing
+                    postalCode: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("state")
+                    @ExcludeMissing
+                    state: JsonField<String> = JsonMissing.of(),
+                ) : this(city, country, line1, line2, postalCode, state, mutableMapOf())
+
+                /**
+                 * City name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun city(): Optional<String> = city.getOptional("city")
+
+                /**
+                 * Country code or name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun country(): Optional<String> = country.getOptional("country")
+
+                /**
+                 * Street address line 1
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line1(): Optional<String> = line1.getOptional("line1")
+
+                /**
+                 * Street address line 2
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line2(): Optional<String> = line2.getOptional("line2")
+
+                /**
+                 * Postal or ZIP code
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun postalCode(): Optional<String> = postalCode.getOptional("postalCode")
+
+                /**
+                 * State or province
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun state(): Optional<String> = state.getOptional("state")
+
+                /**
+                 * Returns the raw JSON value of [city].
+                 *
+                 * Unlike [city], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("city") @ExcludeMissing fun _city(): JsonField<String> = city
+
+                /**
+                 * Returns the raw JSON value of [country].
+                 *
+                 * Unlike [country], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+                /**
+                 * Returns the raw JSON value of [line1].
+                 *
+                 * Unlike [line1], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line1") @ExcludeMissing fun _line1(): JsonField<String> = line1
+
+                /**
+                 * Returns the raw JSON value of [line2].
+                 *
+                 * Unlike [line2], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line2") @ExcludeMissing fun _line2(): JsonField<String> = line2
+
+                /**
+                 * Returns the raw JSON value of [postalCode].
+                 *
+                 * Unlike [postalCode], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("postalCode")
+                @ExcludeMissing
+                fun _postalCode(): JsonField<String> = postalCode
+
+                /**
+                 * Returns the raw JSON value of [state].
+                 *
+                 * Unlike [state], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<String> = state
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [BillingAddress].
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [BillingAddress]. */
+                class Builder internal constructor() {
+
+                    private var city: JsonField<String> = JsonMissing.of()
+                    private var country: JsonField<String> = JsonMissing.of()
+                    private var line1: JsonField<String> = JsonMissing.of()
+                    private var line2: JsonField<String> = JsonMissing.of()
+                    private var postalCode: JsonField<String> = JsonMissing.of()
+                    private var state: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(billingAddress: BillingAddress) = apply {
+                        city = billingAddress.city
+                        country = billingAddress.country
+                        line1 = billingAddress.line1
+                        line2 = billingAddress.line2
+                        postalCode = billingAddress.postalCode
+                        state = billingAddress.state
+                        additionalProperties = billingAddress.additionalProperties.toMutableMap()
+                    }
+
+                    /** City name */
+                    fun city(city: String) = city(JsonField.of(city))
+
+                    /**
+                     * Sets [Builder.city] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.city] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun city(city: JsonField<String>) = apply { this.city = city }
+
+                    /** Country code or name */
+                    fun country(country: String) = country(JsonField.of(country))
+
+                    /**
+                     * Sets [Builder.country] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.country] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun country(country: JsonField<String>) = apply { this.country = country }
+
+                    /** Street address line 1 */
+                    fun line1(line1: String) = line1(JsonField.of(line1))
+
+                    /**
+                     * Sets [Builder.line1] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line1] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line1(line1: JsonField<String>) = apply { this.line1 = line1 }
+
+                    /** Street address line 2 */
+                    fun line2(line2: String) = line2(JsonField.of(line2))
+
+                    /**
+                     * Sets [Builder.line2] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line2] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line2(line2: JsonField<String>) = apply { this.line2 = line2 }
+
+                    /** Postal or ZIP code */
+                    fun postalCode(postalCode: String) = postalCode(JsonField.of(postalCode))
+
+                    /**
+                     * Sets [Builder.postalCode] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.postalCode] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun postalCode(postalCode: JsonField<String>) = apply {
+                        this.postalCode = postalCode
+                    }
+
+                    /** State or province */
+                    fun state(state: String) = state(JsonField.of(state))
+
+                    /**
+                     * Sets [Builder.state] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.state] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun state(state: JsonField<String>) = apply { this.state = state }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [BillingAddress].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): BillingAddress =
+                        BillingAddress(
+                            city,
+                            country,
+                            line1,
+                            line2,
+                            postalCode,
+                            state,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): BillingAddress = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    city()
+                    country()
+                    line1()
+                    line2()
+                    postalCode()
+                    state()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (city.asKnown().isPresent) 1 else 0) +
+                        (if (country.asKnown().isPresent) 1 else 0) +
+                        (if (line1.asKnown().isPresent) 1 else 0) +
+                        (if (line2.asKnown().isPresent) 1 else 0) +
+                        (if (postalCode.asKnown().isPresent) 1 else 0) +
+                        (if (state.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is BillingAddress &&
+                        city == other.city &&
+                        country == other.country &&
+                        line1 == other.line1 &&
+                        line2 == other.line2 &&
+                        postalCode == other.postalCode &&
+                        state == other.state &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        city,
+                        country,
+                        line1,
+                        line2,
+                        postalCode,
+                        state,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "BillingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
+            }
+
+            /** Invoice custom fields */
+            class InvoiceCustomFields
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of
+                     * [InvoiceCustomFields].
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [InvoiceCustomFields]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(invoiceCustomFields: InvoiceCustomFields) = apply {
+                        additionalProperties =
+                            invoiceCustomFields.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [InvoiceCustomFields].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): InvoiceCustomFields =
+                        InvoiceCustomFields(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): InvoiceCustomFields = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is InvoiceCustomFields &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "InvoiceCustomFields{additionalProperties=$additionalProperties}"
+            }
+
+            /** Additional metadata */
+            class Metadata
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Metadata]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Metadata]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(metadata: Metadata) = apply {
+                        additionalProperties = metadata.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Metadata].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Metadata = Metadata(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Metadata = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Metadata && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
+            }
+
+            /** Physical address */
+            class ShippingAddress
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val city: JsonField<String>,
+                private val country: JsonField<String>,
+                private val line1: JsonField<String>,
+                private val line2: JsonField<String>,
+                private val postalCode: JsonField<String>,
+                private val state: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("city")
+                    @ExcludeMissing
+                    city: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("country")
+                    @ExcludeMissing
+                    country: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line1")
+                    @ExcludeMissing
+                    line1: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line2")
+                    @ExcludeMissing
+                    line2: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("postalCode")
+                    @ExcludeMissing
+                    postalCode: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("state")
+                    @ExcludeMissing
+                    state: JsonField<String> = JsonMissing.of(),
+                ) : this(city, country, line1, line2, postalCode, state, mutableMapOf())
+
+                /**
+                 * City name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun city(): Optional<String> = city.getOptional("city")
+
+                /**
+                 * Country code or name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun country(): Optional<String> = country.getOptional("country")
+
+                /**
+                 * Street address line 1
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line1(): Optional<String> = line1.getOptional("line1")
+
+                /**
+                 * Street address line 2
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line2(): Optional<String> = line2.getOptional("line2")
+
+                /**
+                 * Postal or ZIP code
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun postalCode(): Optional<String> = postalCode.getOptional("postalCode")
+
+                /**
+                 * State or province
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun state(): Optional<String> = state.getOptional("state")
+
+                /**
+                 * Returns the raw JSON value of [city].
+                 *
+                 * Unlike [city], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("city") @ExcludeMissing fun _city(): JsonField<String> = city
+
+                /**
+                 * Returns the raw JSON value of [country].
+                 *
+                 * Unlike [country], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+                /**
+                 * Returns the raw JSON value of [line1].
+                 *
+                 * Unlike [line1], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line1") @ExcludeMissing fun _line1(): JsonField<String> = line1
+
+                /**
+                 * Returns the raw JSON value of [line2].
+                 *
+                 * Unlike [line2], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line2") @ExcludeMissing fun _line2(): JsonField<String> = line2
+
+                /**
+                 * Returns the raw JSON value of [postalCode].
+                 *
+                 * Unlike [postalCode], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("postalCode")
+                @ExcludeMissing
+                fun _postalCode(): JsonField<String> = postalCode
+
+                /**
+                 * Returns the raw JSON value of [state].
+                 *
+                 * Unlike [state], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<String> = state
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [ShippingAddress].
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [ShippingAddress]. */
+                class Builder internal constructor() {
+
+                    private var city: JsonField<String> = JsonMissing.of()
+                    private var country: JsonField<String> = JsonMissing.of()
+                    private var line1: JsonField<String> = JsonMissing.of()
+                    private var line2: JsonField<String> = JsonMissing.of()
+                    private var postalCode: JsonField<String> = JsonMissing.of()
+                    private var state: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(shippingAddress: ShippingAddress) = apply {
+                        city = shippingAddress.city
+                        country = shippingAddress.country
+                        line1 = shippingAddress.line1
+                        line2 = shippingAddress.line2
+                        postalCode = shippingAddress.postalCode
+                        state = shippingAddress.state
+                        additionalProperties = shippingAddress.additionalProperties.toMutableMap()
+                    }
+
+                    /** City name */
+                    fun city(city: String) = city(JsonField.of(city))
+
+                    /**
+                     * Sets [Builder.city] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.city] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun city(city: JsonField<String>) = apply { this.city = city }
+
+                    /** Country code or name */
+                    fun country(country: String) = country(JsonField.of(country))
+
+                    /**
+                     * Sets [Builder.country] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.country] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun country(country: JsonField<String>) = apply { this.country = country }
+
+                    /** Street address line 1 */
+                    fun line1(line1: String) = line1(JsonField.of(line1))
+
+                    /**
+                     * Sets [Builder.line1] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line1] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line1(line1: JsonField<String>) = apply { this.line1 = line1 }
+
+                    /** Street address line 2 */
+                    fun line2(line2: String) = line2(JsonField.of(line2))
+
+                    /**
+                     * Sets [Builder.line2] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line2] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line2(line2: JsonField<String>) = apply { this.line2 = line2 }
+
+                    /** Postal or ZIP code */
+                    fun postalCode(postalCode: String) = postalCode(JsonField.of(postalCode))
+
+                    /**
+                     * Sets [Builder.postalCode] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.postalCode] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun postalCode(postalCode: JsonField<String>) = apply {
+                        this.postalCode = postalCode
+                    }
+
+                    /** State or province */
+                    fun state(state: String) = state(JsonField.of(state))
+
+                    /**
+                     * Sets [Builder.state] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.state] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun state(state: JsonField<String>) = apply { this.state = state }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [ShippingAddress].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): ShippingAddress =
+                        ShippingAddress(
+                            city,
+                            country,
+                            line1,
+                            line2,
+                            postalCode,
+                            state,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): ShippingAddress = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    city()
+                    country()
+                    line1()
+                    line2()
+                    postalCode()
+                    state()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (city.asKnown().isPresent) 1 else 0) +
+                        (if (country.asKnown().isPresent) 1 else 0) +
+                        (if (line1.asKnown().isPresent) 1 else 0) +
+                        (if (line2.asKnown().isPresent) 1 else 0) +
+                        (if (postalCode.asKnown().isPresent) 1 else 0) +
+                        (if (state.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is ShippingAddress &&
+                        city == other.city &&
+                        country == other.country &&
+                        line1 == other.line1 &&
+                        line2 == other.line2 &&
+                        postalCode == other.postalCode &&
+                        state == other.state &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        city,
+                        country,
+                        line1,
+                        line2,
+                        postalCode,
+                        state,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "ShippingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
+            }
+
+            /** Tax identifier with type and value for customer tax exemptions. */
+            class TaxId
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val type: JsonField<String>,
+                private val value: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("type")
+                    @ExcludeMissing
+                    type: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("value")
+                    @ExcludeMissing
+                    value: JsonField<String> = JsonMissing.of(),
+                ) : this(type, value, mutableMapOf())
+
+                /**
+                 * The type of tax exemption identifier, such as VAT.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun type(): String = type.getRequired("type")
+
+                /**
+                 * The actual tax identifier value
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun value(): String = value.getRequired("value")
+
+                /**
+                 * Returns the raw JSON value of [type].
+                 *
+                 * Unlike [type], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<String> = type
+
+                /**
+                 * Returns the raw JSON value of [value].
+                 *
+                 * Unlike [value], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<String> = value
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [TaxId].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .type()
+                     * .value()
+                     * ```
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [TaxId]. */
+                class Builder internal constructor() {
+
+                    private var type: JsonField<String>? = null
+                    private var value: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(taxId: TaxId) = apply {
+                        type = taxId.type
+                        value = taxId.value
+                        additionalProperties = taxId.additionalProperties.toMutableMap()
+                    }
+
+                    /** The type of tax exemption identifier, such as VAT. */
+                    fun type(type: String) = type(JsonField.of(type))
+
+                    /**
+                     * Sets [Builder.type] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.type] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun type(type: JsonField<String>) = apply { this.type = type }
+
+                    /** The actual tax identifier value */
+                    fun value(value: String) = value(JsonField.of(value))
+
+                    /**
+                     * Sets [Builder.value] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.value] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun value(value: JsonField<String>) = apply { this.value = value }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [TaxId].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .type()
+                     * .value()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): TaxId =
+                        TaxId(
+                            checkRequired("type", type),
+                            checkRequired("value", value),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): TaxId = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    type()
+                    value()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (type.asKnown().isPresent) 1 else 0) +
+                        (if (value.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is TaxId &&
+                        type == other.type &&
+                        value == other.value &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(type, value, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "TaxId{type=$type, value=$value, additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Stripe &&
+                    billingAddress == other.billingAddress &&
+                    customerName == other.customerName &&
+                    invoiceCustomFields == other.invoiceCustomFields &&
+                    metadata == other.metadata &&
+                    paymentMethodId == other.paymentMethodId &&
+                    shippingAddress == other.shippingAddress &&
+                    taxIds == other.taxIds &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    billingAddress,
+                    customerName,
+                    invoiceCustomFields,
+                    metadata,
+                    paymentMethodId,
+                    shippingAddress,
+                    taxIds,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Stripe{billingAddress=$billingAddress, customerName=$customerName, invoiceCustomFields=$invoiceCustomFields, metadata=$metadata, paymentMethodId=$paymentMethodId, shippingAddress=$shippingAddress, taxIds=$taxIds, additionalProperties=$additionalProperties}"
+        }
+
+        /** Zuora-specific billing fields for the customer. */
+        class Zuora
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val billingAddress: JsonField<BillingAddress>,
+            private val currency: JsonField<Currency>,
+            private val metadata: JsonField<Metadata>,
+            private val paymentMethodId: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("billingAddress")
+                @ExcludeMissing
+                billingAddress: JsonField<BillingAddress> = JsonMissing.of(),
+                @JsonProperty("currency")
+                @ExcludeMissing
+                currency: JsonField<Currency> = JsonMissing.of(),
+                @JsonProperty("metadata")
+                @ExcludeMissing
+                metadata: JsonField<Metadata> = JsonMissing.of(),
+                @JsonProperty("paymentMethodId")
+                @ExcludeMissing
+                paymentMethodId: JsonField<String> = JsonMissing.of(),
+            ) : this(billingAddress, currency, metadata, paymentMethodId, mutableMapOf())
+
+            /**
+             * Physical address
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun billingAddress(): Optional<BillingAddress> =
+                billingAddress.getOptional("billingAddress")
+
+            /**
+             * Customers selected currency
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun currency(): Optional<Currency> = currency.getOptional("currency")
+
+            /**
+             * Additional metadata
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
+
+            /**
+             * Billing provider payment method id, attached to this customer
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun paymentMethodId(): Optional<String> = paymentMethodId.getOptional("paymentMethodId")
+
+            /**
+             * Returns the raw JSON value of [billingAddress].
+             *
+             * Unlike [billingAddress], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("billingAddress")
+            @ExcludeMissing
+            fun _billingAddress(): JsonField<BillingAddress> = billingAddress
+
+            /**
+             * Returns the raw JSON value of [currency].
+             *
+             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currency")
+            @ExcludeMissing
+            fun _currency(): JsonField<Currency> = currency
+
+            /**
+             * Returns the raw JSON value of [metadata].
+             *
+             * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("metadata")
+            @ExcludeMissing
+            fun _metadata(): JsonField<Metadata> = metadata
+
+            /**
+             * Returns the raw JSON value of [paymentMethodId].
+             *
+             * Unlike [paymentMethodId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("paymentMethodId")
+            @ExcludeMissing
+            fun _paymentMethodId(): JsonField<String> = paymentMethodId
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Zuora]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Zuora]. */
+            class Builder internal constructor() {
+
+                private var billingAddress: JsonField<BillingAddress> = JsonMissing.of()
+                private var currency: JsonField<Currency> = JsonMissing.of()
+                private var metadata: JsonField<Metadata> = JsonMissing.of()
+                private var paymentMethodId: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(zuora: Zuora) = apply {
+                    billingAddress = zuora.billingAddress
+                    currency = zuora.currency
+                    metadata = zuora.metadata
+                    paymentMethodId = zuora.paymentMethodId
+                    additionalProperties = zuora.additionalProperties.toMutableMap()
+                }
+
+                /** Physical address */
+                fun billingAddress(billingAddress: BillingAddress) =
+                    billingAddress(JsonField.of(billingAddress))
+
+                /**
+                 * Sets [Builder.billingAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.billingAddress] with a well-typed
+                 * [BillingAddress] value instead. This method is primarily for setting the field to
+                 * an undocumented or not yet supported value.
+                 */
+                fun billingAddress(billingAddress: JsonField<BillingAddress>) = apply {
+                    this.billingAddress = billingAddress
+                }
+
+                /** Customers selected currency */
+                fun currency(currency: Currency) = currency(JsonField.of(currency))
+
+                /**
+                 * Sets [Builder.currency] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currency] with a well-typed [Currency] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
+
+                /** Additional metadata */
+                fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
+
+                /**
+                 * Sets [Builder.metadata] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.metadata] with a well-typed [Metadata] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
+
+                /** Billing provider payment method id, attached to this customer */
+                fun paymentMethodId(paymentMethodId: String) =
+                    paymentMethodId(JsonField.of(paymentMethodId))
+
+                /**
+                 * Sets [Builder.paymentMethodId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.paymentMethodId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun paymentMethodId(paymentMethodId: JsonField<String>) = apply {
+                    this.paymentMethodId = paymentMethodId
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Zuora].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Zuora =
+                    Zuora(
+                        billingAddress,
+                        currency,
+                        metadata,
+                        paymentMethodId,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Zuora = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                billingAddress().ifPresent { it.validate() }
+                currency().ifPresent { it.validate() }
+                metadata().ifPresent { it.validate() }
+                paymentMethodId()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (billingAddress.asKnown().getOrNull()?.validity() ?: 0) +
+                    (currency.asKnown().getOrNull()?.validity() ?: 0) +
+                    (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (paymentMethodId.asKnown().isPresent) 1 else 0)
+
+            /** Physical address */
+            class BillingAddress
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val city: JsonField<String>,
+                private val country: JsonField<String>,
+                private val line1: JsonField<String>,
+                private val line2: JsonField<String>,
+                private val postalCode: JsonField<String>,
+                private val state: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("city")
+                    @ExcludeMissing
+                    city: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("country")
+                    @ExcludeMissing
+                    country: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line1")
+                    @ExcludeMissing
+                    line1: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("line2")
+                    @ExcludeMissing
+                    line2: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("postalCode")
+                    @ExcludeMissing
+                    postalCode: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("state")
+                    @ExcludeMissing
+                    state: JsonField<String> = JsonMissing.of(),
+                ) : this(city, country, line1, line2, postalCode, state, mutableMapOf())
+
+                /**
+                 * City name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun city(): Optional<String> = city.getOptional("city")
+
+                /**
+                 * Country code or name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun country(): Optional<String> = country.getOptional("country")
+
+                /**
+                 * Street address line 1
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line1(): Optional<String> = line1.getOptional("line1")
+
+                /**
+                 * Street address line 2
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun line2(): Optional<String> = line2.getOptional("line2")
+
+                /**
+                 * Postal or ZIP code
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun postalCode(): Optional<String> = postalCode.getOptional("postalCode")
+
+                /**
+                 * State or province
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun state(): Optional<String> = state.getOptional("state")
+
+                /**
+                 * Returns the raw JSON value of [city].
+                 *
+                 * Unlike [city], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("city") @ExcludeMissing fun _city(): JsonField<String> = city
+
+                /**
+                 * Returns the raw JSON value of [country].
+                 *
+                 * Unlike [country], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+                /**
+                 * Returns the raw JSON value of [line1].
+                 *
+                 * Unlike [line1], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line1") @ExcludeMissing fun _line1(): JsonField<String> = line1
+
+                /**
+                 * Returns the raw JSON value of [line2].
+                 *
+                 * Unlike [line2], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("line2") @ExcludeMissing fun _line2(): JsonField<String> = line2
+
+                /**
+                 * Returns the raw JSON value of [postalCode].
+                 *
+                 * Unlike [postalCode], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("postalCode")
+                @ExcludeMissing
+                fun _postalCode(): JsonField<String> = postalCode
+
+                /**
+                 * Returns the raw JSON value of [state].
+                 *
+                 * Unlike [state], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<String> = state
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [BillingAddress].
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [BillingAddress]. */
+                class Builder internal constructor() {
+
+                    private var city: JsonField<String> = JsonMissing.of()
+                    private var country: JsonField<String> = JsonMissing.of()
+                    private var line1: JsonField<String> = JsonMissing.of()
+                    private var line2: JsonField<String> = JsonMissing.of()
+                    private var postalCode: JsonField<String> = JsonMissing.of()
+                    private var state: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(billingAddress: BillingAddress) = apply {
+                        city = billingAddress.city
+                        country = billingAddress.country
+                        line1 = billingAddress.line1
+                        line2 = billingAddress.line2
+                        postalCode = billingAddress.postalCode
+                        state = billingAddress.state
+                        additionalProperties = billingAddress.additionalProperties.toMutableMap()
+                    }
+
+                    /** City name */
+                    fun city(city: String) = city(JsonField.of(city))
+
+                    /**
+                     * Sets [Builder.city] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.city] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun city(city: JsonField<String>) = apply { this.city = city }
+
+                    /** Country code or name */
+                    fun country(country: String) = country(JsonField.of(country))
+
+                    /**
+                     * Sets [Builder.country] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.country] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun country(country: JsonField<String>) = apply { this.country = country }
+
+                    /** Street address line 1 */
+                    fun line1(line1: String) = line1(JsonField.of(line1))
+
+                    /**
+                     * Sets [Builder.line1] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line1] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line1(line1: JsonField<String>) = apply { this.line1 = line1 }
+
+                    /** Street address line 2 */
+                    fun line2(line2: String) = line2(JsonField.of(line2))
+
+                    /**
+                     * Sets [Builder.line2] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.line2] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun line2(line2: JsonField<String>) = apply { this.line2 = line2 }
+
+                    /** Postal or ZIP code */
+                    fun postalCode(postalCode: String) = postalCode(JsonField.of(postalCode))
+
+                    /**
+                     * Sets [Builder.postalCode] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.postalCode] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun postalCode(postalCode: JsonField<String>) = apply {
+                        this.postalCode = postalCode
+                    }
+
+                    /** State or province */
+                    fun state(state: String) = state(JsonField.of(state))
+
+                    /**
+                     * Sets [Builder.state] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.state] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun state(state: JsonField<String>) = apply { this.state = state }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [BillingAddress].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): BillingAddress =
+                        BillingAddress(
+                            city,
+                            country,
+                            line1,
+                            line2,
+                            postalCode,
+                            state,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): BillingAddress = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    city()
+                    country()
+                    line1()
+                    line2()
+                    postalCode()
+                    state()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (city.asKnown().isPresent) 1 else 0) +
+                        (if (country.asKnown().isPresent) 1 else 0) +
+                        (if (line1.asKnown().isPresent) 1 else 0) +
+                        (if (line2.asKnown().isPresent) 1 else 0) +
+                        (if (postalCode.asKnown().isPresent) 1 else 0) +
+                        (if (state.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is BillingAddress &&
+                        city == other.city &&
+                        country == other.country &&
+                        line1 == other.line1 &&
+                        line2 == other.line2 &&
+                        postalCode == other.postalCode &&
+                        state == other.state &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        city,
+                        country,
+                        line1,
+                        line2,
+                        postalCode,
+                        state,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "BillingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
+            }
+
+            /** Customers selected currency */
+            class Currency @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val USD = of("usd")
+
+                    @JvmField val AED = of("aed")
+
+                    @JvmField val ALL = of("all")
+
+                    @JvmField val AMD = of("amd")
+
+                    @JvmField val ANG = of("ang")
+
+                    @JvmField val AUD = of("aud")
+
+                    @JvmField val AWG = of("awg")
+
+                    @JvmField val AZN = of("azn")
+
+                    @JvmField val BAM = of("bam")
+
+                    @JvmField val BBD = of("bbd")
+
+                    @JvmField val BDT = of("bdt")
+
+                    @JvmField val BGN = of("bgn")
+
+                    @JvmField val BIF = of("bif")
+
+                    @JvmField val BMD = of("bmd")
+
+                    @JvmField val BND = of("bnd")
+
+                    @JvmField val BSD = of("bsd")
+
+                    @JvmField val BWP = of("bwp")
+
+                    @JvmField val BYN = of("byn")
+
+                    @JvmField val BZD = of("bzd")
+
+                    @JvmField val BRL = of("brl")
+
+                    @JvmField val CAD = of("cad")
+
+                    @JvmField val CDF = of("cdf")
+
+                    @JvmField val CHF = of("chf")
+
+                    @JvmField val CNY = of("cny")
+
+                    @JvmField val CZK = of("czk")
+
+                    @JvmField val DKK = of("dkk")
+
+                    @JvmField val DOP = of("dop")
+
+                    @JvmField val DZD = of("dzd")
+
+                    @JvmField val EGP = of("egp")
+
+                    @JvmField val ETB = of("etb")
+
+                    @JvmField val EUR = of("eur")
+
+                    @JvmField val FJD = of("fjd")
+
+                    @JvmField val GBP = of("gbp")
+
+                    @JvmField val GEL = of("gel")
+
+                    @JvmField val GIP = of("gip")
+
+                    @JvmField val GMD = of("gmd")
+
+                    @JvmField val GYD = of("gyd")
+
+                    @JvmField val HKD = of("hkd")
+
+                    @JvmField val HRK = of("hrk")
+
+                    @JvmField val HTG = of("htg")
+
+                    @JvmField val IDR = of("idr")
+
+                    @JvmField val ILS = of("ils")
+
+                    @JvmField val INR = of("inr")
+
+                    @JvmField val ISK = of("isk")
+
+                    @JvmField val JMD = of("jmd")
+
+                    @JvmField val JPY = of("jpy")
+
+                    @JvmField val KES = of("kes")
+
+                    @JvmField val KGS = of("kgs")
+
+                    @JvmField val KHR = of("khr")
+
+                    @JvmField val KMF = of("kmf")
+
+                    @JvmField val KRW = of("krw")
+
+                    @JvmField val KYD = of("kyd")
+
+                    @JvmField val KZT = of("kzt")
+
+                    @JvmField val LBP = of("lbp")
+
+                    @JvmField val LKR = of("lkr")
+
+                    @JvmField val LRD = of("lrd")
+
+                    @JvmField val LSL = of("lsl")
+
+                    @JvmField val MAD = of("mad")
+
+                    @JvmField val MDL = of("mdl")
+
+                    @JvmField val MGA = of("mga")
+
+                    @JvmField val MKD = of("mkd")
+
+                    @JvmField val MMK = of("mmk")
+
+                    @JvmField val MNT = of("mnt")
+
+                    @JvmField val MOP = of("mop")
+
+                    @JvmField val MRO = of("mro")
+
+                    @JvmField val MVR = of("mvr")
+
+                    @JvmField val MWK = of("mwk")
+
+                    @JvmField val MXN = of("mxn")
+
+                    @JvmField val MYR = of("myr")
+
+                    @JvmField val MZN = of("mzn")
+
+                    @JvmField val NAD = of("nad")
+
+                    @JvmField val NGN = of("ngn")
+
+                    @JvmField val NOK = of("nok")
+
+                    @JvmField val NPR = of("npr")
+
+                    @JvmField val NZD = of("nzd")
+
+                    @JvmField val PGK = of("pgk")
+
+                    @JvmField val PHP = of("php")
+
+                    @JvmField val PKR = of("pkr")
+
+                    @JvmField val PLN = of("pln")
+
+                    @JvmField val QAR = of("qar")
+
+                    @JvmField val RON = of("ron")
+
+                    @JvmField val RSD = of("rsd")
+
+                    @JvmField val RUB = of("rub")
+
+                    @JvmField val RWF = of("rwf")
+
+                    @JvmField val SAR = of("sar")
+
+                    @JvmField val SBD = of("sbd")
+
+                    @JvmField val SCR = of("scr")
+
+                    @JvmField val SEK = of("sek")
+
+                    @JvmField val SGD = of("sgd")
+
+                    @JvmField val SLE = of("sle")
+
+                    @JvmField val SLL = of("sll")
+
+                    @JvmField val SOS = of("sos")
+
+                    @JvmField val SZL = of("szl")
+
+                    @JvmField val THB = of("thb")
+
+                    @JvmField val TJS = of("tjs")
+
+                    @JvmField val TOP = of("top")
+
+                    @JvmField val TRY = of("try")
+
+                    @JvmField val TTD = of("ttd")
+
+                    @JvmField val TZS = of("tzs")
+
+                    @JvmField val UAH = of("uah")
+
+                    @JvmField val UZS = of("uzs")
+
+                    @JvmField val VND = of("vnd")
+
+                    @JvmField val VUV = of("vuv")
+
+                    @JvmField val WST = of("wst")
+
+                    @JvmField val XAF = of("xaf")
+
+                    @JvmField val XCD = of("xcd")
+
+                    @JvmField val YER = of("yer")
+
+                    @JvmField val ZAR = of("zar")
+
+                    @JvmField val ZMW = of("zmw")
+
+                    @JvmField val CLP = of("clp")
+
+                    @JvmField val DJF = of("djf")
+
+                    @JvmField val GNF = of("gnf")
+
+                    @JvmField val UGX = of("ugx")
+
+                    @JvmField val PYG = of("pyg")
+
+                    @JvmField val XOF = of("xof")
+
+                    @JvmField val XPF = of("xpf")
+
+                    @JvmStatic fun of(value: String) = Currency(JsonField.of(value))
+                }
+
+                /** An enum containing [Currency]'s known values. */
+                enum class Known {
+                    USD,
+                    AED,
+                    ALL,
+                    AMD,
+                    ANG,
+                    AUD,
+                    AWG,
+                    AZN,
+                    BAM,
+                    BBD,
+                    BDT,
+                    BGN,
+                    BIF,
+                    BMD,
+                    BND,
+                    BSD,
+                    BWP,
+                    BYN,
+                    BZD,
+                    BRL,
+                    CAD,
+                    CDF,
+                    CHF,
+                    CNY,
+                    CZK,
+                    DKK,
+                    DOP,
+                    DZD,
+                    EGP,
+                    ETB,
+                    EUR,
+                    FJD,
+                    GBP,
+                    GEL,
+                    GIP,
+                    GMD,
+                    GYD,
+                    HKD,
+                    HRK,
+                    HTG,
+                    IDR,
+                    ILS,
+                    INR,
+                    ISK,
+                    JMD,
+                    JPY,
+                    KES,
+                    KGS,
+                    KHR,
+                    KMF,
+                    KRW,
+                    KYD,
+                    KZT,
+                    LBP,
+                    LKR,
+                    LRD,
+                    LSL,
+                    MAD,
+                    MDL,
+                    MGA,
+                    MKD,
+                    MMK,
+                    MNT,
+                    MOP,
+                    MRO,
+                    MVR,
+                    MWK,
+                    MXN,
+                    MYR,
+                    MZN,
+                    NAD,
+                    NGN,
+                    NOK,
+                    NPR,
+                    NZD,
+                    PGK,
+                    PHP,
+                    PKR,
+                    PLN,
+                    QAR,
+                    RON,
+                    RSD,
+                    RUB,
+                    RWF,
+                    SAR,
+                    SBD,
+                    SCR,
+                    SEK,
+                    SGD,
+                    SLE,
+                    SLL,
+                    SOS,
+                    SZL,
+                    THB,
+                    TJS,
+                    TOP,
+                    TRY,
+                    TTD,
+                    TZS,
+                    UAH,
+                    UZS,
+                    VND,
+                    VUV,
+                    WST,
+                    XAF,
+                    XCD,
+                    YER,
+                    ZAR,
+                    ZMW,
+                    CLP,
+                    DJF,
+                    GNF,
+                    UGX,
+                    PYG,
+                    XOF,
+                    XPF,
+                }
+
+                /**
+                 * An enum containing [Currency]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Currency] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    USD,
+                    AED,
+                    ALL,
+                    AMD,
+                    ANG,
+                    AUD,
+                    AWG,
+                    AZN,
+                    BAM,
+                    BBD,
+                    BDT,
+                    BGN,
+                    BIF,
+                    BMD,
+                    BND,
+                    BSD,
+                    BWP,
+                    BYN,
+                    BZD,
+                    BRL,
+                    CAD,
+                    CDF,
+                    CHF,
+                    CNY,
+                    CZK,
+                    DKK,
+                    DOP,
+                    DZD,
+                    EGP,
+                    ETB,
+                    EUR,
+                    FJD,
+                    GBP,
+                    GEL,
+                    GIP,
+                    GMD,
+                    GYD,
+                    HKD,
+                    HRK,
+                    HTG,
+                    IDR,
+                    ILS,
+                    INR,
+                    ISK,
+                    JMD,
+                    JPY,
+                    KES,
+                    KGS,
+                    KHR,
+                    KMF,
+                    KRW,
+                    KYD,
+                    KZT,
+                    LBP,
+                    LKR,
+                    LRD,
+                    LSL,
+                    MAD,
+                    MDL,
+                    MGA,
+                    MKD,
+                    MMK,
+                    MNT,
+                    MOP,
+                    MRO,
+                    MVR,
+                    MWK,
+                    MXN,
+                    MYR,
+                    MZN,
+                    NAD,
+                    NGN,
+                    NOK,
+                    NPR,
+                    NZD,
+                    PGK,
+                    PHP,
+                    PKR,
+                    PLN,
+                    QAR,
+                    RON,
+                    RSD,
+                    RUB,
+                    RWF,
+                    SAR,
+                    SBD,
+                    SCR,
+                    SEK,
+                    SGD,
+                    SLE,
+                    SLL,
+                    SOS,
+                    SZL,
+                    THB,
+                    TJS,
+                    TOP,
+                    TRY,
+                    TTD,
+                    TZS,
+                    UAH,
+                    UZS,
+                    VND,
+                    VUV,
+                    WST,
+                    XAF,
+                    XCD,
+                    YER,
+                    ZAR,
+                    ZMW,
+                    CLP,
+                    DJF,
+                    GNF,
+                    UGX,
+                    PYG,
+                    XOF,
+                    XPF,
+                    /**
+                     * An enum member indicating that [Currency] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        USD -> Value.USD
+                        AED -> Value.AED
+                        ALL -> Value.ALL
+                        AMD -> Value.AMD
+                        ANG -> Value.ANG
+                        AUD -> Value.AUD
+                        AWG -> Value.AWG
+                        AZN -> Value.AZN
+                        BAM -> Value.BAM
+                        BBD -> Value.BBD
+                        BDT -> Value.BDT
+                        BGN -> Value.BGN
+                        BIF -> Value.BIF
+                        BMD -> Value.BMD
+                        BND -> Value.BND
+                        BSD -> Value.BSD
+                        BWP -> Value.BWP
+                        BYN -> Value.BYN
+                        BZD -> Value.BZD
+                        BRL -> Value.BRL
+                        CAD -> Value.CAD
+                        CDF -> Value.CDF
+                        CHF -> Value.CHF
+                        CNY -> Value.CNY
+                        CZK -> Value.CZK
+                        DKK -> Value.DKK
+                        DOP -> Value.DOP
+                        DZD -> Value.DZD
+                        EGP -> Value.EGP
+                        ETB -> Value.ETB
+                        EUR -> Value.EUR
+                        FJD -> Value.FJD
+                        GBP -> Value.GBP
+                        GEL -> Value.GEL
+                        GIP -> Value.GIP
+                        GMD -> Value.GMD
+                        GYD -> Value.GYD
+                        HKD -> Value.HKD
+                        HRK -> Value.HRK
+                        HTG -> Value.HTG
+                        IDR -> Value.IDR
+                        ILS -> Value.ILS
+                        INR -> Value.INR
+                        ISK -> Value.ISK
+                        JMD -> Value.JMD
+                        JPY -> Value.JPY
+                        KES -> Value.KES
+                        KGS -> Value.KGS
+                        KHR -> Value.KHR
+                        KMF -> Value.KMF
+                        KRW -> Value.KRW
+                        KYD -> Value.KYD
+                        KZT -> Value.KZT
+                        LBP -> Value.LBP
+                        LKR -> Value.LKR
+                        LRD -> Value.LRD
+                        LSL -> Value.LSL
+                        MAD -> Value.MAD
+                        MDL -> Value.MDL
+                        MGA -> Value.MGA
+                        MKD -> Value.MKD
+                        MMK -> Value.MMK
+                        MNT -> Value.MNT
+                        MOP -> Value.MOP
+                        MRO -> Value.MRO
+                        MVR -> Value.MVR
+                        MWK -> Value.MWK
+                        MXN -> Value.MXN
+                        MYR -> Value.MYR
+                        MZN -> Value.MZN
+                        NAD -> Value.NAD
+                        NGN -> Value.NGN
+                        NOK -> Value.NOK
+                        NPR -> Value.NPR
+                        NZD -> Value.NZD
+                        PGK -> Value.PGK
+                        PHP -> Value.PHP
+                        PKR -> Value.PKR
+                        PLN -> Value.PLN
+                        QAR -> Value.QAR
+                        RON -> Value.RON
+                        RSD -> Value.RSD
+                        RUB -> Value.RUB
+                        RWF -> Value.RWF
+                        SAR -> Value.SAR
+                        SBD -> Value.SBD
+                        SCR -> Value.SCR
+                        SEK -> Value.SEK
+                        SGD -> Value.SGD
+                        SLE -> Value.SLE
+                        SLL -> Value.SLL
+                        SOS -> Value.SOS
+                        SZL -> Value.SZL
+                        THB -> Value.THB
+                        TJS -> Value.TJS
+                        TOP -> Value.TOP
+                        TRY -> Value.TRY
+                        TTD -> Value.TTD
+                        TZS -> Value.TZS
+                        UAH -> Value.UAH
+                        UZS -> Value.UZS
+                        VND -> Value.VND
+                        VUV -> Value.VUV
+                        WST -> Value.WST
+                        XAF -> Value.XAF
+                        XCD -> Value.XCD
+                        YER -> Value.YER
+                        ZAR -> Value.ZAR
+                        ZMW -> Value.ZMW
+                        CLP -> Value.CLP
+                        DJF -> Value.DJF
+                        GNF -> Value.GNF
+                        UGX -> Value.UGX
+                        PYG -> Value.PYG
+                        XOF -> Value.XOF
+                        XPF -> Value.XPF
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value is a not a known
+                 *   member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        USD -> Known.USD
+                        AED -> Known.AED
+                        ALL -> Known.ALL
+                        AMD -> Known.AMD
+                        ANG -> Known.ANG
+                        AUD -> Known.AUD
+                        AWG -> Known.AWG
+                        AZN -> Known.AZN
+                        BAM -> Known.BAM
+                        BBD -> Known.BBD
+                        BDT -> Known.BDT
+                        BGN -> Known.BGN
+                        BIF -> Known.BIF
+                        BMD -> Known.BMD
+                        BND -> Known.BND
+                        BSD -> Known.BSD
+                        BWP -> Known.BWP
+                        BYN -> Known.BYN
+                        BZD -> Known.BZD
+                        BRL -> Known.BRL
+                        CAD -> Known.CAD
+                        CDF -> Known.CDF
+                        CHF -> Known.CHF
+                        CNY -> Known.CNY
+                        CZK -> Known.CZK
+                        DKK -> Known.DKK
+                        DOP -> Known.DOP
+                        DZD -> Known.DZD
+                        EGP -> Known.EGP
+                        ETB -> Known.ETB
+                        EUR -> Known.EUR
+                        FJD -> Known.FJD
+                        GBP -> Known.GBP
+                        GEL -> Known.GEL
+                        GIP -> Known.GIP
+                        GMD -> Known.GMD
+                        GYD -> Known.GYD
+                        HKD -> Known.HKD
+                        HRK -> Known.HRK
+                        HTG -> Known.HTG
+                        IDR -> Known.IDR
+                        ILS -> Known.ILS
+                        INR -> Known.INR
+                        ISK -> Known.ISK
+                        JMD -> Known.JMD
+                        JPY -> Known.JPY
+                        KES -> Known.KES
+                        KGS -> Known.KGS
+                        KHR -> Known.KHR
+                        KMF -> Known.KMF
+                        KRW -> Known.KRW
+                        KYD -> Known.KYD
+                        KZT -> Known.KZT
+                        LBP -> Known.LBP
+                        LKR -> Known.LKR
+                        LRD -> Known.LRD
+                        LSL -> Known.LSL
+                        MAD -> Known.MAD
+                        MDL -> Known.MDL
+                        MGA -> Known.MGA
+                        MKD -> Known.MKD
+                        MMK -> Known.MMK
+                        MNT -> Known.MNT
+                        MOP -> Known.MOP
+                        MRO -> Known.MRO
+                        MVR -> Known.MVR
+                        MWK -> Known.MWK
+                        MXN -> Known.MXN
+                        MYR -> Known.MYR
+                        MZN -> Known.MZN
+                        NAD -> Known.NAD
+                        NGN -> Known.NGN
+                        NOK -> Known.NOK
+                        NPR -> Known.NPR
+                        NZD -> Known.NZD
+                        PGK -> Known.PGK
+                        PHP -> Known.PHP
+                        PKR -> Known.PKR
+                        PLN -> Known.PLN
+                        QAR -> Known.QAR
+                        RON -> Known.RON
+                        RSD -> Known.RSD
+                        RUB -> Known.RUB
+                        RWF -> Known.RWF
+                        SAR -> Known.SAR
+                        SBD -> Known.SBD
+                        SCR -> Known.SCR
+                        SEK -> Known.SEK
+                        SGD -> Known.SGD
+                        SLE -> Known.SLE
+                        SLL -> Known.SLL
+                        SOS -> Known.SOS
+                        SZL -> Known.SZL
+                        THB -> Known.THB
+                        TJS -> Known.TJS
+                        TOP -> Known.TOP
+                        TRY -> Known.TRY
+                        TTD -> Known.TTD
+                        TZS -> Known.TZS
+                        UAH -> Known.UAH
+                        UZS -> Known.UZS
+                        VND -> Known.VND
+                        VUV -> Known.VUV
+                        WST -> Known.WST
+                        XAF -> Known.XAF
+                        XCD -> Known.XCD
+                        YER -> Known.YER
+                        ZAR -> Known.ZAR
+                        ZMW -> Known.ZMW
+                        CLP -> Known.CLP
+                        DJF -> Known.DJF
+                        GNF -> Known.GNF
+                        UGX -> Known.UGX
+                        PYG -> Known.PYG
+                        XOF -> Known.XOF
+                        XPF -> Known.XPF
+                        else -> throw StiggInvalidDataException("Unknown Currency: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        StiggInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                fun validate(): Currency = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Currency && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            /** Additional metadata */
+            class Metadata
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Metadata]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Metadata]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(metadata: Metadata) = apply {
+                        additionalProperties = metadata.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Metadata].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Metadata = Metadata(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): Metadata = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Metadata && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Zuora &&
+                    billingAddress == other.billingAddress &&
+                    currency == other.currency &&
+                    metadata == other.metadata &&
+                    paymentMethodId == other.paymentMethodId &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    billingAddress,
+                    currency,
+                    metadata,
+                    paymentMethodId,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Zuora{billingAddress=$billingAddress, currency=$currency, metadata=$metadata, paymentMethodId=$paymentMethodId, additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Passthrough &&
+                stripe == other.stripe &&
+                zuora == other.zuora &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(stripe, zuora, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Passthrough{stripe=$stripe, zuora=$zuora, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
