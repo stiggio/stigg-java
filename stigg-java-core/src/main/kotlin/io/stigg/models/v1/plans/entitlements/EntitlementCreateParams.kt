@@ -3041,6 +3041,7 @@ private constructor(
             private val cadence: JsonField<Cadence>,
             private val type: JsonValue,
             private val behavior: JsonField<Behavior>,
+            private val dependencyFeatureId: JsonField<String>,
             private val description: JsonField<String>,
             private val displayNameOverride: JsonField<String>,
             private val hiddenFromWidgets: JsonField<List<HiddenFromWidget>>,
@@ -3063,6 +3064,9 @@ private constructor(
                 @JsonProperty("behavior")
                 @ExcludeMissing
                 behavior: JsonField<Behavior> = JsonMissing.of(),
+                @JsonProperty("dependencyFeatureId")
+                @ExcludeMissing
+                dependencyFeatureId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("description")
                 @ExcludeMissing
                 description: JsonField<String> = JsonMissing.of(),
@@ -3085,6 +3089,7 @@ private constructor(
                 cadence,
                 type,
                 behavior,
+                dependencyFeatureId,
                 description,
                 displayNameOverride,
                 hiddenFromWidgets,
@@ -3140,6 +3145,16 @@ private constructor(
              *   the server responded with an unexpected value).
              */
             fun behavior(): Optional<Behavior> = behavior.getOptional("behavior")
+
+            /**
+             * The feature ID this entitlement depends on. The entitlement value will be calculated
+             * as: base amount × dependency feature usage limit
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun dependencyFeatureId(): Optional<String> =
+                dependencyFeatureId.getOptional("dependencyFeatureId")
 
             /**
              * Description of the entitlement
@@ -3221,6 +3236,16 @@ private constructor(
             @JsonProperty("behavior")
             @ExcludeMissing
             fun _behavior(): JsonField<Behavior> = behavior
+
+            /**
+             * Returns the raw JSON value of [dependencyFeatureId].
+             *
+             * Unlike [dependencyFeatureId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("dependencyFeatureId")
+            @ExcludeMissing
+            fun _dependencyFeatureId(): JsonField<String> = dependencyFeatureId
 
             /**
              * Returns the raw JSON value of [description].
@@ -3312,6 +3337,7 @@ private constructor(
                 private var cadence: JsonField<Cadence>? = null
                 private var type: JsonValue = JsonValue.from("CREDIT")
                 private var behavior: JsonField<Behavior> = JsonMissing.of()
+                private var dependencyFeatureId: JsonField<String> = JsonMissing.of()
                 private var description: JsonField<String> = JsonMissing.of()
                 private var displayNameOverride: JsonField<String> = JsonMissing.of()
                 private var hiddenFromWidgets: JsonField<MutableList<HiddenFromWidget>>? = null
@@ -3327,6 +3353,7 @@ private constructor(
                     cadence = credit.cadence
                     type = credit.type
                     behavior = credit.behavior
+                    dependencyFeatureId = credit.dependencyFeatureId
                     description = credit.description
                     displayNameOverride = credit.displayNameOverride
                     hiddenFromWidgets = credit.hiddenFromWidgets.map { it.toMutableList() }
@@ -3407,6 +3434,24 @@ private constructor(
                  * yet supported value.
                  */
                 fun behavior(behavior: JsonField<Behavior>) = apply { this.behavior = behavior }
+
+                /**
+                 * The feature ID this entitlement depends on. The entitlement value will be
+                 * calculated as: base amount × dependency feature usage limit
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: String) =
+                    dependencyFeatureId(JsonField.of(dependencyFeatureId))
+
+                /**
+                 * Sets [Builder.dependencyFeatureId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.dependencyFeatureId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: JsonField<String>) = apply {
+                    this.dependencyFeatureId = dependencyFeatureId
+                }
 
                 /** Description of the entitlement */
                 fun description(description: String) = description(JsonField.of(description))
@@ -3544,6 +3589,7 @@ private constructor(
                         checkRequired("cadence", cadence),
                         type,
                         behavior,
+                        dependencyFeatureId,
                         description,
                         displayNameOverride,
                         (hiddenFromWidgets ?: JsonMissing.of()).map { it.toImmutable() },
@@ -3570,6 +3616,7 @@ private constructor(
                     }
                 }
                 behavior().ifPresent { it.validate() }
+                dependencyFeatureId()
                 description()
                 displayNameOverride()
                 hiddenFromWidgets().ifPresent { it.forEach { it.validate() } }
@@ -3600,6 +3647,7 @@ private constructor(
                     (cadence.asKnown().getOrNull()?.validity() ?: 0) +
                     type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 } +
                     (behavior.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (dependencyFeatureId.asKnown().isPresent) 1 else 0) +
                     (if (description.asKnown().isPresent) 1 else 0) +
                     (if (displayNameOverride.asKnown().isPresent) 1 else 0) +
                     (hiddenFromWidgets.asKnown().getOrNull()?.sumOf { it.validity().toInt() }
@@ -4023,6 +4071,7 @@ private constructor(
                     cadence == other.cadence &&
                     type == other.type &&
                     behavior == other.behavior &&
+                    dependencyFeatureId == other.dependencyFeatureId &&
                     description == other.description &&
                     displayNameOverride == other.displayNameOverride &&
                     hiddenFromWidgets == other.hiddenFromWidgets &&
@@ -4039,6 +4088,7 @@ private constructor(
                     cadence,
                     type,
                     behavior,
+                    dependencyFeatureId,
                     description,
                     displayNameOverride,
                     hiddenFromWidgets,
@@ -4052,7 +4102,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, behavior=$behavior, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, additionalProperties=$additionalProperties}"
+                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, behavior=$behavior, dependencyFeatureId=$dependencyFeatureId, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, additionalProperties=$additionalProperties}"
         }
     }
 

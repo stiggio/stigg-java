@@ -16,7 +16,6 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
@@ -29,7 +28,6 @@ import io.stigg.models.v1.plans.PlanPublishResponse
 import io.stigg.models.v1.plans.PlanRemoveDraftParams
 import io.stigg.models.v1.plans.PlanRemoveDraftResponse
 import io.stigg.models.v1.plans.PlanRetrieveParams
-import io.stigg.models.v1.plans.PlanSetPricingParams
 import io.stigg.models.v1.plans.PlanUpdateParams
 import io.stigg.services.async.v1.plans.EntitlementServiceAsync
 import io.stigg.services.async.v1.plans.EntitlementServiceAsyncImpl
@@ -111,13 +109,6 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
     ): CompletableFuture<PlanRemoveDraftResponse> =
         // delete /api/v1/plans/{id}/draft
         withRawResponse().removeDraft(params, requestOptions).thenApply { it.parse() }
-
-    override fun setPricing(
-        params: PlanSetPricingParams,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<SetPackagePricingResponse> =
-        // put /api/v1/plans/{id}/charges
-        withRawResponse().setPricing(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         PlanServiceAsync.WithRawResponse {
@@ -396,40 +387,6 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
                     errorHandler.handle(response).parseable {
                         response
                             .use { removeDraftHandler.handle(it) }
-                            .also {
-                                if (requestOptions.responseValidation!!) {
-                                    it.validate()
-                                }
-                            }
-                    }
-                }
-        }
-
-        private val setPricingHandler: Handler<SetPackagePricingResponse> =
-            jsonHandler<SetPackagePricingResponse>(clientOptions.jsonMapper)
-
-        override fun setPricing(
-            params: PlanSetPricingParams,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.PUT)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "plans", params._pathParam(0), "charges")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            return request
-                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
-                .thenApply { response ->
-                    errorHandler.handle(response).parseable {
-                        response
-                            .use { setPricingHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

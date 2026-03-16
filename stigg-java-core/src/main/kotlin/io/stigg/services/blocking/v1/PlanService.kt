@@ -6,7 +6,6 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
@@ -18,7 +17,6 @@ import io.stigg.models.v1.plans.PlanPublishResponse
 import io.stigg.models.v1.plans.PlanRemoveDraftParams
 import io.stigg.models.v1.plans.PlanRemoveDraftResponse
 import io.stigg.models.v1.plans.PlanRetrieveParams
-import io.stigg.models.v1.plans.PlanSetPricingParams
 import io.stigg.models.v1.plans.PlanUpdateParams
 import io.stigg.services.blocking.v1.plans.EntitlementService
 import java.util.function.Consumer
@@ -228,30 +226,6 @@ interface PlanService {
     /** @see removeDraft */
     fun removeDraft(id: String, requestOptions: RequestOptions): PlanRemoveDraftResponse =
         removeDraft(id, PlanRemoveDraftParams.none(), requestOptions)
-
-    /**
-     * Sets the pricing configuration for a plan, including pricing models, overage pricing, and
-     * minimum spend.
-     */
-    fun setPricing(id: String, params: PlanSetPricingParams): SetPackagePricingResponse =
-        setPricing(id, params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        id: String,
-        params: PlanSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): SetPackagePricingResponse = setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see setPricing */
-    fun setPricing(params: PlanSetPricingParams): SetPackagePricingResponse =
-        setPricing(params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        params: PlanSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): SetPackagePricingResponse
 
     /** A view of [PlanService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -532,37 +506,5 @@ interface PlanService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<PlanRemoveDraftResponse> =
             removeDraft(id, PlanRemoveDraftParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `put /api/v1/plans/{id}/charges`, but is otherwise the
-         * same as [PlanService.setPricing].
-         */
-        @MustBeClosed
-        fun setPricing(
-            id: String,
-            params: PlanSetPricingParams,
-        ): HttpResponseFor<SetPackagePricingResponse> =
-            setPricing(id, params, RequestOptions.none())
-
-        /** @see setPricing */
-        @MustBeClosed
-        fun setPricing(
-            id: String,
-            params: PlanSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SetPackagePricingResponse> =
-            setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see setPricing */
-        @MustBeClosed
-        fun setPricing(params: PlanSetPricingParams): HttpResponseFor<SetPackagePricingResponse> =
-            setPricing(params, RequestOptions.none())
-
-        /** @see setPricing */
-        @MustBeClosed
-        fun setPricing(
-            params: PlanSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SetPackagePricingResponse>
     }
 }
