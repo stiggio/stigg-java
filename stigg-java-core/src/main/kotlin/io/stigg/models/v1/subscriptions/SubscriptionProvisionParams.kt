@@ -5742,6 +5742,7 @@ private constructor(
             override fun toString() = value.toString()
         }
 
+        /** Tax identifier with type and value for customer tax exemptions. */
         class TaxId
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
