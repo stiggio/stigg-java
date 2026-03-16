@@ -28,9 +28,7 @@ import io.stigg.models.v1.addons.AddonPublishResponse
 import io.stigg.models.v1.addons.AddonRemoveDraftParams
 import io.stigg.models.v1.addons.AddonRemoveDraftResponse
 import io.stigg.models.v1.addons.AddonRetrieveParams
-import io.stigg.models.v1.addons.AddonSetPricingParams
 import io.stigg.models.v1.addons.AddonUpdateParams
-import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.services.blocking.v1.addons.EntitlementService
 import io.stigg.services.blocking.v1.addons.EntitlementServiceImpl
 import java.util.function.Consumer
@@ -93,13 +91,6 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
     ): AddonRemoveDraftResponse =
         // delete /api/v1/addons/{id}/draft
         withRawResponse().removeDraft(params, requestOptions).parse()
-
-    override fun setPricing(
-        params: AddonSetPricingParams,
-        requestOptions: RequestOptions,
-    ): SetPackagePricingResponse =
-        // put /api/v1/addons/{id}/charges
-        withRawResponse().setPricing(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         AddonService.WithRawResponse {
@@ -355,37 +346,6 @@ class AddonServiceImpl internal constructor(private val clientOptions: ClientOpt
             return errorHandler.handle(response).parseable {
                 response
                     .use { removeDraftHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val setPricingHandler: Handler<SetPackagePricingResponse> =
-            jsonHandler<SetPackagePricingResponse>(clientOptions.jsonMapper)
-
-        override fun setPricing(
-            params: AddonSetPricingParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SetPackagePricingResponse> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id().getOrNull())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.PUT)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "addons", params._pathParam(0), "charges")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { setPricingHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

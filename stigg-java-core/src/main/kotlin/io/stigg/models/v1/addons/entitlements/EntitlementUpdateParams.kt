@@ -2722,6 +2722,7 @@ private constructor(
             private val amount: JsonField<Double>,
             private val behavior: JsonField<Behavior>,
             private val cadence: JsonField<Cadence>,
+            private val dependencyFeatureId: JsonField<String>,
             private val description: JsonField<String>,
             private val displayNameOverride: JsonField<String>,
             private val hiddenFromWidgets: JsonField<List<HiddenFromWidget>>,
@@ -2743,6 +2744,9 @@ private constructor(
                 @JsonProperty("cadence")
                 @ExcludeMissing
                 cadence: JsonField<Cadence> = JsonMissing.of(),
+                @JsonProperty("dependencyFeatureId")
+                @ExcludeMissing
+                dependencyFeatureId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("description")
                 @ExcludeMissing
                 description: JsonField<String> = JsonMissing.of(),
@@ -2764,6 +2768,7 @@ private constructor(
                 amount,
                 behavior,
                 cadence,
+                dependencyFeatureId,
                 description,
                 displayNameOverride,
                 hiddenFromWidgets,
@@ -2809,6 +2814,16 @@ private constructor(
              *   the server responded with an unexpected value).
              */
             fun cadence(): Optional<Cadence> = cadence.getOptional("cadence")
+
+            /**
+             * The feature ID this entitlement depends on. The entitlement value will be calculated
+             * as: base amount × dependency feature usage limit
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun dependencyFeatureId(): Optional<String> =
+                dependencyFeatureId.getOptional("dependencyFeatureId")
 
             /**
              * Description of the entitlement
@@ -2883,6 +2898,16 @@ private constructor(
              * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("cadence") @ExcludeMissing fun _cadence(): JsonField<Cadence> = cadence
+
+            /**
+             * Returns the raw JSON value of [dependencyFeatureId].
+             *
+             * Unlike [dependencyFeatureId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("dependencyFeatureId")
+            @ExcludeMissing
+            fun _dependencyFeatureId(): JsonField<String> = dependencyFeatureId
 
             /**
              * Returns the raw JSON value of [description].
@@ -2964,6 +2989,7 @@ private constructor(
                 private var amount: JsonField<Double> = JsonMissing.of()
                 private var behavior: JsonField<Behavior> = JsonMissing.of()
                 private var cadence: JsonField<Cadence> = JsonMissing.of()
+                private var dependencyFeatureId: JsonField<String> = JsonMissing.of()
                 private var description: JsonField<String> = JsonMissing.of()
                 private var displayNameOverride: JsonField<String> = JsonMissing.of()
                 private var hiddenFromWidgets: JsonField<MutableList<HiddenFromWidget>>? = null
@@ -2978,6 +3004,7 @@ private constructor(
                     amount = credit.amount
                     behavior = credit.behavior
                     cadence = credit.cadence
+                    dependencyFeatureId = credit.dependencyFeatureId
                     description = credit.description
                     displayNameOverride = credit.displayNameOverride
                     hiddenFromWidgets = credit.hiddenFromWidgets.map { it.toMutableList() }
@@ -3036,6 +3063,31 @@ private constructor(
                  * yet supported value.
                  */
                 fun cadence(cadence: JsonField<Cadence>) = apply { this.cadence = cadence }
+
+                /**
+                 * The feature ID this entitlement depends on. The entitlement value will be
+                 * calculated as: base amount × dependency feature usage limit
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: String?) =
+                    dependencyFeatureId(JsonField.ofNullable(dependencyFeatureId))
+
+                /**
+                 * Alias for calling [Builder.dependencyFeatureId] with
+                 * `dependencyFeatureId.orElse(null)`.
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: Optional<String>) =
+                    dependencyFeatureId(dependencyFeatureId.getOrNull())
+
+                /**
+                 * Sets [Builder.dependencyFeatureId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.dependencyFeatureId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: JsonField<String>) = apply {
+                    this.dependencyFeatureId = dependencyFeatureId
+                }
 
                 /** Description of the entitlement */
                 fun description(description: String) = description(JsonField.of(description))
@@ -3163,6 +3215,7 @@ private constructor(
                         amount,
                         behavior,
                         cadence,
+                        dependencyFeatureId,
                         description,
                         displayNameOverride,
                         (hiddenFromWidgets ?: JsonMissing.of()).map { it.toImmutable() },
@@ -3188,6 +3241,7 @@ private constructor(
                 amount()
                 behavior().ifPresent { it.validate() }
                 cadence().ifPresent { it.validate() }
+                dependencyFeatureId()
                 description()
                 displayNameOverride()
                 hiddenFromWidgets().ifPresent { it.forEach { it.validate() } }
@@ -3217,6 +3271,7 @@ private constructor(
                     (if (amount.asKnown().isPresent) 1 else 0) +
                     (behavior.asKnown().getOrNull()?.validity() ?: 0) +
                     (cadence.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (dependencyFeatureId.asKnown().isPresent) 1 else 0) +
                     (if (description.asKnown().isPresent) 1 else 0) +
                     (if (displayNameOverride.asKnown().isPresent) 1 else 0) +
                     (hiddenFromWidgets.asKnown().getOrNull()?.sumOf { it.validity().toInt() }
@@ -3639,6 +3694,7 @@ private constructor(
                     amount == other.amount &&
                     behavior == other.behavior &&
                     cadence == other.cadence &&
+                    dependencyFeatureId == other.dependencyFeatureId &&
                     description == other.description &&
                     displayNameOverride == other.displayNameOverride &&
                     hiddenFromWidgets == other.hiddenFromWidgets &&
@@ -3654,6 +3710,7 @@ private constructor(
                     amount,
                     behavior,
                     cadence,
+                    dependencyFeatureId,
                     description,
                     displayNameOverride,
                     hiddenFromWidgets,
@@ -3667,7 +3724,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{type=$type, amount=$amount, behavior=$behavior, cadence=$cadence, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, additionalProperties=$additionalProperties}"
+                "Credit{type=$type, amount=$amount, behavior=$behavior, cadence=$cadence, dependencyFeatureId=$dependencyFeatureId, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, additionalProperties=$additionalProperties}"
         }
     }
 

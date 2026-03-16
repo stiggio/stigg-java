@@ -5,7 +5,6 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
@@ -17,7 +16,6 @@ import io.stigg.models.v1.plans.PlanPublishResponse
 import io.stigg.models.v1.plans.PlanRemoveDraftParams
 import io.stigg.models.v1.plans.PlanRemoveDraftResponse
 import io.stigg.models.v1.plans.PlanRetrieveParams
-import io.stigg.models.v1.plans.PlanSetPricingParams
 import io.stigg.models.v1.plans.PlanUpdateParams
 import io.stigg.services.async.v1.plans.EntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
@@ -244,33 +242,6 @@ interface PlanServiceAsync {
         requestOptions: RequestOptions,
     ): CompletableFuture<PlanRemoveDraftResponse> =
         removeDraft(id, PlanRemoveDraftParams.none(), requestOptions)
-
-    /**
-     * Sets the pricing configuration for a plan, including pricing models, overage pricing, and
-     * minimum spend.
-     */
-    fun setPricing(
-        id: String,
-        params: PlanSetPricingParams,
-    ): CompletableFuture<SetPackagePricingResponse> = setPricing(id, params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        id: String,
-        params: PlanSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SetPackagePricingResponse> =
-        setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see setPricing */
-    fun setPricing(params: PlanSetPricingParams): CompletableFuture<SetPackagePricingResponse> =
-        setPricing(params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        params: PlanSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SetPackagePricingResponse>
 
     /** A view of [PlanServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -544,35 +515,5 @@ interface PlanServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<PlanRemoveDraftResponse>> =
             removeDraft(id, PlanRemoveDraftParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `put /api/v1/plans/{id}/charges`, but is otherwise the
-         * same as [PlanServiceAsync.setPricing].
-         */
-        fun setPricing(
-            id: String,
-            params: PlanSetPricingParams,
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(id, params, RequestOptions.none())
-
-        /** @see setPricing */
-        fun setPricing(
-            id: String,
-            params: PlanSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see setPricing */
-        fun setPricing(
-            params: PlanSetPricingParams
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(params, RequestOptions.none())
-
-        /** @see setPricing */
-        fun setPricing(
-            params: PlanSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>>
     }
 }
