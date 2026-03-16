@@ -543,10 +543,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```java
 import io.stigg.core.JsonValue;
-import io.stigg.models.v1.customers.CustomerListParams;
+import io.stigg.models.v1.customers.CustomerUpdateParams;
 
-CustomerListParams params = CustomerListParams.builder()
-    .createdAt(CustomerListParams.CreatedAt.builder()
+CustomerUpdateParams params = CustomerUpdateParams.builder()
+    .passthrough(CustomerUpdateParams.Passthrough.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build();
