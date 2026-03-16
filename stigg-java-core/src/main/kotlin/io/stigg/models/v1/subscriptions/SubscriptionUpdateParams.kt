@@ -1762,6 +1762,8 @@ private constructor(
         fun configuration(): Optional<Configuration> = configuration.getOptional("configuration")
 
         /**
+         * Stigg coupon ID
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1889,6 +1891,7 @@ private constructor(
                 this.configuration = configuration
             }
 
+            /** Stigg coupon ID */
             fun couponId(couponId: String) = couponId(JsonField.of(couponId))
 
             /**
