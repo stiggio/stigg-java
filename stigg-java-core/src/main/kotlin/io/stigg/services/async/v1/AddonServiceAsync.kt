@@ -16,9 +16,7 @@ import io.stigg.models.v1.addons.AddonPublishResponse
 import io.stigg.models.v1.addons.AddonRemoveDraftParams
 import io.stigg.models.v1.addons.AddonRemoveDraftResponse
 import io.stigg.models.v1.addons.AddonRetrieveParams
-import io.stigg.models.v1.addons.AddonSetPricingParams
 import io.stigg.models.v1.addons.AddonUpdateParams
-import io.stigg.models.v1.addons.SetPackagePricingResponse
 import io.stigg.services.async.v1.addons.EntitlementServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -245,30 +243,6 @@ interface AddonServiceAsync {
         requestOptions: RequestOptions,
     ): CompletableFuture<AddonRemoveDraftResponse> =
         removeDraft(id, AddonRemoveDraftParams.none(), requestOptions)
-
-    /** Sets the pricing configuration for an addon. */
-    fun setPricing(
-        id: String,
-        params: AddonSetPricingParams,
-    ): CompletableFuture<SetPackagePricingResponse> = setPricing(id, params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        id: String,
-        params: AddonSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SetPackagePricingResponse> =
-        setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see setPricing */
-    fun setPricing(params: AddonSetPricingParams): CompletableFuture<SetPackagePricingResponse> =
-        setPricing(params, RequestOptions.none())
-
-    /** @see setPricing */
-    fun setPricing(
-        params: AddonSetPricingParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SetPackagePricingResponse>
 
     /** A view of [AddonServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -545,35 +519,5 @@ interface AddonServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<AddonRemoveDraftResponse>> =
             removeDraft(id, AddonRemoveDraftParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `put /api/v1/addons/{id}/charges`, but is otherwise the
-         * same as [AddonServiceAsync.setPricing].
-         */
-        fun setPricing(
-            id: String,
-            params: AddonSetPricingParams,
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(id, params, RequestOptions.none())
-
-        /** @see setPricing */
-        fun setPricing(
-            id: String,
-            params: AddonSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see setPricing */
-        fun setPricing(
-            params: AddonSetPricingParams
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>> =
-            setPricing(params, RequestOptions.none())
-
-        /** @see setPricing */
-        fun setPricing(
-            params: AddonSetPricingParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SetPackagePricingResponse>>
     }
 }

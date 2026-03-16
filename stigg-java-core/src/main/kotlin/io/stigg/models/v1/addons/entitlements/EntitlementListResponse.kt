@@ -3158,6 +3158,7 @@ private constructor(
             private val order: JsonField<Double>,
             private val type: JsonValue,
             private val updatedAt: JsonField<OffsetDateTime>,
+            private val dependencyFeatureId: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -3196,6 +3197,9 @@ private constructor(
                 @JsonProperty("updatedAt")
                 @ExcludeMissing
                 updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                @JsonProperty("dependencyFeatureId")
+                @ExcludeMissing
+                dependencyFeatureId: JsonField<String> = JsonMissing.of(),
             ) : this(
                 id,
                 amount,
@@ -3210,6 +3214,7 @@ private constructor(
                 order,
                 type,
                 updatedAt,
+                dependencyFeatureId,
                 mutableMapOf(),
             )
 
@@ -3331,6 +3336,16 @@ private constructor(
             fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
 
             /**
+             * The feature ID this entitlement depends on (for credit entitlements). The entitlement
+             * value will be calculated as: base amount × dependency feature usage limit
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun dependencyFeatureId(): Optional<String> =
+                dependencyFeatureId.getOptional("dependencyFeatureId")
+
+            /**
              * Returns the raw JSON value of [id].
              *
              * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -3436,6 +3451,16 @@ private constructor(
             @ExcludeMissing
             fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
+            /**
+             * Returns the raw JSON value of [dependencyFeatureId].
+             *
+             * Unlike [dependencyFeatureId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("dependencyFeatureId")
+            @ExcludeMissing
+            fun _dependencyFeatureId(): JsonField<String> = dependencyFeatureId
+
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
                 additionalProperties.put(key, value)
@@ -3488,6 +3513,7 @@ private constructor(
                 private var order: JsonField<Double>? = null
                 private var type: JsonValue = JsonValue.from("CREDIT")
                 private var updatedAt: JsonField<OffsetDateTime>? = null
+                private var dependencyFeatureId: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -3505,6 +3531,7 @@ private constructor(
                     order = credit.order
                     type = credit.type
                     updatedAt = credit.updatedAt
+                    dependencyFeatureId = credit.dependencyFeatureId
                     additionalProperties = credit.additionalProperties.toMutableMap()
                 }
 
@@ -3736,6 +3763,32 @@ private constructor(
                     this.updatedAt = updatedAt
                 }
 
+                /**
+                 * The feature ID this entitlement depends on (for credit entitlements). The
+                 * entitlement value will be calculated as: base amount × dependency feature usage
+                 * limit
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: String?) =
+                    dependencyFeatureId(JsonField.ofNullable(dependencyFeatureId))
+
+                /**
+                 * Alias for calling [Builder.dependencyFeatureId] with
+                 * `dependencyFeatureId.orElse(null)`.
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: Optional<String>) =
+                    dependencyFeatureId(dependencyFeatureId.getOrNull())
+
+                /**
+                 * Sets [Builder.dependencyFeatureId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.dependencyFeatureId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun dependencyFeatureId(dependencyFeatureId: JsonField<String>) = apply {
+                    this.dependencyFeatureId = dependencyFeatureId
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -3798,6 +3851,7 @@ private constructor(
                         checkRequired("order", order),
                         type,
                         checkRequired("updatedAt", updatedAt),
+                        dependencyFeatureId,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -3826,6 +3880,7 @@ private constructor(
                     }
                 }
                 updatedAt()
+                dependencyFeatureId()
                 validated = true
             }
 
@@ -3858,7 +3913,8 @@ private constructor(
                     (if (isGranted.asKnown().isPresent) 1 else 0) +
                     (if (order.asKnown().isPresent) 1 else 0) +
                     type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 } +
-                    (if (updatedAt.asKnown().isPresent) 1 else 0)
+                    (if (updatedAt.asKnown().isPresent) 1 else 0) +
+                    (if (dependencyFeatureId.asKnown().isPresent) 1 else 0)
 
             /** Entitlement behavior (Increment or Override) */
             class Behavior @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -4283,6 +4339,7 @@ private constructor(
                     order == other.order &&
                     type == other.type &&
                     updatedAt == other.updatedAt &&
+                    dependencyFeatureId == other.dependencyFeatureId &&
                     additionalProperties == other.additionalProperties
             }
 
@@ -4301,6 +4358,7 @@ private constructor(
                     order,
                     type,
                     updatedAt,
+                    dependencyFeatureId,
                     additionalProperties,
                 )
             }
@@ -4308,7 +4366,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{id=$id, amount=$amount, behavior=$behavior, cadence=$cadence, createdAt=$createdAt, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+                "Credit{id=$id, amount=$amount, behavior=$behavior, cadence=$cadence, createdAt=$createdAt, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, type=$type, updatedAt=$updatedAt, dependencyFeatureId=$dependencyFeatureId, additionalProperties=$additionalProperties}"
         }
     }
 
