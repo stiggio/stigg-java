@@ -36,7 +36,7 @@ internal class CustomerServiceTest {
                     .id("x")
                     .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                     .billingId("billingId")
-                    .couponId("couponId")
+                    .couponId(CustomerUpdateParams.CouponId.EMPTY)
                     .email("dev@stainless.com")
                     .addIntegration(
                         CustomerUpdateParams.Integration.builder()
@@ -209,7 +209,7 @@ internal class CustomerServiceTest {
                     .id("id")
                     .billingCurrency(CustomerProvisionParams.BillingCurrency.USD)
                     .billingId("billingId")
-                    .couponId("couponId")
+                    .couponId(CustomerProvisionParams.CouponId.EMPTY)
                     .defaultPaymentMethod(
                         CustomerProvisionParams.DefaultPaymentMethod.builder()
                             .billingId("billingId")

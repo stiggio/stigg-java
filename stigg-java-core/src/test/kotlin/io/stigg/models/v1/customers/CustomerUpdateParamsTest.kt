@@ -15,7 +15,7 @@ internal class CustomerUpdateParamsTest {
             .id("x")
             .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
             .billingId("billingId")
-            .couponId("couponId")
+            .couponId(CustomerUpdateParams.CouponId.EMPTY)
             .email("dev@stainless.com")
             .addIntegration(
                 CustomerUpdateParams.Integration.builder()
@@ -119,7 +119,7 @@ internal class CustomerUpdateParamsTest {
                 .id("x")
                 .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                 .billingId("billingId")
-                .couponId("couponId")
+                .couponId(CustomerUpdateParams.CouponId.EMPTY)
                 .email("dev@stainless.com")
                 .addIntegration(
                     CustomerUpdateParams.Integration.builder()
@@ -211,7 +211,7 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body.billingCurrency()).contains(CustomerUpdateParams.BillingCurrency.USD)
         assertThat(body.billingId()).contains("billingId")
-        assertThat(body.couponId()).contains("couponId")
+        assertThat(body.couponId()).contains(CustomerUpdateParams.CouponId.EMPTY)
         assertThat(body.email()).contains("dev@stainless.com")
         assertThat(body.integrations().getOrNull())
             .containsExactly(
