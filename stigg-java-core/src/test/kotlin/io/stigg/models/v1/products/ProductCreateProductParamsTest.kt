@@ -12,8 +12,8 @@ internal class ProductCreateProductParamsTest {
     fun create() {
         ProductCreateProductParams.builder()
             .id("id")
-            .description("description")
             .displayName("displayName")
+            .description("description")
             .metadata(
                 ProductCreateProductParams.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -28,8 +28,8 @@ internal class ProductCreateProductParamsTest {
         val params =
             ProductCreateProductParams.builder()
                 .id("id")
-                .description("description")
                 .displayName("displayName")
+                .description("description")
                 .metadata(
                     ProductCreateProductParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -41,8 +41,8 @@ internal class ProductCreateProductParamsTest {
         val body = params._body()
 
         assertThat(body.id()).isEqualTo("id")
+        assertThat(body.displayName()).isEqualTo("displayName")
         assertThat(body.description()).contains("description")
-        assertThat(body.displayName()).contains("displayName")
         assertThat(body.metadata())
             .contains(
                 ProductCreateProductParams.Metadata.builder()
@@ -54,10 +54,12 @@ internal class ProductCreateProductParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = ProductCreateProductParams.builder().id("id").build()
+        val params =
+            ProductCreateProductParams.builder().id("id").displayName("displayName").build()
 
         val body = params._body()
 
         assertThat(body.id()).isEqualTo("id")
+        assertThat(body.displayName()).isEqualTo("displayName")
     }
 }
