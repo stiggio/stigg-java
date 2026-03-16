@@ -38,20 +38,20 @@ private constructor(
     fun id(): String = body.id()
 
     /**
+     * Display name of the product
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
+     *   missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun displayName(): String = body.displayName()
+
+    /**
      * Description of the product
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
     fun description(): Optional<String> = body.description()
-
-    /**
-     * Display name of the product
-     *
-     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun displayName(): Optional<String> = body.displayName()
 
     /**
      * Additional metadata for the product
@@ -77,18 +77,18 @@ private constructor(
     fun _id(): JsonField<String> = body._id()
 
     /**
-     * Returns the raw JSON value of [description].
-     *
-     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _description(): JsonField<String> = body._description()
-
-    /**
      * Returns the raw JSON value of [displayName].
      *
      * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _displayName(): JsonField<String> = body._displayName()
+
+    /**
+     * Returns the raw JSON value of [description].
+     *
+     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _description(): JsonField<String> = body._description()
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -123,6 +123,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .id()
+         * .displayName()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -148,8 +149,8 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [id]
-         * - [description]
          * - [displayName]
+         * - [description]
          * - [metadata]
          * - [multipleSubscriptions]
          * - etc.
@@ -167,6 +168,18 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { body.id(id) }
 
+        /** Display name of the product */
+        fun displayName(displayName: String) = apply { body.displayName(displayName) }
+
+        /**
+         * Sets [Builder.displayName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.displayName] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
+
         /** Description of the product */
         fun description(description: String?) = apply { body.description(description) }
 
@@ -181,18 +194,6 @@ private constructor(
          * value.
          */
         fun description(description: JsonField<String>) = apply { body.description(description) }
-
-        /** Display name of the product */
-        fun displayName(displayName: String) = apply { body.displayName(displayName) }
-
-        /**
-         * Sets [Builder.displayName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.displayName] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
         /** Additional metadata for the product */
         fun metadata(metadata: Metadata?) = apply { body.metadata(metadata) }
@@ -350,6 +351,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .id()
+         * .displayName()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -375,8 +377,8 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
-        private val description: JsonField<String>,
         private val displayName: JsonField<String>,
+        private val description: JsonField<String>,
         private val metadata: JsonField<Metadata>,
         private val multipleSubscriptions: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -385,19 +387,19 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("description")
-            @ExcludeMissing
-            description: JsonField<String> = JsonMissing.of(),
             @JsonProperty("displayName")
             @ExcludeMissing
             displayName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("description")
+            @ExcludeMissing
+            description: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("multipleSubscriptions")
             @ExcludeMissing
             multipleSubscriptions: JsonField<Boolean> = JsonMissing.of(),
-        ) : this(id, description, displayName, metadata, multipleSubscriptions, mutableMapOf())
+        ) : this(id, displayName, description, metadata, multipleSubscriptions, mutableMapOf())
 
         /**
          * The unique identifier for the entity
@@ -408,20 +410,20 @@ private constructor(
         fun id(): String = id.getRequired("id")
 
         /**
+         * Display name of the product
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun displayName(): String = displayName.getRequired("displayName")
+
+        /**
          * Description of the product
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
         fun description(): Optional<String> = description.getOptional("description")
-
-        /**
-         * Display name of the product
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun displayName(): Optional<String> = displayName.getOptional("displayName")
 
         /**
          * Additional metadata for the product
@@ -448,15 +450,6 @@ private constructor(
         @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
-         * Returns the raw JSON value of [description].
-         *
-         * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("description")
-        @ExcludeMissing
-        fun _description(): JsonField<String> = description
-
-        /**
          * Returns the raw JSON value of [displayName].
          *
          * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
@@ -464,6 +457,15 @@ private constructor(
         @JsonProperty("displayName")
         @ExcludeMissing
         fun _displayName(): JsonField<String> = displayName
+
+        /**
+         * Returns the raw JSON value of [description].
+         *
+         * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("description")
+        @ExcludeMissing
+        fun _description(): JsonField<String> = description
 
         /**
          * Returns the raw JSON value of [metadata].
@@ -502,6 +504,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .id()
+             * .displayName()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -511,8 +514,8 @@ private constructor(
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
+            private var displayName: JsonField<String>? = null
             private var description: JsonField<String> = JsonMissing.of()
-            private var displayName: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var multipleSubscriptions: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -520,8 +523,8 @@ private constructor(
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 id = body.id
-                description = body.description
                 displayName = body.displayName
+                description = body.description
                 metadata = body.metadata
                 multipleSubscriptions = body.multipleSubscriptions
                 additionalProperties = body.additionalProperties.toMutableMap()
@@ -539,6 +542,20 @@ private constructor(
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
 
+            /** Display name of the product */
+            fun displayName(displayName: String) = displayName(JsonField.of(displayName))
+
+            /**
+             * Sets [Builder.displayName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.displayName] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun displayName(displayName: JsonField<String>) = apply {
+                this.displayName = displayName
+            }
+
             /** Description of the product */
             fun description(description: String?) = description(JsonField.ofNullable(description))
 
@@ -554,20 +571,6 @@ private constructor(
              */
             fun description(description: JsonField<String>) = apply {
                 this.description = description
-            }
-
-            /** Display name of the product */
-            fun displayName(displayName: String) = displayName(JsonField.of(displayName))
-
-            /**
-             * Sets [Builder.displayName] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.displayName] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun displayName(displayName: JsonField<String>) = apply {
-                this.displayName = displayName
             }
 
             /** Additional metadata for the product */
@@ -627,6 +630,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .id()
+             * .displayName()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -634,8 +638,8 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("id", id),
+                    checkRequired("displayName", displayName),
                     description,
-                    displayName,
                     metadata,
                     multipleSubscriptions,
                     additionalProperties.toMutableMap(),
@@ -650,8 +654,8 @@ private constructor(
             }
 
             id()
-            description()
             displayName()
+            description()
             metadata().ifPresent { it.validate() }
             multipleSubscriptions()
             validated = true
@@ -674,8 +678,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
-                (if (description.asKnown().isPresent) 1 else 0) +
                 (if (displayName.asKnown().isPresent) 1 else 0) +
+                (if (description.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (multipleSubscriptions.asKnown().isPresent) 1 else 0)
 
@@ -686,8 +690,8 @@ private constructor(
 
             return other is Body &&
                 id == other.id &&
-                description == other.description &&
                 displayName == other.displayName &&
+                description == other.description &&
                 metadata == other.metadata &&
                 multipleSubscriptions == other.multipleSubscriptions &&
                 additionalProperties == other.additionalProperties
@@ -696,8 +700,8 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 id,
-                description,
                 displayName,
+                description,
                 metadata,
                 multipleSubscriptions,
                 additionalProperties,
@@ -707,7 +711,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{id=$id, description=$description, displayName=$displayName, metadata=$metadata, multipleSubscriptions=$multipleSubscriptions, additionalProperties=$additionalProperties}"
+            "Body{id=$id, displayName=$displayName, description=$description, metadata=$metadata, multipleSubscriptions=$multipleSubscriptions, additionalProperties=$additionalProperties}"
     }
 
     /** Additional metadata for the product */

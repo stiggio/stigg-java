@@ -33,8 +33,8 @@ internal class ProductServiceTest {
             productService.createProduct(
                 ProductCreateProductParams.builder()
                     .id("id")
-                    .description("description")
                     .displayName("displayName")
+                    .description("description")
                     .metadata(
                         ProductCreateProductParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
