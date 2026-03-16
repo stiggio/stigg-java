@@ -15,7 +15,7 @@ internal class CustomerProvisionParamsTest {
             .id("id")
             .billingCurrency(CustomerProvisionParams.BillingCurrency.USD)
             .billingId("billingId")
-            .couponId("couponId")
+            .couponId(CustomerProvisionParams.CouponId.EMPTY)
             .defaultPaymentMethod(
                 CustomerProvisionParams.DefaultPaymentMethod.builder()
                     .billingId("billingId")
@@ -119,7 +119,7 @@ internal class CustomerProvisionParamsTest {
                 .id("id")
                 .billingCurrency(CustomerProvisionParams.BillingCurrency.USD)
                 .billingId("billingId")
-                .couponId("couponId")
+                .couponId(CustomerProvisionParams.CouponId.EMPTY)
                 .defaultPaymentMethod(
                     CustomerProvisionParams.DefaultPaymentMethod.builder()
                         .billingId("billingId")
@@ -225,7 +225,7 @@ internal class CustomerProvisionParamsTest {
         assertThat(body.id()).isEqualTo("id")
         assertThat(body.billingCurrency()).contains(CustomerProvisionParams.BillingCurrency.USD)
         assertThat(body.billingId()).contains("billingId")
-        assertThat(body.couponId()).contains("couponId")
+        assertThat(body.couponId()).contains(CustomerProvisionParams.CouponId.EMPTY)
         assertThat(body.defaultPaymentMethod())
             .contains(
                 CustomerProvisionParams.DefaultPaymentMethod.builder()

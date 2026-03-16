@@ -65,7 +65,7 @@ internal class ProGuardCompatibilityTest {
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .billingCurrency(CustomerResponse.Data.BillingCurrency.USD)
                         .billingId("billingId")
-                        .couponId("couponId")
+                        .couponId(CustomerResponse.Data.CouponId.EMPTY)
                         .defaultPaymentMethod(
                             CustomerResponse.Data.DefaultPaymentMethod.builder()
                                 .billingId("billingId")

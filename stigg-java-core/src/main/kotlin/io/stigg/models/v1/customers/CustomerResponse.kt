@@ -168,7 +168,7 @@ private constructor(
         private val updatedAt: JsonField<OffsetDateTime>,
         private val billingCurrency: JsonField<BillingCurrency>,
         private val billingId: JsonField<String>,
-        private val couponId: JsonField<String>,
+        private val couponId: JsonField<CouponId>,
         private val defaultPaymentMethod: JsonField<DefaultPaymentMethod>,
         private val email: JsonField<String>,
         private val integrations: JsonField<List<Integration>>,
@@ -200,7 +200,7 @@ private constructor(
             billingId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("couponId")
             @ExcludeMissing
-            couponId: JsonField<String> = JsonMissing.of(),
+            couponId: JsonField<CouponId> = JsonMissing.of(),
             @JsonProperty("defaultPaymentMethod")
             @ExcludeMissing
             defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of(),
@@ -293,7 +293,7 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun couponId(): Optional<String> = couponId.getOptional("couponId")
+        fun couponId(): Optional<CouponId> = couponId.getOptional("couponId")
 
         /**
          * The default payment method details
@@ -416,7 +416,7 @@ private constructor(
          *
          * Unlike [couponId], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("couponId") @ExcludeMissing fun _couponId(): JsonField<String> = couponId
+        @JsonProperty("couponId") @ExcludeMissing fun _couponId(): JsonField<CouponId> = couponId
 
         /**
          * Returns the raw JSON value of [defaultPaymentMethod].
@@ -519,7 +519,7 @@ private constructor(
             private var updatedAt: JsonField<OffsetDateTime>? = null
             private var billingCurrency: JsonField<BillingCurrency> = JsonMissing.of()
             private var billingId: JsonField<String> = JsonMissing.of()
-            private var couponId: JsonField<String> = JsonMissing.of()
+            private var couponId: JsonField<CouponId> = JsonMissing.of()
             private var defaultPaymentMethod: JsonField<DefaultPaymentMethod> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var integrations: JsonField<MutableList<Integration>>? = null
@@ -644,19 +644,28 @@ private constructor(
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
             /** Customer level coupon */
-            fun couponId(couponId: String?) = couponId(JsonField.ofNullable(couponId))
+            fun couponId(couponId: CouponId?) = couponId(JsonField.ofNullable(couponId))
 
             /** Alias for calling [Builder.couponId] with `couponId.orElse(null)`. */
-            fun couponId(couponId: Optional<String>) = couponId(couponId.getOrNull())
+            fun couponId(couponId: Optional<CouponId>) = couponId(couponId.getOrNull())
 
             /**
              * Sets [Builder.couponId] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.couponId] with a well-typed [String] value instead.
+             * You should usually call [Builder.couponId] with a well-typed [CouponId] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun couponId(couponId: JsonField<CouponId>) = apply { this.couponId = couponId }
+
+            /**
+             * Sets [couponId] to an arbitrary [String].
+             *
+             * You should usually call [couponId] with a well-typed [CouponId] constant instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun couponId(couponId: JsonField<String>) = apply { this.couponId = couponId }
+            fun couponId(value: String) = couponId(CouponId.of(value))
 
             /** The default payment method details */
             fun defaultPaymentMethod(defaultPaymentMethod: DefaultPaymentMethod?) =
@@ -1716,6 +1725,131 @@ private constructor(
                 }
 
                 return other is BillingCurrency && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Customer level coupon */
+        class CouponId @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val EMPTY = of("")
+
+                @JvmStatic fun of(value: String) = CouponId(JsonField.of(value))
+            }
+
+            /** An enum containing [CouponId]'s known values. */
+            enum class Known {
+                EMPTY
+            }
+
+            /**
+             * An enum containing [CouponId]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [CouponId] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                EMPTY,
+                /**
+                 * An enum member indicating that [CouponId] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    EMPTY -> Value.EMPTY
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    EMPTY -> Known.EMPTY
+                    else -> throw StiggInvalidDataException("Unknown CouponId: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): CouponId = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is CouponId && value == other.value
             }
 
             override fun hashCode() = value.hashCode()

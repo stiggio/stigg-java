@@ -23,7 +23,7 @@ internal class CustomerListPageResponseTest {
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                         .billingId("billingId")
-                        .couponId("couponId")
+                        .couponId(CustomerListResponse.CouponId.EMPTY)
                         .defaultPaymentMethod(
                             CustomerListResponse.DefaultPaymentMethod.builder()
                                 .billingId("billingId")
@@ -155,7 +155,7 @@ internal class CustomerListPageResponseTest {
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                     .billingId("billingId")
-                    .couponId("couponId")
+                    .couponId(CustomerListResponse.CouponId.EMPTY)
                     .defaultPaymentMethod(
                         CustomerListResponse.DefaultPaymentMethod.builder()
                             .billingId("billingId")
@@ -278,7 +278,7 @@ internal class CustomerListPageResponseTest {
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                         .billingId("billingId")
-                        .couponId("couponId")
+                        .couponId(CustomerListResponse.CouponId.EMPTY)
                         .defaultPaymentMethod(
                             CustomerListResponse.DefaultPaymentMethod.builder()
                                 .billingId("billingId")

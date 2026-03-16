@@ -22,7 +22,7 @@ internal class CustomerListResponseTest {
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                 .billingId("billingId")
-                .couponId("couponId")
+                .couponId(CustomerListResponse.CouponId.EMPTY)
                 .defaultPaymentMethod(
                     CustomerListResponse.DefaultPaymentMethod.builder()
                         .billingId("billingId")
@@ -129,7 +129,7 @@ internal class CustomerListResponseTest {
         assertThat(customerListResponse.billingCurrency())
             .contains(CustomerListResponse.BillingCurrency.USD)
         assertThat(customerListResponse.billingId()).contains("billingId")
-        assertThat(customerListResponse.couponId()).contains("couponId")
+        assertThat(customerListResponse.couponId()).contains(CustomerListResponse.CouponId.EMPTY)
         assertThat(customerListResponse.defaultPaymentMethod())
             .contains(
                 CustomerListResponse.DefaultPaymentMethod.builder()
@@ -240,7 +240,7 @@ internal class CustomerListResponseTest {
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .billingCurrency(CustomerListResponse.BillingCurrency.USD)
                 .billingId("billingId")
-                .couponId("couponId")
+                .couponId(CustomerListResponse.CouponId.EMPTY)
                 .defaultPaymentMethod(
                     CustomerListResponse.DefaultPaymentMethod.builder()
                         .billingId("billingId")
