@@ -1480,6 +1480,8 @@ private constructor(
             fun function(): Function = function.getRequired("function")
 
             /**
+             * Aggregation field name
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
              */
@@ -1552,6 +1554,7 @@ private constructor(
                  */
                 fun function(function: JsonField<Function>) = apply { this.function = function }
 
+                /** Aggregation field name */
                 fun field(field: String) = field(JsonField.of(field))
 
                 /**
@@ -2002,6 +2005,8 @@ private constructor(
                 ) : this(field, operation, value, values, mutableMapOf())
 
                 /**
+                 * Condition field name
+                 *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
                  *   unexpectedly missing or null (e.g. if the server responded with an unexpected
                  *   value).
@@ -2016,6 +2021,8 @@ private constructor(
                 fun operation(): Operation = operation.getRequired("operation")
 
                 /**
+                 * Condition value
+                 *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
                  */
@@ -2107,6 +2114,7 @@ private constructor(
                         additionalProperties = condition.additionalProperties.toMutableMap()
                     }
 
+                    /** Condition field name */
                     fun field(field: String) = field(JsonField.of(field))
 
                     /**
@@ -2131,6 +2139,7 @@ private constructor(
                         this.operation = operation
                     }
 
+                    /** Condition value */
                     fun value(value: String) = value(JsonField.of(value))
 
                     /**
