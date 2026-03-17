@@ -517,6 +517,12 @@ private constructor(
 
             @JvmField val CREDITS_UPDATED = of("CREDITS_UPDATED")
 
+            @JvmField
+            val CREDITS_CONSUMPTION_TRANSFER_SOURCE = of("CREDITS_CONSUMPTION_TRANSFER_SOURCE")
+
+            @JvmField
+            val CREDITS_CONSUMPTION_TRANSFER_TARGET = of("CREDITS_CONSUMPTION_TRANSFER_TARGET")
+
             @JvmStatic fun of(value: String) = EventType(JsonField.of(value))
         }
 
@@ -527,6 +533,8 @@ private constructor(
             CREDITS_CONSUMED,
             CREDITS_VOIDED,
             CREDITS_UPDATED,
+            CREDITS_CONSUMPTION_TRANSFER_SOURCE,
+            CREDITS_CONSUMPTION_TRANSFER_TARGET,
         }
 
         /**
@@ -544,6 +552,8 @@ private constructor(
             CREDITS_CONSUMED,
             CREDITS_VOIDED,
             CREDITS_UPDATED,
+            CREDITS_CONSUMPTION_TRANSFER_SOURCE,
+            CREDITS_CONSUMPTION_TRANSFER_TARGET,
             /**
              * An enum member indicating that [EventType] was instantiated with an unknown value.
              */
@@ -564,6 +574,8 @@ private constructor(
                 CREDITS_CONSUMED -> Value.CREDITS_CONSUMED
                 CREDITS_VOIDED -> Value.CREDITS_VOIDED
                 CREDITS_UPDATED -> Value.CREDITS_UPDATED
+                CREDITS_CONSUMPTION_TRANSFER_SOURCE -> Value.CREDITS_CONSUMPTION_TRANSFER_SOURCE
+                CREDITS_CONSUMPTION_TRANSFER_TARGET -> Value.CREDITS_CONSUMPTION_TRANSFER_TARGET
                 else -> Value._UNKNOWN
             }
 
@@ -582,6 +594,8 @@ private constructor(
                 CREDITS_CONSUMED -> Known.CREDITS_CONSUMED
                 CREDITS_VOIDED -> Known.CREDITS_VOIDED
                 CREDITS_UPDATED -> Known.CREDITS_UPDATED
+                CREDITS_CONSUMPTION_TRANSFER_SOURCE -> Known.CREDITS_CONSUMPTION_TRANSFER_SOURCE
+                CREDITS_CONSUMPTION_TRANSFER_TARGET -> Known.CREDITS_CONSUMPTION_TRANSFER_TARGET
                 else -> throw StiggInvalidDataException("Unknown EventType: $value")
             }
 
