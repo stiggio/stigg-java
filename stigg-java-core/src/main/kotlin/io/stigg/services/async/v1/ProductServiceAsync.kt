@@ -75,17 +75,17 @@ interface ProductServiceAsync {
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
     fun duplicateProduct(
-        pathId: String,
+        id: String,
         params: ProductDuplicateProductParams,
-    ): CompletableFuture<Product> = duplicateProduct(pathId, params, RequestOptions.none())
+    ): CompletableFuture<Product> = duplicateProduct(id, params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        pathId: String,
+        id: String,
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<Product> =
-        duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+        duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see duplicateProduct */
     fun duplicateProduct(params: ProductDuplicateProductParams): CompletableFuture<Product> =
@@ -256,18 +256,18 @@ interface ProductServiceAsync {
          * the same as [ProductServiceAsync.duplicateProduct].
          */
         fun duplicateProduct(
-            pathId: String,
+            id: String,
             params: ProductDuplicateProductParams,
         ): CompletableFuture<HttpResponseFor<Product>> =
-            duplicateProduct(pathId, params, RequestOptions.none())
+            duplicateProduct(id, params, RequestOptions.none())
 
         /** @see duplicateProduct */
         fun duplicateProduct(
-            pathId: String,
+            id: String,
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<Product>> =
-            duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+            duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see duplicateProduct */
         fun duplicateProduct(

@@ -72,15 +72,15 @@ interface ProductService {
     ): Product
 
     /** Duplicates an existing product, including its plans, addons, and configuration. */
-    fun duplicateProduct(pathId: String, params: ProductDuplicateProductParams): Product =
-        duplicateProduct(pathId, params, RequestOptions.none())
+    fun duplicateProduct(id: String, params: ProductDuplicateProductParams): Product =
+        duplicateProduct(id, params, RequestOptions.none())
 
     /** @see duplicateProduct */
     fun duplicateProduct(
-        pathId: String,
+        id: String,
         params: ProductDuplicateProductParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Product = duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+    ): Product = duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see duplicateProduct */
     fun duplicateProduct(params: ProductDuplicateProductParams): Product =
@@ -243,18 +243,18 @@ interface ProductService {
          */
         @MustBeClosed
         fun duplicateProduct(
-            pathId: String,
+            id: String,
             params: ProductDuplicateProductParams,
-        ): HttpResponseFor<Product> = duplicateProduct(pathId, params, RequestOptions.none())
+        ): HttpResponseFor<Product> = duplicateProduct(id, params, RequestOptions.none())
 
         /** @see duplicateProduct */
         @MustBeClosed
         fun duplicateProduct(
-            pathId: String,
+            id: String,
             params: ProductDuplicateProductParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Product> =
-            duplicateProduct(params.toBuilder().pathId(pathId).build(), requestOptions)
+            duplicateProduct(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see duplicateProduct */
         @MustBeClosed

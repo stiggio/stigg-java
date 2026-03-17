@@ -10,8 +10,8 @@ internal class ProductDuplicateProductParamsTest {
     @Test
     fun create() {
         ProductDuplicateProductParams.builder()
-            .pathId("x")
-            .bodyId("id")
+            .id("x")
+            .targetId("targetId")
             .description("description")
             .displayName("displayName")
             .build()
@@ -19,7 +19,7 @@ internal class ProductDuplicateProductParamsTest {
 
     @Test
     fun pathParams() {
-        val params = ProductDuplicateProductParams.builder().pathId("x").bodyId("id").build()
+        val params = ProductDuplicateProductParams.builder().id("x").targetId("targetId").build()
 
         assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
@@ -30,25 +30,25 @@ internal class ProductDuplicateProductParamsTest {
     fun body() {
         val params =
             ProductDuplicateProductParams.builder()
-                .pathId("x")
-                .bodyId("id")
+                .id("x")
+                .targetId("targetId")
                 .description("description")
                 .displayName("displayName")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.bodyId()).isEqualTo("id")
+        assertThat(body.targetId()).isEqualTo("targetId")
         assertThat(body.description()).contains("description")
         assertThat(body.displayName()).contains("displayName")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = ProductDuplicateProductParams.builder().pathId("x").bodyId("id").build()
+        val params = ProductDuplicateProductParams.builder().id("x").targetId("targetId").build()
 
         val body = params._body()
 
-        assertThat(body.bodyId()).isEqualTo("id")
+        assertThat(body.targetId()).isEqualTo("targetId")
     }
 }
