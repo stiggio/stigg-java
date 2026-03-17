@@ -6,6 +6,7 @@ import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -323,6 +324,24 @@ internal class CustomerServiceAsyncTest {
 
         val customerResponse = customerResponseFuture.get()
         customerResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieveEntitlements() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val customerServiceAsync = client.v1().customers()
+
+        val responseFuture =
+            customerServiceAsync.retrieveEntitlements(
+                CustomerRetrieveEntitlementsParams.builder()
+                    .id("x")
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

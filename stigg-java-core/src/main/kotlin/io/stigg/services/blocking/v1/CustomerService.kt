@@ -15,6 +15,8 @@ import io.stigg.models.v1.customers.CustomerListResourcesPage
 import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
@@ -209,6 +211,46 @@ interface CustomerService {
         params: CustomerProvisionParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerResponse
+
+    /**
+     * Retrieves the effective entitlements for a customer or resource, including feature and credit
+     * entitlements.
+     */
+    fun retrieveEntitlements(id: String): CustomerRetrieveEntitlementsResponse =
+        retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerRetrieveEntitlementsResponse =
+        retrieveEntitlements(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+    ): CustomerRetrieveEntitlementsResponse =
+        retrieveEntitlements(id, params, RequestOptions.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        params: CustomerRetrieveEntitlementsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerRetrieveEntitlementsResponse
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        params: CustomerRetrieveEntitlementsParams
+    ): CustomerRetrieveEntitlementsResponse = retrieveEntitlements(params, RequestOptions.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CustomerRetrieveEntitlementsResponse =
+        retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none(), requestOptions)
 
     /** Restores an archived customer, allowing them to create new subscriptions again. */
     fun unarchive(id: String): CustomerResponse = unarchive(id, CustomerUnarchiveParams.none())
@@ -482,6 +524,55 @@ interface CustomerService {
             params: CustomerProvisionParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/entitlements`, but is
+         * otherwise the same as [CustomerService.retrieveEntitlements].
+         */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            id: String
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse> =
+            retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())
+
+        /** @see retrieveEntitlements */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            id: String,
+            params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse> =
+            retrieveEntitlements(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see retrieveEntitlements */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            id: String,
+            params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse> =
+            retrieveEntitlements(id, params, RequestOptions.none())
+
+        /** @see retrieveEntitlements */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            params: CustomerRetrieveEntitlementsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse>
+
+        /** @see retrieveEntitlements */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            params: CustomerRetrieveEntitlementsParams
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse> =
+            retrieveEntitlements(params, RequestOptions.none())
+
+        /** @see retrieveEntitlements */
+        @MustBeClosed
+        fun retrieveEntitlements(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerRetrieveEntitlementsResponse> =
+            retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/{id}/unarchive`, but is otherwise
