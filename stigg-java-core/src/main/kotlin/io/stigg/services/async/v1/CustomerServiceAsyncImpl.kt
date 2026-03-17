@@ -27,6 +27,8 @@ import io.stigg.models.v1.customers.CustomerListResourcesPageResponse
 import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
@@ -113,6 +115,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CompletableFuture<CustomerResponse> =
         // post /api/v1/customers
         withRawResponse().provision(params, requestOptions).thenApply { it.parse() }
+
+    override fun retrieveEntitlements(
+        params: CustomerRetrieveEntitlementsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        // get /api/v1/customers/{id}/entitlements
+        withRawResponse().retrieveEntitlements(params, requestOptions).thenApply { it.parse() }
 
     override fun unarchive(
         params: CustomerUnarchiveParams,
@@ -383,6 +392,39 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                     errorHandler.handle(response).parseable {
                         response
                             .use { provisionHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val retrieveEntitlementsHandler: Handler<CustomerRetrieveEntitlementsResponse> =
+            jsonHandler<CustomerRetrieveEntitlementsResponse>(clientOptions.jsonMapper)
+
+        override fun retrieveEntitlements(
+            params: CustomerRetrieveEntitlementsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "entitlements")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { retrieveEntitlementsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
