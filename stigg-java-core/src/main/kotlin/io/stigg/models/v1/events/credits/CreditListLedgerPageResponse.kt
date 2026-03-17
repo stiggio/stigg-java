@@ -19,7 +19,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Response list object */
+/** Paginated list of credit ledger events */
 class CreditListLedgerPageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

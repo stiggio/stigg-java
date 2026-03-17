@@ -36,6 +36,7 @@ private constructor(
     /** The end date of the range */
     fun endDate(): Optional<OffsetDateTime> = Optional.ofNullable(endDate)
 
+    /** Criteria by which to group the usage history */
     fun groupBy(): Optional<String> = Optional.ofNullable(groupBy)
 
     /** When true, includes usage data from the most recent cancelled or expired subscription */
@@ -109,6 +110,7 @@ private constructor(
         /** Alias for calling [Builder.endDate] with `endDate.orElse(null)`. */
         fun endDate(endDate: Optional<OffsetDateTime>) = endDate(endDate.getOrNull())
 
+        /** Criteria by which to group the usage history */
         fun groupBy(groupBy: String?) = apply { this.groupBy = groupBy }
 
         /** Alias for calling [Builder.groupBy] with `groupBy.orElse(null)`. */
