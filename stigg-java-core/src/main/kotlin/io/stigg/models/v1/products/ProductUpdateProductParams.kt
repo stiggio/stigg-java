@@ -975,6 +975,8 @@ private constructor(
         fun downgradePlanId(): Optional<String> = downgradePlanId.getOptional("downgradePlanId")
 
         /**
+         * Indicates if the subscription should be prorated at the end of the billing period
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1168,6 +1170,7 @@ private constructor(
                 this.downgradePlanId = downgradePlanId
             }
 
+            /** Indicates if the subscription should be prorated at the end of the billing period */
             fun prorateAtEndOfBillingPeriod(prorateAtEndOfBillingPeriod: Boolean?) =
                 prorateAtEndOfBillingPeriod(JsonField.ofNullable(prorateAtEndOfBillingPeriod))
 
