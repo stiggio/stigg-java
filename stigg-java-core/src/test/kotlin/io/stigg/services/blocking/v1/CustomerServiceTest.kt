@@ -6,6 +6,7 @@ import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -316,6 +317,23 @@ internal class CustomerServiceTest {
             )
 
         customerResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieveEntitlements() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val customerService = client.v1().customers()
+
+        val response =
+            customerService.retrieveEntitlements(
+                CustomerRetrieveEntitlementsParams.builder()
+                    .id("x")
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

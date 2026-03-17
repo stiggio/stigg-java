@@ -14,6 +14,8 @@ import io.stigg.models.v1.customers.CustomerListResourcesPageAsync
 import io.stigg.models.v1.customers.CustomerListResourcesParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerResponse
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
+import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
@@ -223,6 +225,47 @@ interface CustomerServiceAsync {
         params: CustomerProvisionParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerResponse>
+
+    /**
+     * Retrieves the effective entitlements for a customer or resource, including feature and credit
+     * entitlements.
+     */
+    fun retrieveEntitlements(id: String): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        retrieveEntitlements(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        retrieveEntitlements(id, params, RequestOptions.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        params: CustomerRetrieveEntitlementsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse>
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        params: CustomerRetrieveEntitlementsParams
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        retrieveEntitlements(params, RequestOptions.none())
+
+    /** @see retrieveEntitlements */
+    fun retrieveEntitlements(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
+        retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none(), requestOptions)
 
     /** Restores an archived customer, allowing them to create new subscriptions again. */
     fun unarchive(id: String): CompletableFuture<CustomerResponse> =
@@ -496,6 +539,49 @@ interface CustomerServiceAsync {
             params: CustomerProvisionParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<CustomerResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/entitlements`, but is
+         * otherwise the same as [CustomerServiceAsync.retrieveEntitlements].
+         */
+        fun retrieveEntitlements(
+            id: String
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> =
+            retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())
+
+        /** @see retrieveEntitlements */
+        fun retrieveEntitlements(
+            id: String,
+            params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> =
+            retrieveEntitlements(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see retrieveEntitlements */
+        fun retrieveEntitlements(
+            id: String,
+            params: CustomerRetrieveEntitlementsParams = CustomerRetrieveEntitlementsParams.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> =
+            retrieveEntitlements(id, params, RequestOptions.none())
+
+        /** @see retrieveEntitlements */
+        fun retrieveEntitlements(
+            params: CustomerRetrieveEntitlementsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>>
+
+        /** @see retrieveEntitlements */
+        fun retrieveEntitlements(
+            params: CustomerRetrieveEntitlementsParams
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> =
+            retrieveEntitlements(params, RequestOptions.none())
+
+        /** @see retrieveEntitlements */
+        fun retrieveEntitlements(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerRetrieveEntitlementsResponse>> =
+            retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/{id}/unarchive`, but is otherwise
