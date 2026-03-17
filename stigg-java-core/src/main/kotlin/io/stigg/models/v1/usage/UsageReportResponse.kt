@@ -188,7 +188,7 @@ private constructor(
         private val customerId: JsonField<String>,
         private val featureId: JsonField<String>,
         private val timestamp: JsonField<OffsetDateTime>,
-        private val value: JsonField<Double>,
+        private val value: JsonField<Long>,
         private val currentUsage: JsonField<Double>,
         private val nextResetDate: JsonField<OffsetDateTime>,
         private val resourceId: JsonField<String>,
@@ -212,7 +212,7 @@ private constructor(
             @JsonProperty("timestamp")
             @ExcludeMissing
             timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("value") @ExcludeMissing value: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("value") @ExcludeMissing value: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("currentUsage")
             @ExcludeMissing
             currentUsage: JsonField<Double> = JsonMissing.of(),
@@ -289,7 +289,7 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun value(): Double = value.getRequired("value")
+        fun value(): Long = value.getRequired("value")
 
         /**
          * The current measured usage value
@@ -381,7 +381,7 @@ private constructor(
          *
          * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Double> = value
+        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Long> = value
 
         /**
          * Returns the raw JSON value of [currentUsage].
@@ -470,7 +470,7 @@ private constructor(
             private var customerId: JsonField<String>? = null
             private var featureId: JsonField<String>? = null
             private var timestamp: JsonField<OffsetDateTime>? = null
-            private var value: JsonField<Double>? = null
+            private var value: JsonField<Long>? = null
             private var currentUsage: JsonField<Double> = JsonMissing.of()
             private var nextResetDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var resourceId: JsonField<String> = JsonMissing.of()
@@ -559,16 +559,16 @@ private constructor(
             }
 
             /** The usage measurement record */
-            fun value(value: Double) = value(JsonField.of(value))
+            fun value(value: Long) = value(JsonField.of(value))
 
             /**
              * Sets [Builder.value] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.value] with a well-typed [Double] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.value] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun value(value: JsonField<Double>) = apply { this.value = value }
+            fun value(value: JsonField<Long>) = apply { this.value = value }
 
             /** The current measured usage value */
             fun currentUsage(currentUsage: Double?) =

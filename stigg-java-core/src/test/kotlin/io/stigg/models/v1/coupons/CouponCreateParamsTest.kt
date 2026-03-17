@@ -27,7 +27,7 @@ internal class CouponCreateParamsTest {
                     .build()
             )
             .name("name")
-            .percentOff(1L)
+            .percentOff(1.0)
             .build()
     }
 
@@ -50,7 +50,7 @@ internal class CouponCreateParamsTest {
                         .build()
                 )
                 .name("name")
-                .percentOff(1L)
+                .percentOff(1.0)
                 .build()
 
         val body = params._body()
@@ -72,6 +72,6 @@ internal class CouponCreateParamsTest {
                     .build()
             )
         assertThat(body.name()).isEqualTo("name")
-        assertThat(body.percentOff()).contains(1L)
+        assertThat(body.percentOff()).contains(1.0)
     }
 }

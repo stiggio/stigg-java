@@ -35,7 +35,7 @@ internal class CouponServiceTest {
                             .build()
                     )
                     .name("name")
-                    .percentOff(1L)
+                    .percentOff(1.0)
                     .build()
             )
 

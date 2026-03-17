@@ -88,7 +88,7 @@ private constructor(
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun percentOff(): Optional<Long> = body.percentOff()
+    fun percentOff(): Optional<Double> = body.percentOff()
 
     /**
      * Returns the raw JSON value of [id].
@@ -138,7 +138,7 @@ private constructor(
      *
      * Unlike [percentOff], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _percentOff(): JsonField<Long> = body._percentOff()
+    fun _percentOff(): JsonField<Double> = body._percentOff()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -301,25 +301,26 @@ private constructor(
         fun name(name: JsonField<String>) = apply { body.name(name) }
 
         /** Percentage discount off the original price */
-        fun percentOff(percentOff: Long?) = apply { body.percentOff(percentOff) }
+        fun percentOff(percentOff: Double?) = apply { body.percentOff(percentOff) }
 
         /**
          * Alias for [Builder.percentOff].
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun percentOff(percentOff: Long) = percentOff(percentOff as Long?)
+        fun percentOff(percentOff: Double) = percentOff(percentOff as Double?)
 
         /** Alias for calling [Builder.percentOff] with `percentOff.orElse(null)`. */
-        fun percentOff(percentOff: Optional<Long>) = percentOff(percentOff.getOrNull())
+        fun percentOff(percentOff: Optional<Double>) = percentOff(percentOff.getOrNull())
 
         /**
          * Sets [Builder.percentOff] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.percentOff] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.percentOff] with a well-typed [Double] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun percentOff(percentOff: JsonField<Long>) = apply { body.percentOff(percentOff) }
+        fun percentOff(percentOff: JsonField<Double>) = apply { body.percentOff(percentOff) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -480,7 +481,7 @@ private constructor(
         private val durationInMonths: JsonField<Long>,
         private val metadata: JsonField<Metadata>,
         private val name: JsonField<String>,
-        private val percentOff: JsonField<Long>,
+        private val percentOff: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -502,7 +503,7 @@ private constructor(
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("percentOff")
             @ExcludeMissing
-            percentOff: JsonField<Long> = JsonMissing.of(),
+            percentOff: JsonField<Double> = JsonMissing.of(),
         ) : this(
             id,
             amountsOff,
@@ -568,7 +569,7 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun percentOff(): Optional<Long> = percentOff.getOptional("percentOff")
+        fun percentOff(): Optional<Double> = percentOff.getOptional("percentOff")
 
         /**
          * Returns the raw JSON value of [id].
@@ -624,7 +625,9 @@ private constructor(
          *
          * Unlike [percentOff], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("percentOff") @ExcludeMissing fun _percentOff(): JsonField<Long> = percentOff
+        @JsonProperty("percentOff")
+        @ExcludeMissing
+        fun _percentOff(): JsonField<Double> = percentOff
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -666,7 +669,7 @@ private constructor(
             private var durationInMonths: JsonField<Long>? = null
             private var metadata: JsonField<Metadata>? = null
             private var name: JsonField<String>? = null
-            private var percentOff: JsonField<Long>? = null
+            private var percentOff: JsonField<Double>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -798,26 +801,26 @@ private constructor(
             fun name(name: JsonField<String>) = apply { this.name = name }
 
             /** Percentage discount off the original price */
-            fun percentOff(percentOff: Long?) = percentOff(JsonField.ofNullable(percentOff))
+            fun percentOff(percentOff: Double?) = percentOff(JsonField.ofNullable(percentOff))
 
             /**
              * Alias for [Builder.percentOff].
              *
              * This unboxed primitive overload exists for backwards compatibility.
              */
-            fun percentOff(percentOff: Long) = percentOff(percentOff as Long?)
+            fun percentOff(percentOff: Double) = percentOff(percentOff as Double?)
 
             /** Alias for calling [Builder.percentOff] with `percentOff.orElse(null)`. */
-            fun percentOff(percentOff: Optional<Long>) = percentOff(percentOff.getOrNull())
+            fun percentOff(percentOff: Optional<Double>) = percentOff(percentOff.getOrNull())
 
             /**
              * Sets [Builder.percentOff] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.percentOff] with a well-typed [Long] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.percentOff] with a well-typed [Double] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun percentOff(percentOff: JsonField<Long>) = apply { this.percentOff = percentOff }
+            fun percentOff(percentOff: JsonField<Double>) = apply { this.percentOff = percentOff }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
