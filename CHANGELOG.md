@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.36 (2026-03-17)
+
+Full Changelog: [v0.1.0-alpha.35...v0.1.0-alpha.36](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.35...v0.1.0-alpha.36)
+
+### Features
+
+* **api:** updated stainless config with new endpoint ([211ca07](https://github.com/stiggio/stigg-java/commit/211ca07979de7a5cda8355e626714c28c942172e))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([4845052](https://github.com/stiggio/stigg-java/commit/4845052ff234efa098d46f969ebe0f269bd9a80e))
+
 ## 0.1.0-alpha.35 (2026-03-16)
 
 Full Changelog: [v0.1.0-alpha.34...v0.1.0-alpha.35](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.34...v0.1.0-alpha.35)
