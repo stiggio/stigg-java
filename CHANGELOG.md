@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.40 (2026-03-18)
+
+Full Changelog: [v0.1.0-alpha.39...v0.1.0-alpha.40](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.39...v0.1.0-alpha.40)
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([7a0e587](https://github.com/stiggio/stigg-java/commit/7a0e587146c8c2b92cc822a8f719c0ae968306b1))
+
+
+### Chores
+
+* **internal:** update retry delay tests ([122749d](https://github.com/stiggio/stigg-java/commit/122749d739e54c8379be774ea31fa43d1399d6dd))
+
 ## 0.1.0-alpha.39 (2026-03-17)
 
 Full Changelog: [v0.1.0-alpha.38...v0.1.0-alpha.39](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.38...v0.1.0-alpha.39)
