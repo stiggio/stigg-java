@@ -1436,6 +1436,8 @@ private constructor(
 
             @JvmField val RECURRING = of("RECURRING")
 
+            @JvmField val OVERDRAFT = of("OVERDRAFT")
+
             @JvmStatic fun of(value: String) = GrantType(JsonField.of(value))
         }
 
@@ -1444,6 +1446,7 @@ private constructor(
             PAID,
             PROMOTIONAL,
             RECURRING,
+            OVERDRAFT,
         }
 
         /**
@@ -1459,6 +1462,7 @@ private constructor(
             PAID,
             PROMOTIONAL,
             RECURRING,
+            OVERDRAFT,
             /**
              * An enum member indicating that [GrantType] was instantiated with an unknown value.
              */
@@ -1477,6 +1481,7 @@ private constructor(
                 PAID -> Value.PAID
                 PROMOTIONAL -> Value.PROMOTIONAL
                 RECURRING -> Value.RECURRING
+                OVERDRAFT -> Value.OVERDRAFT
                 else -> Value._UNKNOWN
             }
 
@@ -1493,6 +1498,7 @@ private constructor(
                 PAID -> Known.PAID
                 PROMOTIONAL -> Known.PROMOTIONAL
                 RECURRING -> Known.RECURRING
+                OVERDRAFT -> Known.OVERDRAFT
                 else -> throw StiggInvalidDataException("Unknown GrantType: $value")
             }
 
