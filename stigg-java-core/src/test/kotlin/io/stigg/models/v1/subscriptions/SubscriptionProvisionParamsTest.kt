@@ -230,7 +230,7 @@ internal class SubscriptionProvisionParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
-            .unitQuantity(1.0)
+            .unitQuantity(1L)
             .build()
     }
 
@@ -464,7 +464,7 @@ internal class SubscriptionProvisionParamsTest {
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
-                .unitQuantity(1.0)
+                .unitQuantity(1L)
                 .build()
 
         val body = params._body()
@@ -706,7 +706,7 @@ internal class SubscriptionProvisionParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
-        assertThat(body.unitQuantity()).contains(1.0)
+        assertThat(body.unitQuantity()).contains(1L)
     }
 
     @Test
