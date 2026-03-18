@@ -72,7 +72,11 @@ internal class SubscriptionPreviewParamsTest {
                     .invoiceDaysUntilDue(0.0)
                     .isBackdated(true)
                     .isInvoicePaid(true)
-                    .metadata(JsonValue.from(mapOf<String, Any>()))
+                    .metadata(
+                        SubscriptionPreviewParams.BillingInformation.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .prorationBehavior(
                         SubscriptionPreviewParams.BillingInformation.ProrationBehavior
                             .INVOICE_IMMEDIATELY
@@ -177,7 +181,11 @@ internal class SubscriptionPreviewParamsTest {
                         .invoiceDaysUntilDue(0.0)
                         .isBackdated(true)
                         .isInvoicePaid(true)
-                        .metadata(JsonValue.from(mapOf<String, Any>()))
+                        .metadata(
+                            SubscriptionPreviewParams.BillingInformation.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
                         .prorationBehavior(
                             SubscriptionPreviewParams.BillingInformation.ProrationBehavior
                                 .INVOICE_IMMEDIATELY
@@ -285,7 +293,11 @@ internal class SubscriptionPreviewParamsTest {
                     .invoiceDaysUntilDue(0.0)
                     .isBackdated(true)
                     .isInvoicePaid(true)
-                    .metadata(JsonValue.from(mapOf<String, Any>()))
+                    .metadata(
+                        SubscriptionPreviewParams.BillingInformation.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
                     .prorationBehavior(
                         SubscriptionPreviewParams.BillingInformation.ProrationBehavior
                             .INVOICE_IMMEDIATELY

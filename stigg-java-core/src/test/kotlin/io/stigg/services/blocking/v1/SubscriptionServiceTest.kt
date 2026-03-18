@@ -96,7 +96,7 @@ internal class SubscriptionServiceTest {
                             .isInvoicePaid(true)
                             .metadata(
                                 SubscriptionUpdateParams.BillingInformation.Metadata.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
                                     .build()
                             )
                             .prorationBehavior(
@@ -395,7 +395,11 @@ internal class SubscriptionServiceTest {
                             .invoiceDaysUntilDue(0.0)
                             .isBackdated(true)
                             .isInvoicePaid(true)
-                            .metadata(JsonValue.from(mapOf<String, Any>()))
+                            .metadata(
+                                SubscriptionPreviewParams.BillingInformation.Metadata.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .prorationBehavior(
                                 SubscriptionPreviewParams.BillingInformation.ProrationBehavior
                                     .INVOICE_IMMEDIATELY
