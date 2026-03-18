@@ -4007,7 +4007,7 @@ private constructor(
         private val invoiceDaysUntilDue: JsonField<Double>,
         private val isBackdated: JsonField<Boolean>,
         private val isInvoicePaid: JsonField<Boolean>,
-        private val metadata: JsonValue,
+        private val metadata: JsonField<Metadata>,
         private val prorationBehavior: JsonField<ProrationBehavior>,
         private val taxIds: JsonField<List<TaxId>>,
         private val taxPercentage: JsonField<Double>,
@@ -4035,7 +4035,9 @@ private constructor(
             @JsonProperty("isInvoicePaid")
             @ExcludeMissing
             isInvoicePaid: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("metadata") @ExcludeMissing metadata: JsonValue = JsonMissing.of(),
+            @JsonProperty("metadata")
+            @ExcludeMissing
+            metadata: JsonField<Metadata> = JsonMissing.of(),
             @JsonProperty("prorationBehavior")
             @ExcludeMissing
             prorationBehavior: JsonField<ProrationBehavior> = JsonMissing.of(),
@@ -4117,12 +4119,10 @@ private constructor(
         /**
          * Additional billing metadata
          *
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = billingInformation.metadata().convert(MyClass.class);
-         * ```
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonValue = metadata
+        fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
          * Proration behavior
@@ -4217,6 +4217,13 @@ private constructor(
         fun _isInvoicePaid(): JsonField<Boolean> = isInvoicePaid
 
         /**
+         * Returns the raw JSON value of [metadata].
+         *
+         * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
+
+        /**
          * Returns the raw JSON value of [prorationBehavior].
          *
          * Unlike [prorationBehavior], this method doesn't throw if the JSON field has an unexpected
@@ -4279,7 +4286,7 @@ private constructor(
             private var invoiceDaysUntilDue: JsonField<Double> = JsonMissing.of()
             private var isBackdated: JsonField<Boolean> = JsonMissing.of()
             private var isInvoicePaid: JsonField<Boolean> = JsonMissing.of()
-            private var metadata: JsonValue = JsonMissing.of()
+            private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var prorationBehavior: JsonField<ProrationBehavior> = JsonMissing.of()
             private var taxIds: JsonField<MutableList<TaxId>>? = null
             private var taxPercentage: JsonField<Double> = JsonMissing.of()
@@ -4390,7 +4397,16 @@ private constructor(
             }
 
             /** Additional billing metadata */
-            fun metadata(metadata: JsonValue) = apply { this.metadata = metadata }
+            fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
+
+            /**
+             * Sets [Builder.metadata] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.metadata] with a well-typed [Metadata] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
             /** Proration behavior */
             fun prorationBehavior(prorationBehavior: ProrationBehavior) =
@@ -4527,6 +4543,7 @@ private constructor(
             invoiceDaysUntilDue()
             isBackdated()
             isInvoicePaid()
+            metadata().ifPresent { it.validate() }
             prorationBehavior().ifPresent { it.validate() }
             taxIds().ifPresent { it.forEach { it.validate() } }
             taxPercentage()
@@ -4556,6 +4573,7 @@ private constructor(
                 (if (invoiceDaysUntilDue.asKnown().isPresent) 1 else 0) +
                 (if (isBackdated.asKnown().isPresent) 1 else 0) +
                 (if (isInvoicePaid.asKnown().isPresent) 1 else 0) +
+                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (prorationBehavior.asKnown().getOrNull()?.validity() ?: 0) +
                 (taxIds.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (taxPercentage.asKnown().isPresent) 1 else 0) +
@@ -4878,6 +4896,109 @@ private constructor(
 
             override fun toString() =
                 "BillingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
+        }
+
+        /** Additional billing metadata */
+        class Metadata
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Metadata]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Metadata]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(metadata: Metadata) = apply {
+                    additionalProperties = metadata.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Metadata].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Metadata = Metadata(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Metadata = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Metadata && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
         }
 
         /** Proration behavior */
