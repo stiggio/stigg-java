@@ -446,7 +446,7 @@ internal class SubscriptionServiceAsyncTest {
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
-                    .unitQuantity(1.0)
+                    .unitQuantity(1L)
                     .build()
             )
 
@@ -698,7 +698,7 @@ internal class SubscriptionServiceAsyncTest {
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
-                    .unitQuantity(1.0)
+                    .unitQuantity(1L)
                     .build()
             )
 
