@@ -236,10 +236,12 @@ private constructor(
         body.trialOverrideConfiguration()
 
     /**
+     * Unit quantity
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun unitQuantity(): Optional<Double> = body.unitQuantity()
+    fun unitQuantity(): Optional<Long> = body.unitQuantity()
 
     /**
      * Returns the raw JSON value of [customerId].
@@ -431,7 +433,7 @@ private constructor(
      *
      * Unlike [unitQuantity], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _unitQuantity(): JsonField<Double> = body._unitQuantity()
+    fun _unitQuantity(): JsonField<Long> = body._unitQuantity()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -906,18 +908,17 @@ private constructor(
             trialOverrideConfiguration: JsonField<TrialOverrideConfiguration>
         ) = apply { body.trialOverrideConfiguration(trialOverrideConfiguration) }
 
-        fun unitQuantity(unitQuantity: Double) = apply { body.unitQuantity(unitQuantity) }
+        /** Unit quantity */
+        fun unitQuantity(unitQuantity: Long) = apply { body.unitQuantity(unitQuantity) }
 
         /**
          * Sets [Builder.unitQuantity] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.unitQuantity] with a well-typed [Double] value instead.
+         * You should usually call [Builder.unitQuantity] with a well-typed [Long] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun unitQuantity(unitQuantity: JsonField<Double>) = apply {
-            body.unitQuantity(unitQuantity)
-        }
+        fun unitQuantity(unitQuantity: JsonField<Long>) = apply { body.unitQuantity(unitQuantity) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -1092,7 +1093,7 @@ private constructor(
         private val scheduleStrategy: JsonField<ScheduleStrategy>,
         private val startDate: JsonField<OffsetDateTime>,
         private val trialOverrideConfiguration: JsonField<TrialOverrideConfiguration>,
-        private val unitQuantity: JsonField<Double>,
+        private val unitQuantity: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -1169,7 +1170,7 @@ private constructor(
             trialOverrideConfiguration: JsonField<TrialOverrideConfiguration> = JsonMissing.of(),
             @JsonProperty("unitQuantity")
             @ExcludeMissing
-            unitQuantity: JsonField<Double> = JsonMissing.of(),
+            unitQuantity: JsonField<Long> = JsonMissing.of(),
         ) : this(
             customerId,
             planId,
@@ -1398,10 +1399,12 @@ private constructor(
             trialOverrideConfiguration.getOptional("trialOverrideConfiguration")
 
         /**
+         * Unit quantity
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
-        fun unitQuantity(): Optional<Double> = unitQuantity.getOptional("unitQuantity")
+        fun unitQuantity(): Optional<Long> = unitQuantity.getOptional("unitQuantity")
 
         /**
          * Returns the raw JSON value of [customerId].
@@ -1638,7 +1641,7 @@ private constructor(
          */
         @JsonProperty("unitQuantity")
         @ExcludeMissing
-        fun _unitQuantity(): JsonField<Double> = unitQuantity
+        fun _unitQuantity(): JsonField<Long> = unitQuantity
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1696,7 +1699,7 @@ private constructor(
             private var startDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var trialOverrideConfiguration: JsonField<TrialOverrideConfiguration> =
                 JsonMissing.of()
-            private var unitQuantity: JsonField<Double> = JsonMissing.of()
+            private var unitQuantity: JsonField<Long> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -2172,16 +2175,17 @@ private constructor(
                 trialOverrideConfiguration: JsonField<TrialOverrideConfiguration>
             ) = apply { this.trialOverrideConfiguration = trialOverrideConfiguration }
 
-            fun unitQuantity(unitQuantity: Double) = unitQuantity(JsonField.of(unitQuantity))
+            /** Unit quantity */
+            fun unitQuantity(unitQuantity: Long) = unitQuantity(JsonField.of(unitQuantity))
 
             /**
              * Sets [Builder.unitQuantity] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.unitQuantity] with a well-typed [Double] value
+             * You should usually call [Builder.unitQuantity] with a well-typed [Long] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun unitQuantity(unitQuantity: JsonField<Double>) = apply {
+            fun unitQuantity(unitQuantity: JsonField<Long>) = apply {
                 this.unitQuantity = unitQuantity
             }
 

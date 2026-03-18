@@ -61,6 +61,8 @@ private constructor(
     fun appliedCoupon(): Optional<AppliedCoupon> = body.appliedCoupon()
 
     /**
+     * Await payment confirmation
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -125,6 +127,8 @@ private constructor(
     fun priceOverrides(): Optional<List<PriceOverride>> = body.priceOverrides()
 
     /**
+     * Promotion code
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -339,6 +343,7 @@ private constructor(
             body.appliedCoupon(appliedCoupon)
         }
 
+        /** Await payment confirmation */
         fun awaitPaymentConfirmation(awaitPaymentConfirmation: Boolean) = apply {
             body.awaitPaymentConfirmation(awaitPaymentConfirmation)
         }
@@ -522,6 +527,7 @@ private constructor(
             body.addPriceOverride(priceOverride)
         }
 
+        /** Promotion code */
         fun promotionCode(promotionCode: String) = apply { body.promotionCode(promotionCode) }
 
         /**
@@ -806,6 +812,8 @@ private constructor(
         fun appliedCoupon(): Optional<AppliedCoupon> = appliedCoupon.getOptional("appliedCoupon")
 
         /**
+         * Await payment confirmation
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -874,6 +882,8 @@ private constructor(
             priceOverrides.getOptional("priceOverrides")
 
         /**
+         * Promotion code
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -1129,6 +1139,7 @@ private constructor(
                 this.appliedCoupon = appliedCoupon
             }
 
+            /** Await payment confirmation */
             fun awaitPaymentConfirmation(awaitPaymentConfirmation: Boolean) =
                 awaitPaymentConfirmation(JsonField.of(awaitPaymentConfirmation))
 
@@ -1326,6 +1337,7 @@ private constructor(
                     }
             }
 
+            /** Promotion code */
             fun promotionCode(promotionCode: String) = promotionCode(JsonField.of(promotionCode))
 
             /**
