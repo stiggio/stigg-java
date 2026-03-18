@@ -67,7 +67,7 @@ internal class SubscriptionUpdateParamsTest {
                     .isInvoicePaid(true)
                     .metadata(
                         SubscriptionUpdateParams.BillingInformation.Metadata.builder()
-                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .prorationBehavior(
@@ -231,7 +231,7 @@ internal class SubscriptionUpdateParamsTest {
                         .isInvoicePaid(true)
                         .metadata(
                             SubscriptionUpdateParams.BillingInformation.Metadata.builder()
-                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
                         .prorationBehavior(
@@ -389,7 +389,7 @@ internal class SubscriptionUpdateParamsTest {
                     .isInvoicePaid(true)
                     .metadata(
                         SubscriptionUpdateParams.BillingInformation.Metadata.builder()
-                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
                     .prorationBehavior(
