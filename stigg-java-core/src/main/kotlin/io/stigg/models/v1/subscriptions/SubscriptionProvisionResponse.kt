@@ -1835,15 +1835,18 @@ private constructor(
                 class Feature
                 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
                 private constructor(
+                    private val id: JsonField<String>,
                     private val displayName: JsonField<String>,
                     private val featureStatus: JsonField<FeatureStatus>,
                     private val featureType: JsonField<FeatureType>,
-                    private val refId: JsonField<String>,
                     private val additionalProperties: MutableMap<String, JsonValue>,
                 ) {
 
                     @JsonCreator
                     private constructor(
+                        @JsonProperty("id")
+                        @ExcludeMissing
+                        id: JsonField<String> = JsonMissing.of(),
                         @JsonProperty("displayName")
                         @ExcludeMissing
                         displayName: JsonField<String> = JsonMissing.of(),
@@ -1853,10 +1856,16 @@ private constructor(
                         @JsonProperty("featureType")
                         @ExcludeMissing
                         featureType: JsonField<FeatureType> = JsonMissing.of(),
-                        @JsonProperty("refId")
-                        @ExcludeMissing
-                        refId: JsonField<String> = JsonMissing.of(),
-                    ) : this(displayName, featureStatus, featureType, refId, mutableMapOf())
+                    ) : this(id, displayName, featureStatus, featureType, mutableMapOf())
+
+                    /**
+                     * The unique reference ID of the entitlement.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun id(): String = id.getRequired("id")
 
                     /**
                      * The human-readable name of the entitlement, shown in UI elements.
@@ -1886,13 +1895,12 @@ private constructor(
                     fun featureType(): FeatureType = featureType.getRequired("featureType")
 
                     /**
-                     * The unique reference ID of the entitlement.
+                     * Returns the raw JSON value of [id].
                      *
-                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
-                     *   is unexpectedly missing or null (e.g. if the server responded with an
-                     *   unexpected value).
+                     * Unlike [id], this method doesn't throw if the JSON field has an unexpected
+                     * type.
                      */
-                    fun refId(): String = refId.getRequired("refId")
+                    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
                     /**
                      * Returns the raw JSON value of [displayName].
@@ -1924,14 +1932,6 @@ private constructor(
                     @ExcludeMissing
                     fun _featureType(): JsonField<FeatureType> = featureType
 
-                    /**
-                     * Returns the raw JSON value of [refId].
-                     *
-                     * Unlike [refId], this method doesn't throw if the JSON field has an unexpected
-                     * type.
-                     */
-                    @JsonProperty("refId") @ExcludeMissing fun _refId(): JsonField<String> = refId
-
                     @JsonAnySetter
                     private fun putAdditionalProperty(key: String, value: JsonValue) {
                         additionalProperties.put(key, value)
@@ -1951,10 +1951,10 @@ private constructor(
                          *
                          * The following fields are required:
                          * ```java
+                         * .id()
                          * .displayName()
                          * .featureStatus()
                          * .featureType()
-                         * .refId()
                          * ```
                          */
                         @JvmStatic fun builder() = Builder()
@@ -1963,21 +1963,33 @@ private constructor(
                     /** A builder for [Feature]. */
                     class Builder internal constructor() {
 
+                        private var id: JsonField<String>? = null
                         private var displayName: JsonField<String>? = null
                         private var featureStatus: JsonField<FeatureStatus>? = null
                         private var featureType: JsonField<FeatureType>? = null
-                        private var refId: JsonField<String>? = null
                         private var additionalProperties: MutableMap<String, JsonValue> =
                             mutableMapOf()
 
                         @JvmSynthetic
                         internal fun from(feature: Feature) = apply {
+                            id = feature.id
                             displayName = feature.displayName
                             featureStatus = feature.featureStatus
                             featureType = feature.featureType
-                            refId = feature.refId
                             additionalProperties = feature.additionalProperties.toMutableMap()
                         }
+
+                        /** The unique reference ID of the entitlement. */
+                        fun id(id: String) = id(JsonField.of(id))
+
+                        /**
+                         * Sets [Builder.id] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.id] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun id(id: JsonField<String>) = apply { this.id = id }
 
                         /** The human-readable name of the entitlement, shown in UI elements. */
                         fun displayName(displayName: String) =
@@ -2024,18 +2036,6 @@ private constructor(
                             this.featureType = featureType
                         }
 
-                        /** The unique reference ID of the entitlement. */
-                        fun refId(refId: String) = refId(JsonField.of(refId))
-
-                        /**
-                         * Sets [Builder.refId] to an arbitrary JSON value.
-                         *
-                         * You should usually call [Builder.refId] with a well-typed [String] value
-                         * instead. This method is primarily for setting the field to an
-                         * undocumented or not yet supported value.
-                         */
-                        fun refId(refId: JsonField<String>) = apply { this.refId = refId }
-
                         fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
                             apply {
                                 this.additionalProperties.clear()
@@ -2065,20 +2065,20 @@ private constructor(
                          *
                          * The following fields are required:
                          * ```java
+                         * .id()
                          * .displayName()
                          * .featureStatus()
                          * .featureType()
-                         * .refId()
                          * ```
                          *
                          * @throws IllegalStateException if any required field is unset.
                          */
                         fun build(): Feature =
                             Feature(
+                                checkRequired("id", id),
                                 checkRequired("displayName", displayName),
                                 checkRequired("featureStatus", featureStatus),
                                 checkRequired("featureType", featureType),
-                                checkRequired("refId", refId),
                                 additionalProperties.toMutableMap(),
                             )
                     }
@@ -2090,10 +2090,10 @@ private constructor(
                             return@apply
                         }
 
+                        id()
                         displayName()
                         featureStatus().validate()
                         featureType().validate()
-                        refId()
                         validated = true
                     }
 
@@ -2113,10 +2113,10 @@ private constructor(
                      */
                     @JvmSynthetic
                     internal fun validity(): Int =
-                        (if (displayName.asKnown().isPresent) 1 else 0) +
+                        (if (id.asKnown().isPresent) 1 else 0) +
+                            (if (displayName.asKnown().isPresent) 1 else 0) +
                             (featureStatus.asKnown().getOrNull()?.validity() ?: 0) +
-                            (featureType.asKnown().getOrNull()?.validity() ?: 0) +
-                            (if (refId.asKnown().isPresent) 1 else 0)
+                            (featureType.asKnown().getOrNull()?.validity() ?: 0)
 
                     /** The current status of the feature. */
                     class FeatureStatus
@@ -2412,19 +2412,19 @@ private constructor(
                         }
 
                         return other is Feature &&
+                            id == other.id &&
                             displayName == other.displayName &&
                             featureStatus == other.featureStatus &&
                             featureType == other.featureType &&
-                            refId == other.refId &&
                             additionalProperties == other.additionalProperties
                     }
 
                     private val hashCode: Int by lazy {
                         Objects.hash(
+                            id,
                             displayName,
                             featureStatus,
                             featureType,
-                            refId,
                             additionalProperties,
                         )
                     }
@@ -2432,7 +2432,7 @@ private constructor(
                     override fun hashCode(): Int = hashCode
 
                     override fun toString() =
-                        "Feature{displayName=$displayName, featureStatus=$featureStatus, featureType=$featureType, refId=$refId, additionalProperties=$additionalProperties}"
+                        "Feature{id=$id, displayName=$displayName, featureStatus=$featureStatus, featureType=$featureType, additionalProperties=$additionalProperties}"
                 }
 
                 class ResetPeriod

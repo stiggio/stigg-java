@@ -43,6 +43,7 @@ internal class SubscriptionProvisionResponseTest {
                                         .UnionObjectVariant0
                                         .Feature
                                         .builder()
+                                        .id("id")
                                         .displayName("displayName")
                                         .featureStatus(
                                             SubscriptionProvisionResponse.Data.Entitlement
@@ -58,7 +59,6 @@ internal class SubscriptionProvisionResponseTest {
                                                 .FeatureType
                                                 .BOOLEAN
                                         )
-                                        .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)
@@ -340,6 +340,7 @@ internal class SubscriptionProvisionResponseTest {
                                 SubscriptionProvisionResponse.Data.Entitlement.UnionObjectVariant0
                                     .Feature
                                     .builder()
+                                    .id("id")
                                     .displayName("displayName")
                                     .featureStatus(
                                         SubscriptionProvisionResponse.Data.Entitlement
@@ -355,7 +356,6 @@ internal class SubscriptionProvisionResponseTest {
                                             .FeatureType
                                             .BOOLEAN
                                     )
-                                    .refId("refId")
                                     .build()
                             )
                             .hasUnlimitedUsage(true)
@@ -637,6 +637,7 @@ internal class SubscriptionProvisionResponseTest {
                                         .UnionObjectVariant0
                                         .Feature
                                         .builder()
+                                        .id("id")
                                         .displayName("displayName")
                                         .featureStatus(
                                             SubscriptionProvisionResponse.Data.Entitlement
@@ -652,7 +653,6 @@ internal class SubscriptionProvisionResponseTest {
                                                 .FeatureType
                                                 .BOOLEAN
                                         )
-                                        .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)

@@ -36,6 +36,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                     CustomerRetrieveEntitlementsResponse.Data.Entitlement.Feature
                                         .InnerFeature
                                         .builder()
+                                        .id("id")
                                         .displayName("displayName")
                                         .featureStatus(
                                             CustomerRetrieveEntitlementsResponse.Data.Entitlement
@@ -51,7 +52,6 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                                 .FeatureType
                                                 .BOOLEAN
                                         )
-                                        .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)
@@ -92,6 +92,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                 CustomerRetrieveEntitlementsResponse.Data.Entitlement.Feature
                                     .InnerFeature
                                     .builder()
+                                    .id("id")
                                     .displayName("displayName")
                                     .featureStatus(
                                         CustomerRetrieveEntitlementsResponse.Data.Entitlement
@@ -107,7 +108,6 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                             .FeatureType
                                             .BOOLEAN
                                     )
-                                    .refId("refId")
                                     .build()
                             )
                             .hasUnlimitedUsage(true)
@@ -154,6 +154,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                     CustomerRetrieveEntitlementsResponse.Data.Entitlement.Feature
                                         .InnerFeature
                                         .builder()
+                                        .id("id")
                                         .displayName("displayName")
                                         .featureStatus(
                                             CustomerRetrieveEntitlementsResponse.Data.Entitlement
@@ -169,7 +170,6 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                                 .FeatureType
                                                 .BOOLEAN
                                         )
-                                        .refId("refId")
                                         .build()
                                 )
                                 .hasUnlimitedUsage(true)
