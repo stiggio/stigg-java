@@ -32,6 +32,8 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
+import io.stigg.services.async.v1.customers.IntegrationServiceAsync
+import io.stigg.services.async.v1.customers.IntegrationServiceAsyncImpl
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsyncImpl
 import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
@@ -55,6 +57,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         PromotionalEntitlementServiceAsyncImpl(clientOptions)
     }
 
+    private val integrations: IntegrationServiceAsync by lazy {
+        IntegrationServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
@@ -66,6 +72,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     /** Operations related to promotional entitlements */
     override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync =
         promotionalEntitlements
+
+    override fun integrations(): IntegrationServiceAsync = integrations
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -145,6 +153,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             PromotionalEntitlementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val integrations: IntegrationServiceAsync.WithRawResponse by lazy {
+            IntegrationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -158,6 +170,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         /** Operations related to promotional entitlements */
         override fun promotionalEntitlements(): PromotionalEntitlementServiceAsync.WithRawResponse =
             promotionalEntitlements
+
+        override fun integrations(): IntegrationServiceAsync.WithRawResponse = integrations
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
