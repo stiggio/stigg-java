@@ -1,0 +1,95 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package io.stigg.services.async.v1.customers
+
+import io.stigg.client.okhttp.StiggOkHttpClientAsync
+import io.stigg.models.v1.customers.integrations.IntegrationLinkParams
+import io.stigg.models.v1.customers.integrations.IntegrationRetrieveParams
+import io.stigg.models.v1.customers.integrations.IntegrationUnlinkParams
+import io.stigg.models.v1.customers.integrations.IntegrationUpdateParams
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+
+internal class IntegrationServiceAsyncTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieve() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val integrationServiceAsync = client.v1().customers().integrations()
+
+        val integrationFuture =
+            integrationServiceAsync.retrieve(
+                IntegrationRetrieveParams.builder().id("id").integrationId("integrationId").build()
+            )
+
+        val integration = integrationFuture.get()
+        integration.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun update() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val integrationServiceAsync = client.v1().customers().integrations()
+
+        val integrationFuture =
+            integrationServiceAsync.update(
+                IntegrationUpdateParams.builder()
+                    .id("id")
+                    .integrationId("integrationId")
+                    .syncedEntityId("syncedEntityId")
+                    .build()
+            )
+
+        val integration = integrationFuture.get()
+        integration.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun list() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val integrationServiceAsync = client.v1().customers().integrations()
+
+        val pageFuture = integrationServiceAsync.list("x")
+
+        val page = pageFuture.get()
+        page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun link() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val integrationServiceAsync = client.v1().customers().integrations()
+
+        val responseFuture =
+            integrationServiceAsync.link(
+                IntegrationLinkParams.builder()
+                    .pathId("x")
+                    .bodyId("id")
+                    .syncedEntityId("syncedEntityId")
+                    .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun unlink() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val integrationServiceAsync = client.v1().customers().integrations()
+
+        val responseFuture =
+            integrationServiceAsync.unlink(
+                IntegrationUnlinkParams.builder().id("id").integrationId("integrationId").build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+}
