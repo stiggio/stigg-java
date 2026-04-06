@@ -32,6 +32,8 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
+import io.stigg.services.blocking.v1.customers.IntegrationService
+import io.stigg.services.blocking.v1.customers.IntegrationServiceImpl
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
 import io.stigg.services.blocking.v1.customers.PaymentMethodServiceImpl
 import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
@@ -54,6 +56,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         PromotionalEntitlementServiceImpl(clientOptions)
     }
 
+    private val integrations: IntegrationService by lazy { IntegrationServiceImpl(clientOptions) }
+
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
@@ -64,6 +68,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     /** Operations related to promotional entitlements */
     override fun promotionalEntitlements(): PromotionalEntitlementService = promotionalEntitlements
+
+    override fun integrations(): IntegrationService = integrations
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -142,6 +148,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             PromotionalEntitlementServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val integrations: IntegrationService.WithRawResponse by lazy {
+            IntegrationServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -155,6 +165,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         /** Operations related to promotional entitlements */
         override fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse =
             promotionalEntitlements
+
+        override fun integrations(): IntegrationService.WithRawResponse = integrations
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)

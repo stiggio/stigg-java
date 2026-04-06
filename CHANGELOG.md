@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.0-alpha.45 (2026-04-06)
+
+Full Changelog: [v0.1.0-alpha.44...v0.1.0-alpha.45](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.44...v0.1.0-alpha.45)
+
+### Features
+
+* **STIGG-6815:** auto-generate openapi schema stainless ([6bab254](https://github.com/stiggio/stigg-java/commit/6bab2544fbc624ea8a17709a88247e7d087f9c41))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([b407c09](https://github.com/stiggio/stigg-java/commit/b407c090a2b0b6dc65468a1694edac86993687f3))
+* **internal:** bump ktfmt ([e7785d4](https://github.com/stiggio/stigg-java/commit/e7785d49eb5ca753f300f72012b2f7f96147b83c))
+* **internal:** update gitignore ([b490381](https://github.com/stiggio/stigg-java/commit/b49038174ae4be50d9d1061518f6e3150e6ae534))
+
 ## 0.1.0-alpha.44 (2026-03-18)
 
 Full Changelog: [v0.1.0-alpha.43...v0.1.0-alpha.44](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.43...v0.1.0-alpha.44)
