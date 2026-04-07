@@ -16,17 +16,14 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
+import io.stigg.models.v1.customers.CustomerIntegrationResponse
 import io.stigg.models.v1.customers.integrations.IntegrationLinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationLinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListPageAsync
 import io.stigg.models.v1.customers.integrations.IntegrationListPageResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListParams
 import io.stigg.models.v1.customers.integrations.IntegrationRetrieveParams
-import io.stigg.models.v1.customers.integrations.IntegrationRetrieveResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUnlinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationUnlinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUpdateParams
-import io.stigg.models.v1.customers.integrations.IntegrationUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -46,14 +43,14 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
     override fun retrieve(
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<IntegrationRetrieveResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         // get /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
     override fun update(
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<IntegrationUpdateResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         // patch /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().update(params, requestOptions).thenApply { it.parse() }
 
@@ -67,14 +64,14 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
     override fun link(
         params: IntegrationLinkParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<IntegrationLinkResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         // post /api/v1/customers/{id}/integrations
         withRawResponse().link(params, requestOptions).thenApply { it.parse() }
 
     override fun unlink(
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<IntegrationUnlinkResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         // delete /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().unlink(params, requestOptions).thenApply { it.parse() }
 
@@ -91,13 +88,13 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val retrieveHandler: Handler<IntegrationRetrieveResponse> =
-            jsonHandler<IntegrationRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<IntegrationRetrieveResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())
@@ -131,13 +128,13 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
                 }
         }
 
-        private val updateHandler: Handler<IntegrationUpdateResponse> =
-            jsonHandler<IntegrationUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun update(
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<IntegrationUpdateResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())
@@ -213,13 +210,13 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
                 }
         }
 
-        private val linkHandler: Handler<IntegrationLinkResponse> =
-            jsonHandler<IntegrationLinkResponse>(clientOptions.jsonMapper)
+        private val linkHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun link(
             params: IntegrationLinkParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<IntegrationLinkResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("pathId", params.pathId().getOrNull())
@@ -247,13 +244,13 @@ class IntegrationServiceAsyncImpl internal constructor(private val clientOptions
                 }
         }
 
-        private val unlinkHandler: Handler<IntegrationUnlinkResponse> =
-            jsonHandler<IntegrationUnlinkResponse>(clientOptions.jsonMapper)
+        private val unlinkHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun unlink(
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<IntegrationUnlinkResponse>> {
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())

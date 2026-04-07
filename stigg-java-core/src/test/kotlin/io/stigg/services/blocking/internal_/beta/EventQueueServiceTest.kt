@@ -16,9 +16,9 @@ internal class EventQueueServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val eventQueueService = client.internal_().beta().eventQueues()
 
-        val eventQueue = eventQueueService.retrieve("x")
+        val eventQueueResponse = eventQueueService.retrieve("x")
 
-        eventQueue.validate()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -27,7 +27,7 @@ internal class EventQueueServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val eventQueueService = client.internal_().beta().eventQueues()
 
-        val eventQueue =
+        val eventQueueResponse =
             eventQueueService.update(
                 EventQueueUpdateParams.builder()
                     .queueName("x")
@@ -37,7 +37,7 @@ internal class EventQueueServiceTest {
                     .build()
             )
 
-        eventQueue.validate()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -57,9 +57,9 @@ internal class EventQueueServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val eventQueueService = client.internal_().beta().eventQueues()
 
-        val eventQueue = eventQueueService.delete("x")
+        val eventQueueResponse = eventQueueService.delete("x")
 
-        eventQueue.validate()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -68,7 +68,7 @@ internal class EventQueueServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val eventQueueService = client.internal_().beta().eventQueues()
 
-        val response =
+        val eventQueueResponse =
             eventQueueService.provision(
                 EventQueueProvisionParams.builder()
                     .region(EventQueueProvisionParams.Region.US_EAST_1)
@@ -79,6 +79,6 @@ internal class EventQueueServiceTest {
                     .build()
             )
 
-        response.validate()
+        eventQueueResponse.validate()
     }
 }

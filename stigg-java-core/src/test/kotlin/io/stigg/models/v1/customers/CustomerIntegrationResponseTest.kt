@@ -1,25 +1,25 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.customers.integrations
+package io.stigg.models.v1.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class IntegrationUpdateResponseTest {
+internal class CustomerIntegrationResponseTest {
 
     @Test
     fun create() {
-        val integrationUpdateResponse =
-            IntegrationUpdateResponse.builder()
+        val customerIntegrationResponse =
+            CustomerIntegrationResponse.builder()
                 .data(
-                    IntegrationUpdateResponse.Data.builder()
+                    CustomerIntegrationResponse.Data.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(IntegrationUpdateResponse.Data.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
                         .syncData(
-                            IntegrationUpdateResponse.Data.SyncData.SyncRevisionPriceBillingData
+                            CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                                 .builder()
                                 .billingId("billingId")
                                 .billingLinkUrl("billingLinkUrl")
@@ -30,14 +30,14 @@ internal class IntegrationUpdateResponseTest {
                 )
                 .build()
 
-        assertThat(integrationUpdateResponse.data())
+        assertThat(customerIntegrationResponse.data())
             .isEqualTo(
-                IntegrationUpdateResponse.Data.builder()
+                CustomerIntegrationResponse.Data.builder()
                     .id("id")
                     .syncedEntityId("syncedEntityId")
-                    .vendorIdentifier(IntegrationUpdateResponse.Data.VendorIdentifier.AUTH0)
+                    .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
                     .syncData(
-                        IntegrationUpdateResponse.Data.SyncData.SyncRevisionPriceBillingData
+                        CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                             .builder()
                             .billingId("billingId")
                             .billingLinkUrl("billingLinkUrl")
@@ -51,15 +51,15 @@ internal class IntegrationUpdateResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val integrationUpdateResponse =
-            IntegrationUpdateResponse.builder()
+        val customerIntegrationResponse =
+            CustomerIntegrationResponse.builder()
                 .data(
-                    IntegrationUpdateResponse.Data.builder()
+                    CustomerIntegrationResponse.Data.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(IntegrationUpdateResponse.Data.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
                         .syncData(
-                            IntegrationUpdateResponse.Data.SyncData.SyncRevisionPriceBillingData
+                            CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                                 .builder()
                                 .billingId("billingId")
                                 .billingLinkUrl("billingLinkUrl")
@@ -70,12 +70,12 @@ internal class IntegrationUpdateResponseTest {
                 )
                 .build()
 
-        val roundtrippedIntegrationUpdateResponse =
+        val roundtrippedCustomerIntegrationResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(integrationUpdateResponse),
-                jacksonTypeRef<IntegrationUpdateResponse>(),
+                jsonMapper.writeValueAsString(customerIntegrationResponse),
+                jacksonTypeRef<CustomerIntegrationResponse>(),
             )
 
-        assertThat(roundtrippedIntegrationUpdateResponse).isEqualTo(integrationUpdateResponse)
+        assertThat(roundtrippedCustomerIntegrationResponse).isEqualTo(customerIntegrationResponse)
     }
 }

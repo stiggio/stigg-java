@@ -16,10 +16,10 @@ internal class EventQueueServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val eventQueueServiceAsync = client.internal_().beta().eventQueues()
 
-        val eventQueueFuture = eventQueueServiceAsync.retrieve("x")
+        val eventQueueResponseFuture = eventQueueServiceAsync.retrieve("x")
 
-        val eventQueue = eventQueueFuture.get()
-        eventQueue.validate()
+        val eventQueueResponse = eventQueueResponseFuture.get()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -28,7 +28,7 @@ internal class EventQueueServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val eventQueueServiceAsync = client.internal_().beta().eventQueues()
 
-        val eventQueueFuture =
+        val eventQueueResponseFuture =
             eventQueueServiceAsync.update(
                 EventQueueUpdateParams.builder()
                     .queueName("x")
@@ -38,8 +38,8 @@ internal class EventQueueServiceAsyncTest {
                     .build()
             )
 
-        val eventQueue = eventQueueFuture.get()
-        eventQueue.validate()
+        val eventQueueResponse = eventQueueResponseFuture.get()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -60,10 +60,10 @@ internal class EventQueueServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val eventQueueServiceAsync = client.internal_().beta().eventQueues()
 
-        val eventQueueFuture = eventQueueServiceAsync.delete("x")
+        val eventQueueResponseFuture = eventQueueServiceAsync.delete("x")
 
-        val eventQueue = eventQueueFuture.get()
-        eventQueue.validate()
+        val eventQueueResponse = eventQueueResponseFuture.get()
+        eventQueueResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -72,7 +72,7 @@ internal class EventQueueServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val eventQueueServiceAsync = client.internal_().beta().eventQueues()
 
-        val responseFuture =
+        val eventQueueResponseFuture =
             eventQueueServiceAsync.provision(
                 EventQueueProvisionParams.builder()
                     .region(EventQueueProvisionParams.Region.US_EAST_1)
@@ -83,7 +83,7 @@ internal class EventQueueServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val eventQueueResponse = eventQueueResponseFuture.get()
+        eventQueueResponse.validate()
     }
 }
