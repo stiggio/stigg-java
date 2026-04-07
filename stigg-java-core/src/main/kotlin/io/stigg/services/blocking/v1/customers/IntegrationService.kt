@@ -6,16 +6,13 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.customers.CustomerIntegrationResponse
 import io.stigg.models.v1.customers.integrations.IntegrationLinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationLinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListPage
 import io.stigg.models.v1.customers.integrations.IntegrationListParams
 import io.stigg.models.v1.customers.integrations.IntegrationRetrieveParams
-import io.stigg.models.v1.customers.integrations.IntegrationRetrieveResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUnlinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationUnlinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUpdateParams
-import io.stigg.models.v1.customers.integrations.IntegrationUpdateResponse
 import java.util.function.Consumer
 
 interface IntegrationService {
@@ -36,47 +33,49 @@ interface IntegrationService {
     fun retrieve(
         integrationId: String,
         params: IntegrationRetrieveParams,
-    ): IntegrationRetrieveResponse = retrieve(integrationId, params, RequestOptions.none())
+    ): CustomerIntegrationResponse = retrieve(integrationId, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         integrationId: String,
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationRetrieveResponse =
+    ): CustomerIntegrationResponse =
         retrieve(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see retrieve */
-    fun retrieve(params: IntegrationRetrieveParams): IntegrationRetrieveResponse =
+    fun retrieve(params: IntegrationRetrieveParams): CustomerIntegrationResponse =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationRetrieveResponse
+    ): CustomerIntegrationResponse
 
     /** Updates a customer's integration link, such as changing the synced external entity ID. */
-    fun update(integrationId: String, params: IntegrationUpdateParams): IntegrationUpdateResponse =
-        update(integrationId, params, RequestOptions.none())
+    fun update(
+        integrationId: String,
+        params: IntegrationUpdateParams,
+    ): CustomerIntegrationResponse = update(integrationId, params, RequestOptions.none())
 
     /** @see update */
     fun update(
         integrationId: String,
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationUpdateResponse =
+    ): CustomerIntegrationResponse =
         update(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see update */
-    fun update(params: IntegrationUpdateParams): IntegrationUpdateResponse =
+    fun update(params: IntegrationUpdateParams): CustomerIntegrationResponse =
         update(params, RequestOptions.none())
 
     /** @see update */
     fun update(
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationUpdateResponse
+    ): CustomerIntegrationResponse
 
     /** Retrieves a paginated list of a customer's external integrations (billing, CRM, etc.). */
     fun list(id: String): IntegrationListPage = list(id, IntegrationListParams.none())
@@ -111,7 +110,7 @@ interface IntegrationService {
     /**
      * Links a customer to an external integration by specifying the vendor and external entity ID.
      */
-    fun link(pathId: String, params: IntegrationLinkParams): IntegrationLinkResponse =
+    fun link(pathId: String, params: IntegrationLinkParams): CustomerIntegrationResponse =
         link(pathId, params, RequestOptions.none())
 
     /** @see link */
@@ -119,39 +118,41 @@ interface IntegrationService {
         pathId: String,
         params: IntegrationLinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationLinkResponse = link(params.toBuilder().pathId(pathId).build(), requestOptions)
+    ): CustomerIntegrationResponse = link(params.toBuilder().pathId(pathId).build(), requestOptions)
 
     /** @see link */
-    fun link(params: IntegrationLinkParams): IntegrationLinkResponse =
+    fun link(params: IntegrationLinkParams): CustomerIntegrationResponse =
         link(params, RequestOptions.none())
 
     /** @see link */
     fun link(
         params: IntegrationLinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationLinkResponse
+    ): CustomerIntegrationResponse
 
     /** Removes the link between a customer and an external integration. */
-    fun unlink(integrationId: String, params: IntegrationUnlinkParams): IntegrationUnlinkResponse =
-        unlink(integrationId, params, RequestOptions.none())
+    fun unlink(
+        integrationId: String,
+        params: IntegrationUnlinkParams,
+    ): CustomerIntegrationResponse = unlink(integrationId, params, RequestOptions.none())
 
     /** @see unlink */
     fun unlink(
         integrationId: String,
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationUnlinkResponse =
+    ): CustomerIntegrationResponse =
         unlink(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see unlink */
-    fun unlink(params: IntegrationUnlinkParams): IntegrationUnlinkResponse =
+    fun unlink(params: IntegrationUnlinkParams): CustomerIntegrationResponse =
         unlink(params, RequestOptions.none())
 
     /** @see unlink */
     fun unlink(
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): IntegrationUnlinkResponse
+    ): CustomerIntegrationResponse
 
     /**
      * A view of [IntegrationService] that provides access to raw HTTP responses for each method.
@@ -176,7 +177,7 @@ interface IntegrationService {
         fun retrieve(
             integrationId: String,
             params: IntegrationRetrieveParams,
-        ): HttpResponseFor<IntegrationRetrieveResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             retrieve(integrationId, params, RequestOptions.none())
 
         /** @see retrieve */
@@ -185,21 +186,21 @@ interface IntegrationService {
             integrationId: String,
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationRetrieveResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             retrieve(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: IntegrationRetrieveParams
-        ): HttpResponseFor<IntegrationRetrieveResponse> = retrieve(params, RequestOptions.none())
+        ): HttpResponseFor<CustomerIntegrationResponse> = retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationRetrieveResponse>
+        ): HttpResponseFor<CustomerIntegrationResponse>
 
         /**
          * Returns a raw HTTP response for `patch
@@ -210,7 +211,7 @@ interface IntegrationService {
         fun update(
             integrationId: String,
             params: IntegrationUpdateParams,
-        ): HttpResponseFor<IntegrationUpdateResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             update(integrationId, params, RequestOptions.none())
 
         /** @see update */
@@ -219,12 +220,12 @@ interface IntegrationService {
             integrationId: String,
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationUpdateResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             update(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see update */
         @MustBeClosed
-        fun update(params: IntegrationUpdateParams): HttpResponseFor<IntegrationUpdateResponse> =
+        fun update(params: IntegrationUpdateParams): HttpResponseFor<CustomerIntegrationResponse> =
             update(params, RequestOptions.none())
 
         /** @see update */
@@ -232,7 +233,7 @@ interface IntegrationService {
         fun update(
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationUpdateResponse>
+        ): HttpResponseFor<CustomerIntegrationResponse>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}/integrations`, but is
@@ -283,7 +284,8 @@ interface IntegrationService {
         fun link(
             pathId: String,
             params: IntegrationLinkParams,
-        ): HttpResponseFor<IntegrationLinkResponse> = link(pathId, params, RequestOptions.none())
+        ): HttpResponseFor<CustomerIntegrationResponse> =
+            link(pathId, params, RequestOptions.none())
 
         /** @see link */
         @MustBeClosed
@@ -291,12 +293,12 @@ interface IntegrationService {
             pathId: String,
             params: IntegrationLinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationLinkResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             link(params.toBuilder().pathId(pathId).build(), requestOptions)
 
         /** @see link */
         @MustBeClosed
-        fun link(params: IntegrationLinkParams): HttpResponseFor<IntegrationLinkResponse> =
+        fun link(params: IntegrationLinkParams): HttpResponseFor<CustomerIntegrationResponse> =
             link(params, RequestOptions.none())
 
         /** @see link */
@@ -304,7 +306,7 @@ interface IntegrationService {
         fun link(
             params: IntegrationLinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationLinkResponse>
+        ): HttpResponseFor<CustomerIntegrationResponse>
 
         /**
          * Returns a raw HTTP response for `delete
@@ -315,7 +317,7 @@ interface IntegrationService {
         fun unlink(
             integrationId: String,
             params: IntegrationUnlinkParams,
-        ): HttpResponseFor<IntegrationUnlinkResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             unlink(integrationId, params, RequestOptions.none())
 
         /** @see unlink */
@@ -324,12 +326,12 @@ interface IntegrationService {
             integrationId: String,
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationUnlinkResponse> =
+        ): HttpResponseFor<CustomerIntegrationResponse> =
             unlink(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see unlink */
         @MustBeClosed
-        fun unlink(params: IntegrationUnlinkParams): HttpResponseFor<IntegrationUnlinkResponse> =
+        fun unlink(params: IntegrationUnlinkParams): HttpResponseFor<CustomerIntegrationResponse> =
             unlink(params, RequestOptions.none())
 
         /** @see unlink */
@@ -337,6 +339,6 @@ interface IntegrationService {
         fun unlink(
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<IntegrationUnlinkResponse>
+        ): HttpResponseFor<CustomerIntegrationResponse>
     }
 }

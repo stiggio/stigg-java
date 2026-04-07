@@ -5,16 +5,13 @@ package io.stigg.services.async.v1.customers
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.customers.CustomerIntegrationResponse
 import io.stigg.models.v1.customers.integrations.IntegrationLinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationLinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListPageAsync
 import io.stigg.models.v1.customers.integrations.IntegrationListParams
 import io.stigg.models.v1.customers.integrations.IntegrationRetrieveParams
-import io.stigg.models.v1.customers.integrations.IntegrationRetrieveResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUnlinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationUnlinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUpdateParams
-import io.stigg.models.v1.customers.integrations.IntegrationUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -36,7 +33,7 @@ interface IntegrationServiceAsync {
     fun retrieve(
         integrationId: String,
         params: IntegrationRetrieveParams,
-    ): CompletableFuture<IntegrationRetrieveResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         retrieve(integrationId, params, RequestOptions.none())
 
     /** @see retrieve */
@@ -44,25 +41,25 @@ interface IntegrationServiceAsync {
         integrationId: String,
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationRetrieveResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         retrieve(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         params: IntegrationRetrieveParams
-    ): CompletableFuture<IntegrationRetrieveResponse> = retrieve(params, RequestOptions.none())
+    ): CompletableFuture<CustomerIntegrationResponse> = retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationRetrieveResponse>
+    ): CompletableFuture<CustomerIntegrationResponse>
 
     /** Updates a customer's integration link, such as changing the synced external entity ID. */
     fun update(
         integrationId: String,
         params: IntegrationUpdateParams,
-    ): CompletableFuture<IntegrationUpdateResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         update(integrationId, params, RequestOptions.none())
 
     /** @see update */
@@ -70,18 +67,18 @@ interface IntegrationServiceAsync {
         integrationId: String,
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationUpdateResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         update(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see update */
-    fun update(params: IntegrationUpdateParams): CompletableFuture<IntegrationUpdateResponse> =
+    fun update(params: IntegrationUpdateParams): CompletableFuture<CustomerIntegrationResponse> =
         update(params, RequestOptions.none())
 
     /** @see update */
     fun update(
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationUpdateResponse>
+    ): CompletableFuture<CustomerIntegrationResponse>
 
     /** Retrieves a paginated list of a customer's external integrations (billing, CRM, etc.). */
     fun list(id: String): CompletableFuture<IntegrationListPageAsync> =
@@ -124,31 +121,31 @@ interface IntegrationServiceAsync {
     fun link(
         pathId: String,
         params: IntegrationLinkParams,
-    ): CompletableFuture<IntegrationLinkResponse> = link(pathId, params, RequestOptions.none())
+    ): CompletableFuture<CustomerIntegrationResponse> = link(pathId, params, RequestOptions.none())
 
     /** @see link */
     fun link(
         pathId: String,
         params: IntegrationLinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationLinkResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         link(params.toBuilder().pathId(pathId).build(), requestOptions)
 
     /** @see link */
-    fun link(params: IntegrationLinkParams): CompletableFuture<IntegrationLinkResponse> =
+    fun link(params: IntegrationLinkParams): CompletableFuture<CustomerIntegrationResponse> =
         link(params, RequestOptions.none())
 
     /** @see link */
     fun link(
         params: IntegrationLinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationLinkResponse>
+    ): CompletableFuture<CustomerIntegrationResponse>
 
     /** Removes the link between a customer and an external integration. */
     fun unlink(
         integrationId: String,
         params: IntegrationUnlinkParams,
-    ): CompletableFuture<IntegrationUnlinkResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         unlink(integrationId, params, RequestOptions.none())
 
     /** @see unlink */
@@ -156,18 +153,18 @@ interface IntegrationServiceAsync {
         integrationId: String,
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationUnlinkResponse> =
+    ): CompletableFuture<CustomerIntegrationResponse> =
         unlink(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
     /** @see unlink */
-    fun unlink(params: IntegrationUnlinkParams): CompletableFuture<IntegrationUnlinkResponse> =
+    fun unlink(params: IntegrationUnlinkParams): CompletableFuture<CustomerIntegrationResponse> =
         unlink(params, RequestOptions.none())
 
     /** @see unlink */
     fun unlink(
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<IntegrationUnlinkResponse>
+    ): CompletableFuture<CustomerIntegrationResponse>
 
     /**
      * A view of [IntegrationServiceAsync] that provides access to raw HTTP responses for each
@@ -192,7 +189,7 @@ interface IntegrationServiceAsync {
         fun retrieve(
             integrationId: String,
             params: IntegrationRetrieveParams,
-        ): CompletableFuture<HttpResponseFor<IntegrationRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             retrieve(integrationId, params, RequestOptions.none())
 
         /** @see retrieve */
@@ -200,20 +197,20 @@ interface IntegrationServiceAsync {
             integrationId: String,
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             retrieve(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see retrieve */
         fun retrieve(
             params: IntegrationRetrieveParams
-        ): CompletableFuture<HttpResponseFor<IntegrationRetrieveResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         fun retrieve(
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationRetrieveResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>>
 
         /**
          * Returns a raw HTTP response for `patch
@@ -223,7 +220,7 @@ interface IntegrationServiceAsync {
         fun update(
             integrationId: String,
             params: IntegrationUpdateParams,
-        ): CompletableFuture<HttpResponseFor<IntegrationUpdateResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             update(integrationId, params, RequestOptions.none())
 
         /** @see update */
@@ -231,20 +228,20 @@ interface IntegrationServiceAsync {
             integrationId: String,
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationUpdateResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             update(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see update */
         fun update(
             params: IntegrationUpdateParams
-        ): CompletableFuture<HttpResponseFor<IntegrationUpdateResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             update(params, RequestOptions.none())
 
         /** @see update */
         fun update(
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationUpdateResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}/integrations`, but is
@@ -294,7 +291,7 @@ interface IntegrationServiceAsync {
         fun link(
             pathId: String,
             params: IntegrationLinkParams,
-        ): CompletableFuture<HttpResponseFor<IntegrationLinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             link(pathId, params, RequestOptions.none())
 
         /** @see link */
@@ -302,20 +299,20 @@ interface IntegrationServiceAsync {
             pathId: String,
             params: IntegrationLinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationLinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             link(params.toBuilder().pathId(pathId).build(), requestOptions)
 
         /** @see link */
         fun link(
             params: IntegrationLinkParams
-        ): CompletableFuture<HttpResponseFor<IntegrationLinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             link(params, RequestOptions.none())
 
         /** @see link */
         fun link(
             params: IntegrationLinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationLinkResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>>
 
         /**
          * Returns a raw HTTP response for `delete
@@ -325,7 +322,7 @@ interface IntegrationServiceAsync {
         fun unlink(
             integrationId: String,
             params: IntegrationUnlinkParams,
-        ): CompletableFuture<HttpResponseFor<IntegrationUnlinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             unlink(integrationId, params, RequestOptions.none())
 
         /** @see unlink */
@@ -333,19 +330,19 @@ interface IntegrationServiceAsync {
             integrationId: String,
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationUnlinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             unlink(params.toBuilder().integrationId(integrationId).build(), requestOptions)
 
         /** @see unlink */
         fun unlink(
             params: IntegrationUnlinkParams
-        ): CompletableFuture<HttpResponseFor<IntegrationUnlinkResponse>> =
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>> =
             unlink(params, RequestOptions.none())
 
         /** @see unlink */
         fun unlink(
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<IntegrationUnlinkResponse>>
+        ): CompletableFuture<HttpResponseFor<CustomerIntegrationResponse>>
     }
 }

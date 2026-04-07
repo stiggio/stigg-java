@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.customers.integrations
+package io.stigg.models.v1.customers
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -30,7 +30,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Response object */
-class IntegrationRetrieveResponse
+class CustomerIntegrationResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -72,7 +72,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [IntegrationRetrieveResponse].
+         * Returns a mutable builder for constructing an instance of [CustomerIntegrationResponse].
          *
          * The following fields are required:
          * ```java
@@ -82,16 +82,16 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [IntegrationRetrieveResponse]. */
+    /** A builder for [CustomerIntegrationResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(integrationRetrieveResponse: IntegrationRetrieveResponse) = apply {
-            data = integrationRetrieveResponse.data
-            additionalProperties = integrationRetrieveResponse.additionalProperties.toMutableMap()
+        internal fun from(customerIntegrationResponse: CustomerIntegrationResponse) = apply {
+            data = customerIntegrationResponse.data
+            additionalProperties = customerIntegrationResponse.additionalProperties.toMutableMap()
         }
 
         /** External billing or CRM integration link */
@@ -125,7 +125,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [IntegrationRetrieveResponse].
+         * Returns an immutable instance of [CustomerIntegrationResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -136,8 +136,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): IntegrationRetrieveResponse =
-            IntegrationRetrieveResponse(
+        fun build(): CustomerIntegrationResponse =
+            CustomerIntegrationResponse(
                 checkRequired("data", data),
                 additionalProperties.toMutableMap(),
             )
@@ -145,7 +145,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): IntegrationRetrieveResponse = apply {
+    fun validate(): CustomerIntegrationResponse = apply {
         if (validated) {
             return@apply
         }
@@ -1612,7 +1612,7 @@ private constructor(
             return true
         }
 
-        return other is IntegrationRetrieveResponse &&
+        return other is CustomerIntegrationResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -1622,5 +1622,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IntegrationRetrieveResponse{data=$data, additionalProperties=$additionalProperties}"
+        "CustomerIntegrationResponse{data=$data, additionalProperties=$additionalProperties}"
 }

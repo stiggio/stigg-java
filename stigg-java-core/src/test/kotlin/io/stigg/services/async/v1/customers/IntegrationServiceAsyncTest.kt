@@ -18,13 +18,13 @@ internal class IntegrationServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val integrationServiceAsync = client.v1().customers().integrations()
 
-        val integrationFuture =
+        val customerIntegrationResponseFuture =
             integrationServiceAsync.retrieve(
                 IntegrationRetrieveParams.builder().id("id").integrationId("integrationId").build()
             )
 
-        val integration = integrationFuture.get()
-        integration.validate()
+        val customerIntegrationResponse = customerIntegrationResponseFuture.get()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -33,7 +33,7 @@ internal class IntegrationServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val integrationServiceAsync = client.v1().customers().integrations()
 
-        val integrationFuture =
+        val customerIntegrationResponseFuture =
             integrationServiceAsync.update(
                 IntegrationUpdateParams.builder()
                     .id("id")
@@ -42,8 +42,8 @@ internal class IntegrationServiceAsyncTest {
                     .build()
             )
 
-        val integration = integrationFuture.get()
-        integration.validate()
+        val customerIntegrationResponse = customerIntegrationResponseFuture.get()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -64,7 +64,7 @@ internal class IntegrationServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val integrationServiceAsync = client.v1().customers().integrations()
 
-        val responseFuture =
+        val customerIntegrationResponseFuture =
             integrationServiceAsync.link(
                 IntegrationLinkParams.builder()
                     .pathId("x")
@@ -74,8 +74,8 @@ internal class IntegrationServiceAsyncTest {
                     .build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val customerIntegrationResponse = customerIntegrationResponseFuture.get()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -84,12 +84,12 @@ internal class IntegrationServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val integrationServiceAsync = client.v1().customers().integrations()
 
-        val responseFuture =
+        val customerIntegrationResponseFuture =
             integrationServiceAsync.unlink(
                 IntegrationUnlinkParams.builder().id("id").integrationId("integrationId").build()
             )
 
-        val response = responseFuture.get()
-        response.validate()
+        val customerIntegrationResponse = customerIntegrationResponseFuture.get()
+        customerIntegrationResponse.validate()
     }
 }

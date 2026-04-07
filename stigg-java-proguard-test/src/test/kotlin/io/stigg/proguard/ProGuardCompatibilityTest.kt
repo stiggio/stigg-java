@@ -4,10 +4,8 @@ package io.stigg.proguard
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.client.okhttp.StiggOkHttpClient
-import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
-import io.stigg.models.v1.customers.CustomerResponse
-import java.time.OffsetDateTime
+import io.stigg.models.v1.customers.CustomerIntegrationResponse
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -54,141 +52,33 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun customerResponseRoundtrip() {
+    fun customerIntegrationResponseRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerResponse =
-            CustomerResponse.builder()
+        val customerIntegrationResponse =
+            CustomerIntegrationResponse.builder()
                 .data(
-                    CustomerResponse.Data.builder()
+                    CustomerIntegrationResponse.Data.builder()
                         .id("id")
-                        .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .billingCurrency(CustomerResponse.Data.BillingCurrency.USD)
-                        .billingId("billingId")
-                        .couponId(CustomerResponse.Data.CouponId.EMPTY)
-                        .defaultPaymentMethod(
-                            CustomerResponse.Data.DefaultPaymentMethod.builder()
+                        .syncedEntityId("syncedEntityId")
+                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
+                        .syncData(
+                            CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
+                                .builder()
                                 .billingId("billingId")
-                                .cardExpiryMonth(0.0)
-                                .cardExpiryYear(0.0)
-                                .cardLast4Digits("cardLast4Digits")
-                                .type(CustomerResponse.Data.DefaultPaymentMethod.Type.CARD)
+                                .billingLinkUrl("billingLinkUrl")
+                                .priceGroupPackageBillingId("priceGroupPackageBillingId")
                                 .build()
                         )
-                        .email("dev@stainless.com")
-                        .addIntegration(
-                            CustomerResponse.Data.Integration.builder()
-                                .id("id")
-                                .syncedEntityId("syncedEntityId")
-                                .vendorIdentifier(
-                                    CustomerResponse.Data.Integration.VendorIdentifier.AUTH0
-                                )
-                                .build()
-                        )
-                        .language("language")
-                        .metadata(
-                            CustomerResponse.Data.Metadata.builder()
-                                .putAdditionalProperty("foo", JsonValue.from("string"))
-                                .build()
-                        )
-                        .name("name")
-                        .passthrough(
-                            CustomerResponse.Data.Passthrough.builder()
-                                .stripe(
-                                    CustomerResponse.Data.Passthrough.Stripe.builder()
-                                        .billingAddress(
-                                            CustomerResponse.Data.Passthrough.Stripe.BillingAddress
-                                                .builder()
-                                                .city("city")
-                                                .country("country")
-                                                .line1("line1")
-                                                .line2("line2")
-                                                .postalCode("postalCode")
-                                                .state("state")
-                                                .build()
-                                        )
-                                        .customerName("customerName")
-                                        .invoiceCustomFields(
-                                            CustomerResponse.Data.Passthrough.Stripe
-                                                .InvoiceCustomFields
-                                                .builder()
-                                                .putAdditionalProperty(
-                                                    "foo",
-                                                    JsonValue.from("string"),
-                                                )
-                                                .build()
-                                        )
-                                        .metadata(
-                                            CustomerResponse.Data.Passthrough.Stripe.Metadata
-                                                .builder()
-                                                .putAdditionalProperty(
-                                                    "foo",
-                                                    JsonValue.from("string"),
-                                                )
-                                                .build()
-                                        )
-                                        .paymentMethodId("paymentMethodId")
-                                        .shippingAddress(
-                                            CustomerResponse.Data.Passthrough.Stripe.ShippingAddress
-                                                .builder()
-                                                .city("city")
-                                                .country("country")
-                                                .line1("line1")
-                                                .line2("line2")
-                                                .postalCode("postalCode")
-                                                .state("state")
-                                                .build()
-                                        )
-                                        .addTaxId(
-                                            CustomerResponse.Data.Passthrough.Stripe.TaxId.builder()
-                                                .type("type")
-                                                .value("value")
-                                                .build()
-                                        )
-                                        .build()
-                                )
-                                .zuora(
-                                    CustomerResponse.Data.Passthrough.Zuora.builder()
-                                        .billingAddress(
-                                            CustomerResponse.Data.Passthrough.Zuora.BillingAddress
-                                                .builder()
-                                                .city("city")
-                                                .country("country")
-                                                .line1("line1")
-                                                .line2("line2")
-                                                .postalCode("postalCode")
-                                                .state("state")
-                                                .build()
-                                        )
-                                        .currency(
-                                            CustomerResponse.Data.Passthrough.Zuora.Currency.USD
-                                        )
-                                        .metadata(
-                                            CustomerResponse.Data.Passthrough.Zuora.Metadata
-                                                .builder()
-                                                .putAdditionalProperty(
-                                                    "foo",
-                                                    JsonValue.from("string"),
-                                                )
-                                                .build()
-                                        )
-                                        .paymentMethodId("paymentMethodId")
-                                        .build()
-                                )
-                                .build()
-                        )
-                        .timezone("timezone")
                         .build()
                 )
                 .build()
 
-        val roundtrippedCustomerResponse =
+        val roundtrippedCustomerIntegrationResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerResponse),
-                jacksonTypeRef<CustomerResponse>(),
+                jsonMapper.writeValueAsString(customerIntegrationResponse),
+                jacksonTypeRef<CustomerIntegrationResponse>(),
             )
 
-        assertThat(roundtrippedCustomerResponse).isEqualTo(customerResponse)
+        assertThat(roundtrippedCustomerIntegrationResponse).isEqualTo(customerIntegrationResponse)
     }
 }

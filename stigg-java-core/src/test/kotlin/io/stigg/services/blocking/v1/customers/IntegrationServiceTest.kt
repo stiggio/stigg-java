@@ -18,12 +18,12 @@ internal class IntegrationServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val integrationService = client.v1().customers().integrations()
 
-        val integration =
+        val customerIntegrationResponse =
             integrationService.retrieve(
                 IntegrationRetrieveParams.builder().id("id").integrationId("integrationId").build()
             )
 
-        integration.validate()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -32,7 +32,7 @@ internal class IntegrationServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val integrationService = client.v1().customers().integrations()
 
-        val integration =
+        val customerIntegrationResponse =
             integrationService.update(
                 IntegrationUpdateParams.builder()
                     .id("id")
@@ -41,7 +41,7 @@ internal class IntegrationServiceTest {
                     .build()
             )
 
-        integration.validate()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -61,7 +61,7 @@ internal class IntegrationServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val integrationService = client.v1().customers().integrations()
 
-        val response =
+        val customerIntegrationResponse =
             integrationService.link(
                 IntegrationLinkParams.builder()
                     .pathId("x")
@@ -71,7 +71,7 @@ internal class IntegrationServiceTest {
                     .build()
             )
 
-        response.validate()
+        customerIntegrationResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -80,11 +80,11 @@ internal class IntegrationServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val integrationService = client.v1().customers().integrations()
 
-        val response =
+        val customerIntegrationResponse =
             integrationService.unlink(
                 IntegrationUnlinkParams.builder().id("id").integrationId("integrationId").build()
             )
 
-        response.validate()
+        customerIntegrationResponse.validate()
     }
 }
