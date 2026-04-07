@@ -8,18 +8,18 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class EventQueueUpdateResponseTest {
+internal class EventQueueResponseTest {
 
     @Test
     fun create() {
-        val eventQueueUpdateResponse =
-            EventQueueUpdateResponse.builder()
+        val eventQueueResponse =
+            EventQueueResponse.builder()
                 .data(
-                    EventQueueUpdateResponse.Data.builder()
+                    EventQueueResponse.Data.builder()
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .queueName("queueName")
-                        .region(EventQueueUpdateResponse.Data.Region.US_EAST_1)
-                        .status(EventQueueUpdateResponse.Data.Status.PROVISIONING)
+                        .region(EventQueueResponse.Data.Region.US_EAST_1)
+                        .status(EventQueueResponse.Data.Status.PROVISIONING)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .queueUrl("queueUrl")
                         .roleArn("roleArn")
@@ -28,13 +28,13 @@ internal class EventQueueUpdateResponseTest {
                 )
                 .build()
 
-        assertThat(eventQueueUpdateResponse.data())
+        assertThat(eventQueueResponse.data())
             .isEqualTo(
-                EventQueueUpdateResponse.Data.builder()
+                EventQueueResponse.Data.builder()
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .queueName("queueName")
-                    .region(EventQueueUpdateResponse.Data.Region.US_EAST_1)
-                    .status(EventQueueUpdateResponse.Data.Status.PROVISIONING)
+                    .region(EventQueueResponse.Data.Region.US_EAST_1)
+                    .status(EventQueueResponse.Data.Status.PROVISIONING)
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .queueUrl("queueUrl")
                     .roleArn("roleArn")
@@ -46,14 +46,14 @@ internal class EventQueueUpdateResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val eventQueueUpdateResponse =
-            EventQueueUpdateResponse.builder()
+        val eventQueueResponse =
+            EventQueueResponse.builder()
                 .data(
-                    EventQueueUpdateResponse.Data.builder()
+                    EventQueueResponse.Data.builder()
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .queueName("queueName")
-                        .region(EventQueueUpdateResponse.Data.Region.US_EAST_1)
-                        .status(EventQueueUpdateResponse.Data.Status.PROVISIONING)
+                        .region(EventQueueResponse.Data.Region.US_EAST_1)
+                        .status(EventQueueResponse.Data.Status.PROVISIONING)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .queueUrl("queueUrl")
                         .roleArn("roleArn")
@@ -62,12 +62,12 @@ internal class EventQueueUpdateResponseTest {
                 )
                 .build()
 
-        val roundtrippedEventQueueUpdateResponse =
+        val roundtrippedEventQueueResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(eventQueueUpdateResponse),
-                jacksonTypeRef<EventQueueUpdateResponse>(),
+                jsonMapper.writeValueAsString(eventQueueResponse),
+                jacksonTypeRef<EventQueueResponse>(),
             )
 
-        assertThat(roundtrippedEventQueueUpdateResponse).isEqualTo(eventQueueUpdateResponse)
+        assertThat(roundtrippedEventQueueResponse).isEqualTo(eventQueueResponse)
     }
 }

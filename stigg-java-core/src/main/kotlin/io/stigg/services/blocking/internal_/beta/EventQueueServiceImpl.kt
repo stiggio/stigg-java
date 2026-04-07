@@ -17,15 +17,12 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListParams
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionResponse
+import io.stigg.models.internal_.beta.eventqueues.EventQueueResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -44,14 +41,14 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
     override fun retrieve(
         params: EventQueueRetrieveParams,
         requestOptions: RequestOptions,
-    ): EventQueueRetrieveResponse =
+    ): EventQueueResponse =
         // get /internal/beta/event-queues/{queueName}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun update(
         params: EventQueueUpdateParams,
         requestOptions: RequestOptions,
-    ): EventQueueUpdateResponse =
+    ): EventQueueResponse =
         // patch /internal/beta/event-queues/{queueName}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -65,14 +62,14 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
     override fun delete(
         params: EventQueueDeleteParams,
         requestOptions: RequestOptions,
-    ): EventQueueDeleteResponse =
+    ): EventQueueResponse =
         // delete /internal/beta/event-queues/{queueName}
         withRawResponse().delete(params, requestOptions).parse()
 
     override fun provision(
         params: EventQueueProvisionParams,
         requestOptions: RequestOptions,
-    ): EventQueueProvisionResponse =
+    ): EventQueueResponse =
         // post /internal/beta/event-queues/provision
         withRawResponse().provision(params, requestOptions).parse()
 
@@ -89,13 +86,13 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val retrieveHandler: Handler<EventQueueRetrieveResponse> =
-            jsonHandler<EventQueueRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: EventQueueRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueRetrieveResponse> {
+        ): HttpResponseFor<EventQueueResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -119,13 +116,13 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val updateHandler: Handler<EventQueueUpdateResponse> =
-            jsonHandler<EventQueueUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun update(
             params: EventQueueUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueUpdateResponse> {
+        ): HttpResponseFor<EventQueueResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -177,13 +174,13 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val deleteHandler: Handler<EventQueueDeleteResponse> =
-            jsonHandler<EventQueueDeleteResponse>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun delete(
             params: EventQueueDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueDeleteResponse> {
+        ): HttpResponseFor<EventQueueResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -208,13 +205,13 @@ class EventQueueServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val provisionHandler: Handler<EventQueueProvisionResponse> =
-            jsonHandler<EventQueueProvisionResponse>(clientOptions.jsonMapper)
+        private val provisionHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun provision(
             params: EventQueueProvisionParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueProvisionResponse> {
+        ): HttpResponseFor<EventQueueResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

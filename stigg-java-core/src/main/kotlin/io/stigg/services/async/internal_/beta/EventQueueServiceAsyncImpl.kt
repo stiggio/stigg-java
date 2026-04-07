@@ -17,15 +17,12 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListParams
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionResponse
+import io.stigg.models.internal_.beta.eventqueues.EventQueueResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -45,14 +42,14 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
     override fun retrieve(
         params: EventQueueRetrieveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EventQueueRetrieveResponse> =
+    ): CompletableFuture<EventQueueResponse> =
         // get /internal/beta/event-queues/{queueName}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
     override fun update(
         params: EventQueueUpdateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EventQueueUpdateResponse> =
+    ): CompletableFuture<EventQueueResponse> =
         // patch /internal/beta/event-queues/{queueName}
         withRawResponse().update(params, requestOptions).thenApply { it.parse() }
 
@@ -66,14 +63,14 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
     override fun delete(
         params: EventQueueDeleteParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EventQueueDeleteResponse> =
+    ): CompletableFuture<EventQueueResponse> =
         // delete /internal/beta/event-queues/{queueName}
         withRawResponse().delete(params, requestOptions).thenApply { it.parse() }
 
     override fun provision(
         params: EventQueueProvisionParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EventQueueProvisionResponse> =
+    ): CompletableFuture<EventQueueResponse> =
         // post /internal/beta/event-queues/provision
         withRawResponse().provision(params, requestOptions).thenApply { it.parse() }
 
@@ -90,13 +87,13 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val retrieveHandler: Handler<EventQueueRetrieveResponse> =
-            jsonHandler<EventQueueRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: EventQueueRetrieveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EventQueueRetrieveResponse>> {
+        ): CompletableFuture<HttpResponseFor<EventQueueResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -123,13 +120,13 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
                 }
         }
 
-        private val updateHandler: Handler<EventQueueUpdateResponse> =
-            jsonHandler<EventQueueUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun update(
             params: EventQueueUpdateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EventQueueUpdateResponse>> {
+        ): CompletableFuture<HttpResponseFor<EventQueueResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -187,13 +184,13 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
                 }
         }
 
-        private val deleteHandler: Handler<EventQueueDeleteResponse> =
-            jsonHandler<EventQueueDeleteResponse>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun delete(
             params: EventQueueDeleteParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EventQueueDeleteResponse>> {
+        ): CompletableFuture<HttpResponseFor<EventQueueResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("queueName", params.queueName().getOrNull())
@@ -221,13 +218,13 @@ class EventQueueServiceAsyncImpl internal constructor(private val clientOptions:
                 }
         }
 
-        private val provisionHandler: Handler<EventQueueProvisionResponse> =
-            jsonHandler<EventQueueProvisionResponse>(clientOptions.jsonMapper)
+        private val provisionHandler: Handler<EventQueueResponse> =
+            jsonHandler<EventQueueResponse>(clientOptions.jsonMapper)
 
         override fun provision(
             params: EventQueueProvisionParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EventQueueProvisionResponse>> {
+        ): CompletableFuture<HttpResponseFor<EventQueueResponse>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

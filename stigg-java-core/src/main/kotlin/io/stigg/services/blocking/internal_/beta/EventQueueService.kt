@@ -7,15 +7,12 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueDeleteResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListParams
 import io.stigg.models.internal_.beta.eventqueues.EventQueueListResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueProvisionResponse
+import io.stigg.models.internal_.beta.eventqueues.EventQueueResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueRetrieveResponse
 import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateParams
-import io.stigg.models.internal_.beta.eventqueues.EventQueueUpdateResponse
 import java.util.function.Consumer
 
 interface EventQueueService {
@@ -33,7 +30,7 @@ interface EventQueueService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventQueueService
 
     /** Get event queue by queue name */
-    fun retrieve(queueName: String): EventQueueRetrieveResponse =
+    fun retrieve(queueName: String): EventQueueResponse =
         retrieve(queueName, EventQueueRetrieveParams.none())
 
     /** @see retrieve */
@@ -41,31 +38,31 @@ interface EventQueueService {
         queueName: String,
         params: EventQueueRetrieveParams = EventQueueRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueRetrieveResponse =
+    ): EventQueueResponse =
         retrieve(params.toBuilder().queueName(queueName).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         queueName: String,
         params: EventQueueRetrieveParams = EventQueueRetrieveParams.none(),
-    ): EventQueueRetrieveResponse = retrieve(queueName, params, RequestOptions.none())
+    ): EventQueueResponse = retrieve(queueName, params, RequestOptions.none())
 
     /** @see retrieve */
     fun retrieve(
         params: EventQueueRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueRetrieveResponse
+    ): EventQueueResponse
 
     /** @see retrieve */
-    fun retrieve(params: EventQueueRetrieveParams): EventQueueRetrieveResponse =
+    fun retrieve(params: EventQueueRetrieveParams): EventQueueResponse =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    fun retrieve(queueName: String, requestOptions: RequestOptions): EventQueueRetrieveResponse =
+    fun retrieve(queueName: String, requestOptions: RequestOptions): EventQueueResponse =
         retrieve(queueName, EventQueueRetrieveParams.none(), requestOptions)
 
     /** Update event queue configuration */
-    fun update(queueName: String): EventQueueUpdateResponse =
+    fun update(queueName: String): EventQueueResponse =
         update(queueName, EventQueueUpdateParams.none())
 
     /** @see update */
@@ -73,27 +70,26 @@ interface EventQueueService {
         queueName: String,
         params: EventQueueUpdateParams = EventQueueUpdateParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueUpdateResponse =
-        update(params.toBuilder().queueName(queueName).build(), requestOptions)
+    ): EventQueueResponse = update(params.toBuilder().queueName(queueName).build(), requestOptions)
 
     /** @see update */
     fun update(
         queueName: String,
         params: EventQueueUpdateParams = EventQueueUpdateParams.none(),
-    ): EventQueueUpdateResponse = update(queueName, params, RequestOptions.none())
+    ): EventQueueResponse = update(queueName, params, RequestOptions.none())
 
     /** @see update */
     fun update(
         params: EventQueueUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueUpdateResponse
+    ): EventQueueResponse
 
     /** @see update */
-    fun update(params: EventQueueUpdateParams): EventQueueUpdateResponse =
+    fun update(params: EventQueueUpdateParams): EventQueueResponse =
         update(params, RequestOptions.none())
 
     /** @see update */
-    fun update(queueName: String, requestOptions: RequestOptions): EventQueueUpdateResponse =
+    fun update(queueName: String, requestOptions: RequestOptions): EventQueueResponse =
         update(queueName, EventQueueUpdateParams.none(), requestOptions)
 
     /** List all event queues for the current environment */
@@ -114,7 +110,7 @@ interface EventQueueService {
         list(EventQueueListParams.none(), requestOptions)
 
     /** Delete an event queue and tear down its infrastructure */
-    fun delete(queueName: String): EventQueueDeleteResponse =
+    fun delete(queueName: String): EventQueueResponse =
         delete(queueName, EventQueueDeleteParams.none())
 
     /** @see delete */
@@ -122,38 +118,37 @@ interface EventQueueService {
         queueName: String,
         params: EventQueueDeleteParams = EventQueueDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueDeleteResponse =
-        delete(params.toBuilder().queueName(queueName).build(), requestOptions)
+    ): EventQueueResponse = delete(params.toBuilder().queueName(queueName).build(), requestOptions)
 
     /** @see delete */
     fun delete(
         queueName: String,
         params: EventQueueDeleteParams = EventQueueDeleteParams.none(),
-    ): EventQueueDeleteResponse = delete(queueName, params, RequestOptions.none())
+    ): EventQueueResponse = delete(queueName, params, RequestOptions.none())
 
     /** @see delete */
     fun delete(
         params: EventQueueDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueDeleteResponse
+    ): EventQueueResponse
 
     /** @see delete */
-    fun delete(params: EventQueueDeleteParams): EventQueueDeleteResponse =
+    fun delete(params: EventQueueDeleteParams): EventQueueResponse =
         delete(params, RequestOptions.none())
 
     /** @see delete */
-    fun delete(queueName: String, requestOptions: RequestOptions): EventQueueDeleteResponse =
+    fun delete(queueName: String, requestOptions: RequestOptions): EventQueueResponse =
         delete(queueName, EventQueueDeleteParams.none(), requestOptions)
 
     /** Provision SQS queue, SNS subscriptions, and IAM role for the current environment */
-    fun provision(params: EventQueueProvisionParams): EventQueueProvisionResponse =
+    fun provision(params: EventQueueProvisionParams): EventQueueResponse =
         provision(params, RequestOptions.none())
 
     /** @see provision */
     fun provision(
         params: EventQueueProvisionParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventQueueProvisionResponse
+    ): EventQueueResponse
 
     /** A view of [EventQueueService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -172,7 +167,7 @@ interface EventQueueService {
          * otherwise the same as [EventQueueService.retrieve].
          */
         @MustBeClosed
-        fun retrieve(queueName: String): HttpResponseFor<EventQueueRetrieveResponse> =
+        fun retrieve(queueName: String): HttpResponseFor<EventQueueResponse> =
             retrieve(queueName, EventQueueRetrieveParams.none())
 
         /** @see retrieve */
@@ -181,7 +176,7 @@ interface EventQueueService {
             queueName: String,
             params: EventQueueRetrieveParams = EventQueueRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueRetrieveResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             retrieve(params.toBuilder().queueName(queueName).build(), requestOptions)
 
         /** @see retrieve */
@@ -189,28 +184,26 @@ interface EventQueueService {
         fun retrieve(
             queueName: String,
             params: EventQueueRetrieveParams = EventQueueRetrieveParams.none(),
-        ): HttpResponseFor<EventQueueRetrieveResponse> =
-            retrieve(queueName, params, RequestOptions.none())
+        ): HttpResponseFor<EventQueueResponse> = retrieve(queueName, params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             params: EventQueueRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueRetrieveResponse>
+        ): HttpResponseFor<EventQueueResponse>
 
         /** @see retrieve */
         @MustBeClosed
-        fun retrieve(
-            params: EventQueueRetrieveParams
-        ): HttpResponseFor<EventQueueRetrieveResponse> = retrieve(params, RequestOptions.none())
+        fun retrieve(params: EventQueueRetrieveParams): HttpResponseFor<EventQueueResponse> =
+            retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             queueName: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueRetrieveResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             retrieve(queueName, EventQueueRetrieveParams.none(), requestOptions)
 
         /**
@@ -218,7 +211,7 @@ interface EventQueueService {
          * otherwise the same as [EventQueueService.update].
          */
         @MustBeClosed
-        fun update(queueName: String): HttpResponseFor<EventQueueUpdateResponse> =
+        fun update(queueName: String): HttpResponseFor<EventQueueResponse> =
             update(queueName, EventQueueUpdateParams.none())
 
         /** @see update */
@@ -227,7 +220,7 @@ interface EventQueueService {
             queueName: String,
             params: EventQueueUpdateParams = EventQueueUpdateParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueUpdateResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             update(params.toBuilder().queueName(queueName).build(), requestOptions)
 
         /** @see update */
@@ -235,19 +228,18 @@ interface EventQueueService {
         fun update(
             queueName: String,
             params: EventQueueUpdateParams = EventQueueUpdateParams.none(),
-        ): HttpResponseFor<EventQueueUpdateResponse> =
-            update(queueName, params, RequestOptions.none())
+        ): HttpResponseFor<EventQueueResponse> = update(queueName, params, RequestOptions.none())
 
         /** @see update */
         @MustBeClosed
         fun update(
             params: EventQueueUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueUpdateResponse>
+        ): HttpResponseFor<EventQueueResponse>
 
         /** @see update */
         @MustBeClosed
-        fun update(params: EventQueueUpdateParams): HttpResponseFor<EventQueueUpdateResponse> =
+        fun update(params: EventQueueUpdateParams): HttpResponseFor<EventQueueResponse> =
             update(params, RequestOptions.none())
 
         /** @see update */
@@ -255,7 +247,7 @@ interface EventQueueService {
         fun update(
             queueName: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueUpdateResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             update(queueName, EventQueueUpdateParams.none(), requestOptions)
 
         /**
@@ -288,7 +280,7 @@ interface EventQueueService {
          * otherwise the same as [EventQueueService.delete].
          */
         @MustBeClosed
-        fun delete(queueName: String): HttpResponseFor<EventQueueDeleteResponse> =
+        fun delete(queueName: String): HttpResponseFor<EventQueueResponse> =
             delete(queueName, EventQueueDeleteParams.none())
 
         /** @see delete */
@@ -297,7 +289,7 @@ interface EventQueueService {
             queueName: String,
             params: EventQueueDeleteParams = EventQueueDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueDeleteResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             delete(params.toBuilder().queueName(queueName).build(), requestOptions)
 
         /** @see delete */
@@ -305,19 +297,18 @@ interface EventQueueService {
         fun delete(
             queueName: String,
             params: EventQueueDeleteParams = EventQueueDeleteParams.none(),
-        ): HttpResponseFor<EventQueueDeleteResponse> =
-            delete(queueName, params, RequestOptions.none())
+        ): HttpResponseFor<EventQueueResponse> = delete(queueName, params, RequestOptions.none())
 
         /** @see delete */
         @MustBeClosed
         fun delete(
             params: EventQueueDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueDeleteResponse>
+        ): HttpResponseFor<EventQueueResponse>
 
         /** @see delete */
         @MustBeClosed
-        fun delete(params: EventQueueDeleteParams): HttpResponseFor<EventQueueDeleteResponse> =
+        fun delete(params: EventQueueDeleteParams): HttpResponseFor<EventQueueResponse> =
             delete(params, RequestOptions.none())
 
         /** @see delete */
@@ -325,7 +316,7 @@ interface EventQueueService {
         fun delete(
             queueName: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventQueueDeleteResponse> =
+        ): HttpResponseFor<EventQueueResponse> =
             delete(queueName, EventQueueDeleteParams.none(), requestOptions)
 
         /**
@@ -333,15 +324,14 @@ interface EventQueueService {
          * otherwise the same as [EventQueueService.provision].
          */
         @MustBeClosed
-        fun provision(
-            params: EventQueueProvisionParams
-        ): HttpResponseFor<EventQueueProvisionResponse> = provision(params, RequestOptions.none())
+        fun provision(params: EventQueueProvisionParams): HttpResponseFor<EventQueueResponse> =
+            provision(params, RequestOptions.none())
 
         /** @see provision */
         @MustBeClosed
         fun provision(
             params: EventQueueProvisionParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventQueueProvisionResponse>
+        ): HttpResponseFor<EventQueueResponse>
     }
 }

@@ -16,17 +16,14 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.customers.CustomerIntegrationResponse
 import io.stigg.models.v1.customers.integrations.IntegrationLinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationLinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListPage
 import io.stigg.models.v1.customers.integrations.IntegrationListPageResponse
 import io.stigg.models.v1.customers.integrations.IntegrationListParams
 import io.stigg.models.v1.customers.integrations.IntegrationRetrieveParams
-import io.stigg.models.v1.customers.integrations.IntegrationRetrieveResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUnlinkParams
-import io.stigg.models.v1.customers.integrations.IntegrationUnlinkResponse
 import io.stigg.models.v1.customers.integrations.IntegrationUpdateParams
-import io.stigg.models.v1.customers.integrations.IntegrationUpdateResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -45,14 +42,14 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
     override fun retrieve(
         params: IntegrationRetrieveParams,
         requestOptions: RequestOptions,
-    ): IntegrationRetrieveResponse =
+    ): CustomerIntegrationResponse =
         // get /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun update(
         params: IntegrationUpdateParams,
         requestOptions: RequestOptions,
-    ): IntegrationUpdateResponse =
+    ): CustomerIntegrationResponse =
         // patch /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -66,14 +63,14 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
     override fun link(
         params: IntegrationLinkParams,
         requestOptions: RequestOptions,
-    ): IntegrationLinkResponse =
+    ): CustomerIntegrationResponse =
         // post /api/v1/customers/{id}/integrations
         withRawResponse().link(params, requestOptions).parse()
 
     override fun unlink(
         params: IntegrationUnlinkParams,
         requestOptions: RequestOptions,
-    ): IntegrationUnlinkResponse =
+    ): CustomerIntegrationResponse =
         // delete /api/v1/customers/{id}/integrations/{integrationId}
         withRawResponse().unlink(params, requestOptions).parse()
 
@@ -90,13 +87,13 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val retrieveHandler: Handler<IntegrationRetrieveResponse> =
-            jsonHandler<IntegrationRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: IntegrationRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<IntegrationRetrieveResponse> {
+        ): HttpResponseFor<CustomerIntegrationResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())
@@ -127,13 +124,13 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val updateHandler: Handler<IntegrationUpdateResponse> =
-            jsonHandler<IntegrationUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun update(
             params: IntegrationUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<IntegrationUpdateResponse> {
+        ): HttpResponseFor<CustomerIntegrationResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())
@@ -202,13 +199,13 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val linkHandler: Handler<IntegrationLinkResponse> =
-            jsonHandler<IntegrationLinkResponse>(clientOptions.jsonMapper)
+        private val linkHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun link(
             params: IntegrationLinkParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<IntegrationLinkResponse> {
+        ): HttpResponseFor<CustomerIntegrationResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("pathId", params.pathId().getOrNull())
@@ -233,13 +230,13 @@ class IntegrationServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val unlinkHandler: Handler<IntegrationUnlinkResponse> =
-            jsonHandler<IntegrationUnlinkResponse>(clientOptions.jsonMapper)
+        private val unlinkHandler: Handler<CustomerIntegrationResponse> =
+            jsonHandler<CustomerIntegrationResponse>(clientOptions.jsonMapper)
 
         override fun unlink(
             params: IntegrationUnlinkParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<IntegrationUnlinkResponse> {
+        ): HttpResponseFor<CustomerIntegrationResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("integrationId", params.integrationId().getOrNull())

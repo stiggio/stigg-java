@@ -20,7 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Response object */
-class EventQueueProvisionResponse
+class EventQueueResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -62,7 +62,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [EventQueueProvisionResponse].
+         * Returns a mutable builder for constructing an instance of [EventQueueResponse].
          *
          * The following fields are required:
          * ```java
@@ -72,16 +72,16 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [EventQueueProvisionResponse]. */
+    /** A builder for [EventQueueResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(eventQueueProvisionResponse: EventQueueProvisionResponse) = apply {
-            data = eventQueueProvisionResponse.data
-            additionalProperties = eventQueueProvisionResponse.additionalProperties.toMutableMap()
+        internal fun from(eventQueueResponse: EventQueueResponse) = apply {
+            data = eventQueueResponse.data
+            additionalProperties = eventQueueResponse.additionalProperties.toMutableMap()
         }
 
         /** Event queue provisioning status and details */
@@ -115,7 +115,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [EventQueueProvisionResponse].
+         * Returns an immutable instance of [EventQueueResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -126,16 +126,13 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): EventQueueProvisionResponse =
-            EventQueueProvisionResponse(
-                checkRequired("data", data),
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): EventQueueResponse =
+            EventQueueResponse(checkRequired("data", data), additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
 
-    fun validate(): EventQueueProvisionResponse = apply {
+    fun validate(): EventQueueResponse = apply {
         if (validated) {
             return@apply
         }
@@ -1048,7 +1045,7 @@ private constructor(
             return true
         }
 
-        return other is EventQueueProvisionResponse &&
+        return other is EventQueueResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -1058,5 +1055,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EventQueueProvisionResponse{data=$data, additionalProperties=$additionalProperties}"
+        "EventQueueResponse{data=$data, additionalProperties=$additionalProperties}"
 }
