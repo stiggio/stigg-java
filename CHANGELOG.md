@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.46 (2026-04-07)
+
+Full Changelog: [v0.1.0-alpha.45...v0.1.0-alpha.46](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.45...v0.1.0-alpha.46)
+
+### Features
+
+* **api:** stainless.yml ([717d9cc](https://github.com/stiggio/stigg-java/commit/717d9cc4f11fd396c87617b152fc344007aba80e))
+
 ## 0.1.0-alpha.45 (2026-04-06)
 
 Full Changelog: [v0.1.0-alpha.44...v0.1.0-alpha.45](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.44...v0.1.0-alpha.45)
