@@ -17,6 +17,7 @@ internal class UsageHistoryParamsTest {
             .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .groupBy("groupBy")
+            .includeInactiveSubscriptions(true)
             .resourceId("resourceId")
             .build()
     }
@@ -45,6 +46,7 @@ internal class UsageHistoryParamsTest {
                 .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .groupBy("groupBy")
+                .includeInactiveSubscriptions(true)
                 .resourceId("resourceId")
                 .build()
 
@@ -56,6 +58,7 @@ internal class UsageHistoryParamsTest {
                     .put("startDate", "2019-12-27T18:11:19.117Z")
                     .put("endDate", "2019-12-27T18:11:19.117Z")
                     .put("groupBy", "groupBy")
+                    .put("includeInactiveSubscriptions", "true")
                     .put("resourceId", "resourceId")
                     .build()
             )
