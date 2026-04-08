@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.48 (2026-04-08)
+
+Full Changelog: [v0.1.0-alpha.47...v0.1.0-alpha.48](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.47...v0.1.0-alpha.48)
+
+### Features
+
+* **api:** add includeInactiveSubscriptions to usage history, remove enum from event queues ([bf33047](https://github.com/stiggio/stigg-java/commit/bf330470328ff66f6e03c80cbcd3d16d19da46d4))
+
 ## 0.1.0-alpha.47 (2026-04-08)
 
 Full Changelog: [v0.1.0-alpha.46...v0.1.0-alpha.47](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.46...v0.1.0-alpha.47)
