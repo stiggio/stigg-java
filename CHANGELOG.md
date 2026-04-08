@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.47 (2026-04-08)
+
+Full Changelog: [v0.1.0-alpha.46...v0.1.0-alpha.47](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.46...v0.1.0-alpha.47)
+
+### Features
+
+* **api:** add currency resync to event queues, remove includeInactiveSubscriptions from usage ([dfe62f2](https://github.com/stiggio/stigg-java/commit/dfe62f260e377fd1f4ae36c698750a90c9bee2b5))
+
 ## 0.1.0-alpha.46 (2026-04-07)
 
 Full Changelog: [v0.1.0-alpha.45...v0.1.0-alpha.46](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.45...v0.1.0-alpha.46)
