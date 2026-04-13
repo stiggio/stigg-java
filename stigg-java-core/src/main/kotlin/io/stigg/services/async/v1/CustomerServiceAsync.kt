@@ -232,6 +232,11 @@ interface CustomerServiceAsync {
     /**
      * Retrieves the effective entitlements for a customer or resource, including feature and credit
      * entitlements.
+     *
+     * **Warning:** This REST API endpoint lacks built-in client-side caching, fallback mechanisms,
+     * and low-latency guarantees. It is not recommended for hot-path entitlement checks. For
+     * production use, consider using the Stigg Node Server SDK with caching or the Sidecar for
+     * low-latency cached responses.
      */
     fun retrieveEntitlements(id: String): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
         retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())
