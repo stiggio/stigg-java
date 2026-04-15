@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.50 (2026-04-15)
+
+Full Changelog: [v0.1.0-alpha.49...v0.1.0-alpha.50](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.49...v0.1.0-alpha.50)
+
+### Features
+
+* **api:** add custom currency event types to event queue parameters ([8787cf5](https://github.com/stiggio/stigg-java/commit/8787cf5cbfcbb77571730bf65a473c438190a5d6))
+
 ## 0.1.0-alpha.49 (2026-04-13)
 
 Full Changelog: [v0.1.0-alpha.48...v0.1.0-alpha.49](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.48...v0.1.0-alpha.49)
