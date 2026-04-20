@@ -6,6 +6,7 @@ import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.models.v1.events.credits.CreditGetAutoRechargeParams
 import io.stigg.models.v1.events.credits.CreditGetUsageParams
 import io.stigg.models.v1.events.credits.CreditListLedgerParams
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -40,7 +41,9 @@ internal class CreditServiceAsyncTest {
                 CreditGetUsageParams.builder()
                     .customerId("customerId")
                     .currencyId("currencyId")
+                    .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .resourceId("resourceId")
+                    .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .timeRange(CreditGetUsageParams.TimeRange.LAST_DAY)
                     .build()
             )
