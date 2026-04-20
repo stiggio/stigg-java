@@ -3,6 +3,7 @@
 package io.stigg.models.v1.events.credits
 
 import io.stigg.core.http.QueryParams
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,9 @@ internal class CreditGetUsageParamsTest {
         CreditGetUsageParams.builder()
             .customerId("customerId")
             .currencyId("currencyId")
+            .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .resourceId("resourceId")
+            .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .timeRange(CreditGetUsageParams.TimeRange.LAST_DAY)
             .build()
     }
@@ -24,7 +27,9 @@ internal class CreditGetUsageParamsTest {
             CreditGetUsageParams.builder()
                 .customerId("customerId")
                 .currencyId("currencyId")
+                .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .resourceId("resourceId")
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .timeRange(CreditGetUsageParams.TimeRange.LAST_DAY)
                 .build()
 
@@ -35,7 +40,9 @@ internal class CreditGetUsageParamsTest {
                 QueryParams.builder()
                     .put("customerId", "customerId")
                     .put("currencyId", "currencyId")
+                    .put("endDate", "2019-12-27T18:11:19.117Z")
                     .put("resourceId", "resourceId")
+                    .put("startDate", "2019-12-27T18:11:19.117Z")
                     .put("timeRange", "LAST_DAY")
                     .build()
             )

@@ -10,6 +10,8 @@ import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import io.stigg.errors.StiggInvalidDataException
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -22,7 +24,9 @@ class CreditGetUsageParams
 private constructor(
     private val customerId: String,
     private val currencyId: String?,
+    private val endDate: OffsetDateTime?,
     private val resourceId: String?,
+    private val startDate: OffsetDateTime?,
     private val timeRange: TimeRange?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -34,8 +38,20 @@ private constructor(
     /** Filter by currency ID */
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
 
+    /**
+     * End date for the credit usage time range (ISO 8601). Defaults to now when startDate is
+     * provided
+     */
+    fun endDate(): Optional<OffsetDateTime> = Optional.ofNullable(endDate)
+
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
+
+    /**
+     * Start date for the credit usage time range (ISO 8601). Takes precedence over timeRange when
+     * provided
+     */
+    fun startDate(): Optional<OffsetDateTime> = Optional.ofNullable(startDate)
 
     /**
      * Time range for usage data (LAST_DAY, LAST_WEEK, LAST_MONTH, LAST_YEAR). Defaults to
@@ -69,7 +85,9 @@ private constructor(
 
         private var customerId: String? = null
         private var currencyId: String? = null
+        private var endDate: OffsetDateTime? = null
         private var resourceId: String? = null
+        private var startDate: OffsetDateTime? = null
         private var timeRange: TimeRange? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -78,7 +96,9 @@ private constructor(
         internal fun from(creditGetUsageParams: CreditGetUsageParams) = apply {
             customerId = creditGetUsageParams.customerId
             currencyId = creditGetUsageParams.currencyId
+            endDate = creditGetUsageParams.endDate
             resourceId = creditGetUsageParams.resourceId
+            startDate = creditGetUsageParams.startDate
             timeRange = creditGetUsageParams.timeRange
             additionalHeaders = creditGetUsageParams.additionalHeaders.toBuilder()
             additionalQueryParams = creditGetUsageParams.additionalQueryParams.toBuilder()
@@ -93,11 +113,29 @@ private constructor(
         /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
 
+        /**
+         * End date for the credit usage time range (ISO 8601). Defaults to now when startDate is
+         * provided
+         */
+        fun endDate(endDate: OffsetDateTime?) = apply { this.endDate = endDate }
+
+        /** Alias for calling [Builder.endDate] with `endDate.orElse(null)`. */
+        fun endDate(endDate: Optional<OffsetDateTime>) = endDate(endDate.getOrNull())
+
         /** Filter by resource ID */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
         fun resourceId(resourceId: Optional<String>) = resourceId(resourceId.getOrNull())
+
+        /**
+         * Start date for the credit usage time range (ISO 8601). Takes precedence over timeRange
+         * when provided
+         */
+        fun startDate(startDate: OffsetDateTime?) = apply { this.startDate = startDate }
+
+        /** Alias for calling [Builder.startDate] with `startDate.orElse(null)`. */
+        fun startDate(startDate: Optional<OffsetDateTime>) = startDate(startDate.getOrNull())
 
         /**
          * Time range for usage data (LAST_DAY, LAST_WEEK, LAST_MONTH, LAST_YEAR). Defaults to
@@ -222,7 +260,9 @@ private constructor(
             CreditGetUsageParams(
                 checkRequired("customerId", customerId),
                 currencyId,
+                endDate,
                 resourceId,
+                startDate,
                 timeRange,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -236,7 +276,11 @@ private constructor(
             .apply {
                 put("customerId", customerId)
                 currencyId?.let { put("currencyId", it) }
+                endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 resourceId?.let { put("resourceId", it) }
+                startDate?.let {
+                    put("startDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                }
                 timeRange?.let { put("timeRange", it.toString()) }
                 putAll(additionalQueryParams)
             }
@@ -392,7 +436,9 @@ private constructor(
         return other is CreditGetUsageParams &&
             customerId == other.customerId &&
             currencyId == other.currencyId &&
+            endDate == other.endDate &&
             resourceId == other.resourceId &&
+            startDate == other.startDate &&
             timeRange == other.timeRange &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
@@ -402,12 +448,14 @@ private constructor(
         Objects.hash(
             customerId,
             currencyId,
+            endDate,
             resourceId,
+            startDate,
             timeRange,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CreditGetUsageParams{customerId=$customerId, currencyId=$currencyId, resourceId=$resourceId, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditGetUsageParams{customerId=$customerId, currencyId=$currencyId, endDate=$endDate, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
