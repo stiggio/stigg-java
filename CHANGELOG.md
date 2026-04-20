@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.52 (2026-04-20)
+
+Full Changelog: [v0.1.0-alpha.51...v0.1.0-alpha.52](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.51...v0.1.0-alpha.52)
+
+### Features
+
+* **api:** add endDate and startDate parameters to credit getUsage method ([2b20f39](https://github.com/stiggio/stigg-java/commit/2b20f392a6cc3d3d76d0748663e314bd19c67696))
+
 ## 0.1.0-alpha.51 (2026-04-16)
 
 Full Changelog: [v0.1.0-alpha.50...v0.1.0-alpha.51](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.50...v0.1.0-alpha.51)
