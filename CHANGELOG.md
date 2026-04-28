@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.54 (2026-04-28)
+
+Full Changelog: [v0.1.0-alpha.53...v0.1.0-alpha.54](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.53...v0.1.0-alpha.54)
+
+### Features
+
+* **api:** remove retrieve/update/list/delete/provision from event_queues ([2045299](https://github.com/stiggio/stigg-java/commit/2045299574774843ac360c2f1bdc2e85341bd0b4))
+
 ## 0.1.0-alpha.53 (2026-04-28)
 
 Full Changelog: [v0.1.0-alpha.52...v0.1.0-alpha.53](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.52...v0.1.0-alpha.53)
