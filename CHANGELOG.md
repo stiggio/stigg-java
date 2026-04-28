@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.53 (2026-04-28)
+
+Full Changelog: [v0.1.0-alpha.52...v0.1.0-alpha.53](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.52...v0.1.0-alpha.53)
+
+### Features
+
+* support setting headers via env ([853ce28](https://github.com/stiggio/stigg-java/commit/853ce28b06fbcd14a03bc201219f8e190fd49702))
+
 ## 0.1.0-alpha.52 (2026-04-20)
 
 Full Changelog: [v0.1.0-alpha.51...v0.1.0-alpha.52](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.51...v0.1.0-alpha.52)
