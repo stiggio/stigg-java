@@ -5,6 +5,7 @@ package io.stigg.errors
 import io.stigg.core.JsonValue
 import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
+import io.stigg.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
@@ -14,7 +15,11 @@ private constructor(
     private val headers: Headers,
     private val body: JsonValue,
     cause: Throwable?,
-) : StiggServiceException("$statusCode: $body", cause) {
+) :
+    StiggServiceException(
+        "$statusCode: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = statusCode
 
