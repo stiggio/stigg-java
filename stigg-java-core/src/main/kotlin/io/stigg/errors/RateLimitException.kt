@@ -5,12 +5,16 @@ package io.stigg.errors
 import io.stigg.core.JsonValue
 import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
+import io.stigg.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class RateLimitException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    StiggServiceException("429: $body", cause) {
+    StiggServiceException(
+        "429: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 429
 
