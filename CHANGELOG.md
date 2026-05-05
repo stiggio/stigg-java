@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.0-alpha.55 (2026-05-05)
+
+Full Changelog: [v0.1.0-alpha.54...v0.1.0-alpha.55](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.54...v0.1.0-alpha.55)
+
+### Features
+
+* **client:** more robust error parsing ([3b612e2](https://github.com/stiggio/stigg-java/commit/3b612e2155f69d8d95ca54faff8aa2c053f4add9))
+
+
+### Chores
+
+* remove duplicated dokka setup ([b950db4](https://github.com/stiggio/stigg-java/commit/b950db40a237431cc3ea7a43a4ac804d0906e487))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([2b8836d](https://github.com/stiggio/stigg-java/commit/2b8836da839d84528f695506a2d061e103e9f19b))
+
 ## 0.1.0-alpha.54 (2026-04-28)
 
 Full Changelog: [v0.1.0-alpha.53...v0.1.0-alpha.54](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.53...v0.1.0-alpha.54)
