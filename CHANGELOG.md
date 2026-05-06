@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.0-alpha.56 (2026-05-06)
+
+Full Changelog: [v0.1.0-alpha.55...v0.1.0-alpha.56](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.55...v0.1.0-alpha.56)
+
+### Features
+
+* **api:** add checkEntitlement method to customers ([321dd02](https://github.com/stiggio/stigg-java/commit/321dd026a66bb75f4230e592e200999b6c2d9252))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([1512958](https://github.com/stiggio/stigg-java/commit/1512958e86b2840f3d513fafc41466943dd1c71a))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([b34c0f0](https://github.com/stiggio/stigg-java/commit/b34c0f0de7723691eb5f5646502bb69d6f2f277a))
+
 ## 0.1.0-alpha.55 (2026-05-05)
 
 Full Changelog: [v0.1.0-alpha.54...v0.1.0-alpha.55](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.54...v0.1.0-alpha.55)
