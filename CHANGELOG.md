@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.58 (2026-05-06)
+
+Full Changelog: [v0.1.0-alpha.57...v0.1.0-alpha.58](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.57...v0.1.0-alpha.58)
+
+### Bug Fixes
+
+* **types:** remove RECURRING value from GrantType enum in credits grants ([80025af](https://github.com/stiggio/stigg-java/commit/80025afc121ef6048f4bd29defcb6f672fff3d4a))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([fcc83b2](https://github.com/stiggio/stigg-java/commit/fcc83b2f3f1446bc02e097ee0dc652f0fae58d48))
+
 ## 0.1.0-alpha.57 (2026-05-06)
 
 Full Changelog: [v0.1.0-alpha.56...v0.1.0-alpha.57](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.56...v0.1.0-alpha.57)
