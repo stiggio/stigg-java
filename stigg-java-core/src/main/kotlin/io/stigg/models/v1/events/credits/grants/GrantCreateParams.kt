@@ -67,7 +67,7 @@ private constructor(
     fun displayName(): String = body.displayName()
 
     /**
-     * The type of credit grant (PAID, PROMOTIONAL, RECURRING)
+     * The type of credit grant (PAID, PROMOTIONAL)
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -366,7 +366,7 @@ private constructor(
          */
         fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
-        /** The type of credit grant (PAID, PROMOTIONAL, RECURRING) */
+        /** The type of credit grant (PAID, PROMOTIONAL) */
         fun grantType(grantType: GrantType) = apply { body.grantType(grantType) }
 
         /**
@@ -770,7 +770,7 @@ private constructor(
         fun displayName(): String = displayName.getRequired("displayName")
 
         /**
-         * The type of credit grant (PAID, PROMOTIONAL, RECURRING)
+         * The type of credit grant (PAID, PROMOTIONAL)
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -1108,7 +1108,7 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** The type of credit grant (PAID, PROMOTIONAL, RECURRING) */
+            /** The type of credit grant (PAID, PROMOTIONAL) */
             fun grantType(grantType: GrantType) = grantType(JsonField.of(grantType))
 
             /**
@@ -1424,7 +1424,7 @@ private constructor(
             "Body{amount=$amount, currencyId=$currencyId, customerId=$customerId, displayName=$displayName, grantType=$grantType, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingInformation=$billingInformation, comment=$comment, cost=$cost, effectiveAt=$effectiveAt, expireAt=$expireAt, metadata=$metadata, paymentCollectionMethod=$paymentCollectionMethod, priority=$priority, resourceId=$resourceId, additionalProperties=$additionalProperties}"
     }
 
-    /** The type of credit grant (PAID, PROMOTIONAL, RECURRING) */
+    /** The type of credit grant (PAID, PROMOTIONAL) */
     class GrantType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -1443,10 +1443,6 @@ private constructor(
 
             @JvmField val PROMOTIONAL = of("PROMOTIONAL")
 
-            @JvmField val RECURRING = of("RECURRING")
-
-            @JvmField val OVERDRAFT = of("OVERDRAFT")
-
             @JvmStatic fun of(value: String) = GrantType(JsonField.of(value))
         }
 
@@ -1454,8 +1450,6 @@ private constructor(
         enum class Known {
             PAID,
             PROMOTIONAL,
-            RECURRING,
-            OVERDRAFT,
         }
 
         /**
@@ -1470,8 +1464,6 @@ private constructor(
         enum class Value {
             PAID,
             PROMOTIONAL,
-            RECURRING,
-            OVERDRAFT,
             /**
              * An enum member indicating that [GrantType] was instantiated with an unknown value.
              */
@@ -1489,8 +1481,6 @@ private constructor(
             when (this) {
                 PAID -> Value.PAID
                 PROMOTIONAL -> Value.PROMOTIONAL
-                RECURRING -> Value.RECURRING
-                OVERDRAFT -> Value.OVERDRAFT
                 else -> Value._UNKNOWN
             }
 
@@ -1506,8 +1496,6 @@ private constructor(
             when (this) {
                 PAID -> Known.PAID
                 PROMOTIONAL -> Known.PROMOTIONAL
-                RECURRING -> Known.RECURRING
-                OVERDRAFT -> Known.OVERDRAFT
                 else -> throw StiggInvalidDataException("Unknown GrantType: $value")
             }
 
