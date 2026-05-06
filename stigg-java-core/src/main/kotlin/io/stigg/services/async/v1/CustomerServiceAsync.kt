@@ -6,6 +6,8 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.customers.CustomerArchiveParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPageAsync
@@ -165,6 +167,52 @@ interface CustomerServiceAsync {
     /** @see archive */
     fun archive(id: String, requestOptions: RequestOptions): CompletableFuture<CustomerResponse> =
         archive(id, CustomerArchiveParams.none(), requestOptions)
+
+    /**
+     * Checks a single entitlement (feature or credit) for a customer or resource. Supports
+     * `requestedUsage` and `requestedValues` to evaluate against limits or enum values.
+     *
+     * **Warning:** This REST API endpoint lacks built-in client-side caching, fallback mechanisms,
+     * and low-latency guarantees. It is not recommended for hot-path entitlement checks. For
+     * production use, consider using the Stigg Node Server SDK with caching or the Sidecar for
+     * low-latency cached responses.
+     */
+    fun checkEntitlement(id: String): CompletableFuture<CustomerCheckEntitlementResponse> =
+        checkEntitlement(id, CustomerCheckEntitlementParams.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerCheckEntitlementResponse> =
+        checkEntitlement(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+    ): CompletableFuture<CustomerCheckEntitlementResponse> =
+        checkEntitlement(id, params, RequestOptions.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        params: CustomerCheckEntitlementParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerCheckEntitlementResponse>
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        params: CustomerCheckEntitlementParams
+    ): CompletableFuture<CustomerCheckEntitlementResponse> =
+        checkEntitlement(params, RequestOptions.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerCheckEntitlementResponse> =
+        checkEntitlement(id, CustomerCheckEntitlementParams.none(), requestOptions)
 
     /**
      * Imports multiple customers in bulk. Used for migrating customer data from external systems.
@@ -476,6 +524,49 @@ interface CustomerServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<CustomerResponse>> =
             archive(id, CustomerArchiveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/entitlements/check`, but is
+         * otherwise the same as [CustomerServiceAsync.checkEntitlement].
+         */
+        fun checkEntitlement(
+            id: String
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>> =
+            checkEntitlement(id, CustomerCheckEntitlementParams.none())
+
+        /** @see checkEntitlement */
+        fun checkEntitlement(
+            id: String,
+            params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>> =
+            checkEntitlement(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see checkEntitlement */
+        fun checkEntitlement(
+            id: String,
+            params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>> =
+            checkEntitlement(id, params, RequestOptions.none())
+
+        /** @see checkEntitlement */
+        fun checkEntitlement(
+            params: CustomerCheckEntitlementParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>>
+
+        /** @see checkEntitlement */
+        fun checkEntitlement(
+            params: CustomerCheckEntitlementParams
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>> =
+            checkEntitlement(params, RequestOptions.none())
+
+        /** @see checkEntitlement */
+        fun checkEntitlement(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerCheckEntitlementResponse>> =
+            checkEntitlement(id, CustomerCheckEntitlementParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/import`, but is otherwise the

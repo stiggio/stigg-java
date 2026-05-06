@@ -4,6 +4,7 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
@@ -153,6 +154,27 @@ internal class CustomerServiceTest {
         val customerResponse = customerService.archive("x")
 
         customerResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun checkEntitlement() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val customerService = client.v1().customers()
+
+        val response =
+            customerService.checkEntitlement(
+                CustomerCheckEntitlementParams.builder()
+                    .id("x")
+                    .currencyId("currencyId")
+                    .featureId("featureId")
+                    .requestedUsage(0L)
+                    .addRequestedValue("string")
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

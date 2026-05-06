@@ -4,6 +4,7 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
@@ -157,6 +158,28 @@ internal class CustomerServiceAsyncTest {
 
         val customerResponse = customerResponseFuture.get()
         customerResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun checkEntitlement() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val customerServiceAsync = client.v1().customers()
+
+        val responseFuture =
+            customerServiceAsync.checkEntitlement(
+                CustomerCheckEntitlementParams.builder()
+                    .id("x")
+                    .currencyId("currencyId")
+                    .featureId("featureId")
+                    .requestedUsage(0L)
+                    .addRequestedValue("string")
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
