@@ -7,6 +7,8 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.customers.CustomerArchiveParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
@@ -158,6 +160,49 @@ interface CustomerService {
     /** @see archive */
     fun archive(id: String, requestOptions: RequestOptions): CustomerResponse =
         archive(id, CustomerArchiveParams.none(), requestOptions)
+
+    /**
+     * Checks a single entitlement (feature or credit) for a customer or resource. Supports
+     * `requestedUsage` and `requestedValues` to evaluate against limits or enum values.
+     *
+     * **Warning:** This REST API endpoint lacks built-in client-side caching, fallback mechanisms,
+     * and low-latency guarantees. It is not recommended for hot-path entitlement checks. For
+     * production use, consider using the Stigg Node Server SDK with caching or the Sidecar for
+     * low-latency cached responses.
+     */
+    fun checkEntitlement(id: String): CustomerCheckEntitlementResponse =
+        checkEntitlement(id, CustomerCheckEntitlementParams.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerCheckEntitlementResponse =
+        checkEntitlement(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+    ): CustomerCheckEntitlementResponse = checkEntitlement(id, params, RequestOptions.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        params: CustomerCheckEntitlementParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerCheckEntitlementResponse
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(params: CustomerCheckEntitlementParams): CustomerCheckEntitlementResponse =
+        checkEntitlement(params, RequestOptions.none())
+
+    /** @see checkEntitlement */
+    fun checkEntitlement(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CustomerCheckEntitlementResponse =
+        checkEntitlement(id, CustomerCheckEntitlementParams.none(), requestOptions)
 
     /**
      * Imports multiple customers in bulk. Used for migrating customer data from external systems.
@@ -458,6 +503,53 @@ interface CustomerService {
         @MustBeClosed
         fun archive(id: String, requestOptions: RequestOptions): HttpResponseFor<CustomerResponse> =
             archive(id, CustomerArchiveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/entitlements/check`, but is
+         * otherwise the same as [CustomerService.checkEntitlement].
+         */
+        @MustBeClosed
+        fun checkEntitlement(id: String): HttpResponseFor<CustomerCheckEntitlementResponse> =
+            checkEntitlement(id, CustomerCheckEntitlementParams.none())
+
+        /** @see checkEntitlement */
+        @MustBeClosed
+        fun checkEntitlement(
+            id: String,
+            params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerCheckEntitlementResponse> =
+            checkEntitlement(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see checkEntitlement */
+        @MustBeClosed
+        fun checkEntitlement(
+            id: String,
+            params: CustomerCheckEntitlementParams = CustomerCheckEntitlementParams.none(),
+        ): HttpResponseFor<CustomerCheckEntitlementResponse> =
+            checkEntitlement(id, params, RequestOptions.none())
+
+        /** @see checkEntitlement */
+        @MustBeClosed
+        fun checkEntitlement(
+            params: CustomerCheckEntitlementParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerCheckEntitlementResponse>
+
+        /** @see checkEntitlement */
+        @MustBeClosed
+        fun checkEntitlement(
+            params: CustomerCheckEntitlementParams
+        ): HttpResponseFor<CustomerCheckEntitlementResponse> =
+            checkEntitlement(params, RequestOptions.none())
+
+        /** @see checkEntitlement */
+        @MustBeClosed
+        fun checkEntitlement(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerCheckEntitlementResponse> =
+            checkEntitlement(id, CustomerCheckEntitlementParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/customers/import`, but is otherwise the

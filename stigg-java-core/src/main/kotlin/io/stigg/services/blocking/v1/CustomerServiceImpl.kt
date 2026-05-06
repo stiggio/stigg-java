@@ -17,6 +17,8 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.customers.CustomerArchiveParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
+import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
 import io.stigg.models.v1.customers.CustomerListPage
@@ -98,6 +100,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     ): CustomerResponse =
         // post /api/v1/customers/{id}/archive
         withRawResponse().archive(params, requestOptions).parse()
+
+    override fun checkEntitlement(
+        params: CustomerCheckEntitlementParams,
+        requestOptions: RequestOptions,
+    ): CustomerCheckEntitlementResponse =
+        // get /api/v1/customers/{id}/entitlements/check
+        withRawResponse().checkEntitlement(params, requestOptions).parse()
 
     override fun import_(
         params: CustomerImportParams,
@@ -286,6 +295,43 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             return errorHandler.handle(response).parseable {
                 response
                     .use { archiveHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val checkEntitlementHandler: Handler<CustomerCheckEntitlementResponse> =
+            jsonHandler<CustomerCheckEntitlementResponse>(clientOptions.jsonMapper)
+
+        override fun checkEntitlement(
+            params: CustomerCheckEntitlementParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerCheckEntitlementResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "customers",
+                        params._pathParam(0),
+                        "entitlements",
+                        "check",
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { checkEntitlementHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
