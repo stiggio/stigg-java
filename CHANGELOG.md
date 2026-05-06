@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.57 (2026-05-06)
+
+Full Changelog: [v0.1.0-alpha.56...v0.1.0-alpha.57](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.56...v0.1.0-alpha.57)
+
+### Features
+
+* **client:** support proxy authentication ([b2ad691](https://github.com/stiggio/stigg-java/commit/b2ad691606521860dfc44d6205212811f4f8df3f))
+
 ## 0.1.0-alpha.56 (2026-05-06)
 
 Full Changelog: [v0.1.0-alpha.55...v0.1.0-alpha.56](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.55...v0.1.0-alpha.56)
