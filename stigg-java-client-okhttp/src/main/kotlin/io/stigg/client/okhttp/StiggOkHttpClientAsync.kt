@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import io.stigg.client.StiggClientAsync
 import io.stigg.client.StiggClientAsyncImpl
 import io.stigg.core.ClientOptions
+import io.stigg.core.LogLevel
 import io.stigg.core.Sleeper
 import io.stigg.core.Timeout
 import io.stigg.core.http.AsyncStreamResponse
@@ -289,6 +290,15 @@ class StiggOkHttpClientAsync private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         fun apiKey(apiKey: String) = apply { clientOptions.apiKey(apiKey) }
 
