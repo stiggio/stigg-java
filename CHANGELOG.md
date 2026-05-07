@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.59 (2026-05-07)
+
+Full Changelog: [v0.1.0-alpha.58...v0.1.0-alpha.59](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.58...v0.1.0-alpha.59)
+
+### Features
+
+* **client:** improve logging ([1fad877](https://github.com/stiggio/stigg-java/commit/1fad877d7e62bd7b93c37776e472f13dfee86d56))
+
 ## 0.1.0-alpha.58 (2026-05-06)
 
 Full Changelog: [v0.1.0-alpha.57...v0.1.0-alpha.58](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.57...v0.1.0-alpha.58)
