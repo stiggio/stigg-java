@@ -3,7 +3,6 @@
 package io.stigg.client
 
 import io.stigg.core.ClientOptions
-import io.stigg.services.async.InternalServiceAsync
 import io.stigg.services.async.V1ServiceAsync
 import java.util.function.Consumer
 
@@ -45,8 +44,6 @@ interface StiggClientAsync {
 
     fun v1(): V1ServiceAsync
 
-    fun internal_(): InternalServiceAsync
-
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -71,7 +68,5 @@ interface StiggClientAsync {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): StiggClientAsync.WithRawResponse
 
         fun v1(): V1ServiceAsync.WithRawResponse
-
-        fun internal_(): InternalServiceAsync.WithRawResponse
     }
 }
