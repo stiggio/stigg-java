@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.services.async.v1
+package io.stigg.services.async.v1.credits
 
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
@@ -12,60 +12,57 @@ import io.stigg.core.http.HttpRequest
 import io.stigg.core.http.HttpResponse
 import io.stigg.core.http.HttpResponse.Handler
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.events.EventReportParams
-import io.stigg.models.v1.events.EventReportResponse
+import io.stigg.models.v1.credits.autorecharge.AutoRechargeGetAutoRechargeParams
+import io.stigg.models.v1.credits.autorecharge.AutoRechargeGetAutoRechargeResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Operations related to usage & metering */
-class EventServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
-    EventServiceAsync {
+class AutoRechargeServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
+    AutoRechargeServiceAsync {
 
-    private val withRawResponse: EventServiceAsync.WithRawResponse by lazy {
+    private val withRawResponse: AutoRechargeServiceAsync.WithRawResponse by lazy {
         WithRawResponseImpl(clientOptions)
     }
 
-    override fun withRawResponse(): EventServiceAsync.WithRawResponse = withRawResponse
+    override fun withRawResponse(): AutoRechargeServiceAsync.WithRawResponse = withRawResponse
 
-    override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync =
-        EventServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+    override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AutoRechargeServiceAsync =
+        AutoRechargeServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun report(
-        params: EventReportParams,
+    override fun getAutoRecharge(
+        params: AutoRechargeGetAutoRechargeParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EventReportResponse> =
-        // post /api/v1/events
-        withRawResponse().report(params, requestOptions).thenApply { it.parse() }
+    ): CompletableFuture<AutoRechargeGetAutoRechargeResponse> =
+        // get /api/v1/credits/auto-recharge
+        withRawResponse().getAutoRecharge(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
-        EventServiceAsync.WithRawResponse {
+        AutoRechargeServiceAsync.WithRawResponse {
 
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
-        ): EventServiceAsync.WithRawResponse =
-            EventServiceAsyncImpl.WithRawResponseImpl(
+        ): AutoRechargeServiceAsync.WithRawResponse =
+            AutoRechargeServiceAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val reportHandler: Handler<EventReportResponse> =
-            jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
+        private val getAutoRechargeHandler: Handler<AutoRechargeGetAutoRechargeResponse> =
+            jsonHandler<AutoRechargeGetAutoRechargeResponse>(clientOptions.jsonMapper)
 
-        override fun report(
-            params: EventReportParams,
+        override fun getAutoRecharge(
+            params: AutoRechargeGetAutoRechargeParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EventReportResponse>> {
+        ): CompletableFuture<HttpResponseFor<AutoRechargeGetAutoRechargeResponse>> {
             val request =
                 HttpRequest.builder()
-                    .method(HttpMethod.POST)
+                    .method(HttpMethod.GET)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("api", "v1", "events")
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .addPathSegments("api", "v1", "credits", "auto-recharge")
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
@@ -74,7 +71,7 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { reportHandler.handle(it) }
+                            .use { getAutoRechargeHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
