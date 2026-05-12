@@ -24,7 +24,7 @@ internal class CouponListParamsTest {
                     .build()
             )
             .limit(1L)
-            .status("status")
+            .addStatus(CouponListParams.Status.ACTIVE)
             .type(CouponListParams.Type.FIXED)
             .build()
     }
@@ -45,7 +45,7 @@ internal class CouponListParamsTest {
                         .build()
                 )
                 .limit(1L)
-                .status("status")
+                .addStatus(CouponListParams.Status.ACTIVE)
                 .type(CouponListParams.Type.FIXED)
                 .build()
 
@@ -62,7 +62,7 @@ internal class CouponListParamsTest {
                     .put("createdAt[lt]", "2019-12-27T18:11:19.117Z")
                     .put("createdAt[lte]", "2019-12-27T18:11:19.117Z")
                     .put("limit", "1")
-                    .put("status", "status")
+                    .put("status", listOf("ACTIVE").joinToString(","))
                     .put("type", "FIXED")
                     .build()
             )

@@ -2,9 +2,14 @@
 
 package io.stigg.models.v1.customers.integrations
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import io.stigg.core.Enum
+import io.stigg.core.JsonField
 import io.stigg.core.Params
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import io.stigg.core.toImmutable
+import io.stigg.errors.StiggInvalidDataException
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -16,7 +21,7 @@ private constructor(
     private val after: String?,
     private val before: String?,
     private val limit: Long?,
-    private val vendorIdentifier: String?,
+    private val vendorIdentifier: List<VendorIdentifier>?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -36,7 +41,7 @@ private constructor(
      * Filter by vendor identifier. Supports comma-separated values for multiple vendors (e.g.,
      * STRIPE,HUBSPOT)
      */
-    fun vendorIdentifier(): Optional<String> = Optional.ofNullable(vendorIdentifier)
+    fun vendorIdentifier(): Optional<List<VendorIdentifier>> = Optional.ofNullable(vendorIdentifier)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -61,7 +66,7 @@ private constructor(
         private var after: String? = null
         private var before: String? = null
         private var limit: Long? = null
-        private var vendorIdentifier: String? = null
+        private var vendorIdentifier: MutableList<VendorIdentifier>? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -71,7 +76,7 @@ private constructor(
             after = integrationListParams.after
             before = integrationListParams.before
             limit = integrationListParams.limit
-            vendorIdentifier = integrationListParams.vendorIdentifier
+            vendorIdentifier = integrationListParams.vendorIdentifier?.toMutableList()
             additionalHeaders = integrationListParams.additionalHeaders.toBuilder()
             additionalQueryParams = integrationListParams.additionalQueryParams.toBuilder()
         }
@@ -110,13 +115,23 @@ private constructor(
          * Filter by vendor identifier. Supports comma-separated values for multiple vendors (e.g.,
          * STRIPE,HUBSPOT)
          */
-        fun vendorIdentifier(vendorIdentifier: String?) = apply {
-            this.vendorIdentifier = vendorIdentifier
+        fun vendorIdentifier(vendorIdentifier: List<VendorIdentifier>?) = apply {
+            this.vendorIdentifier = vendorIdentifier?.toMutableList()
         }
 
         /** Alias for calling [Builder.vendorIdentifier] with `vendorIdentifier.orElse(null)`. */
-        fun vendorIdentifier(vendorIdentifier: Optional<String>) =
+        fun vendorIdentifier(vendorIdentifier: Optional<List<VendorIdentifier>>) =
             vendorIdentifier(vendorIdentifier.getOrNull())
+
+        /**
+         * Adds a single [VendorIdentifier] to [Builder.vendorIdentifier].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addVendorIdentifier(vendorIdentifier: VendorIdentifier) = apply {
+            this.vendorIdentifier =
+                (this.vendorIdentifier ?: mutableListOf()).apply { add(vendorIdentifier) }
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -227,7 +242,7 @@ private constructor(
                 after,
                 before,
                 limit,
-                vendorIdentifier,
+                vendorIdentifier?.toImmutable(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -247,10 +262,197 @@ private constructor(
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
                 limit?.let { put("limit", it.toString()) }
-                vendorIdentifier?.let { put("vendorIdentifier", it) }
+                vendorIdentifier?.let {
+                    put("vendorIdentifier", it.joinToString(",") { it.toString() })
+                }
                 putAll(additionalQueryParams)
             }
             .build()
+
+    class VendorIdentifier @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val AUTH0 = of("AUTH0")
+
+            @JvmField val ZUORA = of("ZUORA")
+
+            @JvmField val STRIPE = of("STRIPE")
+
+            @JvmField val HUBSPOT = of("HUBSPOT")
+
+            @JvmField val AWS_MARKETPLACE = of("AWS_MARKETPLACE")
+
+            @JvmField val SNOWFLAKE = of("SNOWFLAKE")
+
+            @JvmField val SALESFORCE = of("SALESFORCE")
+
+            @JvmField val BIG_QUERY = of("BIG_QUERY")
+
+            @JvmField val OPEN_FGA = of("OPEN_FGA")
+
+            @JvmField val APP_STORE = of("APP_STORE")
+
+            @JvmStatic fun of(value: String) = VendorIdentifier(JsonField.of(value))
+        }
+
+        /** An enum containing [VendorIdentifier]'s known values. */
+        enum class Known {
+            AUTH0,
+            ZUORA,
+            STRIPE,
+            HUBSPOT,
+            AWS_MARKETPLACE,
+            SNOWFLAKE,
+            SALESFORCE,
+            BIG_QUERY,
+            OPEN_FGA,
+            APP_STORE,
+        }
+
+        /**
+         * An enum containing [VendorIdentifier]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [VendorIdentifier] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            AUTH0,
+            ZUORA,
+            STRIPE,
+            HUBSPOT,
+            AWS_MARKETPLACE,
+            SNOWFLAKE,
+            SALESFORCE,
+            BIG_QUERY,
+            OPEN_FGA,
+            APP_STORE,
+            /**
+             * An enum member indicating that [VendorIdentifier] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                AUTH0 -> Value.AUTH0
+                ZUORA -> Value.ZUORA
+                STRIPE -> Value.STRIPE
+                HUBSPOT -> Value.HUBSPOT
+                AWS_MARKETPLACE -> Value.AWS_MARKETPLACE
+                SNOWFLAKE -> Value.SNOWFLAKE
+                SALESFORCE -> Value.SALESFORCE
+                BIG_QUERY -> Value.BIG_QUERY
+                OPEN_FGA -> Value.OPEN_FGA
+                APP_STORE -> Value.APP_STORE
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                AUTH0 -> Known.AUTH0
+                ZUORA -> Known.ZUORA
+                STRIPE -> Known.STRIPE
+                HUBSPOT -> Known.HUBSPOT
+                AWS_MARKETPLACE -> Known.AWS_MARKETPLACE
+                SNOWFLAKE -> Known.SNOWFLAKE
+                SALESFORCE -> Known.SALESFORCE
+                BIG_QUERY -> Known.BIG_QUERY
+                OPEN_FGA -> Known.OPEN_FGA
+                APP_STORE -> Known.APP_STORE
+                else -> throw StiggInvalidDataException("Unknown VendorIdentifier: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StiggInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): VendorIdentifier = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is VendorIdentifier && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

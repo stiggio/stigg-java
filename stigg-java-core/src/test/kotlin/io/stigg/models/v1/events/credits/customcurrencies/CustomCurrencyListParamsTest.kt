@@ -1,42 +1,31 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.customers.integrations
+package io.stigg.models.v1.events.credits.customcurrencies
 
 import io.stigg.core.http.QueryParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class IntegrationListParamsTest {
+internal class CustomCurrencyListParamsTest {
 
     @Test
     fun create() {
-        IntegrationListParams.builder()
-            .id("x")
+        CustomCurrencyListParams.builder()
             .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .limit(1L)
-            .addVendorIdentifier(IntegrationListParams.VendorIdentifier.AUTH0)
+            .addStatus(CustomCurrencyListParams.Status.ACTIVE)
             .build()
-    }
-
-    @Test
-    fun pathParams() {
-        val params = IntegrationListParams.builder().id("x").build()
-
-        assertThat(params._pathParam(0)).isEqualTo("x")
-        // out-of-bound path param
-        assertThat(params._pathParam(1)).isEqualTo("")
     }
 
     @Test
     fun queryParams() {
         val params =
-            IntegrationListParams.builder()
-                .id("x")
+            CustomCurrencyListParams.builder()
                 .after("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .before("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limit(1L)
-                .addVendorIdentifier(IntegrationListParams.VendorIdentifier.AUTH0)
+                .addStatus(CustomCurrencyListParams.Status.ACTIVE)
                 .build()
 
         val queryParams = params._queryParams()
@@ -47,14 +36,14 @@ internal class IntegrationListParamsTest {
                     .put("after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("limit", "1")
-                    .put("vendorIdentifier", listOf("AUTH0").joinToString(","))
+                    .put("status", listOf("ACTIVE").joinToString(","))
                     .build()
             )
     }
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = IntegrationListParams.builder().id("x").build()
+        val params = CustomCurrencyListParams.builder().build()
 
         val queryParams = params._queryParams()
 

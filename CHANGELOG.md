@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-beta.1 (2026-05-12)
+
+Full Changelog: [v0.1.0-alpha.60...v0.1.0-beta.1](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.60...v0.1.0-beta.1)
+
+### Features
+
+* **api:** add credits custom currencies with CRUD and archive operations ([7dd5982](https://github.com/stiggio/stigg-java/commit/7dd59827b9b56c4289fd89740998a0e5c562edb5))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([125ae2f](https://github.com/stiggio/stigg-java/commit/125ae2f94ce33a62cec18693b958408cf2dd2360))
+
 ## 0.1.0-alpha.60 (2026-05-11)
 
 Full Changelog: [v0.1.0-alpha.59...v0.1.0-alpha.60](https://github.com/stiggio/stigg-java/compare/v0.1.0-alpha.59...v0.1.0-alpha.60)

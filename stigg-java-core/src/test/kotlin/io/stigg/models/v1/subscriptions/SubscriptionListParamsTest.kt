@@ -25,9 +25,9 @@ internal class SubscriptionListParamsTest {
             .customerId("customerId")
             .limit(1L)
             .planId("planId")
-            .pricingType("pricingType")
+            .addPricingType(SubscriptionListParams.PricingType.FREE)
             .resourceId("resourceId")
-            .status("status")
+            .addStatus(SubscriptionListParams.Status.PAYMENT_PENDING)
             .build()
     }
 
@@ -48,9 +48,9 @@ internal class SubscriptionListParamsTest {
                 .customerId("customerId")
                 .limit(1L)
                 .planId("planId")
-                .pricingType("pricingType")
+                .addPricingType(SubscriptionListParams.PricingType.FREE)
                 .resourceId("resourceId")
-                .status("status")
+                .addStatus(SubscriptionListParams.Status.PAYMENT_PENDING)
                 .build()
 
         val queryParams = params._queryParams()
@@ -67,9 +67,9 @@ internal class SubscriptionListParamsTest {
                     .put("customerId", "customerId")
                     .put("limit", "1")
                     .put("planId", "planId")
-                    .put("pricingType", "pricingType")
+                    .put("pricingType", listOf("FREE").joinToString(","))
                     .put("resourceId", "resourceId")
-                    .put("status", "status")
+                    .put("status", listOf("PAYMENT_PENDING").joinToString(","))
                     .build()
             )
     }

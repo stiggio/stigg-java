@@ -24,7 +24,7 @@ internal class PlanListParamsTest {
             )
             .limit(1L)
             .productId("productId")
-            .status("status")
+            .addStatus(PlanListParams.Status.DRAFT)
             .build()
     }
 
@@ -44,7 +44,7 @@ internal class PlanListParamsTest {
                 )
                 .limit(1L)
                 .productId("productId")
-                .status("status")
+                .addStatus(PlanListParams.Status.DRAFT)
                 .build()
 
         val queryParams = params._queryParams()
@@ -60,7 +60,7 @@ internal class PlanListParamsTest {
                     .put("createdAt[lte]", "2019-12-27T18:11:19.117Z")
                     .put("limit", "1")
                     .put("productId", "productId")
-                    .put("status", "status")
+                    .put("status", listOf("DRAFT").joinToString(","))
                     .build()
             )
     }
