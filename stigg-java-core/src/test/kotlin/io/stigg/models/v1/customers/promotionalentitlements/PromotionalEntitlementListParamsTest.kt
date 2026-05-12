@@ -24,7 +24,7 @@ internal class PromotionalEntitlementListParamsTest {
                     .build()
             )
             .limit(1L)
-            .status("status")
+            .addStatus(PromotionalEntitlementListParams.Status.ACTIVE)
             .build()
     }
 
@@ -53,7 +53,7 @@ internal class PromotionalEntitlementListParamsTest {
                         .build()
                 )
                 .limit(1L)
-                .status("status")
+                .addStatus(PromotionalEntitlementListParams.Status.ACTIVE)
                 .build()
 
         val queryParams = params._queryParams()
@@ -68,7 +68,7 @@ internal class PromotionalEntitlementListParamsTest {
                     .put("createdAt[lt]", "2019-12-27T18:11:19.117Z")
                     .put("createdAt[lte]", "2019-12-27T18:11:19.117Z")
                     .put("limit", "1")
-                    .put("status", "status")
+                    .put("status", listOf("Active").joinToString(","))
                     .build()
             )
     }

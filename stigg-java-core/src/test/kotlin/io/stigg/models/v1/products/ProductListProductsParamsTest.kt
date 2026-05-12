@@ -24,7 +24,7 @@ internal class ProductListProductsParamsTest {
                     .build()
             )
             .limit(1L)
-            .status("status")
+            .addStatus(ProductListProductsParams.Status.PUBLISHED)
             .build()
     }
 
@@ -44,7 +44,7 @@ internal class ProductListProductsParamsTest {
                         .build()
                 )
                 .limit(1L)
-                .status("status")
+                .addStatus(ProductListProductsParams.Status.PUBLISHED)
                 .build()
 
         val queryParams = params._queryParams()
@@ -60,7 +60,7 @@ internal class ProductListProductsParamsTest {
                     .put("createdAt[lt]", "2019-12-27T18:11:19.117Z")
                     .put("createdAt[lte]", "2019-12-27T18:11:19.117Z")
                     .put("limit", "1")
-                    .put("status", "status")
+                    .put("status", listOf("PUBLISHED").joinToString(","))
                     .build()
             )
     }
