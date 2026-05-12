@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.addons
+package io.stigg.models.v1.events.credits.customcurrencies
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import io.stigg.core.Enum
@@ -10,20 +10,19 @@ import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves a paginated list of addons in the environment. */
-class AddonListParams
+/**
+ * Retrieves a paginated list of custom currencies in the environment. Archived currencies are
+ * excluded by default; pass `status=ARCHIVED` (or `status=ACTIVE,ARCHIVED`) to include them.
+ */
+class CustomCurrencyListParams
 private constructor(
     private val after: String?,
     private val before: String?,
-    private val createdAt: CreatedAt?,
     private val limit: Long?,
-    private val productId: String?,
     private val status: List<Status>?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -35,16 +34,13 @@ private constructor(
     /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
-    /** Filter by creation date using range operators: gt, gte, lt, lte */
-    fun createdAt(): Optional<CreatedAt> = Optional.ofNullable(createdAt)
-
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
 
-    /** Filter by product ID */
-    fun productId(): Optional<String> = Optional.ofNullable(productId)
-
-    /** Filter by status. Supports comma-separated values for multiple statuses */
+    /**
+     * Filter by custom currency status. Supports comma-separated values (e.g., `ACTIVE,ARCHIVED`).
+     * Defaults to `ACTIVE`.
+     */
     fun status(): Optional<List<Status>> = Optional.ofNullable(status)
 
     /** Additional headers to send with the request. */
@@ -57,34 +53,30 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): AddonListParams = builder().build()
+        @JvmStatic fun none(): CustomCurrencyListParams = builder().build()
 
-        /** Returns a mutable builder for constructing an instance of [AddonListParams]. */
+        /** Returns a mutable builder for constructing an instance of [CustomCurrencyListParams]. */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [AddonListParams]. */
+    /** A builder for [CustomCurrencyListParams]. */
     class Builder internal constructor() {
 
         private var after: String? = null
         private var before: String? = null
-        private var createdAt: CreatedAt? = null
         private var limit: Long? = null
-        private var productId: String? = null
         private var status: MutableList<Status>? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(addonListParams: AddonListParams) = apply {
-            after = addonListParams.after
-            before = addonListParams.before
-            createdAt = addonListParams.createdAt
-            limit = addonListParams.limit
-            productId = addonListParams.productId
-            status = addonListParams.status?.toMutableList()
-            additionalHeaders = addonListParams.additionalHeaders.toBuilder()
-            additionalQueryParams = addonListParams.additionalQueryParams.toBuilder()
+        internal fun from(customCurrencyListParams: CustomCurrencyListParams) = apply {
+            after = customCurrencyListParams.after
+            before = customCurrencyListParams.before
+            limit = customCurrencyListParams.limit
+            status = customCurrencyListParams.status?.toMutableList()
+            additionalHeaders = customCurrencyListParams.additionalHeaders.toBuilder()
+            additionalQueryParams = customCurrencyListParams.additionalQueryParams.toBuilder()
         }
 
         /** Return items that come after this cursor */
@@ -99,12 +91,6 @@ private constructor(
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
 
-        /** Filter by creation date using range operators: gt, gte, lt, lte */
-        fun createdAt(createdAt: CreatedAt?) = apply { this.createdAt = createdAt }
-
-        /** Alias for calling [Builder.createdAt] with `createdAt.orElse(null)`. */
-        fun createdAt(createdAt: Optional<CreatedAt>) = createdAt(createdAt.getOrNull())
-
         /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
 
@@ -118,13 +104,10 @@ private constructor(
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
 
-        /** Filter by product ID */
-        fun productId(productId: String?) = apply { this.productId = productId }
-
-        /** Alias for calling [Builder.productId] with `productId.orElse(null)`. */
-        fun productId(productId: Optional<String>) = productId(productId.getOrNull())
-
-        /** Filter by status. Supports comma-separated values for multiple statuses */
+        /**
+         * Filter by custom currency status. Supports comma-separated values (e.g.,
+         * `ACTIVE,ARCHIVED`). Defaults to `ACTIVE`.
+         */
         fun status(status: List<Status>?) = apply { this.status = status?.toMutableList() }
 
         /** Alias for calling [Builder.status] with `status.orElse(null)`. */
@@ -238,17 +221,15 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [AddonListParams].
+         * Returns an immutable instance of [CustomCurrencyListParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): AddonListParams =
-            AddonListParams(
+        fun build(): CustomCurrencyListParams =
+            CustomCurrencyListParams(
                 after,
                 before,
-                createdAt,
                 limit,
-                productId,
                 status?.toImmutable(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -262,184 +243,11 @@ private constructor(
             .apply {
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
-                createdAt?.let {
-                    it.gt().ifPresent {
-                        put("createdAt[gt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.gte().ifPresent {
-                        put("createdAt[gte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.lt().ifPresent {
-                        put("createdAt[lt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.lte().ifPresent {
-                        put("createdAt[lte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it._additionalProperties().keys().forEach { key ->
-                        it._additionalProperties().values(key).forEach { value ->
-                            put("createdAt[$key]", value)
-                        }
-                    }
-                }
                 limit?.let { put("limit", it.toString()) }
-                productId?.let { put("productId", it) }
                 status?.let { put("status", it.joinToString(",") { it.toString() }) }
                 putAll(additionalQueryParams)
             }
             .build()
-
-    /** Filter by creation date using range operators: gt, gte, lt, lte */
-    class CreatedAt
-    private constructor(
-        private val gt: OffsetDateTime?,
-        private val gte: OffsetDateTime?,
-        private val lt: OffsetDateTime?,
-        private val lte: OffsetDateTime?,
-        private val additionalProperties: QueryParams,
-    ) {
-
-        /** Greater than the specified createdAt value */
-        fun gt(): Optional<OffsetDateTime> = Optional.ofNullable(gt)
-
-        /** Greater than or equal to the specified createdAt value */
-        fun gte(): Optional<OffsetDateTime> = Optional.ofNullable(gte)
-
-        /** Less than the specified createdAt value */
-        fun lt(): Optional<OffsetDateTime> = Optional.ofNullable(lt)
-
-        /** Less than or equal to the specified createdAt value */
-        fun lte(): Optional<OffsetDateTime> = Optional.ofNullable(lte)
-
-        /** Query params to send with the request. */
-        fun _additionalProperties(): QueryParams = additionalProperties
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /** Returns a mutable builder for constructing an instance of [CreatedAt]. */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [CreatedAt]. */
-        class Builder internal constructor() {
-
-            private var gt: OffsetDateTime? = null
-            private var gte: OffsetDateTime? = null
-            private var lt: OffsetDateTime? = null
-            private var lte: OffsetDateTime? = null
-            private var additionalProperties: QueryParams.Builder = QueryParams.builder()
-
-            @JvmSynthetic
-            internal fun from(createdAt: CreatedAt) = apply {
-                gt = createdAt.gt
-                gte = createdAt.gte
-                lt = createdAt.lt
-                lte = createdAt.lte
-                additionalProperties = createdAt.additionalProperties.toBuilder()
-            }
-
-            /** Greater than the specified createdAt value */
-            fun gt(gt: OffsetDateTime?) = apply { this.gt = gt }
-
-            /** Alias for calling [Builder.gt] with `gt.orElse(null)`. */
-            fun gt(gt: Optional<OffsetDateTime>) = gt(gt.getOrNull())
-
-            /** Greater than or equal to the specified createdAt value */
-            fun gte(gte: OffsetDateTime?) = apply { this.gte = gte }
-
-            /** Alias for calling [Builder.gte] with `gte.orElse(null)`. */
-            fun gte(gte: Optional<OffsetDateTime>) = gte(gte.getOrNull())
-
-            /** Less than the specified createdAt value */
-            fun lt(lt: OffsetDateTime?) = apply { this.lt = lt }
-
-            /** Alias for calling [Builder.lt] with `lt.orElse(null)`. */
-            fun lt(lt: Optional<OffsetDateTime>) = lt(lt.getOrNull())
-
-            /** Less than or equal to the specified createdAt value */
-            fun lte(lte: OffsetDateTime?) = apply { this.lte = lte }
-
-            /** Alias for calling [Builder.lte] with `lte.orElse(null)`. */
-            fun lte(lte: Optional<OffsetDateTime>) = lte(lte.getOrNull())
-
-            fun additionalProperties(additionalProperties: QueryParams) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, Iterable<String>>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: String) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAdditionalProperties(key: String, values: Iterable<String>) = apply {
-                additionalProperties.put(key, values)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: QueryParams) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, Iterable<String>>) =
-                apply {
-                    this.additionalProperties.putAll(additionalProperties)
-                }
-
-            fun replaceAdditionalProperties(key: String, value: String) = apply {
-                additionalProperties.replace(key, value)
-            }
-
-            fun replaceAdditionalProperties(key: String, values: Iterable<String>) = apply {
-                additionalProperties.replace(key, values)
-            }
-
-            fun replaceAllAdditionalProperties(additionalProperties: QueryParams) = apply {
-                this.additionalProperties.replaceAll(additionalProperties)
-            }
-
-            fun replaceAllAdditionalProperties(
-                additionalProperties: Map<String, Iterable<String>>
-            ) = apply { this.additionalProperties.replaceAll(additionalProperties) }
-
-            fun removeAdditionalProperties(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                additionalProperties.removeAll(keys)
-            }
-
-            /**
-             * Returns an immutable instance of [CreatedAt].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): CreatedAt = CreatedAt(gt, gte, lt, lte, additionalProperties.build())
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is CreatedAt &&
-                gt == other.gt &&
-                gte == other.gte &&
-                lt == other.lt &&
-                lte == other.lte &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(gt, gte, lt, lte, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "CreatedAt{gt=$gt, gte=$gte, lt=$lt, lte=$lte, additionalProperties=$additionalProperties}"
-    }
 
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -455,9 +263,7 @@ private constructor(
 
         companion object {
 
-            @JvmField val DRAFT = of("DRAFT")
-
-            @JvmField val PUBLISHED = of("PUBLISHED")
+            @JvmField val ACTIVE = of("ACTIVE")
 
             @JvmField val ARCHIVED = of("ARCHIVED")
 
@@ -466,8 +272,7 @@ private constructor(
 
         /** An enum containing [Status]'s known values. */
         enum class Known {
-            DRAFT,
-            PUBLISHED,
+            ACTIVE,
             ARCHIVED,
         }
 
@@ -481,8 +286,7 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            DRAFT,
-            PUBLISHED,
+            ACTIVE,
             ARCHIVED,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -497,8 +301,7 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                DRAFT -> Value.DRAFT
-                PUBLISHED -> Value.PUBLISHED
+                ACTIVE -> Value.ACTIVE
                 ARCHIVED -> Value.ARCHIVED
                 else -> Value._UNKNOWN
             }
@@ -513,8 +316,7 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                DRAFT -> Known.DRAFT
-                PUBLISHED -> Known.PUBLISHED
+                ACTIVE -> Known.ACTIVE
                 ARCHIVED -> Known.ARCHIVED
                 else -> throw StiggInvalidDataException("Unknown Status: $value")
             }
@@ -585,29 +387,18 @@ private constructor(
             return true
         }
 
-        return other is AddonListParams &&
+        return other is CustomCurrencyListParams &&
             after == other.after &&
             before == other.before &&
-            createdAt == other.createdAt &&
             limit == other.limit &&
-            productId == other.productId &&
             status == other.status &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            after,
-            before,
-            createdAt,
-            limit,
-            productId,
-            status,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(after, before, limit, status, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "AddonListParams{after=$after, before=$before, createdAt=$createdAt, limit=$limit, productId=$productId, status=$status, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomCurrencyListParams{after=$after, before=$before, limit=$limit, status=$status, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

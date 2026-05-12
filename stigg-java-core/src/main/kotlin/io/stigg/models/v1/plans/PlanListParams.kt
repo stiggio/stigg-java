@@ -2,9 +2,14 @@
 
 package io.stigg.models.v1.plans
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import io.stigg.core.Enum
+import io.stigg.core.JsonField
 import io.stigg.core.Params
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import io.stigg.core.toImmutable
+import io.stigg.errors.StiggInvalidDataException
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Objects
@@ -19,7 +24,7 @@ private constructor(
     private val createdAt: CreatedAt?,
     private val limit: Long?,
     private val productId: String?,
-    private val status: String?,
+    private val status: List<Status>?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -40,7 +45,7 @@ private constructor(
     fun productId(): Optional<String> = Optional.ofNullable(productId)
 
     /** Filter by status. Supports comma-separated values for multiple statuses */
-    fun status(): Optional<String> = Optional.ofNullable(status)
+    fun status(): Optional<List<Status>> = Optional.ofNullable(status)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -66,7 +71,7 @@ private constructor(
         private var createdAt: CreatedAt? = null
         private var limit: Long? = null
         private var productId: String? = null
-        private var status: String? = null
+        private var status: MutableList<Status>? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -77,7 +82,7 @@ private constructor(
             createdAt = planListParams.createdAt
             limit = planListParams.limit
             productId = planListParams.productId
-            status = planListParams.status
+            status = planListParams.status?.toMutableList()
             additionalHeaders = planListParams.additionalHeaders.toBuilder()
             additionalQueryParams = planListParams.additionalQueryParams.toBuilder()
         }
@@ -120,10 +125,19 @@ private constructor(
         fun productId(productId: Optional<String>) = productId(productId.getOrNull())
 
         /** Filter by status. Supports comma-separated values for multiple statuses */
-        fun status(status: String?) = apply { this.status = status }
+        fun status(status: List<Status>?) = apply { this.status = status?.toMutableList() }
 
         /** Alias for calling [Builder.status] with `status.orElse(null)`. */
-        fun status(status: Optional<String>) = status(status.getOrNull())
+        fun status(status: Optional<List<Status>>) = status(status.getOrNull())
+
+        /**
+         * Adds a single [Status] to [Builder.status].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addStatus(status: Status) = apply {
+            this.status = (this.status ?: mutableListOf()).apply { add(status) }
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -235,7 +249,7 @@ private constructor(
                 createdAt,
                 limit,
                 productId,
-                status,
+                status?.toImmutable(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -269,7 +283,7 @@ private constructor(
                 }
                 limit?.let { put("limit", it.toString()) }
                 productId?.let { put("productId", it) }
-                status?.let { put("status", it) }
+                status?.let { put("status", it.joinToString(",") { it.toString() }) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -425,6 +439,145 @@ private constructor(
 
         override fun toString() =
             "CreatedAt{gt=$gt, gte=$gte, lt=$lt, lte=$lte, additionalProperties=$additionalProperties}"
+    }
+
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val DRAFT = of("DRAFT")
+
+            @JvmField val PUBLISHED = of("PUBLISHED")
+
+            @JvmField val ARCHIVED = of("ARCHIVED")
+
+            @JvmStatic fun of(value: String) = Status(JsonField.of(value))
+        }
+
+        /** An enum containing [Status]'s known values. */
+        enum class Known {
+            DRAFT,
+            PUBLISHED,
+            ARCHIVED,
+        }
+
+        /**
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Status] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            DRAFT,
+            PUBLISHED,
+            ARCHIVED,
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                DRAFT -> Value.DRAFT
+                PUBLISHED -> Value.PUBLISHED
+                ARCHIVED -> Value.ARCHIVED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                DRAFT -> Known.DRAFT
+                PUBLISHED -> Known.PUBLISHED
+                ARCHIVED -> Known.ARCHIVED
+                else -> throw StiggInvalidDataException("Unknown Status: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StiggInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): Status = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Status && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     override fun equals(other: Any?): Boolean {

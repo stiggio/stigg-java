@@ -4,8 +4,6 @@ package io.stigg.client
 
 import io.stigg.core.ClientOptions
 import io.stigg.core.getPackageVersion
-import io.stigg.services.async.InternalServiceAsync
-import io.stigg.services.async.InternalServiceAsyncImpl
 import io.stigg.services.async.V1ServiceAsync
 import io.stigg.services.async.V1ServiceAsyncImpl
 import java.util.function.Consumer
@@ -29,10 +27,6 @@ class StiggClientAsyncImpl(private val clientOptions: ClientOptions) : StiggClie
 
     private val v1: V1ServiceAsync by lazy { V1ServiceAsyncImpl(clientOptionsWithUserAgent) }
 
-    private val internal_: InternalServiceAsync by lazy {
-        InternalServiceAsyncImpl(clientOptionsWithUserAgent)
-    }
-
     override fun sync(): StiggClient = sync
 
     override fun withRawResponse(): StiggClientAsync.WithRawResponse = withRawResponse
@@ -41,8 +35,6 @@ class StiggClientAsyncImpl(private val clientOptions: ClientOptions) : StiggClie
         StiggClientAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun v1(): V1ServiceAsync = v1
-
-    override fun internal_(): InternalServiceAsync = internal_
 
     override fun close() = clientOptions.close()
 
@@ -53,10 +45,6 @@ class StiggClientAsyncImpl(private val clientOptions: ClientOptions) : StiggClie
             V1ServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val internal_: InternalServiceAsync.WithRawResponse by lazy {
-            InternalServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): StiggClientAsync.WithRawResponse =
@@ -65,7 +53,5 @@ class StiggClientAsyncImpl(private val clientOptions: ClientOptions) : StiggClie
             )
 
         override fun v1(): V1ServiceAsync.WithRawResponse = v1
-
-        override fun internal_(): InternalServiceAsync.WithRawResponse = internal_
     }
 }
