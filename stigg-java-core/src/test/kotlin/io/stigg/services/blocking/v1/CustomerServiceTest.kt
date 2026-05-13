@@ -166,11 +166,11 @@ internal class CustomerServiceTest {
             customerService.checkEntitlement(
                 CustomerCheckEntitlementParams.builder()
                     .id("x")
-                    .currencyId("currencyId")
-                    .featureId("featureId")
+                    .currencyId("x")
+                    .featureId("x")
                     .requestedUsage(0L)
                     .addRequestedValue("string")
-                    .resourceId("resourceId")
+                    .resourceId("x")
                     .build()
             )
 
