@@ -236,7 +236,7 @@ private constructor(
         body.trialOverrideConfiguration()
 
     /**
-     * Unit quantity
+     * Unit quantity for per-unit pricing. Minimum is 0 (zero is allowed).
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -908,7 +908,7 @@ private constructor(
             trialOverrideConfiguration: JsonField<TrialOverrideConfiguration>
         ) = apply { body.trialOverrideConfiguration(trialOverrideConfiguration) }
 
-        /** Unit quantity */
+        /** Unit quantity for per-unit pricing. Minimum is 0 (zero is allowed). */
         fun unitQuantity(unitQuantity: Long) = apply { body.unitQuantity(unitQuantity) }
 
         /**
@@ -1399,7 +1399,7 @@ private constructor(
             trialOverrideConfiguration.getOptional("trialOverrideConfiguration")
 
         /**
-         * Unit quantity
+         * Unit quantity for per-unit pricing. Minimum is 0 (zero is allowed).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -2175,7 +2175,7 @@ private constructor(
                 trialOverrideConfiguration: JsonField<TrialOverrideConfiguration>
             ) = apply { this.trialOverrideConfiguration = trialOverrideConfiguration }
 
-            /** Unit quantity */
+            /** Unit quantity for per-unit pricing. Minimum is 0 (zero is allowed). */
             fun unitQuantity(unitQuantity: Long) = unitQuantity(JsonField.of(unitQuantity))
 
             /**
@@ -6499,7 +6499,7 @@ private constructor(
         fun id(): String = id.getRequired("id")
 
         /**
-         * Charge quantity
+         * Charge quantity. Minimum is 0 (zero is allowed).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -6590,7 +6590,7 @@ private constructor(
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
 
-            /** Charge quantity */
+            /** Charge quantity. Minimum is 0 (zero is allowed). */
             fun quantity(quantity: Double) = quantity(JsonField.of(quantity))
 
             /**

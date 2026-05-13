@@ -89,7 +89,7 @@ internal class SubscriptionUpdateParamsTest {
             .addCharge(
                 SubscriptionUpdateParams.Charge.builder()
                     .id("id")
-                    .quantity(1.0)
+                    .quantity(0.0)
                     .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                     .build()
             )
@@ -255,7 +255,7 @@ internal class SubscriptionUpdateParamsTest {
                 .addCharge(
                     SubscriptionUpdateParams.Charge.builder()
                         .id("id")
-                        .quantity(1.0)
+                        .quantity(0.0)
                         .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                         .build()
                 )
@@ -415,7 +415,7 @@ internal class SubscriptionUpdateParamsTest {
             .containsExactly(
                 SubscriptionUpdateParams.Charge.builder()
                     .id("id")
-                    .quantity(1.0)
+                    .quantity(0.0)
                     .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                     .build()
             )
