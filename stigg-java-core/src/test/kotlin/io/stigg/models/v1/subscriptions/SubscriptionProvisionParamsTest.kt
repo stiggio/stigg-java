@@ -96,7 +96,7 @@ internal class SubscriptionProvisionParamsTest {
             .addCharge(
                 SubscriptionProvisionParams.Charge.builder()
                     .id("id")
-                    .quantity(1.0)
+                    .quantity(0.0)
                     .type(SubscriptionProvisionParams.Charge.Type.FEATURE)
                     .build()
             )
@@ -230,7 +230,7 @@ internal class SubscriptionProvisionParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
-            .unitQuantity(1L)
+            .unitQuantity(0L)
             .build()
     }
 
@@ -324,7 +324,7 @@ internal class SubscriptionProvisionParamsTest {
                 .addCharge(
                     SubscriptionProvisionParams.Charge.builder()
                         .id("id")
-                        .quantity(1.0)
+                        .quantity(0.0)
                         .type(SubscriptionProvisionParams.Charge.Type.FEATURE)
                         .build()
                 )
@@ -464,7 +464,7 @@ internal class SubscriptionProvisionParamsTest {
                         .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
-                .unitQuantity(1L)
+                .unitQuantity(0L)
                 .build()
 
         val body = params._body()
@@ -560,7 +560,7 @@ internal class SubscriptionProvisionParamsTest {
             .containsExactly(
                 SubscriptionProvisionParams.Charge.builder()
                     .id("id")
-                    .quantity(1.0)
+                    .quantity(0.0)
                     .type(SubscriptionProvisionParams.Charge.Type.FEATURE)
                     .build()
             )
@@ -706,7 +706,7 @@ internal class SubscriptionProvisionParamsTest {
                     .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
-        assertThat(body.unitQuantity()).contains(1L)
+        assertThat(body.unitQuantity()).contains(0L)
     }
 
     @Test

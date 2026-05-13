@@ -28,7 +28,7 @@ internal class SubscriptionImportParamsTest {
                     .addCharge(
                         SubscriptionImportParams.Subscription.Charge.builder()
                             .id("id")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .type(SubscriptionImportParams.Subscription.Charge.Type.FEATURE)
                             .build()
                     )
@@ -66,7 +66,7 @@ internal class SubscriptionImportParamsTest {
                         .addCharge(
                             SubscriptionImportParams.Subscription.Charge.builder()
                                 .id("id")
-                                .quantity(1.0)
+                                .quantity(0.0)
                                 .type(SubscriptionImportParams.Subscription.Charge.Type.FEATURE)
                                 .build()
                         )
@@ -102,7 +102,7 @@ internal class SubscriptionImportParamsTest {
                     .addCharge(
                         SubscriptionImportParams.Subscription.Charge.builder()
                             .id("id")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .type(SubscriptionImportParams.Subscription.Charge.Type.FEATURE)
                             .build()
                     )

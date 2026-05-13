@@ -12,11 +12,11 @@ internal class CustomerCheckEntitlementParamsTest {
     fun create() {
         CustomerCheckEntitlementParams.builder()
             .id("x")
-            .currencyId("x")
-            .featureId("x")
+            .currencyId("currencyId")
+            .featureId("featureId")
             .requestedUsage(0L)
             .addRequestedValue("string")
-            .resourceId("x")
+            .resourceId("resourceId")
             .build()
     }
 
@@ -34,11 +34,11 @@ internal class CustomerCheckEntitlementParamsTest {
         val params =
             CustomerCheckEntitlementParams.builder()
                 .id("x")
-                .currencyId("x")
-                .featureId("x")
+                .currencyId("currencyId")
+                .featureId("featureId")
                 .requestedUsage(0L)
                 .addRequestedValue("string")
-                .resourceId("x")
+                .resourceId("resourceId")
                 .build()
 
         val queryParams = params._queryParams()
@@ -46,11 +46,11 @@ internal class CustomerCheckEntitlementParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("currencyId", "x")
-                    .put("featureId", "x")
+                    .put("currencyId", "currencyId")
+                    .put("featureId", "featureId")
                     .put("requestedUsage", "0")
                     .put("requestedValues", listOf("string").joinToString(","))
-                    .put("resourceId", "x")
+                    .put("resourceId", "resourceId")
                     .build()
             )
     }
