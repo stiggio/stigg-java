@@ -170,11 +170,11 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.checkEntitlement(
                 CustomerCheckEntitlementParams.builder()
                     .id("x")
-                    .currencyId("x")
-                    .featureId("x")
+                    .currencyId("currencyId")
+                    .featureId("featureId")
                     .requestedUsage(0L)
                     .addRequestedValue("string")
-                    .resourceId("x")
+                    .resourceId("resourceId")
                     .build()
             )
 

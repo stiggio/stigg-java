@@ -124,7 +124,7 @@ internal class SubscriptionServiceAsyncTest {
                     .addCharge(
                         SubscriptionUpdateParams.Charge.builder()
                             .id("id")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .type(SubscriptionUpdateParams.Charge.Type.FEATURE)
                             .build()
                     )
@@ -288,7 +288,7 @@ internal class SubscriptionServiceAsyncTest {
                             .addCharge(
                                 SubscriptionImportParams.Subscription.Charge.builder()
                                     .id("id")
-                                    .quantity(1.0)
+                                    .quantity(0.0)
                                     .type(SubscriptionImportParams.Subscription.Charge.Type.FEATURE)
                                     .build()
                             )
@@ -379,7 +379,7 @@ internal class SubscriptionServiceAsyncTest {
                     .addBillableFeature(
                         SubscriptionPreviewParams.BillableFeature.builder()
                             .featureId("featureId")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .build()
                     )
                     .billingCountryCode("billingCountryCode")
@@ -425,7 +425,7 @@ internal class SubscriptionServiceAsyncTest {
                     .addCharge(
                         SubscriptionPreviewParams.Charge.builder()
                             .id("id")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .type(SubscriptionPreviewParams.Charge.Type.FEATURE)
                             .build()
                     )
@@ -446,7 +446,7 @@ internal class SubscriptionServiceAsyncTest {
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
-                    .unitQuantity(1L)
+                    .unitQuantity(0L)
                     .build()
             )
 
@@ -553,7 +553,7 @@ internal class SubscriptionServiceAsyncTest {
                     .addCharge(
                         SubscriptionProvisionParams.Charge.builder()
                             .id("id")
-                            .quantity(1.0)
+                            .quantity(0.0)
                             .type(SubscriptionProvisionParams.Charge.Type.FEATURE)
                             .build()
                     )
@@ -698,7 +698,7 @@ internal class SubscriptionServiceAsyncTest {
                             .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
-                    .unitQuantity(1L)
+                    .unitQuantity(0L)
                     .build()
             )
 

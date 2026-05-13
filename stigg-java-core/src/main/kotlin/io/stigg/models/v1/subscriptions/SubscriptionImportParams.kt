@@ -1501,7 +1501,7 @@ private constructor(
             fun id(): String = id.getRequired("id")
 
             /**
-             * Charge quantity
+             * Charge quantity. Minimum is 0 (zero is allowed).
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -1595,7 +1595,7 @@ private constructor(
                  */
                 fun id(id: JsonField<String>) = apply { this.id = id }
 
-                /** Charge quantity */
+                /** Charge quantity. Minimum is 0 (zero is allowed). */
                 fun quantity(quantity: Double) = quantity(JsonField.of(quantity))
 
                 /**
