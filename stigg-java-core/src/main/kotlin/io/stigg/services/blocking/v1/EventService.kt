@@ -8,7 +8,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.blocking.v1.events.CreditService
 import java.util.function.Consumer
 
 /** Operations related to usage & metering */
@@ -25,8 +24,6 @@ interface EventService {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
-
-    fun credits(): CreditService
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -50,8 +47,6 @@ interface EventService {
          * The original service is not modified.
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService.WithRawResponse
-
-        fun credits(): CreditService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as

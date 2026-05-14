@@ -7,6 +7,8 @@ import io.stigg.services.async.v1.AddonServiceAsync
 import io.stigg.services.async.v1.AddonServiceAsyncImpl
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsyncImpl
+import io.stigg.services.async.v1.CreditServiceAsync
+import io.stigg.services.async.v1.CreditServiceAsyncImpl
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsyncImpl
 import io.stigg.services.async.v1.EventServiceAsync
@@ -40,6 +42,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
 
+    private val credits: CreditServiceAsync by lazy { CreditServiceAsyncImpl(clientOptions) }
+
     private val features: FeatureServiceAsync by lazy { FeatureServiceAsyncImpl(clientOptions) }
 
     private val addons: AddonServiceAsync by lazy { AddonServiceAsyncImpl(clientOptions) }
@@ -64,6 +68,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** Operations related to usage & metering */
     override fun events(): EventServiceAsync = events
+
+    override fun credits(): CreditServiceAsync = credits
 
     /** Operations related to features */
     override fun features(): FeatureServiceAsync = features
@@ -97,6 +103,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         private val events: EventServiceAsync.WithRawResponse by lazy {
             EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val credits: CreditServiceAsync.WithRawResponse by lazy {
+            CreditServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val features: FeatureServiceAsync.WithRawResponse by lazy {
@@ -135,6 +145,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Operations related to usage & metering */
         override fun events(): EventServiceAsync.WithRawResponse = events
+
+        override fun credits(): CreditServiceAsync.WithRawResponse = credits
 
         /** Operations related to features */
         override fun features(): FeatureServiceAsync.WithRawResponse = features

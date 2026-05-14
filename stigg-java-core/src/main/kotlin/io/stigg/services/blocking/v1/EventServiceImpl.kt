@@ -17,8 +17,6 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.blocking.v1.events.CreditService
-import io.stigg.services.blocking.v1.events.CreditServiceImpl
 import java.util.function.Consumer
 
 /** Operations related to usage & metering */
@@ -29,14 +27,10 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         WithRawResponseImpl(clientOptions)
     }
 
-    private val credits: CreditService by lazy { CreditServiceImpl(clientOptions) }
-
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
         EventServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
-
-    override fun credits(): CreditService = credits
 
     override fun report(
         params: EventReportParams,
@@ -51,18 +45,12 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val credits: CreditService.WithRawResponse by lazy {
-            CreditServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventService.WithRawResponse =
             EventServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        override fun credits(): CreditService.WithRawResponse = credits
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
