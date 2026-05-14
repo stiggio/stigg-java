@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-beta.3 (2026-05-14)
+
+Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.2...v0.1.0-beta.3)
+
+### Features
+
+* **api:** fix credits resource ([a69604a](https://github.com/stiggio/stigg-java/commit/a69604af2e0eeb648493e719610ce0a41e0afdbc))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([35246af](https://github.com/stiggio/stigg-java/commit/35246af547172347f124006e9923c199d18590e3))
+* **tests:** update test fixtures for customer check entitlement ([5bf89fd](https://github.com/stiggio/stigg-java/commit/5bf89fd4d66f74f0bc213d48de1ea4d400d2ad91))
+
 ## 0.1.0-beta.2 (2026-05-12)
 
 Full Changelog: [v0.1.0-beta.1...v0.1.0-beta.2](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.1...v0.1.0-beta.2)
