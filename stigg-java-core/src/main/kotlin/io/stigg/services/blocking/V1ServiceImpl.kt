@@ -7,6 +7,8 @@ import io.stigg.services.blocking.v1.AddonService
 import io.stigg.services.blocking.v1.AddonServiceImpl
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CouponServiceImpl
+import io.stigg.services.blocking.v1.CreditService
+import io.stigg.services.blocking.v1.CreditServiceImpl
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.CustomerServiceImpl
 import io.stigg.services.blocking.v1.EventService
@@ -39,6 +41,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val events: EventService by lazy { EventServiceImpl(clientOptions) }
 
+    private val credits: CreditService by lazy { CreditServiceImpl(clientOptions) }
+
     private val features: FeatureService by lazy { FeatureServiceImpl(clientOptions) }
 
     private val addons: AddonService by lazy { AddonServiceImpl(clientOptions) }
@@ -63,6 +67,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Operations related to usage & metering */
     override fun events(): EventService = events
+
+    override fun credits(): CreditService = credits
 
     /** Operations related to features */
     override fun features(): FeatureService = features
@@ -96,6 +102,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val events: EventService.WithRawResponse by lazy {
             EventServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val credits: CreditService.WithRawResponse by lazy {
+            CreditServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val features: FeatureService.WithRawResponse by lazy {
@@ -134,6 +144,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Operations related to usage & metering */
         override fun events(): EventService.WithRawResponse = events
+
+        override fun credits(): CreditService.WithRawResponse = credits
 
         /** Operations related to features */
         override fun features(): FeatureService.WithRawResponse = features
