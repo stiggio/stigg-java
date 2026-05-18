@@ -10,6 +10,8 @@ import io.stigg.models.v1.addons.Addon
 import io.stigg.models.v1.addons.AddonArchiveParams
 import io.stigg.models.v1.addons.AddonCreateDraftParams
 import io.stigg.models.v1.addons.AddonCreateParams
+import io.stigg.models.v1.addons.AddonListChargesPage
+import io.stigg.models.v1.addons.AddonListChargesParams
 import io.stigg.models.v1.addons.AddonListPage
 import io.stigg.models.v1.addons.AddonListParams
 import io.stigg.models.v1.addons.AddonPublishParams
@@ -174,6 +176,37 @@ interface AddonService {
     /** @see createDraft */
     fun createDraft(id: String, requestOptions: RequestOptions): Addon =
         createDraft(id, AddonCreateDraftParams.none(), requestOptions)
+
+    /** Retrieves the list of charges configured on an addon. */
+    fun listCharges(id: String): AddonListChargesPage =
+        listCharges(id, AddonListChargesParams.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: AddonListChargesParams = AddonListChargesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AddonListChargesPage = listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: AddonListChargesParams = AddonListChargesParams.none(),
+    ): AddonListChargesPage = listCharges(id, params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        params: AddonListChargesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AddonListChargesPage
+
+    /** @see listCharges */
+    fun listCharges(params: AddonListChargesParams): AddonListChargesPage =
+        listCharges(params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(id: String, requestOptions: RequestOptions): AddonListChargesPage =
+        listCharges(id, AddonListChargesParams.none(), requestOptions)
 
     /** Publishes a draft addon, making it available for use in subscriptions. */
     fun publish(id: String, params: AddonPublishParams): AddonPublishResponse =
@@ -433,6 +466,50 @@ interface AddonService {
         @MustBeClosed
         fun createDraft(id: String, requestOptions: RequestOptions): HttpResponseFor<Addon> =
             createDraft(id, AddonCreateDraftParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/addons/{id}/charges`, but is otherwise the
+         * same as [AddonService.listCharges].
+         */
+        @MustBeClosed
+        fun listCharges(id: String): HttpResponseFor<AddonListChargesPage> =
+            listCharges(id, AddonListChargesParams.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            params: AddonListChargesParams = AddonListChargesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AddonListChargesPage> =
+            listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            params: AddonListChargesParams = AddonListChargesParams.none(),
+        ): HttpResponseFor<AddonListChargesPage> = listCharges(id, params, RequestOptions.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            params: AddonListChargesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AddonListChargesPage>
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(params: AddonListChargesParams): HttpResponseFor<AddonListChargesPage> =
+            listCharges(params, RequestOptions.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AddonListChargesPage> =
+            listCharges(id, AddonListChargesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/addons/{id}/publish`, but is otherwise the
