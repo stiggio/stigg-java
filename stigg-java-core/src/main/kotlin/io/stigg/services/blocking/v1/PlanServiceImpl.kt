@@ -20,6 +20,12 @@ import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
+import io.stigg.models.v1.plans.PlanListChargesPage
+import io.stigg.models.v1.plans.PlanListChargesPageResponse
+import io.stigg.models.v1.plans.PlanListChargesParams
+import io.stigg.models.v1.plans.PlanListOverageChargesPage
+import io.stigg.models.v1.plans.PlanListOverageChargesPageResponse
+import io.stigg.models.v1.plans.PlanListOverageChargesParams
 import io.stigg.models.v1.plans.PlanListPage
 import io.stigg.models.v1.plans.PlanListPageResponse
 import io.stigg.models.v1.plans.PlanListParams
@@ -73,6 +79,20 @@ class PlanServiceImpl internal constructor(private val clientOptions: ClientOpti
     override fun createDraft(params: PlanCreateDraftParams, requestOptions: RequestOptions): Plan =
         // post /api/v1/plans/{id}/draft
         withRawResponse().createDraft(params, requestOptions).parse()
+
+    override fun listCharges(
+        params: PlanListChargesParams,
+        requestOptions: RequestOptions,
+    ): PlanListChargesPage =
+        // get /api/v1/plans/{id}/charges
+        withRawResponse().listCharges(params, requestOptions).parse()
+
+    override fun listOverageCharges(
+        params: PlanListOverageChargesParams,
+        requestOptions: RequestOptions,
+    ): PlanListOverageChargesPage =
+        // get /api/v1/plans/{id}/overage-charges
+        withRawResponse().listOverageCharges(params, requestOptions).parse()
 
     override fun publish(
         params: PlanPublishParams,
@@ -283,6 +303,80 @@ class PlanServiceImpl internal constructor(private val clientOptions: ClientOpti
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listChargesHandler: Handler<PlanListChargesPageResponse> =
+            jsonHandler<PlanListChargesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listCharges(
+            params: PlanListChargesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PlanListChargesPage> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "plans", params._pathParam(0), "charges")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listChargesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        PlanListChargesPage.builder()
+                            .service(PlanServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
+                    }
+            }
+        }
+
+        private val listOverageChargesHandler: Handler<PlanListOverageChargesPageResponse> =
+            jsonHandler<PlanListOverageChargesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listOverageCharges(
+            params: PlanListOverageChargesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PlanListOverageChargesPage> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "plans", params._pathParam(0), "overage-charges")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listOverageChargesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        PlanListOverageChargesPage.builder()
+                            .service(PlanServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

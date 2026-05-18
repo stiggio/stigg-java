@@ -20,6 +20,9 @@ import io.stigg.models.v1.addons.Addon
 import io.stigg.models.v1.addons.AddonArchiveParams
 import io.stigg.models.v1.addons.AddonCreateDraftParams
 import io.stigg.models.v1.addons.AddonCreateParams
+import io.stigg.models.v1.addons.AddonListChargesPageAsync
+import io.stigg.models.v1.addons.AddonListChargesPageResponse
+import io.stigg.models.v1.addons.AddonListChargesParams
 import io.stigg.models.v1.addons.AddonListPageAsync
 import io.stigg.models.v1.addons.AddonListPageResponse
 import io.stigg.models.v1.addons.AddonListParams
@@ -95,6 +98,13 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
     ): CompletableFuture<Addon> =
         // post /api/v1/addons/{id}/draft
         withRawResponse().createDraft(params, requestOptions).thenApply { it.parse() }
+
+    override fun listCharges(
+        params: AddonListChargesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<AddonListChargesPageAsync> =
+        // get /api/v1/addons/{id}/charges
+        withRawResponse().listCharges(params, requestOptions).thenApply { it.parse() }
 
     override fun publish(
         params: AddonPublishParams,
@@ -324,6 +334,47 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                    }
+                }
+        }
+
+        private val listChargesHandler: Handler<AddonListChargesPageResponse> =
+            jsonHandler<AddonListChargesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listCharges(
+            params: AddonListChargesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<AddonListChargesPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "addons", params._pathParam(0), "charges")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listChargesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                AddonListChargesPageAsync.builder()
+                                    .service(AddonServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

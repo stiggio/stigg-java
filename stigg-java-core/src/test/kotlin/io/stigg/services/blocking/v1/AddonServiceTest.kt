@@ -444,6 +444,17 @@ internal class AddonServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
+    fun listCharges() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val addonService = client.v1().addons()
+
+        val page = addonService.listCharges("x")
+
+        page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
     fun publish() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val addonService = client.v1().addons()

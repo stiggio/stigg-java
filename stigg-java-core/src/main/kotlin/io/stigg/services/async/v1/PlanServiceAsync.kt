@@ -9,6 +9,10 @@ import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
+import io.stigg.models.v1.plans.PlanListChargesPageAsync
+import io.stigg.models.v1.plans.PlanListChargesParams
+import io.stigg.models.v1.plans.PlanListOverageChargesPageAsync
+import io.stigg.models.v1.plans.PlanListOverageChargesParams
 import io.stigg.models.v1.plans.PlanListPageAsync
 import io.stigg.models.v1.plans.PlanListParams
 import io.stigg.models.v1.plans.PlanPublishParams
@@ -185,6 +189,79 @@ interface PlanServiceAsync {
     /** @see createDraft */
     fun createDraft(id: String, requestOptions: RequestOptions): CompletableFuture<Plan> =
         createDraft(id, PlanCreateDraftParams.none(), requestOptions)
+
+    /** Retrieves the list of charges configured on a plan. */
+    fun listCharges(id: String): CompletableFuture<PlanListChargesPageAsync> =
+        listCharges(id, PlanListChargesParams.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: PlanListChargesParams = PlanListChargesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanListChargesPageAsync> =
+        listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: PlanListChargesParams = PlanListChargesParams.none(),
+    ): CompletableFuture<PlanListChargesPageAsync> = listCharges(id, params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        params: PlanListChargesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanListChargesPageAsync>
+
+    /** @see listCharges */
+    fun listCharges(params: PlanListChargesParams): CompletableFuture<PlanListChargesPageAsync> =
+        listCharges(params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<PlanListChargesPageAsync> =
+        listCharges(id, PlanListChargesParams.none(), requestOptions)
+
+    /** Retrieves the list of overage charges configured on a plan. */
+    fun listOverageCharges(id: String): CompletableFuture<PlanListOverageChargesPageAsync> =
+        listOverageCharges(id, PlanListOverageChargesParams.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        id: String,
+        params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanListOverageChargesPageAsync> =
+        listOverageCharges(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        id: String,
+        params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+    ): CompletableFuture<PlanListOverageChargesPageAsync> =
+        listOverageCharges(id, params, RequestOptions.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        params: PlanListOverageChargesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PlanListOverageChargesPageAsync>
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        params: PlanListOverageChargesParams
+    ): CompletableFuture<PlanListOverageChargesPageAsync> =
+        listOverageCharges(params, RequestOptions.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<PlanListOverageChargesPageAsync> =
+        listOverageCharges(id, PlanListOverageChargesParams.none(), requestOptions)
 
     /** Publishes a draft plan, making it available for use in subscriptions. */
     fun publish(id: String, params: PlanPublishParams): CompletableFuture<PlanPublishResponse> =
@@ -444,6 +521,90 @@ interface PlanServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<Plan>> =
             createDraft(id, PlanCreateDraftParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/plans/{id}/charges`, but is otherwise the
+         * same as [PlanServiceAsync.listCharges].
+         */
+        fun listCharges(id: String): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> =
+            listCharges(id, PlanListChargesParams.none())
+
+        /** @see listCharges */
+        fun listCharges(
+            id: String,
+            params: PlanListChargesParams = PlanListChargesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> =
+            listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listCharges */
+        fun listCharges(
+            id: String,
+            params: PlanListChargesParams = PlanListChargesParams.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> =
+            listCharges(id, params, RequestOptions.none())
+
+        /** @see listCharges */
+        fun listCharges(
+            params: PlanListChargesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>>
+
+        /** @see listCharges */
+        fun listCharges(
+            params: PlanListChargesParams
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> =
+            listCharges(params, RequestOptions.none())
+
+        /** @see listCharges */
+        fun listCharges(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> =
+            listCharges(id, PlanListChargesParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/plans/{id}/overage-charges`, but is
+         * otherwise the same as [PlanServiceAsync.listOverageCharges].
+         */
+        fun listOverageCharges(
+            id: String
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> =
+            listOverageCharges(id, PlanListOverageChargesParams.none())
+
+        /** @see listOverageCharges */
+        fun listOverageCharges(
+            id: String,
+            params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> =
+            listOverageCharges(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listOverageCharges */
+        fun listOverageCharges(
+            id: String,
+            params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> =
+            listOverageCharges(id, params, RequestOptions.none())
+
+        /** @see listOverageCharges */
+        fun listOverageCharges(
+            params: PlanListOverageChargesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>>
+
+        /** @see listOverageCharges */
+        fun listOverageCharges(
+            params: PlanListOverageChargesParams
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> =
+            listOverageCharges(params, RequestOptions.none())
+
+        /** @see listOverageCharges */
+        fun listOverageCharges(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> =
+            listOverageCharges(id, PlanListOverageChargesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/plans/{id}/publish`, but is otherwise the
