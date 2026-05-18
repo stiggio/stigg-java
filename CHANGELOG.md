@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.4 (2026-05-18)
+
+Full Changelog: [v0.1.0-beta.3...v0.1.0-beta.4](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.3...v0.1.0-beta.4)
+
+### Features
+
+* **STIGG-7600:** REST endpoints for plan/addon charges ([1b87f96](https://github.com/stiggio/stigg-java/commit/1b87f96183749c79188cd27f1e9f055bd67983e4))
+
 ## 0.1.0-beta.3 (2026-05-14)
 
 Full Changelog: [v0.1.0-beta.2...v0.1.0-beta.3](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.2...v0.1.0-beta.3)
