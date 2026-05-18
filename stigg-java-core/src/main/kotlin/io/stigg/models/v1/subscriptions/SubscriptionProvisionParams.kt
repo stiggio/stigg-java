@@ -6471,7 +6471,7 @@ private constructor(
             "Budget{hasSoftLimit=$hasSoftLimit, limit=$limit, additionalProperties=$additionalProperties}"
     }
 
-    /** Charge item */
+    /** A charge selection for a subscription (references a catalog charge with a quantity). */
     class Charge
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

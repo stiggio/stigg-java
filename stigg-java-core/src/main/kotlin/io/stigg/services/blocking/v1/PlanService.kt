@@ -10,6 +10,10 @@ import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
+import io.stigg.models.v1.plans.PlanListChargesPage
+import io.stigg.models.v1.plans.PlanListChargesParams
+import io.stigg.models.v1.plans.PlanListOverageChargesPage
+import io.stigg.models.v1.plans.PlanListOverageChargesParams
 import io.stigg.models.v1.plans.PlanListPage
 import io.stigg.models.v1.plans.PlanListParams
 import io.stigg.models.v1.plans.PlanPublishParams
@@ -174,6 +178,68 @@ interface PlanService {
     /** @see createDraft */
     fun createDraft(id: String, requestOptions: RequestOptions): Plan =
         createDraft(id, PlanCreateDraftParams.none(), requestOptions)
+
+    /** Retrieves the list of charges configured on a plan. */
+    fun listCharges(id: String): PlanListChargesPage = listCharges(id, PlanListChargesParams.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: PlanListChargesParams = PlanListChargesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PlanListChargesPage = listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listCharges */
+    fun listCharges(
+        id: String,
+        params: PlanListChargesParams = PlanListChargesParams.none(),
+    ): PlanListChargesPage = listCharges(id, params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(
+        params: PlanListChargesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PlanListChargesPage
+
+    /** @see listCharges */
+    fun listCharges(params: PlanListChargesParams): PlanListChargesPage =
+        listCharges(params, RequestOptions.none())
+
+    /** @see listCharges */
+    fun listCharges(id: String, requestOptions: RequestOptions): PlanListChargesPage =
+        listCharges(id, PlanListChargesParams.none(), requestOptions)
+
+    /** Retrieves the list of overage charges configured on a plan. */
+    fun listOverageCharges(id: String): PlanListOverageChargesPage =
+        listOverageCharges(id, PlanListOverageChargesParams.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        id: String,
+        params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PlanListOverageChargesPage =
+        listOverageCharges(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        id: String,
+        params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+    ): PlanListOverageChargesPage = listOverageCharges(id, params, RequestOptions.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(
+        params: PlanListOverageChargesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PlanListOverageChargesPage
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(params: PlanListOverageChargesParams): PlanListOverageChargesPage =
+        listOverageCharges(params, RequestOptions.none())
+
+    /** @see listOverageCharges */
+    fun listOverageCharges(id: String, requestOptions: RequestOptions): PlanListOverageChargesPage =
+        listOverageCharges(id, PlanListOverageChargesParams.none(), requestOptions)
 
     /** Publishes a draft plan, making it available for use in subscriptions. */
     fun publish(id: String, params: PlanPublishParams): PlanPublishResponse =
@@ -433,6 +499,97 @@ interface PlanService {
         @MustBeClosed
         fun createDraft(id: String, requestOptions: RequestOptions): HttpResponseFor<Plan> =
             createDraft(id, PlanCreateDraftParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/plans/{id}/charges`, but is otherwise the
+         * same as [PlanService.listCharges].
+         */
+        @MustBeClosed
+        fun listCharges(id: String): HttpResponseFor<PlanListChargesPage> =
+            listCharges(id, PlanListChargesParams.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            params: PlanListChargesParams = PlanListChargesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PlanListChargesPage> =
+            listCharges(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            params: PlanListChargesParams = PlanListChargesParams.none(),
+        ): HttpResponseFor<PlanListChargesPage> = listCharges(id, params, RequestOptions.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            params: PlanListChargesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PlanListChargesPage>
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(params: PlanListChargesParams): HttpResponseFor<PlanListChargesPage> =
+            listCharges(params, RequestOptions.none())
+
+        /** @see listCharges */
+        @MustBeClosed
+        fun listCharges(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PlanListChargesPage> =
+            listCharges(id, PlanListChargesParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/plans/{id}/overage-charges`, but is
+         * otherwise the same as [PlanService.listOverageCharges].
+         */
+        @MustBeClosed
+        fun listOverageCharges(id: String): HttpResponseFor<PlanListOverageChargesPage> =
+            listOverageCharges(id, PlanListOverageChargesParams.none())
+
+        /** @see listOverageCharges */
+        @MustBeClosed
+        fun listOverageCharges(
+            id: String,
+            params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PlanListOverageChargesPage> =
+            listOverageCharges(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listOverageCharges */
+        @MustBeClosed
+        fun listOverageCharges(
+            id: String,
+            params: PlanListOverageChargesParams = PlanListOverageChargesParams.none(),
+        ): HttpResponseFor<PlanListOverageChargesPage> =
+            listOverageCharges(id, params, RequestOptions.none())
+
+        /** @see listOverageCharges */
+        @MustBeClosed
+        fun listOverageCharges(
+            params: PlanListOverageChargesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PlanListOverageChargesPage>
+
+        /** @see listOverageCharges */
+        @MustBeClosed
+        fun listOverageCharges(
+            params: PlanListOverageChargesParams
+        ): HttpResponseFor<PlanListOverageChargesPage> =
+            listOverageCharges(params, RequestOptions.none())
+
+        /** @see listOverageCharges */
+        @MustBeClosed
+        fun listOverageCharges(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PlanListOverageChargesPage> =
+            listOverageCharges(id, PlanListOverageChargesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /api/v1/plans/{id}/publish`, but is otherwise the

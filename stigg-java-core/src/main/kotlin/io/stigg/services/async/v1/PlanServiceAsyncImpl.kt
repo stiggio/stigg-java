@@ -20,6 +20,12 @@ import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
+import io.stigg.models.v1.plans.PlanListChargesPageAsync
+import io.stigg.models.v1.plans.PlanListChargesPageResponse
+import io.stigg.models.v1.plans.PlanListChargesParams
+import io.stigg.models.v1.plans.PlanListOverageChargesPageAsync
+import io.stigg.models.v1.plans.PlanListOverageChargesPageResponse
+import io.stigg.models.v1.plans.PlanListOverageChargesParams
 import io.stigg.models.v1.plans.PlanListPageAsync
 import io.stigg.models.v1.plans.PlanListPageResponse
 import io.stigg.models.v1.plans.PlanListParams
@@ -95,6 +101,20 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
     ): CompletableFuture<Plan> =
         // post /api/v1/plans/{id}/draft
         withRawResponse().createDraft(params, requestOptions).thenApply { it.parse() }
+
+    override fun listCharges(
+        params: PlanListChargesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<PlanListChargesPageAsync> =
+        // get /api/v1/plans/{id}/charges
+        withRawResponse().listCharges(params, requestOptions).thenApply { it.parse() }
+
+    override fun listOverageCharges(
+        params: PlanListOverageChargesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<PlanListOverageChargesPageAsync> =
+        // get /api/v1/plans/{id}/overage-charges
+        withRawResponse().listOverageCharges(params, requestOptions).thenApply { it.parse() }
 
     override fun publish(
         params: PlanPublishParams,
@@ -323,6 +343,88 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                    }
+                }
+        }
+
+        private val listChargesHandler: Handler<PlanListChargesPageResponse> =
+            jsonHandler<PlanListChargesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listCharges(
+            params: PlanListChargesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<PlanListChargesPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "plans", params._pathParam(0), "charges")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listChargesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                PlanListChargesPageAsync.builder()
+                                    .service(PlanServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
+                            }
+                    }
+                }
+        }
+
+        private val listOverageChargesHandler: Handler<PlanListOverageChargesPageResponse> =
+            jsonHandler<PlanListOverageChargesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listOverageCharges(
+            params: PlanListOverageChargesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<PlanListOverageChargesPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "plans", params._pathParam(0), "overage-charges")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listOverageChargesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                PlanListOverageChargesPageAsync.builder()
+                                    .service(PlanServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

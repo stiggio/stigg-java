@@ -473,6 +473,30 @@ internal class PlanServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
+    fun listCharges() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val planServiceAsync = client.v1().plans()
+
+        val pageFuture = planServiceAsync.listCharges("x")
+
+        val page = pageFuture.get()
+        page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listOverageCharges() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val planServiceAsync = client.v1().plans()
+
+        val pageFuture = planServiceAsync.listOverageCharges("x")
+
+        val page = pageFuture.get()
+        page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
     fun publish() {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val planServiceAsync = client.v1().plans()
