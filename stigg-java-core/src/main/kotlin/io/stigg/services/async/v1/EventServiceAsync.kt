@@ -7,7 +7,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.async.v1.events.CreditServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -25,8 +24,6 @@ interface EventServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
-
-    fun credits(): CreditServiceAsync
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -52,8 +49,6 @@ interface EventServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventServiceAsync.WithRawResponse
-
-        fun credits(): CreditServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
