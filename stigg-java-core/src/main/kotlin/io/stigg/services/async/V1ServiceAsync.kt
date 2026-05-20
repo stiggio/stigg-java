@@ -5,7 +5,6 @@ package io.stigg.services.async
 import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1.AddonServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsync
-import io.stigg.services.async.v1.CreditServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.EventServiceAsync
 import io.stigg.services.async.v1.FeatureServiceAsync
@@ -38,8 +37,6 @@ interface V1ServiceAsync {
 
     /** Operations related to usage & metering */
     fun events(): EventServiceAsync
-
-    fun credits(): CreditServiceAsync
 
     /** Operations related to features */
     fun features(): FeatureServiceAsync
@@ -75,8 +72,6 @@ interface V1ServiceAsync {
 
         /** Operations related to usage & metering */
         fun events(): EventServiceAsync.WithRawResponse
-
-        fun credits(): CreditServiceAsync.WithRawResponse
 
         /** Operations related to features */
         fun features(): FeatureServiceAsync.WithRawResponse

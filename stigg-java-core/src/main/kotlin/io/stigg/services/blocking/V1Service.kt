@@ -5,7 +5,6 @@ package io.stigg.services.blocking
 import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1.AddonService
 import io.stigg.services.blocking.v1.CouponService
-import io.stigg.services.blocking.v1.CreditService
 import io.stigg.services.blocking.v1.CustomerService
 import io.stigg.services.blocking.v1.EventService
 import io.stigg.services.blocking.v1.FeatureService
@@ -38,8 +37,6 @@ interface V1Service {
 
     /** Operations related to usage & metering */
     fun events(): EventService
-
-    fun credits(): CreditService
 
     /** Operations related to features */
     fun features(): FeatureService
@@ -75,8 +72,6 @@ interface V1Service {
 
         /** Operations related to usage & metering */
         fun events(): EventService.WithRawResponse
-
-        fun credits(): CreditService.WithRawResponse
 
         /** Operations related to features */
         fun features(): FeatureService.WithRawResponse
