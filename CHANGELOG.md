@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-beta.5 (2026-05-21)
+
+Full Changelog: [v0.1.0-beta.4...v0.1.0-beta.5](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.4...v0.1.0-beta.5)
+
+### Features
+
+* **api:** add entitlements check to beta customers ([bf6b39e](https://github.com/stiggio/stigg-java/commit/bf6b39e667bd35197422740164f1ae1e36126ca7))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([04da22d](https://github.com/stiggio/stigg-java/commit/04da22d73582eee641d794e992095962b5ff9c33))
+* **internal:** regenerate SDK with no functional changes ([547bad1](https://github.com/stiggio/stigg-java/commit/547bad11049d786b8b39484b859b8a04cb8281fa))
+
 ## 0.1.0-beta.4 (2026-05-18)
 
 Full Changelog: [v0.1.0-beta.3...v0.1.0-beta.4](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.3...v0.1.0-beta.4)
