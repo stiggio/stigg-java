@@ -3,6 +3,7 @@
 package io.stigg.client
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.async.V1BetaServiceAsync
 import io.stigg.services.async.V1ServiceAsync
 import java.util.function.Consumer
 
@@ -44,6 +45,8 @@ interface StiggClientAsync {
 
     fun v1(): V1ServiceAsync
 
+    fun v1Beta(): V1BetaServiceAsync
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -68,5 +71,7 @@ interface StiggClientAsync {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): StiggClientAsync.WithRawResponse
 
         fun v1(): V1ServiceAsync.WithRawResponse
+
+        fun v1Beta(): V1BetaServiceAsync.WithRawResponse
     }
 }
