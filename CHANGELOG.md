@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.6 (2026-05-24)
+
+Full Changelog: [v0.1.0-beta.5...v0.1.0-beta.6](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.5...v0.1.0-beta.6)
+
+### Features
+
+* **api:** add list and upsert methods to beta entity_types ([90861de](https://github.com/stiggio/stigg-java/commit/90861def560399ff3c131feba3e29cf64107c5c5))
+
 ## 0.1.0-beta.5 (2026-05-21)
 
 Full Changelog: [v0.1.0-beta.4...v0.1.0-beta.5](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.4...v0.1.0-beta.5)
