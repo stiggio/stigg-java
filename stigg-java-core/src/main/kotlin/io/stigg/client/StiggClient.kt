@@ -3,6 +3,7 @@
 package io.stigg.client
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.blocking.V1BetaService
 import io.stigg.services.blocking.V1Service
 import java.util.function.Consumer
 
@@ -44,6 +45,8 @@ interface StiggClient {
 
     fun v1(): V1Service
 
+    fun v1Beta(): V1BetaService
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -68,5 +71,7 @@ interface StiggClient {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): StiggClient.WithRawResponse
 
         fun v1(): V1Service.WithRawResponse
+
+        fun v1Beta(): V1BetaService.WithRawResponse
     }
 }
