@@ -5,6 +5,8 @@ package io.stigg.services.blocking
 import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1beta.CustomerService
 import io.stigg.services.blocking.v1beta.CustomerServiceImpl
+import io.stigg.services.blocking.v1beta.EntityService
+import io.stigg.services.blocking.v1beta.EntityServiceImpl
 import io.stigg.services.blocking.v1beta.EntityTypeService
 import io.stigg.services.blocking.v1beta.EntityTypeServiceImpl
 import java.util.function.Consumer
@@ -20,6 +22,8 @@ class V1BetaServiceImpl internal constructor(private val clientOptions: ClientOp
 
     private val entityTypes: EntityTypeService by lazy { EntityTypeServiceImpl(clientOptions) }
 
+    private val entities: EntityService by lazy { EntityServiceImpl(clientOptions) }
+
     override fun withRawResponse(): V1BetaService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1BetaService =
@@ -28,6 +32,8 @@ class V1BetaServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun customers(): CustomerService = customers
 
     override fun entityTypes(): EntityTypeService = entityTypes
+
+    override fun entities(): EntityService = entities
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1BetaService.WithRawResponse {
@@ -40,6 +46,10 @@ class V1BetaServiceImpl internal constructor(private val clientOptions: ClientOp
             EntityTypeServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val entities: EntityService.WithRawResponse by lazy {
+            EntityServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1BetaService.WithRawResponse =
@@ -50,5 +60,7 @@ class V1BetaServiceImpl internal constructor(private val clientOptions: ClientOp
         override fun customers(): CustomerService.WithRawResponse = customers
 
         override fun entityTypes(): EntityTypeService.WithRawResponse = entityTypes
+
+        override fun entities(): EntityService.WithRawResponse = entities
     }
 }
