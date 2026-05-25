@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.7 (2026-05-25)
+
+Full Changelog: [v0.1.0-beta.6...v0.1.0-beta.7](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.6...v0.1.0-beta.7)
+
+### Features
+
+* **api:** add entity retrieve/list/archive/unarchive/upsert to customers ([c35d78a](https://github.com/stiggio/stigg-java/commit/c35d78aa0c937d6239a604a4c6adb54ac0188d8c))
+
 ## 0.1.0-beta.6 (2026-05-24)
 
 Full Changelog: [v0.1.0-beta.5...v0.1.0-beta.6](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.5...v0.1.0-beta.6)
