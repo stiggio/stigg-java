@@ -4,6 +4,7 @@ package io.stigg.services.blocking
 
 import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1beta.CustomerService
+import io.stigg.services.blocking.v1beta.EntityService
 import io.stigg.services.blocking.v1beta.EntityTypeService
 import java.util.function.Consumer
 
@@ -25,6 +26,8 @@ interface V1BetaService {
 
     fun entityTypes(): EntityTypeService
 
+    fun entities(): EntityService
+
     /** A view of [V1BetaService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -38,5 +41,7 @@ interface V1BetaService {
         fun customers(): CustomerService.WithRawResponse
 
         fun entityTypes(): EntityTypeService.WithRawResponse
+
+        fun entities(): EntityService.WithRawResponse
     }
 }
