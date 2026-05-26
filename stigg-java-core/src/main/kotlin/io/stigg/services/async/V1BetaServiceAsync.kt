@@ -4,7 +4,6 @@ package io.stigg.services.async
 
 import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1beta.CustomerServiceAsync
-import io.stigg.services.async.v1beta.EntityServiceAsync
 import io.stigg.services.async.v1beta.EntityTypeServiceAsync
 import java.util.function.Consumer
 
@@ -26,8 +25,6 @@ interface V1BetaServiceAsync {
 
     fun entityTypes(): EntityTypeServiceAsync
 
-    fun entities(): EntityServiceAsync
-
     /**
      * A view of [V1BetaServiceAsync] that provides access to raw HTTP responses for each method.
      */
@@ -45,7 +42,5 @@ interface V1BetaServiceAsync {
         fun customers(): CustomerServiceAsync.WithRawResponse
 
         fun entityTypes(): EntityTypeServiceAsync.WithRawResponse
-
-        fun entities(): EntityServiceAsync.WithRawResponse
     }
 }
