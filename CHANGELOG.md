@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.9 (2026-05-26)
+
+Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.8...v0.1.0-beta.9)
+
+### Features
+
+* **api:** manual updates ([43f2611](https://github.com/stiggio/stigg-java/commit/43f261103bf501960a52c6da349c16638659530f))
+
 ## 0.1.0-beta.8 (2026-05-26)
 
 Full Changelog: [v0.1.0-beta.7...v0.1.0-beta.8](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.7...v0.1.0-beta.8)
