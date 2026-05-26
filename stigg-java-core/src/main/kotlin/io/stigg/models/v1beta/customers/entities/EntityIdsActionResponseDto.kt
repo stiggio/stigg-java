@@ -19,7 +19,7 @@ import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
 /** Wrapped response echoing the ids that were acted on by an archive/unarchive call */
-class EntityUnarchiveResponse
+class EntityIdsActionResponseDto
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -61,7 +61,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [EntityUnarchiveResponse].
+         * Returns a mutable builder for constructing an instance of [EntityIdsActionResponseDto].
          *
          * The following fields are required:
          * ```java
@@ -71,16 +71,16 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [EntityUnarchiveResponse]. */
+    /** A builder for [EntityIdsActionResponseDto]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(entityUnarchiveResponse: EntityUnarchiveResponse) = apply {
-            data = entityUnarchiveResponse.data
-            additionalProperties = entityUnarchiveResponse.additionalProperties.toMutableMap()
+        internal fun from(entityIdsActionResponseDto: EntityIdsActionResponseDto) = apply {
+            data = entityIdsActionResponseDto.data
+            additionalProperties = entityIdsActionResponseDto.additionalProperties.toMutableMap()
         }
 
         /** List of entity identifiers that were acted on */
@@ -114,7 +114,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [EntityUnarchiveResponse].
+         * Returns an immutable instance of [EntityIdsActionResponseDto].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -125,8 +125,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): EntityUnarchiveResponse =
-            EntityUnarchiveResponse(
+        fun build(): EntityIdsActionResponseDto =
+            EntityIdsActionResponseDto(
                 checkRequired("data", data),
                 additionalProperties.toMutableMap(),
             )
@@ -142,7 +142,7 @@ private constructor(
      * @throws StiggInvalidDataException if any value type in this object doesn't match its expected
      *   type.
      */
-    fun validate(): EntityUnarchiveResponse = apply {
+    fun validate(): EntityIdsActionResponseDto = apply {
         if (validated) {
             return@apply
         }
@@ -350,7 +350,7 @@ private constructor(
             return true
         }
 
-        return other is EntityUnarchiveResponse &&
+        return other is EntityIdsActionResponseDto &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -360,5 +360,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EntityUnarchiveResponse{data=$data, additionalProperties=$additionalProperties}"
+        "EntityIdsActionResponseDto{data=$data, additionalProperties=$additionalProperties}"
 }

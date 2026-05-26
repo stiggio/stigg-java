@@ -8,27 +8,27 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class AddonListChargesPageResponseTest {
+internal class ChargeListTest {
 
     @Test
     fun create() {
-        val addonListChargesPageResponse =
-            AddonListChargesPageResponse.builder()
+        val chargeList =
+            ChargeList.builder()
                 .addData(
-                    AddonListChargesResponse.builder()
+                    ChargeList.Data.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .billingCadence(AddonListChargesResponse.BillingCadence.RECURRING)
-                        .billingModel(AddonListChargesResponse.BillingModel.FLAT_FEE)
-                        .billingPeriod(AddonListChargesResponse.BillingPeriod.MONTHLY)
+                        .billingCadence(ChargeList.Data.BillingCadence.RECURRING)
+                        .billingModel(ChargeList.Data.BillingModel.FLAT_FEE)
+                        .billingPeriod(ChargeList.Data.BillingPeriod.MONTHLY)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .billingCountryCode("billingCountryCode")
                         .billingId("billingId")
                         .blockSize(0.0)
                         .creditGrantCadence(
-                            AddonListChargesResponse.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
+                            ChargeList.Data.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
                         )
                         .creditRate(
-                            AddonListChargesResponse.CreditRate.builder()
+                            ChargeList.Data.CreditRate.builder()
                                 .amount(0.0)
                                 .currencyId("currencyId")
                                 .costFormula("costFormula")
@@ -40,61 +40,57 @@ internal class AddonListChargesPageResponseTest {
                         .maxUnitQuantity(0.0)
                         .minUnitQuantity(0.0)
                         .price(
-                            AddonListChargesResponse.Price.builder()
+                            ChargeList.Data.Price.builder()
                                 .amount(0.0)
-                                .currency(AddonListChargesResponse.Price.Currency.USD)
+                                .currency(ChargeList.Data.Price.Currency.USD)
                                 .build()
                         )
                         .addTier(
-                            AddonListChargesResponse.Tier.builder()
+                            ChargeList.Data.Tier.builder()
                                 .flatPrice(
-                                    AddonListChargesResponse.Tier.FlatPrice.builder()
+                                    ChargeList.Data.Tier.FlatPrice.builder()
                                         .amount(0.0)
-                                        .currency(
-                                            AddonListChargesResponse.Tier.FlatPrice.Currency.USD
-                                        )
+                                        .currency(ChargeList.Data.Tier.FlatPrice.Currency.USD)
                                         .build()
                                 )
                                 .unitPrice(
-                                    AddonListChargesResponse.Tier.UnitPrice.builder()
+                                    ChargeList.Data.Tier.UnitPrice.builder()
                                         .amount(0.0)
-                                        .currency(
-                                            AddonListChargesResponse.Tier.UnitPrice.Currency.USD
-                                        )
+                                        .currency(ChargeList.Data.Tier.UnitPrice.Currency.USD)
                                         .build()
                                 )
                                 .upTo(0.0)
                                 .build()
                         )
-                        .tiersMode(AddonListChargesResponse.TiersMode.VOLUME)
+                        .tiersMode(ChargeList.Data.TiersMode.VOLUME)
                         .topUpCustomCurrencyId("topUpCustomCurrencyId")
                         .usedInSubscriptions(true)
                         .build()
                 )
                 .pagination(
-                    AddonListChargesPageResponse.Pagination.builder()
+                    ChargeList.Pagination.builder()
                         .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
 
-        assertThat(addonListChargesPageResponse.data())
+        assertThat(chargeList.data())
             .containsExactly(
-                AddonListChargesResponse.builder()
+                ChargeList.Data.builder()
                     .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .billingCadence(AddonListChargesResponse.BillingCadence.RECURRING)
-                    .billingModel(AddonListChargesResponse.BillingModel.FLAT_FEE)
-                    .billingPeriod(AddonListChargesResponse.BillingPeriod.MONTHLY)
+                    .billingCadence(ChargeList.Data.BillingCadence.RECURRING)
+                    .billingModel(ChargeList.Data.BillingModel.FLAT_FEE)
+                    .billingPeriod(ChargeList.Data.BillingPeriod.MONTHLY)
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .billingCountryCode("billingCountryCode")
                     .billingId("billingId")
                     .blockSize(0.0)
                     .creditGrantCadence(
-                        AddonListChargesResponse.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
+                        ChargeList.Data.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
                     )
                     .creditRate(
-                        AddonListChargesResponse.CreditRate.builder()
+                        ChargeList.Data.CreditRate.builder()
                             .amount(0.0)
                             .currencyId("currencyId")
                             .costFormula("costFormula")
@@ -106,36 +102,36 @@ internal class AddonListChargesPageResponseTest {
                     .maxUnitQuantity(0.0)
                     .minUnitQuantity(0.0)
                     .price(
-                        AddonListChargesResponse.Price.builder()
+                        ChargeList.Data.Price.builder()
                             .amount(0.0)
-                            .currency(AddonListChargesResponse.Price.Currency.USD)
+                            .currency(ChargeList.Data.Price.Currency.USD)
                             .build()
                     )
                     .addTier(
-                        AddonListChargesResponse.Tier.builder()
+                        ChargeList.Data.Tier.builder()
                             .flatPrice(
-                                AddonListChargesResponse.Tier.FlatPrice.builder()
+                                ChargeList.Data.Tier.FlatPrice.builder()
                                     .amount(0.0)
-                                    .currency(AddonListChargesResponse.Tier.FlatPrice.Currency.USD)
+                                    .currency(ChargeList.Data.Tier.FlatPrice.Currency.USD)
                                     .build()
                             )
                             .unitPrice(
-                                AddonListChargesResponse.Tier.UnitPrice.builder()
+                                ChargeList.Data.Tier.UnitPrice.builder()
                                     .amount(0.0)
-                                    .currency(AddonListChargesResponse.Tier.UnitPrice.Currency.USD)
+                                    .currency(ChargeList.Data.Tier.UnitPrice.Currency.USD)
                                     .build()
                             )
                             .upTo(0.0)
                             .build()
                     )
-                    .tiersMode(AddonListChargesResponse.TiersMode.VOLUME)
+                    .tiersMode(ChargeList.Data.TiersMode.VOLUME)
                     .topUpCustomCurrencyId("topUpCustomCurrencyId")
                     .usedInSubscriptions(true)
                     .build()
             )
-        assertThat(addonListChargesPageResponse.pagination())
+        assertThat(chargeList.pagination())
             .isEqualTo(
-                AddonListChargesPageResponse.Pagination.builder()
+                ChargeList.Pagination.builder()
                     .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
@@ -145,23 +141,23 @@ internal class AddonListChargesPageResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val addonListChargesPageResponse =
-            AddonListChargesPageResponse.builder()
+        val chargeList =
+            ChargeList.builder()
                 .addData(
-                    AddonListChargesResponse.builder()
+                    ChargeList.Data.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .billingCadence(AddonListChargesResponse.BillingCadence.RECURRING)
-                        .billingModel(AddonListChargesResponse.BillingModel.FLAT_FEE)
-                        .billingPeriod(AddonListChargesResponse.BillingPeriod.MONTHLY)
+                        .billingCadence(ChargeList.Data.BillingCadence.RECURRING)
+                        .billingModel(ChargeList.Data.BillingModel.FLAT_FEE)
+                        .billingPeriod(ChargeList.Data.BillingPeriod.MONTHLY)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .billingCountryCode("billingCountryCode")
                         .billingId("billingId")
                         .blockSize(0.0)
                         .creditGrantCadence(
-                            AddonListChargesResponse.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
+                            ChargeList.Data.CreditGrantCadence.BEGINNING_OF_BILLING_PERIOD
                         )
                         .creditRate(
-                            AddonListChargesResponse.CreditRate.builder()
+                            ChargeList.Data.CreditRate.builder()
                                 .amount(0.0)
                                 .currencyId("currencyId")
                                 .costFormula("costFormula")
@@ -173,51 +169,47 @@ internal class AddonListChargesPageResponseTest {
                         .maxUnitQuantity(0.0)
                         .minUnitQuantity(0.0)
                         .price(
-                            AddonListChargesResponse.Price.builder()
+                            ChargeList.Data.Price.builder()
                                 .amount(0.0)
-                                .currency(AddonListChargesResponse.Price.Currency.USD)
+                                .currency(ChargeList.Data.Price.Currency.USD)
                                 .build()
                         )
                         .addTier(
-                            AddonListChargesResponse.Tier.builder()
+                            ChargeList.Data.Tier.builder()
                                 .flatPrice(
-                                    AddonListChargesResponse.Tier.FlatPrice.builder()
+                                    ChargeList.Data.Tier.FlatPrice.builder()
                                         .amount(0.0)
-                                        .currency(
-                                            AddonListChargesResponse.Tier.FlatPrice.Currency.USD
-                                        )
+                                        .currency(ChargeList.Data.Tier.FlatPrice.Currency.USD)
                                         .build()
                                 )
                                 .unitPrice(
-                                    AddonListChargesResponse.Tier.UnitPrice.builder()
+                                    ChargeList.Data.Tier.UnitPrice.builder()
                                         .amount(0.0)
-                                        .currency(
-                                            AddonListChargesResponse.Tier.UnitPrice.Currency.USD
-                                        )
+                                        .currency(ChargeList.Data.Tier.UnitPrice.Currency.USD)
                                         .build()
                                 )
                                 .upTo(0.0)
                                 .build()
                         )
-                        .tiersMode(AddonListChargesResponse.TiersMode.VOLUME)
+                        .tiersMode(ChargeList.Data.TiersMode.VOLUME)
                         .topUpCustomCurrencyId("topUpCustomCurrencyId")
                         .usedInSubscriptions(true)
                         .build()
                 )
                 .pagination(
-                    AddonListChargesPageResponse.Pagination.builder()
+                    ChargeList.Pagination.builder()
                         .next("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prev("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
 
-        val roundtrippedAddonListChargesPageResponse =
+        val roundtrippedChargeList =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(addonListChargesPageResponse),
-                jacksonTypeRef<AddonListChargesPageResponse>(),
+                jsonMapper.writeValueAsString(chargeList),
+                jacksonTypeRef<ChargeList>(),
             )
 
-        assertThat(roundtrippedAddonListChargesPageResponse).isEqualTo(addonListChargesPageResponse)
+        assertThat(roundtrippedChargeList).isEqualTo(chargeList)
     }
 }

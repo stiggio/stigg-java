@@ -18,26 +18,26 @@ private constructor(
     private val service: AddonServiceAsync,
     private val streamHandlerExecutor: Executor,
     private val params: AddonListChargesParams,
-    private val response: AddonListChargesPageResponse,
-) : PageAsync<AddonListChargesResponse> {
+    private val response: ChargeList,
+) : PageAsync<ChargeList.Data> {
 
     /**
-     * Delegates to [AddonListChargesPageResponse], but gracefully handles missing data.
+     * Delegates to [ChargeList], but gracefully handles missing data.
      *
-     * @see AddonListChargesPageResponse.data
+     * @see ChargeList.data
      */
-    fun data(): List<AddonListChargesResponse> =
+    fun data(): List<ChargeList.Data> =
         response._data().getOptional("data").getOrNull() ?: emptyList()
 
     /**
-     * Delegates to [AddonListChargesPageResponse], but gracefully handles missing data.
+     * Delegates to [ChargeList], but gracefully handles missing data.
      *
-     * @see AddonListChargesPageResponse.pagination
+     * @see ChargeList.pagination
      */
-    fun pagination(): Optional<AddonListChargesPageResponse.Pagination> =
+    fun pagination(): Optional<ChargeList.Pagination> =
         response._pagination().getOptional("pagination")
 
-    override fun items(): List<AddonListChargesResponse> = data()
+    override fun items(): List<ChargeList.Data> = data()
 
     override fun hasNextPage(): Boolean =
         items().isNotEmpty() && pagination().flatMap { it._next().getOptional("next") }.isPresent
@@ -52,14 +52,14 @@ private constructor(
     override fun nextPage(): CompletableFuture<AddonListChargesPageAsync> =
         service.listCharges(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<AddonListChargesResponse> =
+    fun autoPager(): AutoPagerAsync<ChargeList.Data> =
         AutoPagerAsync.from(this, streamHandlerExecutor)
 
     /** The parameters that were used to request this page. */
     fun params(): AddonListChargesParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): AddonListChargesPageResponse = response
+    fun response(): ChargeList = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -85,7 +85,7 @@ private constructor(
         private var service: AddonServiceAsync? = null
         private var streamHandlerExecutor: Executor? = null
         private var params: AddonListChargesParams? = null
-        private var response: AddonListChargesPageResponse? = null
+        private var response: ChargeList? = null
 
         @JvmSynthetic
         internal fun from(addonListChargesPageAsync: AddonListChargesPageAsync) = apply {
@@ -105,7 +105,7 @@ private constructor(
         fun params(params: AddonListChargesParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: AddonListChargesPageResponse) = apply { this.response = response }
+        fun response(response: ChargeList) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [AddonListChargesPageAsync].
