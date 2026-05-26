@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.8 (2026-05-26)
+
+Full Changelog: [v0.1.0-beta.7...v0.1.0-beta.8](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.7...v0.1.0-beta.8)
+
+### Features
+
+* **api:** add assignments list/upsert endpoints to customers ([8c97d9c](https://github.com/stiggio/stigg-java/commit/8c97d9ca09624af438aa0fb4d4d7253389c00a72))
+
 ## 0.1.0-beta.7 (2026-05-25)
 
 Full Changelog: [v0.1.0-beta.6...v0.1.0-beta.7](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.6...v0.1.0-beta.7)
