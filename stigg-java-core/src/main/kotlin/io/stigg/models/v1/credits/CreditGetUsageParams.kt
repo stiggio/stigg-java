@@ -25,6 +25,7 @@ private constructor(
     private val customerId: String,
     private val currencyId: String?,
     private val endDate: OffsetDateTime?,
+    private val groupBy: String?,
     private val resourceId: String?,
     private val startDate: OffsetDateTime?,
     private val timeRange: TimeRange?,
@@ -43,6 +44,12 @@ private constructor(
      * provided
      */
     fun endDate(): Optional<OffsetDateTime> = Optional.ofNullable(endDate)
+
+    /**
+     * Comma-separated list of feature dimension keys to group usage series by (up to 3). Each key
+     * matches /^[a-zA-Z0-9_$-]+$/
+     */
+    fun groupBy(): Optional<String> = Optional.ofNullable(groupBy)
 
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
@@ -86,6 +93,7 @@ private constructor(
         private var customerId: String? = null
         private var currencyId: String? = null
         private var endDate: OffsetDateTime? = null
+        private var groupBy: String? = null
         private var resourceId: String? = null
         private var startDate: OffsetDateTime? = null
         private var timeRange: TimeRange? = null
@@ -97,6 +105,7 @@ private constructor(
             customerId = creditGetUsageParams.customerId
             currencyId = creditGetUsageParams.currencyId
             endDate = creditGetUsageParams.endDate
+            groupBy = creditGetUsageParams.groupBy
             resourceId = creditGetUsageParams.resourceId
             startDate = creditGetUsageParams.startDate
             timeRange = creditGetUsageParams.timeRange
@@ -121,6 +130,15 @@ private constructor(
 
         /** Alias for calling [Builder.endDate] with `endDate.orElse(null)`. */
         fun endDate(endDate: Optional<OffsetDateTime>) = endDate(endDate.getOrNull())
+
+        /**
+         * Comma-separated list of feature dimension keys to group usage series by (up to 3). Each
+         * key matches /^[a-zA-Z0-9_$-]+$/
+         */
+        fun groupBy(groupBy: String?) = apply { this.groupBy = groupBy }
+
+        /** Alias for calling [Builder.groupBy] with `groupBy.orElse(null)`. */
+        fun groupBy(groupBy: Optional<String>) = groupBy(groupBy.getOrNull())
 
         /** Filter by resource ID */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
@@ -261,6 +279,7 @@ private constructor(
                 checkRequired("customerId", customerId),
                 currencyId,
                 endDate,
+                groupBy,
                 resourceId,
                 startDate,
                 timeRange,
@@ -277,6 +296,7 @@ private constructor(
                 put("customerId", customerId)
                 currencyId?.let { put("currencyId", it) }
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                groupBy?.let { put("groupBy", it) }
                 resourceId?.let { put("resourceId", it) }
                 startDate?.let {
                     put("startDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
@@ -446,6 +466,7 @@ private constructor(
             customerId == other.customerId &&
             currencyId == other.currencyId &&
             endDate == other.endDate &&
+            groupBy == other.groupBy &&
             resourceId == other.resourceId &&
             startDate == other.startDate &&
             timeRange == other.timeRange &&
@@ -458,6 +479,7 @@ private constructor(
             customerId,
             currencyId,
             endDate,
+            groupBy,
             resourceId,
             startDate,
             timeRange,
@@ -466,5 +488,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CreditGetUsageParams{customerId=$customerId, currencyId=$currencyId, endDate=$endDate, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditGetUsageParams{customerId=$customerId, currencyId=$currencyId, endDate=$endDate, groupBy=$groupBy, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
