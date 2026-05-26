@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.10 (2026-05-26)
+
+Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.9...v0.1.0-beta.10)
+
+### Features
+
+* **api:** add groupBy param and tags field, make featureId/featureName optional in credits ([36489fb](https://github.com/stiggio/stigg-java/commit/36489fb308a70c1923c0a44b1cefd0cc9e371cda))
+
 ## 0.1.0-beta.9 (2026-05-26)
 
 Full Changelog: [v0.1.0-beta.8...v0.1.0-beta.9](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.8...v0.1.0-beta.9)
