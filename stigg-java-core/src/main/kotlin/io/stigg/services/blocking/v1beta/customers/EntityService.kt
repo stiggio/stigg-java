@@ -7,13 +7,12 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1beta.customers.entities.EntityArchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityArchiveResponse
+import io.stigg.models.v1beta.customers.entities.EntityIdsActionResponseDto
 import io.stigg.models.v1beta.customers.entities.EntityListPage
 import io.stigg.models.v1beta.customers.entities.EntityListParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUnarchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityUnarchiveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUpsertParams
 import io.stigg.models.v1beta.customers.entities.EntityUpsertResponse
 import java.util.function.Consumer
@@ -82,7 +81,7 @@ interface EntityService {
         list(id, EntityListParams.none(), requestOptions)
 
     /** Archives entities in bulk for the given customer by id. */
-    fun archive(id: String, params: EntityArchiveParams): EntityArchiveResponse =
+    fun archive(id: String, params: EntityArchiveParams): EntityIdsActionResponseDto =
         archive(id, params, RequestOptions.none())
 
     /** @see archive */
@@ -90,20 +89,20 @@ interface EntityService {
         id: String,
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntityArchiveResponse = archive(params.toBuilder().id(id).build(), requestOptions)
+    ): EntityIdsActionResponseDto = archive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archive */
-    fun archive(params: EntityArchiveParams): EntityArchiveResponse =
+    fun archive(params: EntityArchiveParams): EntityIdsActionResponseDto =
         archive(params, RequestOptions.none())
 
     /** @see archive */
     fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntityArchiveResponse
+    ): EntityIdsActionResponseDto
 
     /** Restores previously archived entities in bulk for the given customer by id. */
-    fun unarchive(id: String, params: EntityUnarchiveParams): EntityUnarchiveResponse =
+    fun unarchive(id: String, params: EntityUnarchiveParams): EntityIdsActionResponseDto =
         unarchive(id, params, RequestOptions.none())
 
     /** @see unarchive */
@@ -111,17 +110,17 @@ interface EntityService {
         id: String,
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntityUnarchiveResponse = unarchive(params.toBuilder().id(id).build(), requestOptions)
+    ): EntityIdsActionResponseDto = unarchive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchive */
-    fun unarchive(params: EntityUnarchiveParams): EntityUnarchiveResponse =
+    fun unarchive(params: EntityUnarchiveParams): EntityIdsActionResponseDto =
         unarchive(params, RequestOptions.none())
 
     /** @see unarchive */
     fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntityUnarchiveResponse
+    ): EntityIdsActionResponseDto
 
     /**
      * Creates or updates entities in bulk for the given customer. Existing entities matched by id
@@ -236,7 +235,7 @@ interface EntityService {
         fun archive(
             id: String,
             params: EntityArchiveParams,
-        ): HttpResponseFor<EntityArchiveResponse> = archive(id, params, RequestOptions.none())
+        ): HttpResponseFor<EntityIdsActionResponseDto> = archive(id, params, RequestOptions.none())
 
         /** @see archive */
         @MustBeClosed
@@ -244,12 +243,12 @@ interface EntityService {
             id: String,
             params: EntityArchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntityArchiveResponse> =
+        ): HttpResponseFor<EntityIdsActionResponseDto> =
             archive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archive */
         @MustBeClosed
-        fun archive(params: EntityArchiveParams): HttpResponseFor<EntityArchiveResponse> =
+        fun archive(params: EntityArchiveParams): HttpResponseFor<EntityIdsActionResponseDto> =
             archive(params, RequestOptions.none())
 
         /** @see archive */
@@ -257,7 +256,7 @@ interface EntityService {
         fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntityArchiveResponse>
+        ): HttpResponseFor<EntityIdsActionResponseDto>
 
         /**
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/unarchive`,
@@ -267,7 +266,8 @@ interface EntityService {
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
-        ): HttpResponseFor<EntityUnarchiveResponse> = unarchive(id, params, RequestOptions.none())
+        ): HttpResponseFor<EntityIdsActionResponseDto> =
+            unarchive(id, params, RequestOptions.none())
 
         /** @see unarchive */
         @MustBeClosed
@@ -275,12 +275,12 @@ interface EntityService {
             id: String,
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntityUnarchiveResponse> =
+        ): HttpResponseFor<EntityIdsActionResponseDto> =
             unarchive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchive */
         @MustBeClosed
-        fun unarchive(params: EntityUnarchiveParams): HttpResponseFor<EntityUnarchiveResponse> =
+        fun unarchive(params: EntityUnarchiveParams): HttpResponseFor<EntityIdsActionResponseDto> =
             unarchive(params, RequestOptions.none())
 
         /** @see unarchive */
@@ -288,7 +288,7 @@ interface EntityService {
         fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntityUnarchiveResponse>
+        ): HttpResponseFor<EntityIdsActionResponseDto>
 
         /**
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/entities`, but is

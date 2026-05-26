@@ -5,6 +5,7 @@ package io.stigg.services.blocking.v1beta.customers
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1beta.customers.entities.EntityArchiveParams
+import io.stigg.models.v1beta.customers.entities.EntityIdsRequestDto
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveParams
 import io.stigg.models.v1beta.customers.entities.EntityUnarchiveParams
 import io.stigg.models.v1beta.customers.entities.EntityUpsertParams
@@ -42,16 +43,20 @@ internal class EntityServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val entityService = client.v1Beta().customers().entities()
 
-        val response =
+        val entityIdsActionResponseDto =
             entityService.archive(
                 EntityArchiveParams.builder()
                     .id("id")
-                    .addId("user-7f3a0c1d")
-                    .addId("user-c4d1b2e9")
+                    .entityIdsRequestDto(
+                        EntityIdsRequestDto.builder()
+                            .addId("user-7f3a0c1d")
+                            .addId("user-c4d1b2e9")
+                            .build()
+                    )
                     .build()
             )
 
-        response.validate()
+        entityIdsActionResponseDto.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -60,16 +65,20 @@ internal class EntityServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val entityService = client.v1Beta().customers().entities()
 
-        val response =
+        val entityIdsActionResponseDto =
             entityService.unarchive(
                 EntityUnarchiveParams.builder()
                     .id("id")
-                    .addId("user-7f3a0c1d")
-                    .addId("user-c4d1b2e9")
+                    .entityIdsRequestDto(
+                        EntityIdsRequestDto.builder()
+                            .addId("user-7f3a0c1d")
+                            .addId("user-c4d1b2e9")
+                            .build()
+                    )
                     .build()
             )
 
-        response.validate()
+        entityIdsActionResponseDto.validate()
     }
 
     @Disabled("Mock server tests are disabled")

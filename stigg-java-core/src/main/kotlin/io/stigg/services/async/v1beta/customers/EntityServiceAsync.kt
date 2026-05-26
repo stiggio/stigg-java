@@ -6,13 +6,12 @@ import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1beta.customers.entities.EntityArchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityArchiveResponse
+import io.stigg.models.v1beta.customers.entities.EntityIdsActionResponseDto
 import io.stigg.models.v1beta.customers.entities.EntityListPageAsync
 import io.stigg.models.v1beta.customers.entities.EntityListParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUnarchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityUnarchiveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUpsertParams
 import io.stigg.models.v1beta.customers.entities.EntityUpsertResponse
 import java.util.concurrent.CompletableFuture
@@ -88,50 +87,52 @@ interface EntityServiceAsync {
         list(id, EntityListParams.none(), requestOptions)
 
     /** Archives entities in bulk for the given customer by id. */
-    fun archive(id: String, params: EntityArchiveParams): CompletableFuture<EntityArchiveResponse> =
-        archive(id, params, RequestOptions.none())
+    fun archive(
+        id: String,
+        params: EntityArchiveParams,
+    ): CompletableFuture<EntityIdsActionResponseDto> = archive(id, params, RequestOptions.none())
 
     /** @see archive */
     fun archive(
         id: String,
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntityArchiveResponse> =
+    ): CompletableFuture<EntityIdsActionResponseDto> =
         archive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archive */
-    fun archive(params: EntityArchiveParams): CompletableFuture<EntityArchiveResponse> =
+    fun archive(params: EntityArchiveParams): CompletableFuture<EntityIdsActionResponseDto> =
         archive(params, RequestOptions.none())
 
     /** @see archive */
     fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntityArchiveResponse>
+    ): CompletableFuture<EntityIdsActionResponseDto>
 
     /** Restores previously archived entities in bulk for the given customer by id. */
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
-    ): CompletableFuture<EntityUnarchiveResponse> = unarchive(id, params, RequestOptions.none())
+    ): CompletableFuture<EntityIdsActionResponseDto> = unarchive(id, params, RequestOptions.none())
 
     /** @see unarchive */
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntityUnarchiveResponse> =
+    ): CompletableFuture<EntityIdsActionResponseDto> =
         unarchive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchive */
-    fun unarchive(params: EntityUnarchiveParams): CompletableFuture<EntityUnarchiveResponse> =
+    fun unarchive(params: EntityUnarchiveParams): CompletableFuture<EntityIdsActionResponseDto> =
         unarchive(params, RequestOptions.none())
 
     /** @see unarchive */
     fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntityUnarchiveResponse>
+    ): CompletableFuture<EntityIdsActionResponseDto>
 
     /**
      * Creates or updates entities in bulk for the given customer. Existing entities matched by id
@@ -250,7 +251,7 @@ interface EntityServiceAsync {
         fun archive(
             id: String,
             params: EntityArchiveParams,
-        ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             archive(id, params, RequestOptions.none())
 
         /** @see archive */
@@ -258,20 +259,20 @@ interface EntityServiceAsync {
             id: String,
             params: EntityArchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             archive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archive */
         fun archive(
             params: EntityArchiveParams
-        ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             archive(params, RequestOptions.none())
 
         /** @see archive */
         fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>>
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>>
 
         /**
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/unarchive`,
@@ -280,7 +281,7 @@ interface EntityServiceAsync {
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
-        ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             unarchive(id, params, RequestOptions.none())
 
         /** @see unarchive */
@@ -288,20 +289,20 @@ interface EntityServiceAsync {
             id: String,
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             unarchive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchive */
         fun unarchive(
             params: EntityUnarchiveParams
-        ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> =
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> =
             unarchive(params, RequestOptions.none())
 
         /** @see unarchive */
         fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>>
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>>
 
         /**
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/entities`, but is

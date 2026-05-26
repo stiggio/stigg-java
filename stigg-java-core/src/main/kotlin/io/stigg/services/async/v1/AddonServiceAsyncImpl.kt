@@ -21,7 +21,6 @@ import io.stigg.models.v1.addons.AddonArchiveParams
 import io.stigg.models.v1.addons.AddonCreateDraftParams
 import io.stigg.models.v1.addons.AddonCreateParams
 import io.stigg.models.v1.addons.AddonListChargesPageAsync
-import io.stigg.models.v1.addons.AddonListChargesPageResponse
 import io.stigg.models.v1.addons.AddonListChargesParams
 import io.stigg.models.v1.addons.AddonListPageAsync
 import io.stigg.models.v1.addons.AddonListPageResponse
@@ -32,6 +31,7 @@ import io.stigg.models.v1.addons.AddonRemoveDraftParams
 import io.stigg.models.v1.addons.AddonRemoveDraftResponse
 import io.stigg.models.v1.addons.AddonRetrieveParams
 import io.stigg.models.v1.addons.AddonUpdateParams
+import io.stigg.models.v1.addons.ChargeList
 import io.stigg.services.async.v1.addons.EntitlementServiceAsync
 import io.stigg.services.async.v1.addons.EntitlementServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -339,8 +339,8 @@ class AddonServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 }
         }
 
-        private val listChargesHandler: Handler<AddonListChargesPageResponse> =
-            jsonHandler<AddonListChargesPageResponse>(clientOptions.jsonMapper)
+        private val listChargesHandler: Handler<ChargeList> =
+            jsonHandler<ChargeList>(clientOptions.jsonMapper)
 
         override fun listCharges(
             params: AddonListChargesParams,
