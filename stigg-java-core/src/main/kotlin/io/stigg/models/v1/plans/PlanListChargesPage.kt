@@ -5,6 +5,7 @@ package io.stigg.models.v1.plans
 import io.stigg.core.AutoPager
 import io.stigg.core.Page
 import io.stigg.core.checkRequired
+import io.stigg.models.v1.addons.ChargeList
 import io.stigg.services.blocking.v1.PlanService
 import java.util.Objects
 import java.util.Optional
@@ -15,26 +16,26 @@ class PlanListChargesPage
 private constructor(
     private val service: PlanService,
     private val params: PlanListChargesParams,
-    private val response: PlanListChargesPageResponse,
-) : Page<PlanListChargesResponse> {
+    private val response: ChargeList,
+) : Page<ChargeList.Data> {
 
     /**
-     * Delegates to [PlanListChargesPageResponse], but gracefully handles missing data.
+     * Delegates to [ChargeList], but gracefully handles missing data.
      *
-     * @see PlanListChargesPageResponse.data
+     * @see ChargeList.data
      */
-    fun data(): List<PlanListChargesResponse> =
+    fun data(): List<ChargeList.Data> =
         response._data().getOptional("data").getOrNull() ?: emptyList()
 
     /**
-     * Delegates to [PlanListChargesPageResponse], but gracefully handles missing data.
+     * Delegates to [ChargeList], but gracefully handles missing data.
      *
-     * @see PlanListChargesPageResponse.pagination
+     * @see ChargeList.pagination
      */
-    fun pagination(): Optional<PlanListChargesPageResponse.Pagination> =
+    fun pagination(): Optional<ChargeList.Pagination> =
         response._pagination().getOptional("pagination")
 
-    override fun items(): List<PlanListChargesResponse> = data()
+    override fun items(): List<ChargeList.Data> = data()
 
     override fun hasNextPage(): Boolean =
         items().isNotEmpty() && pagination().flatMap { it._next().getOptional("next") }.isPresent
@@ -48,13 +49,13 @@ private constructor(
 
     override fun nextPage(): PlanListChargesPage = service.listCharges(nextPageParams())
 
-    fun autoPager(): AutoPager<PlanListChargesResponse> = AutoPager.from(this)
+    fun autoPager(): AutoPager<ChargeList.Data> = AutoPager.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): PlanListChargesParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): PlanListChargesPageResponse = response
+    fun response(): ChargeList = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -78,7 +79,7 @@ private constructor(
 
         private var service: PlanService? = null
         private var params: PlanListChargesParams? = null
-        private var response: PlanListChargesPageResponse? = null
+        private var response: ChargeList? = null
 
         @JvmSynthetic
         internal fun from(planListChargesPage: PlanListChargesPage) = apply {
@@ -93,7 +94,7 @@ private constructor(
         fun params(params: PlanListChargesParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: PlanListChargesPageResponse) = apply { this.response = response }
+        fun response(response: ChargeList) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [PlanListChargesPage].

@@ -17,14 +17,13 @@ import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1beta.customers.entities.EntityArchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityArchiveResponse
+import io.stigg.models.v1beta.customers.entities.EntityIdsActionResponseDto
 import io.stigg.models.v1beta.customers.entities.EntityListPageAsync
 import io.stigg.models.v1beta.customers.entities.EntityListPageResponse
 import io.stigg.models.v1beta.customers.entities.EntityListParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveParams
 import io.stigg.models.v1beta.customers.entities.EntityRetrieveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUnarchiveParams
-import io.stigg.models.v1beta.customers.entities.EntityUnarchiveResponse
 import io.stigg.models.v1beta.customers.entities.EntityUpsertParams
 import io.stigg.models.v1beta.customers.entities.EntityUpsertResponse
 import java.util.concurrent.CompletableFuture
@@ -60,14 +59,14 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EntityArchiveResponse> =
+    ): CompletableFuture<EntityIdsActionResponseDto> =
         // post /api/v1-beta/customers/{id}/entities/archive
         withRawResponse().archive(params, requestOptions).thenApply { it.parse() }
 
     override fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<EntityUnarchiveResponse> =
+    ): CompletableFuture<EntityIdsActionResponseDto> =
         // post /api/v1-beta/customers/{id}/entities/unarchive
         withRawResponse().unarchive(params, requestOptions).thenApply { it.parse() }
 
@@ -178,13 +177,13 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 }
         }
 
-        private val archiveHandler: Handler<EntityArchiveResponse> =
-            jsonHandler<EntityArchiveResponse>(clientOptions.jsonMapper)
+        private val archiveHandler: Handler<EntityIdsActionResponseDto> =
+            jsonHandler<EntityIdsActionResponseDto>(clientOptions.jsonMapper)
 
         override fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>> {
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())
@@ -219,13 +218,13 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 }
         }
 
-        private val unarchiveHandler: Handler<EntityUnarchiveResponse> =
-            jsonHandler<EntityUnarchiveResponse>(clientOptions.jsonMapper)
+        private val unarchiveHandler: Handler<EntityIdsActionResponseDto> =
+            jsonHandler<EntityIdsActionResponseDto>(clientOptions.jsonMapper)
 
         override fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> {
+        ): CompletableFuture<HttpResponseFor<EntityIdsActionResponseDto>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id().getOrNull())

@@ -9,7 +9,12 @@ internal class EntityArchiveParamsTest {
 
     @Test
     fun create() {
-        EntityArchiveParams.builder().id("id").addId("user-7f3a0c1d").addId("user-c4d1b2e9").build()
+        EntityArchiveParams.builder()
+            .id("id")
+            .entityIdsRequestDto(
+                EntityIdsRequestDto.builder().addId("user-7f3a0c1d").addId("user-c4d1b2e9").build()
+            )
+            .build()
     }
 
     @Test
@@ -17,8 +22,12 @@ internal class EntityArchiveParamsTest {
         val params =
             EntityArchiveParams.builder()
                 .id("id")
-                .addId("user-7f3a0c1d")
-                .addId("user-c4d1b2e9")
+                .entityIdsRequestDto(
+                    EntityIdsRequestDto.builder()
+                        .addId("user-7f3a0c1d")
+                        .addId("user-c4d1b2e9")
+                        .build()
+                )
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("id")
@@ -31,12 +40,19 @@ internal class EntityArchiveParamsTest {
         val params =
             EntityArchiveParams.builder()
                 .id("id")
-                .addId("user-7f3a0c1d")
-                .addId("user-c4d1b2e9")
+                .entityIdsRequestDto(
+                    EntityIdsRequestDto.builder()
+                        .addId("user-7f3a0c1d")
+                        .addId("user-c4d1b2e9")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.ids()).containsExactly("user-7f3a0c1d", "user-c4d1b2e9")
+        assertThat(body)
+            .isEqualTo(
+                EntityIdsRequestDto.builder().addId("user-7f3a0c1d").addId("user-c4d1b2e9").build()
+            )
     }
 }
