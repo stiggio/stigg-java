@@ -3,7 +3,9 @@
 package io.stigg.services.async.v1beta
 
 import io.stigg.core.ClientOptions
+import io.stigg.services.async.v1beta.customers.AssignmentServiceAsync
 import io.stigg.services.async.v1beta.customers.EntitlementServiceAsync
+import io.stigg.services.async.v1beta.customers.EntityServiceAsync
 import java.util.function.Consumer
 
 interface CustomerServiceAsync {
@@ -22,6 +24,10 @@ interface CustomerServiceAsync {
 
     fun entitlements(): EntitlementServiceAsync
 
+    fun entities(): EntityServiceAsync
+
+    fun assignments(): AssignmentServiceAsync
+
     /**
      * A view of [CustomerServiceAsync] that provides access to raw HTTP responses for each method.
      */
@@ -37,5 +43,9 @@ interface CustomerServiceAsync {
         ): CustomerServiceAsync.WithRawResponse
 
         fun entitlements(): EntitlementServiceAsync.WithRawResponse
+
+        fun entities(): EntityServiceAsync.WithRawResponse
+
+        fun assignments(): AssignmentServiceAsync.WithRawResponse
     }
 }
