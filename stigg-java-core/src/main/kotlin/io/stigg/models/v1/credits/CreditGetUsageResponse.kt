@@ -745,6 +745,7 @@ private constructor(
             private val featureName: JsonField<String>,
             private val points: JsonField<List<Point>>,
             private val totalCredits: JsonField<Double>,
+            private val tags: JsonField<List<Tag>>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -762,25 +763,24 @@ private constructor(
                 @JsonProperty("totalCredits")
                 @ExcludeMissing
                 totalCredits: JsonField<Double> = JsonMissing.of(),
-            ) : this(featureId, featureName, points, totalCredits, mutableMapOf())
+                @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
+            ) : this(featureId, featureName, points, totalCredits, tags, mutableMapOf())
 
             /**
-             * The feature ID
+             * The feature ID; null when grouping by dimensions only
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
              */
-            fun featureId(): String = featureId.getRequired("featureId")
+            fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
             /**
-             * The display name of the feature
+             * The display name of the feature; null when grouping by dimensions only
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
              */
-            fun featureName(): String = featureName.getRequired("featureName")
+            fun featureName(): Optional<String> = featureName.getOptional("featureName")
 
             /**
              * Time-series data points for this feature
@@ -799,6 +799,14 @@ private constructor(
              *   value).
              */
             fun totalCredits(): Double = totalCredits.getRequired("totalCredits")
+
+            /**
+             * Dimension key/value pairs identifying this series when groupBy is applied
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun tags(): Optional<List<Tag>> = tags.getOptional("tags")
 
             /**
              * Returns the raw JSON value of [featureId].
@@ -837,6 +845,13 @@ private constructor(
             @ExcludeMissing
             fun _totalCredits(): JsonField<Double> = totalCredits
 
+            /**
+             * Returns the raw JSON value of [tags].
+             *
+             * Unlike [tags], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("tags") @ExcludeMissing fun _tags(): JsonField<List<Tag>> = tags
+
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
                 additionalProperties.put(key, value)
@@ -872,6 +887,7 @@ private constructor(
                 private var featureName: JsonField<String>? = null
                 private var points: JsonField<MutableList<Point>>? = null
                 private var totalCredits: JsonField<Double>? = null
+                private var tags: JsonField<MutableList<Tag>>? = null
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -880,11 +896,15 @@ private constructor(
                     featureName = series.featureName
                     points = series.points.map { it.toMutableList() }
                     totalCredits = series.totalCredits
+                    tags = series.tags.map { it.toMutableList() }
                     additionalProperties = series.additionalProperties.toMutableMap()
                 }
 
-                /** The feature ID */
-                fun featureId(featureId: String) = featureId(JsonField.of(featureId))
+                /** The feature ID; null when grouping by dimensions only */
+                fun featureId(featureId: String?) = featureId(JsonField.ofNullable(featureId))
+
+                /** Alias for calling [Builder.featureId] with `featureId.orElse(null)`. */
+                fun featureId(featureId: Optional<String>) = featureId(featureId.getOrNull())
 
                 /**
                  * Sets [Builder.featureId] to an arbitrary JSON value.
@@ -895,8 +915,13 @@ private constructor(
                  */
                 fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
-                /** The display name of the feature */
-                fun featureName(featureName: String) = featureName(JsonField.of(featureName))
+                /** The display name of the feature; null when grouping by dimensions only */
+                fun featureName(featureName: String?) =
+                    featureName(JsonField.ofNullable(featureName))
+
+                /** Alias for calling [Builder.featureName] with `featureName.orElse(null)`. */
+                fun featureName(featureName: Optional<String>) =
+                    featureName(featureName.getOrNull())
 
                 /**
                  * Sets [Builder.featureName] to an arbitrary JSON value.
@@ -949,6 +974,32 @@ private constructor(
                     this.totalCredits = totalCredits
                 }
 
+                /** Dimension key/value pairs identifying this series when groupBy is applied */
+                fun tags(tags: List<Tag>) = tags(JsonField.of(tags))
+
+                /**
+                 * Sets [Builder.tags] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.tags] with a well-typed `List<Tag>` value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun tags(tags: JsonField<List<Tag>>) = apply {
+                    this.tags = tags.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [Tag] to [tags].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addTag(tag: Tag) = apply {
+                    tags =
+                        (tags ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("tags", it).add(tag)
+                        }
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -992,6 +1043,7 @@ private constructor(
                         checkRequired("featureName", featureName),
                         checkRequired("points", points).map { it.toImmutable() },
                         checkRequired("totalCredits", totalCredits),
+                        (tags ?: JsonMissing.of()).map { it.toImmutable() },
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -1017,6 +1069,7 @@ private constructor(
                 featureName()
                 points().forEach { it.validate() }
                 totalCredits()
+                tags().ifPresent { it.forEach { it.validate() } }
                 validated = true
             }
 
@@ -1039,7 +1092,8 @@ private constructor(
                 (if (featureId.asKnown().isPresent) 1 else 0) +
                     (if (featureName.asKnown().isPresent) 1 else 0) +
                     (points.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (if (totalCredits.asKnown().isPresent) 1 else 0)
+                    (if (totalCredits.asKnown().isPresent) 1 else 0) +
+                    (tags.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
             /** A single data point in the credit usage time series */
             class Point
@@ -1267,6 +1321,223 @@ private constructor(
                     "Point{timestamp=$timestamp, value=$value, additionalProperties=$additionalProperties}"
             }
 
+            /** Dimension key/value pair identifying a credit usage series */
+            class Tag
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val key: JsonField<String>,
+                private val value: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("key") @ExcludeMissing key: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("value")
+                    @ExcludeMissing
+                    value: JsonField<String> = JsonMissing.of(),
+                ) : this(key, value, mutableMapOf())
+
+                /**
+                 * The dimension key
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun key(): String = key.getRequired("key")
+
+                /**
+                 * The dimension value for this series
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun value(): String = value.getRequired("value")
+
+                /**
+                 * Returns the raw JSON value of [key].
+                 *
+                 * Unlike [key], this method doesn't throw if the JSON field has an unexpected type.
+                 */
+                @JsonProperty("key") @ExcludeMissing fun _key(): JsonField<String> = key
+
+                /**
+                 * Returns the raw JSON value of [value].
+                 *
+                 * Unlike [value], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<String> = value
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [Tag].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .key()
+                     * .value()
+                     * ```
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Tag]. */
+                class Builder internal constructor() {
+
+                    private var key: JsonField<String>? = null
+                    private var value: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(tag: Tag) = apply {
+                        key = tag.key
+                        value = tag.value
+                        additionalProperties = tag.additionalProperties.toMutableMap()
+                    }
+
+                    /** The dimension key */
+                    fun key(key: String) = key(JsonField.of(key))
+
+                    /**
+                     * Sets [Builder.key] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.key] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun key(key: JsonField<String>) = apply { this.key = key }
+
+                    /** The dimension value for this series */
+                    fun value(value: String) = value(JsonField.of(value))
+
+                    /**
+                     * Sets [Builder.value] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.value] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun value(value: JsonField<String>) = apply { this.value = value }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Tag].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .key()
+                     * .value()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): Tag =
+                        Tag(
+                            checkRequired("key", key),
+                            checkRequired("value", value),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StiggInvalidDataException if any value type in this object doesn't match
+                 *   its expected type.
+                 */
+                fun validate(): Tag = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    key()
+                    value()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (key.asKnown().isPresent) 1 else 0) +
+                        (if (value.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Tag &&
+                        key == other.key &&
+                        value == other.value &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(key, value, additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Tag{key=$key, value=$value, additionalProperties=$additionalProperties}"
+            }
+
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
@@ -1277,17 +1548,25 @@ private constructor(
                     featureName == other.featureName &&
                     points == other.points &&
                     totalCredits == other.totalCredits &&
+                    tags == other.tags &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(featureId, featureName, points, totalCredits, additionalProperties)
+                Objects.hash(
+                    featureId,
+                    featureName,
+                    points,
+                    totalCredits,
+                    tags,
+                    additionalProperties,
+                )
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Series{featureId=$featureId, featureName=$featureName, points=$points, totalCredits=$totalCredits, additionalProperties=$additionalProperties}"
+                "Series{featureId=$featureId, featureName=$featureName, points=$points, totalCredits=$totalCredits, tags=$tags, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
