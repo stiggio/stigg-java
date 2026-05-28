@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.11 (2026-05-28)
+
+Full Changelog: [v0.1.0-beta.10...v0.1.0-beta.11](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.10...v0.1.0-beta.11)
+
+### Features
+
+* **api:** add RECEIVED vendor identifier to customers ([79a15f9](https://github.com/stiggio/stigg-java/commit/79a15f907b81a7c6d168571c7f2fa167bbe45359))
+
 ## 0.1.0-beta.10 (2026-05-26)
 
 Full Changelog: [v0.1.0-beta.9...v0.1.0-beta.10](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.9...v0.1.0-beta.10)
