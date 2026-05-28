@@ -5,7 +5,6 @@ package io.stigg.models.v1.plans
 import io.stigg.core.AutoPagerAsync
 import io.stigg.core.PageAsync
 import io.stigg.core.checkRequired
-import io.stigg.models.v1.addons.ChargeList
 import io.stigg.services.async.v1.PlanServiceAsync
 import java.util.Objects
 import java.util.Optional
@@ -19,26 +18,26 @@ private constructor(
     private val service: PlanServiceAsync,
     private val streamHandlerExecutor: Executor,
     private val params: PlanListOverageChargesParams,
-    private val response: ChargeList,
-) : PageAsync<ChargeList.Data> {
+    private val response: PlanListOverageChargesPageResponse,
+) : PageAsync<PlanListOverageChargesResponse> {
 
     /**
-     * Delegates to [ChargeList], but gracefully handles missing data.
+     * Delegates to [PlanListOverageChargesPageResponse], but gracefully handles missing data.
      *
-     * @see ChargeList.data
+     * @see PlanListOverageChargesPageResponse.data
      */
-    fun data(): List<ChargeList.Data> =
+    fun data(): List<PlanListOverageChargesResponse> =
         response._data().getOptional("data").getOrNull() ?: emptyList()
 
     /**
-     * Delegates to [ChargeList], but gracefully handles missing data.
+     * Delegates to [PlanListOverageChargesPageResponse], but gracefully handles missing data.
      *
-     * @see ChargeList.pagination
+     * @see PlanListOverageChargesPageResponse.pagination
      */
-    fun pagination(): Optional<ChargeList.Pagination> =
+    fun pagination(): Optional<PlanListOverageChargesPageResponse.Pagination> =
         response._pagination().getOptional("pagination")
 
-    override fun items(): List<ChargeList.Data> = data()
+    override fun items(): List<PlanListOverageChargesResponse> = data()
 
     override fun hasNextPage(): Boolean =
         items().isNotEmpty() && pagination().flatMap { it._next().getOptional("next") }.isPresent
@@ -53,14 +52,14 @@ private constructor(
     override fun nextPage(): CompletableFuture<PlanListOverageChargesPageAsync> =
         service.listOverageCharges(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<ChargeList.Data> =
+    fun autoPager(): AutoPagerAsync<PlanListOverageChargesResponse> =
         AutoPagerAsync.from(this, streamHandlerExecutor)
 
     /** The parameters that were used to request this page. */
     fun params(): PlanListOverageChargesParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): ChargeList = response
+    fun response(): PlanListOverageChargesPageResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -87,7 +86,7 @@ private constructor(
         private var service: PlanServiceAsync? = null
         private var streamHandlerExecutor: Executor? = null
         private var params: PlanListOverageChargesParams? = null
-        private var response: ChargeList? = null
+        private var response: PlanListOverageChargesPageResponse? = null
 
         @JvmSynthetic
         internal fun from(planListOverageChargesPageAsync: PlanListOverageChargesPageAsync) =
@@ -108,7 +107,9 @@ private constructor(
         fun params(params: PlanListOverageChargesParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: ChargeList) = apply { this.response = response }
+        fun response(response: PlanListOverageChargesPageResponse) = apply {
+            this.response = response
+        }
 
         /**
          * Returns an immutable instance of [PlanListOverageChargesPageAsync].
