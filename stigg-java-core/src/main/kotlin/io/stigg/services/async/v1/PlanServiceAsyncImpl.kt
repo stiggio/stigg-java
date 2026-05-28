@@ -16,14 +16,15 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.addons.ChargeList
 import io.stigg.models.v1.plans.Plan
 import io.stigg.models.v1.plans.PlanArchiveParams
 import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
 import io.stigg.models.v1.plans.PlanListChargesPageAsync
+import io.stigg.models.v1.plans.PlanListChargesPageResponse
 import io.stigg.models.v1.plans.PlanListChargesParams
 import io.stigg.models.v1.plans.PlanListOverageChargesPageAsync
+import io.stigg.models.v1.plans.PlanListOverageChargesPageResponse
 import io.stigg.models.v1.plans.PlanListOverageChargesParams
 import io.stigg.models.v1.plans.PlanListPageAsync
 import io.stigg.models.v1.plans.PlanListPageResponse
@@ -347,8 +348,8 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
                 }
         }
 
-        private val listChargesHandler: Handler<ChargeList> =
-            jsonHandler<ChargeList>(clientOptions.jsonMapper)
+        private val listChargesHandler: Handler<PlanListChargesPageResponse> =
+            jsonHandler<PlanListChargesPageResponse>(clientOptions.jsonMapper)
 
         override fun listCharges(
             params: PlanListChargesParams,
@@ -388,8 +389,8 @@ class PlanServiceAsyncImpl internal constructor(private val clientOptions: Clien
                 }
         }
 
-        private val listOverageChargesHandler: Handler<ChargeList> =
-            jsonHandler<ChargeList>(clientOptions.jsonMapper)
+        private val listOverageChargesHandler: Handler<PlanListOverageChargesPageResponse> =
+            jsonHandler<PlanListOverageChargesPageResponse>(clientOptions.jsonMapper)
 
         override fun listOverageCharges(
             params: PlanListOverageChargesParams,
