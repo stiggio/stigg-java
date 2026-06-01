@@ -522,6 +522,8 @@ private constructor(
 
                 @JvmField val RECEIVED = of("RECEIVED")
 
+                @JvmField val PREQUEL = of("PREQUEL")
+
                 @JvmStatic fun of(value: String) = VendorIdentifier(JsonField.of(value))
             }
 
@@ -538,6 +540,7 @@ private constructor(
                 OPEN_FGA,
                 APP_STORE,
                 RECEIVED,
+                PREQUEL,
             }
 
             /**
@@ -562,6 +565,7 @@ private constructor(
                 OPEN_FGA,
                 APP_STORE,
                 RECEIVED,
+                PREQUEL,
                 /**
                  * An enum member indicating that [VendorIdentifier] was instantiated with an
                  * unknown value.
@@ -589,6 +593,7 @@ private constructor(
                     OPEN_FGA -> Value.OPEN_FGA
                     APP_STORE -> Value.APP_STORE
                     RECEIVED -> Value.RECEIVED
+                    PREQUEL -> Value.PREQUEL
                     else -> Value._UNKNOWN
                 }
 
@@ -614,6 +619,7 @@ private constructor(
                     OPEN_FGA -> Known.OPEN_FGA
                     APP_STORE -> Known.APP_STORE
                     RECEIVED -> Known.RECEIVED
+                    PREQUEL -> Known.PREQUEL
                     else -> throw StiggInvalidDataException("Unknown VendorIdentifier: $value")
                 }
 
