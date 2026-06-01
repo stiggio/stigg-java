@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.12 (2026-06-01)
+
+Full Changelog: [v0.1.0-beta.11...v0.1.0-beta.12](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.11...v0.1.0-beta.12)
+
+### Features
+
+* **STIGG-8001:** add VendorIdentifier.DATA_EXPORT + [@deprecated](https://github.com/deprecated) on SNOWFLAKE / BIG_QUERY ([c177419](https://github.com/stiggio/stigg-java/commit/c17741974149c3dba7beec5f10a6c6be370312f3))
+
 ## 0.1.0-beta.11 (2026-05-28)
 
 Full Changelog: [v0.1.0-beta.10...v0.1.0-beta.11](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.10...v0.1.0-beta.11)
