@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-beta.13 (2026-06-02)
+
+Full Changelog: [v0.1.0-beta.12...v0.1.0-beta.13](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.12...v0.1.0-beta.13)
+
+### Features
+
+* **api:** add pagination support to credit get usage method ([f018e8a](https://github.com/stiggio/stigg-java/commit/f018e8af19672506d972d5fef156ce11f9886df2))
+* **api:** manual updates ([cee0be4](https://github.com/stiggio/stigg-java/commit/cee0be4f78295ca3b94bf398259b907eb5055ceb))
+
 ## 0.1.0-beta.12 (2026-06-01)
 
 Full Changelog: [v0.1.0-beta.11...v0.1.0-beta.12](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.11...v0.1.0-beta.12)
