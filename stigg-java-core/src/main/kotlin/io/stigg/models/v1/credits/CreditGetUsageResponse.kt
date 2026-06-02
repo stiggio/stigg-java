@@ -170,6 +170,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val currency: JsonField<Currency>,
+        private val pagination: JsonField<Pagination>,
         private val series: JsonField<List<Series>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -179,10 +180,13 @@ private constructor(
             @JsonProperty("currency")
             @ExcludeMissing
             currency: JsonField<Currency> = JsonMissing.of(),
+            @JsonProperty("pagination")
+            @ExcludeMissing
+            pagination: JsonField<Pagination> = JsonMissing.of(),
             @JsonProperty("series")
             @ExcludeMissing
             series: JsonField<List<Series>> = JsonMissing.of(),
-        ) : this(currency, series, mutableMapOf())
+        ) : this(currency, pagination, series, mutableMapOf())
 
         /**
          * The custom currency used for credit measurement
@@ -191,6 +195,16 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun currency(): Optional<Currency> = currency.getOptional("currency")
+
+        /**
+         * Cursor-based pagination for the returned series. `next`/`prev` are opaque cursors; pass
+         * them back as `after`/`before` to traverse pages. The series axis is `groupBy` when
+         * provided, otherwise `featureId`
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun pagination(): Pagination = pagination.getRequired("pagination")
 
         /**
          * Credit usage series grouped by feature
@@ -206,6 +220,15 @@ private constructor(
          * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<Currency> = currency
+
+        /**
+         * Returns the raw JSON value of [pagination].
+         *
+         * Unlike [pagination], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("pagination")
+        @ExcludeMissing
+        fun _pagination(): JsonField<Pagination> = pagination
 
         /**
          * Returns the raw JSON value of [series].
@@ -234,6 +257,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .currency()
+             * .pagination()
              * .series()
              * ```
              */
@@ -244,12 +268,14 @@ private constructor(
         class Builder internal constructor() {
 
             private var currency: JsonField<Currency>? = null
+            private var pagination: JsonField<Pagination>? = null
             private var series: JsonField<MutableList<Series>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(data: Data) = apply {
                 currency = data.currency
+                pagination = data.pagination
                 series = data.series.map { it.toMutableList() }
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
@@ -268,6 +294,24 @@ private constructor(
              * supported value.
              */
             fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
+
+            /**
+             * Cursor-based pagination for the returned series. `next`/`prev` are opaque cursors;
+             * pass them back as `after`/`before` to traverse pages. The series axis is `groupBy`
+             * when provided, otherwise `featureId`
+             */
+            fun pagination(pagination: Pagination) = pagination(JsonField.of(pagination))
+
+            /**
+             * Sets [Builder.pagination] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.pagination] with a well-typed [Pagination] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun pagination(pagination: JsonField<Pagination>) = apply {
+                this.pagination = pagination
+            }
 
             /** Credit usage series grouped by feature */
             fun series(series: List<Series>) = series(JsonField.of(series))
@@ -322,6 +366,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .currency()
+             * .pagination()
              * .series()
              * ```
              *
@@ -330,6 +375,7 @@ private constructor(
             fun build(): Data =
                 Data(
                     checkRequired("currency", currency),
+                    checkRequired("pagination", pagination),
                     checkRequired("series", series).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
@@ -352,6 +398,7 @@ private constructor(
             }
 
             currency().ifPresent { it.validate() }
+            pagination().validate()
             series().forEach { it.validate() }
             validated = true
         }
@@ -373,6 +420,7 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (currency.asKnown().getOrNull()?.validity() ?: 0) +
+                (pagination.asKnown().getOrNull()?.validity() ?: 0) +
                 (series.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
         /** The custom currency used for credit measurement */
@@ -735,6 +783,230 @@ private constructor(
 
             override fun toString() =
                 "Currency{currencyId=$currencyId, displayName=$displayName, plural=$plural, singular=$singular, symbol=$symbol, additionalProperties=$additionalProperties}"
+        }
+
+        /**
+         * Cursor-based pagination for the returned series. `next`/`prev` are opaque cursors; pass
+         * them back as `after`/`before` to traverse pages. The series axis is `groupBy` when
+         * provided, otherwise `featureId`
+         */
+        class Pagination
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val next: JsonField<String>,
+            private val prev: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("next") @ExcludeMissing next: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("prev") @ExcludeMissing prev: JsonField<String> = JsonMissing.of(),
+            ) : this(next, prev, mutableMapOf())
+
+            /**
+             * Cursor for fetching the next page of results, or null if no additional pages exist
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun next(): Optional<String> = next.getOptional("next")
+
+            /**
+             * Cursor for fetching the previous page of results, or null if at the beginning
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun prev(): Optional<String> = prev.getOptional("prev")
+
+            /**
+             * Returns the raw JSON value of [next].
+             *
+             * Unlike [next], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("next") @ExcludeMissing fun _next(): JsonField<String> = next
+
+            /**
+             * Returns the raw JSON value of [prev].
+             *
+             * Unlike [prev], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("prev") @ExcludeMissing fun _prev(): JsonField<String> = prev
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Pagination].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .next()
+                 * .prev()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Pagination]. */
+            class Builder internal constructor() {
+
+                private var next: JsonField<String>? = null
+                private var prev: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(pagination: Pagination) = apply {
+                    next = pagination.next
+                    prev = pagination.prev
+                    additionalProperties = pagination.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Cursor for fetching the next page of results, or null if no additional pages
+                 * exist
+                 */
+                fun next(next: String?) = next(JsonField.ofNullable(next))
+
+                /** Alias for calling [Builder.next] with `next.orElse(null)`. */
+                fun next(next: Optional<String>) = next(next.getOrNull())
+
+                /**
+                 * Sets [Builder.next] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.next] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun next(next: JsonField<String>) = apply { this.next = next }
+
+                /** Cursor for fetching the previous page of results, or null if at the beginning */
+                fun prev(prev: String?) = prev(JsonField.ofNullable(prev))
+
+                /** Alias for calling [Builder.prev] with `prev.orElse(null)`. */
+                fun prev(prev: Optional<String>) = prev(prev.getOrNull())
+
+                /**
+                 * Sets [Builder.prev] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.prev] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun prev(prev: JsonField<String>) = apply { this.prev = prev }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Pagination].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .next()
+                 * .prev()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Pagination =
+                    Pagination(
+                        checkRequired("next", next),
+                        checkRequired("prev", prev),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Pagination = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                next()
+                prev()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (next.asKnown().isPresent) 1 else 0) + (if (prev.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Pagination &&
+                    next == other.next &&
+                    prev == other.prev &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(next, prev, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Pagination{next=$next, prev=$prev, additionalProperties=$additionalProperties}"
         }
 
         /** Credit usage data for a single feature */
@@ -1576,16 +1848,19 @@ private constructor(
 
             return other is Data &&
                 currency == other.currency &&
+                pagination == other.pagination &&
                 series == other.series &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(currency, series, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(currency, pagination, series, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{currency=$currency, series=$series, additionalProperties=$additionalProperties}"
+            "Data{currency=$currency, pagination=$pagination, series=$series, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

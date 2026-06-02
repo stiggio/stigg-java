@@ -23,9 +23,12 @@ import kotlin.jvm.optionals.getOrNull
 class CreditGetUsageParams
 private constructor(
     private val customerId: String,
+    private val after: String?,
+    private val before: String?,
     private val currencyId: String?,
     private val endDate: OffsetDateTime?,
     private val groupBy: String?,
+    private val limit: Long?,
     private val resourceId: String?,
     private val startDate: OffsetDateTime?,
     private val timeRange: TimeRange?,
@@ -35,6 +38,12 @@ private constructor(
 
     /** Filter by customer ID (required) */
     fun customerId(): String = customerId
+
+    /** Return items that come after this cursor */
+    fun after(): Optional<String> = Optional.ofNullable(after)
+
+    /** Return items that come before this cursor */
+    fun before(): Optional<String> = Optional.ofNullable(before)
 
     /** Filter by currency ID */
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
@@ -50,6 +59,9 @@ private constructor(
      * matches /^[a-zA-Z0-9_$-]+$/
      */
     fun groupBy(): Optional<String> = Optional.ofNullable(groupBy)
+
+    /** Maximum number of items to return */
+    fun limit(): Optional<Long> = Optional.ofNullable(limit)
 
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
@@ -91,9 +103,12 @@ private constructor(
     class Builder internal constructor() {
 
         private var customerId: String? = null
+        private var after: String? = null
+        private var before: String? = null
         private var currencyId: String? = null
         private var endDate: OffsetDateTime? = null
         private var groupBy: String? = null
+        private var limit: Long? = null
         private var resourceId: String? = null
         private var startDate: OffsetDateTime? = null
         private var timeRange: TimeRange? = null
@@ -103,9 +118,12 @@ private constructor(
         @JvmSynthetic
         internal fun from(creditGetUsageParams: CreditGetUsageParams) = apply {
             customerId = creditGetUsageParams.customerId
+            after = creditGetUsageParams.after
+            before = creditGetUsageParams.before
             currencyId = creditGetUsageParams.currencyId
             endDate = creditGetUsageParams.endDate
             groupBy = creditGetUsageParams.groupBy
+            limit = creditGetUsageParams.limit
             resourceId = creditGetUsageParams.resourceId
             startDate = creditGetUsageParams.startDate
             timeRange = creditGetUsageParams.timeRange
@@ -115,6 +133,18 @@ private constructor(
 
         /** Filter by customer ID (required) */
         fun customerId(customerId: String) = apply { this.customerId = customerId }
+
+        /** Return items that come after this cursor */
+        fun after(after: String?) = apply { this.after = after }
+
+        /** Alias for calling [Builder.after] with `after.orElse(null)`. */
+        fun after(after: Optional<String>) = after(after.getOrNull())
+
+        /** Return items that come before this cursor */
+        fun before(before: String?) = apply { this.before = before }
+
+        /** Alias for calling [Builder.before] with `before.orElse(null)`. */
+        fun before(before: Optional<String>) = before(before.getOrNull())
 
         /** Filter by currency ID */
         fun currencyId(currencyId: String?) = apply { this.currencyId = currencyId }
@@ -139,6 +169,19 @@ private constructor(
 
         /** Alias for calling [Builder.groupBy] with `groupBy.orElse(null)`. */
         fun groupBy(groupBy: Optional<String>) = groupBy(groupBy.getOrNull())
+
+        /** Maximum number of items to return */
+        fun limit(limit: Long?) = apply { this.limit = limit }
+
+        /**
+         * Alias for [Builder.limit].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun limit(limit: Long) = limit(limit as Long?)
+
+        /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
+        fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
 
         /** Filter by resource ID */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
@@ -277,9 +320,12 @@ private constructor(
         fun build(): CreditGetUsageParams =
             CreditGetUsageParams(
                 checkRequired("customerId", customerId),
+                after,
+                before,
                 currencyId,
                 endDate,
                 groupBy,
+                limit,
                 resourceId,
                 startDate,
                 timeRange,
@@ -294,9 +340,12 @@ private constructor(
         QueryParams.builder()
             .apply {
                 put("customerId", customerId)
+                after?.let { put("after", it) }
+                before?.let { put("before", it) }
                 currencyId?.let { put("currencyId", it) }
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 groupBy?.let { put("groupBy", it) }
+                limit?.let { put("limit", it.toString()) }
                 resourceId?.let { put("resourceId", it) }
                 startDate?.let {
                     put("startDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
@@ -464,9 +513,12 @@ private constructor(
 
         return other is CreditGetUsageParams &&
             customerId == other.customerId &&
+            after == other.after &&
+            before == other.before &&
             currencyId == other.currencyId &&
             endDate == other.endDate &&
             groupBy == other.groupBy &&
+            limit == other.limit &&
             resourceId == other.resourceId &&
             startDate == other.startDate &&
             timeRange == other.timeRange &&
@@ -477,9 +529,12 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             customerId,
+            after,
+            before,
             currencyId,
             endDate,
             groupBy,
+            limit,
             resourceId,
             startDate,
             timeRange,
@@ -488,5 +543,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CreditGetUsageParams{customerId=$customerId, currencyId=$currencyId, endDate=$endDate, groupBy=$groupBy, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditGetUsageParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, endDate=$endDate, groupBy=$groupBy, limit=$limit, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
