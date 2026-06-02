@@ -39,9 +39,12 @@ internal class CreditServiceTest {
             creditService.getUsage(
                 CreditGetUsageParams.builder()
                     .customerId("customerId")
+                    .after("after")
+                    .before("before")
                     .currencyId("currencyId")
                     .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .groupBy("groupBy")
+                    .limit(1L)
                     .resourceId("resourceId")
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .timeRange(CreditGetUsageParams.TimeRange.LAST_DAY)
