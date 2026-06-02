@@ -25,6 +25,12 @@ internal class CreditGetUsageResponseTest {
                                 .symbol("symbol")
                                 .build()
                         )
+                        .pagination(
+                            CreditGetUsageResponse.Data.Pagination.builder()
+                                .next("next")
+                                .prev("prev")
+                                .build()
+                        )
                         .addSeries(
                             CreditGetUsageResponse.Data.Series.builder()
                                 .featureId("featureId")
@@ -58,6 +64,12 @@ internal class CreditGetUsageResponseTest {
                             .plural("plural")
                             .singular("singular")
                             .symbol("symbol")
+                            .build()
+                    )
+                    .pagination(
+                        CreditGetUsageResponse.Data.Pagination.builder()
+                            .next("next")
+                            .prev("prev")
                             .build()
                     )
                     .addSeries(
@@ -97,6 +109,12 @@ internal class CreditGetUsageResponseTest {
                                 .plural("plural")
                                 .singular("singular")
                                 .symbol("symbol")
+                                .build()
+                        )
+                        .pagination(
+                            CreditGetUsageResponse.Data.Pagination.builder()
+                                .next("next")
+                                .prev("prev")
                                 .build()
                         )
                         .addSeries(
