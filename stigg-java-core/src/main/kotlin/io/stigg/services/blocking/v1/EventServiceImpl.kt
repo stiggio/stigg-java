@@ -19,6 +19,8 @@ import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import io.stigg.services.blocking.v1.events.BetaService
 import io.stigg.services.blocking.v1.events.BetaServiceImpl
+import io.stigg.services.blocking.v1.events.DataExportService
+import io.stigg.services.blocking.v1.events.DataExportServiceImpl
 import java.util.function.Consumer
 
 /** Operations related to usage & metering */
@@ -31,12 +33,16 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     private val beta: BetaService by lazy { BetaServiceImpl(clientOptions) }
 
+    private val dataExport: DataExportService by lazy { DataExportServiceImpl(clientOptions) }
+
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
         EventServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun beta(): BetaService = beta
+
+    override fun dataExport(): DataExportService = dataExport
 
     override fun report(
         params: EventReportParams,
@@ -55,6 +61,10 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             BetaServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val dataExport: DataExportService.WithRawResponse by lazy {
+            DataExportServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventService.WithRawResponse =
@@ -63,6 +73,8 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             )
 
         override fun beta(): BetaService.WithRawResponse = beta
+
+        override fun dataExport(): DataExportService.WithRawResponse = dataExport
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
