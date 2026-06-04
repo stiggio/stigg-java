@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.15 (2026-06-04)
+
+Full Changelog: [v0.1.0-beta.14...v0.1.0-beta.15](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.14...v0.1.0-beta.15)
+
+### Features
+
+* **api:** move v1Beta to events.beta() ([693dc00](https://github.com/stiggio/stigg-java/commit/693dc00390fa1bcaab5655c539a2c11c525f694c))
+
 ## 0.1.0-beta.14 (2026-06-03)
 
 Full Changelog: [v0.1.0-beta.13...v0.1.0-beta.14](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.13...v0.1.0-beta.14)
