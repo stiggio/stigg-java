@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.16 (2026-06-04)
+
+Full Changelog: [v0.1.0-beta.15...v0.1.0-beta.16](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.15...v0.1.0-beta.16)
+
+### Features
+
+* **api:** add mintScopedToken/triggerSync to data_export, create/delete to destinations ([5c24303](https://github.com/stiggio/stigg-java/commit/5c24303addfb135cc632b40e0305a8bc411bfc6c))
+
 ## 0.1.0-beta.15 (2026-06-04)
 
 Full Changelog: [v0.1.0-beta.14...v0.1.0-beta.15](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.14...v0.1.0-beta.15)
