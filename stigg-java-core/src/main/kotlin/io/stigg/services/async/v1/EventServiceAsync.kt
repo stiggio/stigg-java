@@ -8,6 +8,7 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import io.stigg.services.async.v1.events.BetaServiceAsync
+import io.stigg.services.async.v1.events.DataExportServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -27,6 +28,8 @@ interface EventServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
     fun beta(): BetaServiceAsync
+
+    fun dataExport(): DataExportServiceAsync
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -54,6 +57,8 @@ interface EventServiceAsync {
         ): EventServiceAsync.WithRawResponse
 
         fun beta(): BetaServiceAsync.WithRawResponse
+
+        fun dataExport(): DataExportServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
