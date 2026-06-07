@@ -120,6 +120,7 @@ internal class SubscriptionServiceTest {
                             .limit(0.0)
                             .build()
                     )
+                    .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addCharge(
                         SubscriptionUpdateParams.Charge.builder()
                             .id("id")
@@ -542,6 +543,7 @@ internal class SubscriptionServiceTest {
                             .limit(0.0)
                             .build()
                     )
+                    .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addCharge(
                         SubscriptionProvisionParams.Charge.builder()
                             .id("id")

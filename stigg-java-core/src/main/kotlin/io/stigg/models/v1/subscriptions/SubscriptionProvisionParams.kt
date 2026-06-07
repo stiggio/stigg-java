@@ -136,6 +136,14 @@ private constructor(
     fun budget(): Optional<Budget> = body.budget()
 
     /**
+     * Subscription cancellation date
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun cancellationDate(): Optional<OffsetDateTime> = body.cancellationDate()
+
+    /**
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -330,6 +338,14 @@ private constructor(
      * Unlike [budget], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _budget(): JsonField<Budget> = body._budget()
+
+    /**
+     * Returns the raw JSON value of [cancellationDate].
+     *
+     * Unlike [cancellationDate], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _cancellationDate(): JsonField<OffsetDateTime> = body._cancellationDate()
 
     /**
      * Returns the raw JSON value of [charges].
@@ -667,6 +683,22 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun budget(budget: JsonField<Budget>) = apply { body.budget(budget) }
+
+        /** Subscription cancellation date */
+        fun cancellationDate(cancellationDate: OffsetDateTime) = apply {
+            body.cancellationDate(cancellationDate)
+        }
+
+        /**
+         * Sets [Builder.cancellationDate] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cancellationDate] with a well-typed [OffsetDateTime]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun cancellationDate(cancellationDate: JsonField<OffsetDateTime>) = apply {
+            body.cancellationDate(cancellationDate)
+        }
 
         fun charges(charges: List<Charge>) = apply { body.charges(charges) }
 
@@ -1080,6 +1112,7 @@ private constructor(
         private val billingInformation: JsonField<BillingInformation>,
         private val billingPeriod: JsonField<BillingPeriod>,
         private val budget: JsonField<Budget>,
+        private val cancellationDate: JsonField<OffsetDateTime>,
         private val charges: JsonField<List<Charge>>,
         private val checkoutOptions: JsonField<CheckoutOptions>,
         private val entitlements: JsonField<List<Entitlement>>,
@@ -1129,6 +1162,9 @@ private constructor(
             @ExcludeMissing
             billingPeriod: JsonField<BillingPeriod> = JsonMissing.of(),
             @JsonProperty("budget") @ExcludeMissing budget: JsonField<Budget> = JsonMissing.of(),
+            @JsonProperty("cancellationDate")
+            @ExcludeMissing
+            cancellationDate: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("charges")
             @ExcludeMissing
             charges: JsonField<List<Charge>> = JsonMissing.of(),
@@ -1184,6 +1220,7 @@ private constructor(
             billingInformation,
             billingPeriod,
             budget,
+            cancellationDate,
             charges,
             checkoutOptions,
             entitlements,
@@ -1294,6 +1331,15 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun budget(): Optional<Budget> = budget.getOptional("budget")
+
+        /**
+         * Subscription cancellation date
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun cancellationDate(): Optional<OffsetDateTime> =
+            cancellationDate.getOptional("cancellationDate")
 
         /**
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -1511,6 +1557,16 @@ private constructor(
         @JsonProperty("budget") @ExcludeMissing fun _budget(): JsonField<Budget> = budget
 
         /**
+         * Returns the raw JSON value of [cancellationDate].
+         *
+         * Unlike [cancellationDate], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("cancellationDate")
+        @ExcludeMissing
+        fun _cancellationDate(): JsonField<OffsetDateTime> = cancellationDate
+
+        /**
          * Returns the raw JSON value of [charges].
          *
          * Unlike [charges], this method doesn't throw if the JSON field has an unexpected type.
@@ -1684,6 +1740,7 @@ private constructor(
             private var billingInformation: JsonField<BillingInformation> = JsonMissing.of()
             private var billingPeriod: JsonField<BillingPeriod> = JsonMissing.of()
             private var budget: JsonField<Budget> = JsonMissing.of()
+            private var cancellationDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var charges: JsonField<MutableList<Charge>>? = null
             private var checkoutOptions: JsonField<CheckoutOptions> = JsonMissing.of()
             private var entitlements: JsonField<MutableList<Entitlement>>? = null
@@ -1716,6 +1773,7 @@ private constructor(
                 billingInformation = body.billingInformation
                 billingPeriod = body.billingPeriod
                 budget = body.budget
+                cancellationDate = body.cancellationDate
                 charges = body.charges.map { it.toMutableList() }
                 checkoutOptions = body.checkoutOptions
                 entitlements = body.entitlements.map { it.toMutableList() }
@@ -1918,6 +1976,21 @@ private constructor(
              * supported value.
              */
             fun budget(budget: JsonField<Budget>) = apply { this.budget = budget }
+
+            /** Subscription cancellation date */
+            fun cancellationDate(cancellationDate: OffsetDateTime) =
+                cancellationDate(JsonField.of(cancellationDate))
+
+            /**
+             * Sets [Builder.cancellationDate] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.cancellationDate] with a well-typed [OffsetDateTime]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun cancellationDate(cancellationDate: JsonField<OffsetDateTime>) = apply {
+                this.cancellationDate = cancellationDate
+            }
 
             fun charges(charges: List<Charge>) = charges(JsonField.of(charges))
 
@@ -2235,6 +2308,7 @@ private constructor(
                     billingInformation,
                     billingPeriod,
                     budget,
+                    cancellationDate,
                     (charges ?: JsonMissing.of()).map { it.toImmutable() },
                     checkoutOptions,
                     (entitlements ?: JsonMissing.of()).map { it.toImmutable() },
@@ -2281,6 +2355,7 @@ private constructor(
             billingInformation().ifPresent { it.validate() }
             billingPeriod().ifPresent { it.validate() }
             budget().ifPresent { it.validate() }
+            cancellationDate()
             charges().ifPresent { it.forEach { it.validate() } }
             checkoutOptions().ifPresent { it.validate() }
             entitlements().ifPresent { it.forEach { it.validate() } }
@@ -2326,6 +2401,7 @@ private constructor(
                 (billingInformation.asKnown().getOrNull()?.validity() ?: 0) +
                 (billingPeriod.asKnown().getOrNull()?.validity() ?: 0) +
                 (budget.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (cancellationDate.asKnown().isPresent) 1 else 0) +
                 (charges.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (checkoutOptions.asKnown().getOrNull()?.validity() ?: 0) +
                 (entitlements.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -2359,6 +2435,7 @@ private constructor(
                 billingInformation == other.billingInformation &&
                 billingPeriod == other.billingPeriod &&
                 budget == other.budget &&
+                cancellationDate == other.cancellationDate &&
                 charges == other.charges &&
                 checkoutOptions == other.checkoutOptions &&
                 entitlements == other.entitlements &&
@@ -2390,6 +2467,7 @@ private constructor(
                 billingInformation,
                 billingPeriod,
                 budget,
+                cancellationDate,
                 charges,
                 checkoutOptions,
                 entitlements,
@@ -2411,7 +2489,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{customerId=$customerId, planId=$planId, id=$id, addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCountryCode=$billingCountryCode, billingCycleAnchor=$billingCycleAnchor, billingId=$billingId, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, charges=$charges, checkoutOptions=$checkoutOptions, entitlements=$entitlements, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, priceOverrides=$priceOverrides, resourceId=$resourceId, salesforceId=$salesforceId, scheduleStrategy=$scheduleStrategy, startDate=$startDate, trialOverrideConfiguration=$trialOverrideConfiguration, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
+            "Body{customerId=$customerId, planId=$planId, id=$id, addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCountryCode=$billingCountryCode, billingCycleAnchor=$billingCycleAnchor, billingId=$billingId, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, cancellationDate=$cancellationDate, charges=$charges, checkoutOptions=$checkoutOptions, entitlements=$entitlements, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, priceOverrides=$priceOverrides, resourceId=$resourceId, salesforceId=$salesforceId, scheduleStrategy=$scheduleStrategy, startDate=$startDate, trialOverrideConfiguration=$trialOverrideConfiguration, unitQuantity=$unitQuantity, additionalProperties=$additionalProperties}"
     }
 
     /** Addon configuration */
