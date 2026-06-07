@@ -93,6 +93,7 @@ internal class SubscriptionProvisionParamsTest {
             .budget(
                 SubscriptionProvisionParams.Budget.builder().hasSoftLimit(true).limit(0.0).build()
             )
+            .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .addCharge(
                 SubscriptionProvisionParams.Charge.builder()
                     .id("id")
@@ -321,6 +322,7 @@ internal class SubscriptionProvisionParamsTest {
                         .limit(0.0)
                         .build()
                 )
+                .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addCharge(
                     SubscriptionProvisionParams.Charge.builder()
                         .id("id")
@@ -556,6 +558,8 @@ internal class SubscriptionProvisionParamsTest {
             .contains(
                 SubscriptionProvisionParams.Budget.builder().hasSoftLimit(true).limit(0.0).build()
             )
+        assertThat(body.cancellationDate())
+            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(body.charges().getOrNull())
             .containsExactly(
                 SubscriptionProvisionParams.Charge.builder()
