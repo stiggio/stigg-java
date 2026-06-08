@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-beta.17 (2026-06-08)
+
+Full Changelog: [v0.1.0-beta.16...v0.1.0-beta.17](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.16...v0.1.0-beta.17)
+
+### Features
+
+* **api:** add cancellationDate to subscription provision/update methods ([5d96832](https://github.com/stiggio/stigg-java/commit/5d96832df2c8167fc5d6e54a80e12d07a662a0ad))
+* **api:** add connectionStatus and lastSyncStatus fields to destination responses ([4597eaa](https://github.com/stiggio/stigg-java/commit/4597eaac632e389b297a73033eafbb88250d0390))
+
 ## 0.1.0-beta.16 (2026-06-04)
 
 Full Changelog: [v0.1.0-beta.15...v0.1.0-beta.16](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.15...v0.1.0-beta.16)
