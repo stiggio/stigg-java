@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.18 (2026-06-08)
+
+Full Changelog: [v0.1.0-beta.17...v0.1.0-beta.18](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.17...v0.1.0-beta.18)
+
+### Features
+
+* **STIGG-8103:** support user JWT (Bearer) auth on REST API ([a527e1d](https://github.com/stiggio/stigg-java/commit/a527e1d68ca2fcf4846603bd9a3fee449a4cf455))
+
 ## 0.1.0-beta.17 (2026-06-08)
 
 Full Changelog: [v0.1.0-beta.16...v0.1.0-beta.17](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.16...v0.1.0-beta.17)
