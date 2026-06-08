@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.products
 
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,8 @@ internal class ProductDuplicateProductParamsTest {
     fun create() {
         ProductDuplicateProductParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .targetId("targetId")
             .description("description")
             .displayName("displayName")
@@ -27,10 +30,44 @@ internal class ProductDuplicateProductParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            ProductDuplicateProductParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .targetId("targetId")
+                .description("description")
+                .displayName("displayName")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = ProductDuplicateProductParams.builder().id("x").targetId("targetId").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             ProductDuplicateProductParams.builder()
                 .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .targetId("targetId")
                 .description("description")
                 .displayName("displayName")

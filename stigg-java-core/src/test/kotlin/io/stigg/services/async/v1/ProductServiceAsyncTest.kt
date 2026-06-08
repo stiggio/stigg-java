@@ -4,8 +4,10 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.products.ProductArchiveProductParams
 import io.stigg.models.v1.products.ProductCreateProductParams
 import io.stigg.models.v1.products.ProductDuplicateProductParams
+import io.stigg.models.v1.products.ProductUnarchiveProductParams
 import io.stigg.models.v1.products.ProductUpdateProductParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -18,7 +20,14 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val productFuture = productServiceAsync.archiveProduct("x")
+        val productFuture =
+            productServiceAsync.archiveProduct(
+                ProductArchiveProductParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val product = productFuture.get()
         product.validate()
@@ -33,6 +42,8 @@ internal class ProductServiceAsyncTest {
         val productFuture =
             productServiceAsync.createProduct(
                 ProductCreateProductParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .description("description")
@@ -59,6 +70,8 @@ internal class ProductServiceAsyncTest {
             productServiceAsync.duplicateProduct(
                 ProductDuplicateProductParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .targetId("targetId")
                     .description("description")
                     .displayName("displayName")
@@ -87,7 +100,14 @@ internal class ProductServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val productServiceAsync = client.v1().products()
 
-        val productFuture = productServiceAsync.unarchiveProduct("x")
+        val productFuture =
+            productServiceAsync.unarchiveProduct(
+                ProductUnarchiveProductParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val product = productFuture.get()
         product.validate()
@@ -103,6 +123,8 @@ internal class ProductServiceAsyncTest {
             productServiceAsync.updateProduct(
                 ProductUpdateProductParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .displayName("displayName")
                     .metadata(

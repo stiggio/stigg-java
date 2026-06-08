@@ -21,7 +21,12 @@ internal class EntityServiceAsyncTest {
 
         val entityFuture =
             entityServiceAsync.retrieve(
-                EntityRetrieveParams.builder().id("id").entityId("x").build()
+                EntityRetrieveParams.builder()
+                    .id("id")
+                    .entityId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         val entity = entityFuture.get()
@@ -50,6 +55,8 @@ internal class EntityServiceAsyncTest {
             entityServiceAsync.archive(
                 EntityArchiveParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addId("user-7f3a0c1d")
                     .addId("user-c4d1b2e9")
                     .build()
@@ -69,6 +76,8 @@ internal class EntityServiceAsyncTest {
             entityServiceAsync.unarchive(
                 EntityUnarchiveParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addId("user-7f3a0c1d")
                     .addId("user-c4d1b2e9")
                     .build()
@@ -88,6 +97,8 @@ internal class EntityServiceAsyncTest {
             entityServiceAsync.upsert(
                 EntityUpsertParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEntity(
                         EntityUpsertParams.Entity.builder()
                             .id("user-7f3a0c1d")

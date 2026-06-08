@@ -29,6 +29,8 @@ internal class EntitlementServiceTest {
                     .requestedUsage(0L)
                     .addRequestedValue("string")
                     .resourceId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 

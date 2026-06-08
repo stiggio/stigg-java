@@ -6,6 +6,7 @@ import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
 import io.stigg.models.v1.credits.grants.GrantCreateParams
 import io.stigg.models.v1.credits.grants.GrantListParams
+import io.stigg.models.v1.credits.grants.GrantVoidParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +22,8 @@ internal class GrantServiceTest {
         val creditGrantResponse =
             grantService.create(
                 GrantCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .amount(0.0)
                     .currencyId("currencyId")
                     .customerId("customerId")
@@ -83,7 +86,14 @@ internal class GrantServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val grantService = client.v1().credits().grants()
 
-        val creditGrantResponse = grantService.void_("x")
+        val creditGrantResponse =
+            grantService.void_(
+                GrantVoidParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         creditGrantResponse.validate()
     }

@@ -17,6 +17,8 @@ class PromotionalEntitlementRevokeParams
 private constructor(
     private val id: String,
     private val featureId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
     private val additionalBodyProperties: Map<String, JsonValue>,
@@ -25,6 +27,10 @@ private constructor(
     fun id(): String = id
 
     fun featureId(): Optional<String> = Optional.ofNullable(featureId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional body properties to send with the request. */
     fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
@@ -56,6 +62,8 @@ private constructor(
 
         private var id: String? = null
         private var featureId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -65,6 +73,8 @@ private constructor(
             apply {
                 id = promotionalEntitlementRevokeParams.id
                 featureId = promotionalEntitlementRevokeParams.featureId
+                xAccountId = promotionalEntitlementRevokeParams.xAccountId
+                xEnvironmentId = promotionalEntitlementRevokeParams.xEnvironmentId
                 additionalHeaders = promotionalEntitlementRevokeParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
                     promotionalEntitlementRevokeParams.additionalQueryParams.toBuilder()
@@ -78,6 +88,17 @@ private constructor(
 
         /** Alias for calling [Builder.featureId] with `featureId.orElse(null)`. */
         fun featureId(featureId: Optional<String>) = featureId(featureId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -215,6 +236,8 @@ private constructor(
             PromotionalEntitlementRevokeParams(
                 checkRequired("id", id),
                 featureId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
                 additionalBodyProperties.toImmutable(),
@@ -231,7 +254,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -243,6 +273,8 @@ private constructor(
         return other is PromotionalEntitlementRevokeParams &&
             id == other.id &&
             featureId == other.featureId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
             additionalBodyProperties == other.additionalBodyProperties
@@ -252,11 +284,13 @@ private constructor(
         Objects.hash(
             id,
             featureId,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
             additionalBodyProperties,
         )
 
     override fun toString() =
-        "PromotionalEntitlementRevokeParams{id=$id, featureId=$featureId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "PromotionalEntitlementRevokeParams{id=$id, featureId=$featureId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

@@ -3,6 +3,7 @@
 package io.stigg.models.v1.events.beta.customers.entities
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,6 +13,8 @@ internal class EntityUpsertParamsTest {
     fun create() {
         EntityUpsertParams.builder()
             .id("id")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .addEntity(
                 EntityUpsertParams.Entity.builder()
                     .id("user-7f3a0c1d")
@@ -53,10 +56,69 @@ internal class EntityUpsertParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            EntityUpsertParams.builder()
+                .id("id")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .addEntity(
+                    EntityUpsertParams.Entity.builder()
+                        .id("user-7f3a0c1d")
+                        .metadata(
+                            EntityUpsertParams.Entity.Metadata.builder()
+                                .putAdditionalProperty("email", JsonValue.from("jane@acme.com"))
+                                .putAdditionalProperty("role", JsonValue.from("admin"))
+                                .build()
+                        )
+                        .typeRefId("user")
+                        .build()
+                )
+                .addEntity(
+                    EntityUpsertParams.Entity.builder()
+                        .id("user-c4d1b2e9")
+                        .metadata(
+                            EntityUpsertParams.Entity.Metadata.builder()
+                                .putAdditionalProperty("email", JsonValue.from("john@acme.com"))
+                                .build()
+                        )
+                        .typeRefId("user")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            EntityUpsertParams.builder()
+                .id("id")
+                .addEntity(EntityUpsertParams.Entity.builder().id("user-7f3a0c1d").build())
+                .addEntity(EntityUpsertParams.Entity.builder().id("user-c4d1b2e9").build())
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             EntityUpsertParams.builder()
                 .id("id")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .addEntity(
                     EntityUpsertParams.Entity.builder()
                         .id("user-7f3a0c1d")

@@ -4,7 +4,10 @@ package io.stigg.services.blocking.v1.credits
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.credits.customcurrencies.CustomCurrencyArchiveParams
 import io.stigg.models.v1.credits.customcurrencies.CustomCurrencyCreateParams
+import io.stigg.models.v1.credits.customcurrencies.CustomCurrencyListAssociatedEntitiesParams
+import io.stigg.models.v1.credits.customcurrencies.CustomCurrencyUnarchiveParams
 import io.stigg.models.v1.credits.customcurrencies.CustomCurrencyUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -20,6 +23,8 @@ internal class CustomCurrencyServiceTest {
         val customCurrencyResponse =
             customCurrencyService.create(
                 CustomCurrencyCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .description("description")
@@ -51,6 +56,8 @@ internal class CustomCurrencyServiceTest {
             customCurrencyService.update(
                 CustomCurrencyUpdateParams.builder()
                     .currencyId("currencyId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .displayName("displayName")
                     .metadata(
@@ -88,7 +95,14 @@ internal class CustomCurrencyServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customCurrencyService = client.v1().credits().customCurrencies()
 
-        val customCurrencyResponse = customCurrencyService.archive("currencyId")
+        val customCurrencyResponse =
+            customCurrencyService.archive(
+                CustomCurrencyArchiveParams.builder()
+                    .currencyId("currencyId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customCurrencyResponse.validate()
     }
@@ -99,7 +113,14 @@ internal class CustomCurrencyServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customCurrencyService = client.v1().credits().customCurrencies()
 
-        val response = customCurrencyService.listAssociatedEntities("currencyId")
+        val response =
+            customCurrencyService.listAssociatedEntities(
+                CustomCurrencyListAssociatedEntitiesParams.builder()
+                    .currencyId("currencyId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         response.validate()
     }
@@ -110,7 +131,14 @@ internal class CustomCurrencyServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customCurrencyService = client.v1().credits().customCurrencies()
 
-        val customCurrencyResponse = customCurrencyService.unarchive("currencyId")
+        val customCurrencyResponse =
+            customCurrencyService.unarchive(
+                CustomCurrencyUnarchiveParams.builder()
+                    .currencyId("currencyId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customCurrencyResponse.validate()
     }

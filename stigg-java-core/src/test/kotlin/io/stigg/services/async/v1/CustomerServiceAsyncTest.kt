@@ -4,10 +4,13 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.customers.CustomerArchiveParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
+import io.stigg.models.v1.customers.CustomerRetrieveParams
+import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -21,7 +24,14 @@ internal class CustomerServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
-        val customerResponseFuture = customerServiceAsync.retrieve("x")
+        val customerResponseFuture =
+            customerServiceAsync.retrieve(
+                CustomerRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val customerResponse = customerResponseFuture.get()
         customerResponse.validate()
@@ -37,6 +47,8 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                     .billingId("billingId")
                     .couponId(CustomerUpdateParams.CouponId.EMPTY)
@@ -154,7 +166,14 @@ internal class CustomerServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
-        val customerResponseFuture = customerServiceAsync.archive("x")
+        val customerResponseFuture =
+            customerServiceAsync.archive(
+                CustomerArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val customerResponse = customerResponseFuture.get()
         customerResponse.validate()
@@ -175,6 +194,8 @@ internal class CustomerServiceAsyncTest {
                     .requestedUsage(0L)
                     .addRequestedValue("string")
                     .resourceId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -191,6 +212,8 @@ internal class CustomerServiceAsyncTest {
         val responseFuture =
             customerServiceAsync.import_(
                 CustomerImportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addCustomer(
                         CustomerImportParams.Customer.builder()
                             .id("id")
@@ -236,6 +259,8 @@ internal class CustomerServiceAsyncTest {
         val customerResponseFuture =
             customerServiceAsync.provision(
                 CustomerProvisionParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .billingCurrency(CustomerProvisionParams.BillingCurrency.USD)
                     .billingId("billingId")
@@ -360,6 +385,8 @@ internal class CustomerServiceAsyncTest {
                 CustomerRetrieveEntitlementsParams.builder()
                     .id("x")
                     .resourceId("resourceId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -373,7 +400,14 @@ internal class CustomerServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val customerServiceAsync = client.v1().customers()
 
-        val customerResponseFuture = customerServiceAsync.unarchive("x")
+        val customerResponseFuture =
+            customerServiceAsync.unarchive(
+                CustomerUnarchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val customerResponse = customerResponseFuture.get()
         customerResponse.validate()
