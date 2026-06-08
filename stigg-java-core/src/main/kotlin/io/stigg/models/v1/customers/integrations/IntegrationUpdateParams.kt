@@ -25,6 +25,8 @@ class IntegrationUpdateParams
 private constructor(
     private val id: String,
     private val integrationId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -33,6 +35,10 @@ private constructor(
     fun id(): String = id
 
     fun integrationId(): Optional<String> = Optional.ofNullable(integrationId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
      * Synced entity id
@@ -78,6 +84,8 @@ private constructor(
 
         private var id: String? = null
         private var integrationId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -86,6 +94,8 @@ private constructor(
         internal fun from(integrationUpdateParams: IntegrationUpdateParams) = apply {
             id = integrationUpdateParams.id
             integrationId = integrationUpdateParams.integrationId
+            xAccountId = integrationUpdateParams.xAccountId
+            xEnvironmentId = integrationUpdateParams.xEnvironmentId
             body = integrationUpdateParams.body.toBuilder()
             additionalHeaders = integrationUpdateParams.additionalHeaders.toBuilder()
             additionalQueryParams = integrationUpdateParams.additionalQueryParams.toBuilder()
@@ -98,6 +108,17 @@ private constructor(
         /** Alias for calling [Builder.integrationId] with `integrationId.orElse(null)`. */
         fun integrationId(integrationId: Optional<String>) =
             integrationId(integrationId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         /**
          * Sets the entire request body.
@@ -260,6 +281,8 @@ private constructor(
             IntegrationUpdateParams(
                 checkRequired("id", id),
                 integrationId,
+                xAccountId,
+                xEnvironmentId,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -275,7 +298,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -469,14 +499,24 @@ private constructor(
         return other is IntegrationUpdateParams &&
             id == other.id &&
             integrationId == other.integrationId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, integrationId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            integrationId,
+            xAccountId,
+            xEnvironmentId,
+            body,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "IntegrationUpdateParams{id=$id, integrationId=$integrationId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "IntegrationUpdateParams{id=$id, integrationId=$integrationId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

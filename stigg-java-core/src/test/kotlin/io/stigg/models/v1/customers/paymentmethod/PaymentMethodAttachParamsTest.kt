@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.customers.paymentmethod
 
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,8 @@ internal class PaymentMethodAttachParamsTest {
     fun create() {
         PaymentMethodAttachParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .integrationId("integrationId")
             .paymentMethodId("paymentMethodId")
             .vendorIdentifier(PaymentMethodAttachParams.VendorIdentifier.AUTH0)
@@ -34,10 +37,51 @@ internal class PaymentMethodAttachParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            PaymentMethodAttachParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .integrationId("integrationId")
+                .paymentMethodId("paymentMethodId")
+                .vendorIdentifier(PaymentMethodAttachParams.VendorIdentifier.AUTH0)
+                .billingCurrency(PaymentMethodAttachParams.BillingCurrency.USD)
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            PaymentMethodAttachParams.builder()
+                .id("x")
+                .integrationId("integrationId")
+                .paymentMethodId("paymentMethodId")
+                .vendorIdentifier(PaymentMethodAttachParams.VendorIdentifier.AUTH0)
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             PaymentMethodAttachParams.builder()
                 .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .integrationId("integrationId")
                 .paymentMethodId("paymentMethodId")
                 .vendorIdentifier(PaymentMethodAttachParams.VendorIdentifier.AUTH0)

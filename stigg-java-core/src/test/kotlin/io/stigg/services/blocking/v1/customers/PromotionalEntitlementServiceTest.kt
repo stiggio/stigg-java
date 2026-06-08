@@ -21,6 +21,8 @@ internal class PromotionalEntitlementServiceTest {
             promotionalEntitlementService.create(
                 PromotionalEntitlementCreateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addPromotionalEntitlement(
                         PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                             .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -102,7 +104,12 @@ internal class PromotionalEntitlementServiceTest {
 
         val response =
             promotionalEntitlementService.revoke(
-                PromotionalEntitlementRevokeParams.builder().id("id").featureId("featureId").build()
+                PromotionalEntitlementRevokeParams.builder()
+                    .id("id")
+                    .featureId("featureId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         response.validate()

@@ -30,6 +30,8 @@ internal class AssignmentServiceTest {
             assignmentService.upsert(
                 AssignmentUpsertParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addAssignment(
                         AssignmentUpsertParams.Assignment.builder()
                             .capabilityId("compute-minutes")

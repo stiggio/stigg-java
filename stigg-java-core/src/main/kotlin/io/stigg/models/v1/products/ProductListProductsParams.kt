@@ -25,6 +25,8 @@ private constructor(
     private val createdAt: CreatedAt?,
     private val limit: Long?,
     private val status: List<Status>?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -46,6 +48,10 @@ private constructor(
 
     /** Filter by product status. Supports comma-separated values for multiple statuses */
     fun status(): Optional<List<Status>> = Optional.ofNullable(status)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -74,6 +80,8 @@ private constructor(
         private var createdAt: CreatedAt? = null
         private var limit: Long? = null
         private var status: MutableList<Status>? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -85,6 +93,8 @@ private constructor(
             createdAt = productListProductsParams.createdAt
             limit = productListProductsParams.limit
             status = productListProductsParams.status?.toMutableList()
+            xAccountId = productListProductsParams.xAccountId
+            xEnvironmentId = productListProductsParams.xEnvironmentId
             additionalHeaders = productListProductsParams.additionalHeaders.toBuilder()
             additionalQueryParams = productListProductsParams.additionalQueryParams.toBuilder()
         }
@@ -140,6 +150,17 @@ private constructor(
         fun addStatus(status: Status) = apply {
             this.status = (this.status ?: mutableListOf()).apply { add(status) }
         }
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -252,12 +273,21 @@ private constructor(
                 createdAt,
                 limit,
                 status?.toImmutable(),
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -588,6 +618,8 @@ private constructor(
             createdAt == other.createdAt &&
             limit == other.limit &&
             status == other.status &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -600,10 +632,12 @@ private constructor(
             createdAt,
             limit,
             status,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "ProductListProductsParams{id=$id, after=$after, before=$before, createdAt=$createdAt, limit=$limit, status=$status, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ProductListProductsParams{id=$id, after=$after, before=$before, createdAt=$createdAt, limit=$limit, status=$status, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

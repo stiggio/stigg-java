@@ -10,6 +10,7 @@ import io.stigg.models.v1.subscriptions.SubscriptionImportParams
 import io.stigg.models.v1.subscriptions.SubscriptionMigrateParams
 import io.stigg.models.v1.subscriptions.SubscriptionPreviewParams
 import io.stigg.models.v1.subscriptions.SubscriptionProvisionParams
+import io.stigg.models.v1.subscriptions.SubscriptionRetrieveParams
 import io.stigg.models.v1.subscriptions.SubscriptionTransferParams
 import io.stigg.models.v1.subscriptions.SubscriptionUpdateParams
 import java.time.OffsetDateTime
@@ -24,7 +25,14 @@ internal class SubscriptionServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val subscriptionServiceAsync = client.v1().subscriptions()
 
-        val subscriptionFuture = subscriptionServiceAsync.retrieve("x")
+        val subscriptionFuture =
+            subscriptionServiceAsync.retrieve(
+                SubscriptionRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val subscription = subscriptionFuture.get()
         subscription.validate()
@@ -40,6 +48,8 @@ internal class SubscriptionServiceAsyncTest {
             subscriptionServiceAsync.update(
                 SubscriptionUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addAddon(
                         SubscriptionUpdateParams.Addon.builder().id("id").quantity(0L).build()
                     )
@@ -231,6 +241,8 @@ internal class SubscriptionServiceAsyncTest {
             subscriptionServiceAsync.cancel(
                 SubscriptionCancelParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .cancellationAction(SubscriptionCancelParams.CancellationAction.DEFAULT)
                     .cancellationTime(
                         SubscriptionCancelParams.CancellationTime.END_OF_BILLING_PERIOD
@@ -254,6 +266,8 @@ internal class SubscriptionServiceAsyncTest {
             subscriptionServiceAsync.delegate(
                 SubscriptionDelegateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .targetCustomerId("targetCustomerId")
                     .build()
             )
@@ -271,6 +285,8 @@ internal class SubscriptionServiceAsyncTest {
         val responseFuture =
             subscriptionServiceAsync.import_(
                 SubscriptionImportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addSubscription(
                         SubscriptionImportParams.Subscription.builder()
                             .id("id")
@@ -321,6 +337,8 @@ internal class SubscriptionServiceAsyncTest {
             subscriptionServiceAsync.migrate(
                 SubscriptionMigrateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .subscriptionMigrationTime(
                         SubscriptionMigrateParams.SubscriptionMigrationTime.END_OF_BILLING_PERIOD
                     )
@@ -340,6 +358,8 @@ internal class SubscriptionServiceAsyncTest {
         val responseFuture =
             subscriptionServiceAsync.preview(
                 SubscriptionPreviewParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .customerId("customerId")
                     .planId("planId")
                     .addAddon(
@@ -464,6 +484,8 @@ internal class SubscriptionServiceAsyncTest {
         val responseFuture =
             subscriptionServiceAsync.provision(
                 SubscriptionProvisionParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .customerId("customerId")
                     .planId("planId")
                     .id("id")
@@ -718,6 +740,8 @@ internal class SubscriptionServiceAsyncTest {
             subscriptionServiceAsync.transfer(
                 SubscriptionTransferParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .destinationResourceId("destinationResourceId")
                     .build()
             )

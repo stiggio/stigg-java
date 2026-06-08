@@ -4,7 +4,10 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.features.FeatureArchiveFeatureParams
 import io.stigg.models.v1.features.FeatureCreateFeatureParams
+import io.stigg.models.v1.features.FeatureRetrieveFeatureParams
+import io.stigg.models.v1.features.FeatureUnarchiveFeatureParams
 import io.stigg.models.v1.features.FeatureUpdateFeatureParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -17,7 +20,14 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().features()
 
-        val feature = featureService.archiveFeature("x")
+        val feature =
+            featureService.archiveFeature(
+                FeatureArchiveFeatureParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         feature.validate()
     }
@@ -31,6 +41,8 @@ internal class FeatureServiceTest {
         val feature =
             featureService.createFeature(
                 FeatureCreateFeatureParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .featureType(FeatureCreateFeatureParams.FeatureType.BOOLEAN)
@@ -81,7 +93,14 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().features()
 
-        val feature = featureService.retrieveFeature("x")
+        val feature =
+            featureService.retrieveFeature(
+                FeatureRetrieveFeatureParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         feature.validate()
     }
@@ -92,7 +111,14 @@ internal class FeatureServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val featureService = client.v1().features()
 
-        val feature = featureService.unarchiveFeature("x")
+        val feature =
+            featureService.unarchiveFeature(
+                FeatureUnarchiveFeatureParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         feature.validate()
     }
@@ -107,6 +133,8 @@ internal class FeatureServiceTest {
             featureService.updateFeature(
                 FeatureUpdateFeatureParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .displayName("displayName")
                     .addEnumConfiguration(

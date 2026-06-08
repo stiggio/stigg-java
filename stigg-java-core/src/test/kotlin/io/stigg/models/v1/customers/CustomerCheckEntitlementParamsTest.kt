@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.customers
 
+import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,6 +18,8 @@ internal class CustomerCheckEntitlementParamsTest {
             .requestedUsage(0L)
             .addRequestedValue("string")
             .resourceId("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .build()
     }
 
@@ -30,6 +33,40 @@ internal class CustomerCheckEntitlementParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            CustomerCheckEntitlementParams.builder()
+                .id("x")
+                .currencyId("x")
+                .featureId("x")
+                .requestedUsage(0L)
+                .addRequestedValue("string")
+                .resourceId("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = CustomerCheckEntitlementParams.builder().id("x").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun queryParams() {
         val params =
             CustomerCheckEntitlementParams.builder()
@@ -39,6 +76,8 @@ internal class CustomerCheckEntitlementParamsTest {
                 .requestedUsage(0L)
                 .addRequestedValue("string")
                 .resourceId("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .build()
 
         val queryParams = params._queryParams()

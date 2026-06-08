@@ -38,6 +38,8 @@ class EntitlementUpdateParams
 private constructor(
     private val addonId: String,
     private val id: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -46,6 +48,10 @@ private constructor(
     fun addonId(): String = addonId
 
     fun id(): Optional<String> = Optional.ofNullable(id)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Request to update an addon entitlement */
     fun body(): Body = body
@@ -77,6 +83,8 @@ private constructor(
 
         private var addonId: String? = null
         private var id: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var body: Body? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -85,6 +93,8 @@ private constructor(
         internal fun from(entitlementUpdateParams: EntitlementUpdateParams) = apply {
             addonId = entitlementUpdateParams.addonId
             id = entitlementUpdateParams.id
+            xAccountId = entitlementUpdateParams.xAccountId
+            xEnvironmentId = entitlementUpdateParams.xEnvironmentId
             body = entitlementUpdateParams.body
             additionalHeaders = entitlementUpdateParams.additionalHeaders.toBuilder()
             additionalQueryParams = entitlementUpdateParams.additionalQueryParams.toBuilder()
@@ -96,6 +106,17 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         /** Request to update an addon entitlement */
         fun body(body: Body) = apply { this.body = body }
@@ -221,6 +242,8 @@ private constructor(
             EntitlementUpdateParams(
                 checkRequired("addonId", addonId),
                 id,
+                xAccountId,
+                xEnvironmentId,
                 checkRequired("body", body),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -236,7 +259,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -3914,14 +3944,24 @@ private constructor(
         return other is EntitlementUpdateParams &&
             addonId == other.addonId &&
             id == other.id &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(addonId, id, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            addonId,
+            id,
+            xAccountId,
+            xEnvironmentId,
+            body,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "EntitlementUpdateParams{addonId=$addonId, id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntitlementUpdateParams{addonId=$addonId, id=$id, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

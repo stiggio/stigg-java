@@ -32,6 +32,8 @@ private constructor(
     private val resourceId: String?,
     private val startDate: OffsetDateTime?,
     private val timeRange: TimeRange?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -78,6 +80,10 @@ private constructor(
      */
     fun timeRange(): Optional<TimeRange> = Optional.ofNullable(timeRange)
 
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -112,6 +118,8 @@ private constructor(
         private var resourceId: String? = null
         private var startDate: OffsetDateTime? = null
         private var timeRange: TimeRange? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -127,6 +135,8 @@ private constructor(
             resourceId = creditGetUsageParams.resourceId
             startDate = creditGetUsageParams.startDate
             timeRange = creditGetUsageParams.timeRange
+            xAccountId = creditGetUsageParams.xAccountId
+            xEnvironmentId = creditGetUsageParams.xEnvironmentId
             additionalHeaders = creditGetUsageParams.additionalHeaders.toBuilder()
             additionalQueryParams = creditGetUsageParams.additionalQueryParams.toBuilder()
         }
@@ -206,6 +216,17 @@ private constructor(
 
         /** Alias for calling [Builder.timeRange] with `timeRange.orElse(null)`. */
         fun timeRange(timeRange: Optional<TimeRange>) = timeRange(timeRange.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -329,12 +350,21 @@ private constructor(
                 resourceId,
                 startDate,
                 timeRange,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -522,6 +552,8 @@ private constructor(
             resourceId == other.resourceId &&
             startDate == other.startDate &&
             timeRange == other.timeRange &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -538,10 +570,12 @@ private constructor(
             resourceId,
             startDate,
             timeRange,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CreditGetUsageParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, endDate=$endDate, groupBy=$groupBy, limit=$limit, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditGetUsageParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, endDate=$endDate, groupBy=$groupBy, limit=$limit, resourceId=$resourceId, startDate=$startDate, timeRange=$timeRange, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

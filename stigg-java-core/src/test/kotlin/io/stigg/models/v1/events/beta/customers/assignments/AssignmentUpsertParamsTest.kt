@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.events.beta.customers.assignments
 
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,8 @@ internal class AssignmentUpsertParamsTest {
     fun create() {
         AssignmentUpsertParams.builder()
             .id("id")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .addAssignment(
                 AssignmentUpsertParams.Assignment.builder()
                     .capabilityId("compute-minutes")
@@ -55,10 +58,72 @@ internal class AssignmentUpsertParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            AssignmentUpsertParams.builder()
+                .id("id")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .addAssignment(
+                    AssignmentUpsertParams.Assignment.builder()
+                        .capabilityId("compute-minutes")
+                        .entityId("workspace-001")
+                        .cadence(AssignmentUpsertParams.Assignment.Cadence.MONTH)
+                        .usageLimit(1000.0)
+                        .build()
+                )
+                .addAssignment(
+                    AssignmentUpsertParams.Assignment.builder()
+                        .capabilityId("compute-minutes")
+                        .entityId("workspace-002")
+                        .cadence(AssignmentUpsertParams.Assignment.Cadence.MONTH)
+                        .usageLimit(2000.0)
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            AssignmentUpsertParams.builder()
+                .id("id")
+                .addAssignment(
+                    AssignmentUpsertParams.Assignment.builder()
+                        .capabilityId("compute-minutes")
+                        .entityId("workspace-001")
+                        .build()
+                )
+                .addAssignment(
+                    AssignmentUpsertParams.Assignment.builder()
+                        .capabilityId("compute-minutes")
+                        .entityId("workspace-002")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             AssignmentUpsertParams.builder()
                 .id("id")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .addAssignment(
                     AssignmentUpsertParams.Assignment.builder()
                         .capabilityId("compute-minutes")

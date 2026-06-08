@@ -3,6 +3,7 @@
 package io.stigg.models.v1.features
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -13,6 +14,8 @@ internal class FeatureUpdateFeatureParamsTest {
     fun create() {
         FeatureUpdateFeatureParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .description("description")
             .displayName("displayName")
             .addEnumConfiguration(
@@ -74,10 +77,90 @@ internal class FeatureUpdateFeatureParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            FeatureUpdateFeatureParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .description("description")
+                .displayName("displayName")
+                .addEnumConfiguration(
+                    FeatureUpdateFeatureParams.EnumConfiguration.builder()
+                        .displayName("displayName")
+                        .value("value")
+                        .build()
+                )
+                .featureUnits("featureUnits")
+                .featureUnitsPlural("featureUnitsPlural")
+                .metadata(
+                    FeatureUpdateFeatureParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .meter(
+                    FeatureUpdateFeatureParams.Meter.builder()
+                        .aggregation(
+                            FeatureUpdateFeatureParams.Meter.Aggregation.builder()
+                                .function(FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM)
+                                .field("field")
+                                .build()
+                        )
+                        .addFilter(
+                            FeatureUpdateFeatureParams.Meter.Filter.builder()
+                                .addCondition(
+                                    FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
+                                        .field("field")
+                                        .operation(
+                                            FeatureUpdateFeatureParams.Meter.Filter.Condition
+                                                .Operation
+                                                .EQUALS
+                                        )
+                                        .value("value")
+                                        .addValue("string")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .unitTransformation(
+                    FeatureUpdateFeatureParams.UnitTransformation.builder()
+                        .divide(0L)
+                        .featureUnits("featureUnits")
+                        .featureUnitsPlural("featureUnitsPlural")
+                        .round(FeatureUpdateFeatureParams.UnitTransformation.Round.UP)
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = FeatureUpdateFeatureParams.builder().id("x").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             FeatureUpdateFeatureParams.builder()
                 .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .description("description")
                 .displayName("displayName")
                 .addEnumConfiguration(

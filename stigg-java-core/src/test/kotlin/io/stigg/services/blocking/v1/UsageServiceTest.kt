@@ -27,6 +27,8 @@ internal class UsageServiceTest {
                     .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .groupBy("groupBy")
                     .resourceId("resourceId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -42,6 +44,8 @@ internal class UsageServiceTest {
         val response =
             usageService.report(
                 UsageReportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addUsage(
                         UsageReportParams.Usage.builder()
                             .customerId("customerId")

@@ -5,6 +5,7 @@ package io.stigg.services.blocking.v1.addons
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.addons.entitlements.EntitlementCreateParams
 import io.stigg.models.v1.addons.entitlements.EntitlementDeleteParams
+import io.stigg.models.v1.addons.entitlements.EntitlementListParams
 import io.stigg.models.v1.addons.entitlements.EntitlementUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +22,8 @@ internal class EntitlementServiceTest {
             entitlementService.create(
                 EntitlementCreateParams.builder()
                     .addonId("addonId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEntitlement(
                         EntitlementCreateParams.Entitlement.Feature.builder()
                             .id("id")
@@ -97,6 +100,8 @@ internal class EntitlementServiceTest {
                 EntitlementUpdateParams.builder()
                     .addonId("addonId")
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .body(
                         EntitlementUpdateParams.Body.Feature.builder()
                             .behavior(EntitlementUpdateParams.Body.Feature.Behavior.INCREMENT)
@@ -160,7 +165,14 @@ internal class EntitlementServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val entitlementService = client.v1().addons().entitlements()
 
-        val entitlements = entitlementService.list("addonId")
+        val entitlements =
+            entitlementService.list(
+                EntitlementListParams.builder()
+                    .addonId("addonId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         entitlements.validate()
     }
@@ -173,7 +185,12 @@ internal class EntitlementServiceTest {
 
         val addonPackageEntitlement =
             entitlementService.delete(
-                EntitlementDeleteParams.builder().addonId("addonId").id("id").build()
+                EntitlementDeleteParams.builder()
+                    .addonId("addonId")
+                    .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         addonPackageEntitlement.validate()

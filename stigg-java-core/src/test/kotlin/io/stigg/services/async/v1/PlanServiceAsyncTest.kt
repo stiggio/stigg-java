@@ -4,8 +4,12 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.plans.PlanArchiveParams
+import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
 import io.stigg.models.v1.plans.PlanPublishParams
+import io.stigg.models.v1.plans.PlanRemoveDraftParams
+import io.stigg.models.v1.plans.PlanRetrieveParams
 import io.stigg.models.v1.plans.PlanUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +25,8 @@ internal class PlanServiceAsyncTest {
         val planFuture =
             planServiceAsync.create(
                 PlanCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .productId("productId")
@@ -62,7 +68,14 @@ internal class PlanServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val planServiceAsync = client.v1().plans()
 
-        val planFuture = planServiceAsync.retrieve("x")
+        val planFuture =
+            planServiceAsync.retrieve(
+                PlanRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val plan = planFuture.get()
         plan.validate()
@@ -78,6 +91,8 @@ internal class PlanServiceAsyncTest {
             planServiceAsync.update(
                 PlanUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingId("billingId")
                     .charges(
                         PlanUpdateParams.Charges.builder()
@@ -453,7 +468,14 @@ internal class PlanServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val planServiceAsync = client.v1().plans()
 
-        val planFuture = planServiceAsync.archive("x")
+        val planFuture =
+            planServiceAsync.archive(
+                PlanArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val plan = planFuture.get()
         plan.validate()
@@ -465,7 +487,14 @@ internal class PlanServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val planServiceAsync = client.v1().plans()
 
-        val planFuture = planServiceAsync.createDraft("x")
+        val planFuture =
+            planServiceAsync.createDraft(
+                PlanCreateDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val plan = planFuture.get()
         plan.validate()
@@ -505,6 +534,8 @@ internal class PlanServiceAsyncTest {
             planServiceAsync.publish(
                 PlanPublishParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .migrationType(PlanPublishParams.MigrationType.NEW_CUSTOMERS)
                     .build()
             )
@@ -519,7 +550,14 @@ internal class PlanServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val planServiceAsync = client.v1().plans()
 
-        val responseFuture = planServiceAsync.removeDraft("x")
+        val responseFuture =
+            planServiceAsync.removeDraft(
+                PlanRemoveDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val response = responseFuture.get()
         response.validate()

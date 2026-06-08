@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.customers.promotionalentitlements
 
+import io.stigg.core.http.Headers
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,6 +13,8 @@ internal class PromotionalEntitlementCreateParamsTest {
     fun create() {
         PromotionalEntitlementCreateParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .addPromotionalEntitlement(
                 PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
                     .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -135,7 +138,268 @@ internal class PromotionalEntitlementCreateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            PromotionalEntitlementCreateParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .addPromotionalEntitlement(
+                    PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
+                        .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .addEnumValue("string")
+                        .featureId("featureId")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .isVisible(true)
+                        .monthlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .MonthlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .MonthlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .period(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                        )
+                        .resetPeriod(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod
+                                .YEAR
+                        )
+                        .usageLimit(-9007199254740991L)
+                        .weeklyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .WeeklyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .WeeklyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .yearlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .YearlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .YearlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            PromotionalEntitlementCreateParams.builder()
+                .id("x")
+                .addPromotionalEntitlement(
+                    PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
+                        .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .addEnumValue("string")
+                        .featureId("featureId")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .isVisible(true)
+                        .monthlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .MonthlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .MonthlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .period(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                        )
+                        .resetPeriod(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod
+                                .YEAR
+                        )
+                        .usageLimit(-9007199254740991L)
+                        .weeklyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .WeeklyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .WeeklyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .yearlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .YearlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .YearlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
+        val params =
+            PromotionalEntitlementCreateParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .addPromotionalEntitlement(
+                    PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
+                        .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .addEnumValue("string")
+                        .featureId("featureId")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .isVisible(true)
+                        .monthlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .MonthlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .MonthlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .period(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                        )
+                        .resetPeriod(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod
+                                .YEAR
+                        )
+                        .usageLimit(-9007199254740991L)
+                        .weeklyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .WeeklyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .WeeklyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .yearlyResetPeriodConfiguration(
+                            PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                .YearlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                        .YearlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
+
+        val body = params._body()
+
+        assertThat(body.promotionalEntitlements())
+            .containsExactly(
+                PromotionalEntitlementCreateParams.PromotionalEntitlement.builder()
+                    .customEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .addEnumValue("string")
+                    .featureId("featureId")
+                    .hasSoftLimit(true)
+                    .hasUnlimitedUsage(true)
+                    .isVisible(true)
+                    .monthlyResetPeriodConfiguration(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
+                            .MonthlyResetPeriodConfiguration
+                            .builder()
+                            .accordingTo(
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                    .MonthlyResetPeriodConfiguration
+                                    .AccordingTo
+                                    .SUBSCRIPTION_START
+                            )
+                            .build()
+                    )
+                    .period(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.Period._1_WEEK
+                    )
+                    .resetPeriod(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement.ResetPeriod.YEAR
+                    )
+                    .usageLimit(-9007199254740991L)
+                    .weeklyResetPeriodConfiguration(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
+                            .WeeklyResetPeriodConfiguration
+                            .builder()
+                            .accordingTo(
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                    .WeeklyResetPeriodConfiguration
+                                    .AccordingTo
+                                    .SUBSCRIPTION_START
+                            )
+                            .build()
+                    )
+                    .yearlyResetPeriodConfiguration(
+                        PromotionalEntitlementCreateParams.PromotionalEntitlement
+                            .YearlyResetPeriodConfiguration
+                            .builder()
+                            .accordingTo(
+                                PromotionalEntitlementCreateParams.PromotionalEntitlement
+                                    .YearlyResetPeriodConfiguration
+                                    .AccordingTo
+                                    .SUBSCRIPTION_START
+                            )
+                            .build()
+                    )
+                    .build()
+            )
+    }
+
+    @Test
+    fun bodyWithoutOptionalFields() {
         val params =
             PromotionalEntitlementCreateParams.builder()
                 .id("x")

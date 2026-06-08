@@ -5,6 +5,7 @@ package io.stigg.services.blocking.v1.plans
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.plans.entitlements.EntitlementCreateParams
 import io.stigg.models.v1.plans.entitlements.EntitlementDeleteParams
+import io.stigg.models.v1.plans.entitlements.EntitlementListParams
 import io.stigg.models.v1.plans.entitlements.EntitlementUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +22,8 @@ internal class EntitlementServiceTest {
             entitlementService.create(
                 EntitlementCreateParams.builder()
                     .planId("planId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEntitlement(
                         EntitlementCreateParams.Entitlement.Feature.builder()
                             .id("id")
@@ -97,6 +100,8 @@ internal class EntitlementServiceTest {
                 EntitlementUpdateParams.builder()
                     .planId("planId")
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .body(
                         EntitlementUpdateParams.Body.Feature.builder()
                             .behavior(EntitlementUpdateParams.Body.Feature.Behavior.INCREMENT)
@@ -160,7 +165,14 @@ internal class EntitlementServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val entitlementService = client.v1().plans().entitlements()
 
-        val entitlements = entitlementService.list("planId")
+        val entitlements =
+            entitlementService.list(
+                EntitlementListParams.builder()
+                    .planId("planId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         entitlements.validate()
     }
@@ -173,7 +185,12 @@ internal class EntitlementServiceTest {
 
         val planEntitlement =
             entitlementService.delete(
-                EntitlementDeleteParams.builder().planId("planId").id("id").build()
+                EntitlementDeleteParams.builder()
+                    .planId("planId")
+                    .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         planEntitlement.validate()

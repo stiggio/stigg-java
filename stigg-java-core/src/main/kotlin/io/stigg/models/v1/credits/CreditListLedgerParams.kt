@@ -19,6 +19,8 @@ private constructor(
     private val currencyId: String?,
     private val limit: Long?,
     private val resourceId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -40,6 +42,10 @@ private constructor(
 
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -71,6 +77,8 @@ private constructor(
         private var currencyId: String? = null
         private var limit: Long? = null
         private var resourceId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -82,6 +90,8 @@ private constructor(
             currencyId = creditListLedgerParams.currencyId
             limit = creditListLedgerParams.limit
             resourceId = creditListLedgerParams.resourceId
+            xAccountId = creditListLedgerParams.xAccountId
+            xEnvironmentId = creditListLedgerParams.xEnvironmentId
             additionalHeaders = creditListLedgerParams.additionalHeaders.toBuilder()
             additionalQueryParams = creditListLedgerParams.additionalQueryParams.toBuilder()
         }
@@ -125,6 +135,17 @@ private constructor(
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
         fun resourceId(resourceId: Optional<String>) = resourceId(resourceId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -244,12 +265,21 @@ private constructor(
                 currencyId,
                 limit,
                 resourceId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -276,6 +306,8 @@ private constructor(
             currencyId == other.currencyId &&
             limit == other.limit &&
             resourceId == other.resourceId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -288,10 +320,12 @@ private constructor(
             currencyId,
             limit,
             resourceId,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, limit=$limit, resourceId=$resourceId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, limit=$limit, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

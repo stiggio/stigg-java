@@ -20,6 +20,8 @@ internal class EventServiceAsyncTest {
         val responseFuture =
             eventServiceAsync.report(
                 EventReportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEvent(
                         EventReportParams.Event.builder()
                             .customerId("customerId")

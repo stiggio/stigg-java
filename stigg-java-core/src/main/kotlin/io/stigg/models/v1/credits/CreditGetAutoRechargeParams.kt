@@ -7,6 +7,8 @@ import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Retrieves the automatic recharge configuration for a customer and currency. Returns default
@@ -16,6 +18,8 @@ class CreditGetAutoRechargeParams
 private constructor(
     private val currencyId: String,
     private val customerId: String,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -25,6 +29,10 @@ private constructor(
 
     /** Filter by customer ID (required) */
     fun customerId(): String = customerId
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -53,6 +61,8 @@ private constructor(
 
         private var currencyId: String? = null
         private var customerId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -60,6 +70,8 @@ private constructor(
         internal fun from(creditGetAutoRechargeParams: CreditGetAutoRechargeParams) = apply {
             currencyId = creditGetAutoRechargeParams.currencyId
             customerId = creditGetAutoRechargeParams.customerId
+            xAccountId = creditGetAutoRechargeParams.xAccountId
+            xEnvironmentId = creditGetAutoRechargeParams.xEnvironmentId
             additionalHeaders = creditGetAutoRechargeParams.additionalHeaders.toBuilder()
             additionalQueryParams = creditGetAutoRechargeParams.additionalQueryParams.toBuilder()
         }
@@ -69,6 +81,17 @@ private constructor(
 
         /** Filter by customer ID (required) */
         fun customerId(customerId: String) = apply { this.customerId = customerId }
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -185,12 +208,21 @@ private constructor(
             CreditGetAutoRechargeParams(
                 checkRequired("currencyId", currencyId),
                 checkRequired("customerId", customerId),
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -209,13 +241,22 @@ private constructor(
         return other is CreditGetAutoRechargeParams &&
             currencyId == other.currencyId &&
             customerId == other.customerId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(currencyId, customerId, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            currencyId,
+            customerId,
+            xAccountId,
+            xEnvironmentId,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "CreditGetAutoRechargeParams{currencyId=$currencyId, customerId=$customerId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditGetAutoRechargeParams{currencyId=$currencyId, customerId=$customerId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

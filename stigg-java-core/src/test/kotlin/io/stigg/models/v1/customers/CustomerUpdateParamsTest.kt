@@ -3,6 +3,7 @@
 package io.stigg.models.v1.customers
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -13,6 +14,8 @@ internal class CustomerUpdateParamsTest {
     fun create() {
         CustomerUpdateParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
             .billingId("billingId")
             .couponId(CustomerUpdateParams.CouponId.EMPTY)
@@ -113,10 +116,129 @@ internal class CustomerUpdateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            CustomerUpdateParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
+                .billingId("billingId")
+                .couponId(CustomerUpdateParams.CouponId.EMPTY)
+                .email("dev@stainless.com")
+                .addIntegration(
+                    CustomerUpdateParams.Integration.builder()
+                        .id("id")
+                        .syncedEntityId("syncedEntityId")
+                        .vendorIdentifier(CustomerUpdateParams.Integration.VendorIdentifier.AUTH0)
+                        .build()
+                )
+                .language("language")
+                .metadata(
+                    CustomerUpdateParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .name("name")
+                .passthrough(
+                    CustomerUpdateParams.Passthrough.builder()
+                        .stripe(
+                            CustomerUpdateParams.Passthrough.Stripe.builder()
+                                .billingAddress(
+                                    CustomerUpdateParams.Passthrough.Stripe.BillingAddress.builder()
+                                        .city("city")
+                                        .country("country")
+                                        .line1("line1")
+                                        .line2("line2")
+                                        .postalCode("postalCode")
+                                        .state("state")
+                                        .build()
+                                )
+                                .customerName("customerName")
+                                .invoiceCustomFields(
+                                    CustomerUpdateParams.Passthrough.Stripe.InvoiceCustomFields
+                                        .builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .metadata(
+                                    CustomerUpdateParams.Passthrough.Stripe.Metadata.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .paymentMethodId("paymentMethodId")
+                                .shippingAddress(
+                                    CustomerUpdateParams.Passthrough.Stripe.ShippingAddress
+                                        .builder()
+                                        .city("city")
+                                        .country("country")
+                                        .line1("line1")
+                                        .line2("line2")
+                                        .postalCode("postalCode")
+                                        .state("state")
+                                        .build()
+                                )
+                                .addTaxId(
+                                    CustomerUpdateParams.Passthrough.Stripe.TaxId.builder()
+                                        .type("type")
+                                        .value("value")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .zuora(
+                            CustomerUpdateParams.Passthrough.Zuora.builder()
+                                .billingAddress(
+                                    CustomerUpdateParams.Passthrough.Zuora.BillingAddress.builder()
+                                        .city("city")
+                                        .country("country")
+                                        .line1("line1")
+                                        .line2("line2")
+                                        .postalCode("postalCode")
+                                        .state("state")
+                                        .build()
+                                )
+                                .currency(CustomerUpdateParams.Passthrough.Zuora.Currency.USD)
+                                .metadata(
+                                    CustomerUpdateParams.Passthrough.Zuora.Metadata.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
+                                .paymentMethodId("paymentMethodId")
+                                .build()
+                        )
+                        .build()
+                )
+                .timezone("timezone")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = CustomerUpdateParams.builder().id("x").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             CustomerUpdateParams.builder()
                 .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                 .billingId("billingId")
                 .couponId(CustomerUpdateParams.CouponId.EMPTY)

@@ -27,12 +27,18 @@ import kotlin.jvm.optionals.getOrNull
 class PlanUpdateParams
 private constructor(
     private val id: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun id(): Optional<String> = Optional.ofNullable(id)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
      * The unique identifier for the entity in the billing provider
@@ -176,6 +182,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -183,6 +191,8 @@ private constructor(
         @JvmSynthetic
         internal fun from(planUpdateParams: PlanUpdateParams) = apply {
             id = planUpdateParams.id
+            xAccountId = planUpdateParams.xAccountId
+            xEnvironmentId = planUpdateParams.xEnvironmentId
             body = planUpdateParams.body.toBuilder()
             additionalHeaders = planUpdateParams.additionalHeaders.toBuilder()
             additionalQueryParams = planUpdateParams.additionalQueryParams.toBuilder()
@@ -192,6 +202,17 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         /**
          * Sets the entire request body.
@@ -466,6 +487,8 @@ private constructor(
         fun build(): PlanUpdateParams =
             PlanUpdateParams(
                 id,
+                xAccountId,
+                xEnvironmentId,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -480,7 +503,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -17847,13 +17877,16 @@ private constructor(
 
         return other is PlanUpdateParams &&
             id == other.id &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(id, body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(id, xAccountId, xEnvironmentId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "PlanUpdateParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PlanUpdateParams{id=$id, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
