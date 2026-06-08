@@ -4,8 +4,12 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.plans.PlanArchiveParams
+import io.stigg.models.v1.plans.PlanCreateDraftParams
 import io.stigg.models.v1.plans.PlanCreateParams
 import io.stigg.models.v1.plans.PlanPublishParams
+import io.stigg.models.v1.plans.PlanRemoveDraftParams
+import io.stigg.models.v1.plans.PlanRetrieveParams
 import io.stigg.models.v1.plans.PlanUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +25,8 @@ internal class PlanServiceTest {
         val plan =
             planService.create(
                 PlanCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .productId("productId")
@@ -61,7 +67,14 @@ internal class PlanServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val planService = client.v1().plans()
 
-        val plan = planService.retrieve("x")
+        val plan =
+            planService.retrieve(
+                PlanRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         plan.validate()
     }
@@ -76,6 +89,8 @@ internal class PlanServiceTest {
             planService.update(
                 PlanUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingId("billingId")
                     .charges(
                         PlanUpdateParams.Charges.builder()
@@ -449,7 +464,14 @@ internal class PlanServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val planService = client.v1().plans()
 
-        val plan = planService.archive("x")
+        val plan =
+            planService.archive(
+                PlanArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         plan.validate()
     }
@@ -460,7 +482,14 @@ internal class PlanServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val planService = client.v1().plans()
 
-        val plan = planService.createDraft("x")
+        val plan =
+            planService.createDraft(
+                PlanCreateDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         plan.validate()
     }
@@ -497,6 +526,8 @@ internal class PlanServiceTest {
             planService.publish(
                 PlanPublishParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .migrationType(PlanPublishParams.MigrationType.NEW_CUSTOMERS)
                     .build()
             )
@@ -510,7 +541,14 @@ internal class PlanServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val planService = client.v1().plans()
 
-        val response = planService.removeDraft("x")
+        val response =
+            planService.removeDraft(
+                PlanRemoveDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         response.validate()
     }

@@ -3,6 +3,7 @@
 package io.stigg.models.v1.addons
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,8 @@ internal class AddonCreateParamsTest {
     @Test
     fun create() {
         AddonCreateParams.builder()
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .id("id")
             .displayName("displayName")
             .productId("productId")
@@ -28,9 +31,57 @@ internal class AddonCreateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            AddonCreateParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .id("id")
+                .displayName("displayName")
+                .productId("productId")
+                .billingId("billingId")
+                .description("description")
+                .maxQuantity(0L)
+                .metadata(
+                    AddonCreateParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .pricingType(AddonCreateParams.PricingType.FREE)
+                .status(AddonCreateParams.Status.DRAFT)
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            AddonCreateParams.builder()
+                .id("id")
+                .displayName("displayName")
+                .productId("productId")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             AddonCreateParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .id("id")
                 .displayName("displayName")
                 .productId("productId")

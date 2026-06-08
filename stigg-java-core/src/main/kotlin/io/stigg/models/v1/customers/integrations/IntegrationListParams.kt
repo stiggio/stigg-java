@@ -22,6 +22,8 @@ private constructor(
     private val before: String?,
     private val limit: Long?,
     private val vendorIdentifier: List<VendorIdentifier>?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -42,6 +44,10 @@ private constructor(
      * STRIPE,HUBSPOT)
      */
     fun vendorIdentifier(): Optional<List<VendorIdentifier>> = Optional.ofNullable(vendorIdentifier)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -67,6 +73,8 @@ private constructor(
         private var before: String? = null
         private var limit: Long? = null
         private var vendorIdentifier: MutableList<VendorIdentifier>? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -77,6 +85,8 @@ private constructor(
             before = integrationListParams.before
             limit = integrationListParams.limit
             vendorIdentifier = integrationListParams.vendorIdentifier?.toMutableList()
+            xAccountId = integrationListParams.xAccountId
+            xEnvironmentId = integrationListParams.xEnvironmentId
             additionalHeaders = integrationListParams.additionalHeaders.toBuilder()
             additionalQueryParams = integrationListParams.additionalQueryParams.toBuilder()
         }
@@ -132,6 +142,17 @@ private constructor(
             this.vendorIdentifier =
                 (this.vendorIdentifier ?: mutableListOf()).apply { add(vendorIdentifier) }
         }
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -243,6 +264,8 @@ private constructor(
                 before,
                 limit,
                 vendorIdentifier?.toImmutable(),
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -254,7 +277,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -477,6 +507,8 @@ private constructor(
             before == other.before &&
             limit == other.limit &&
             vendorIdentifier == other.vendorIdentifier &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -488,10 +520,12 @@ private constructor(
             before,
             limit,
             vendorIdentifier,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "IntegrationListParams{id=$id, after=$after, before=$before, limit=$limit, vendorIdentifier=$vendorIdentifier, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "IntegrationListParams{id=$id, after=$after, before=$before, limit=$limit, vendorIdentifier=$vendorIdentifier, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -4,6 +4,7 @@ package io.stigg.services.blocking.v1.customers
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.customers.paymentmethod.PaymentMethodAttachParams
+import io.stigg.models.v1.customers.paymentmethod.PaymentMethodDetachParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -19,6 +20,8 @@ internal class PaymentMethodServiceTest {
             paymentMethodService.attach(
                 PaymentMethodAttachParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .integrationId("integrationId")
                     .paymentMethodId("paymentMethodId")
                     .vendorIdentifier(PaymentMethodAttachParams.VendorIdentifier.AUTH0)
@@ -35,7 +38,14 @@ internal class PaymentMethodServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val paymentMethodService = client.v1().customers().paymentMethod()
 
-        val customerResponse = paymentMethodService.detach("x")
+        val customerResponse =
+            paymentMethodService.detach(
+                PaymentMethodDetachParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customerResponse.validate()
     }

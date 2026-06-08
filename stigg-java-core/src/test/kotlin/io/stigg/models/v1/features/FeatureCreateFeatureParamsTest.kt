@@ -3,6 +3,7 @@
 package io.stigg.models.v1.features
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,6 +13,8 @@ internal class FeatureCreateFeatureParamsTest {
     @Test
     fun create() {
         FeatureCreateFeatureParams.builder()
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .id("id")
             .displayName("displayName")
             .featureType(FeatureCreateFeatureParams.FeatureType.BOOLEAN)
@@ -43,9 +46,71 @@ internal class FeatureCreateFeatureParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            FeatureCreateFeatureParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .id("id")
+                .displayName("displayName")
+                .featureType(FeatureCreateFeatureParams.FeatureType.BOOLEAN)
+                .description("description")
+                .addEnumConfiguration(
+                    FeatureCreateFeatureParams.EnumConfiguration.builder()
+                        .displayName("displayName")
+                        .value("value")
+                        .build()
+                )
+                .featureStatus(FeatureCreateFeatureParams.FeatureStatus.NEW)
+                .featureUnits("featureUnits")
+                .featureUnitsPlural("featureUnitsPlural")
+                .metadata(
+                    FeatureCreateFeatureParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .meterType(FeatureCreateFeatureParams.MeterType.NONE)
+                .unitTransformation(
+                    FeatureCreateFeatureParams.UnitTransformation.builder()
+                        .divide(0L)
+                        .featureUnits("featureUnits")
+                        .featureUnitsPlural("featureUnitsPlural")
+                        .round(FeatureCreateFeatureParams.UnitTransformation.Round.UP)
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            FeatureCreateFeatureParams.builder()
+                .id("id")
+                .displayName("displayName")
+                .featureType(FeatureCreateFeatureParams.FeatureType.BOOLEAN)
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             FeatureCreateFeatureParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .id("id")
                 .displayName("displayName")
                 .featureType(FeatureCreateFeatureParams.FeatureType.BOOLEAN)

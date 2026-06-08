@@ -29,6 +29,8 @@ internal class EntityTypeServiceTest {
         val response =
             entityTypeService.upsert(
                 EntityTypeUpsertParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addType(
                         EntityTypeUpsertParams.Type.builder()
                             .id("org")

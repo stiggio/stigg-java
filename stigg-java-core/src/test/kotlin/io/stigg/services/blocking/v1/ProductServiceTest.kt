@@ -4,8 +4,10 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.products.ProductArchiveProductParams
 import io.stigg.models.v1.products.ProductCreateProductParams
 import io.stigg.models.v1.products.ProductDuplicateProductParams
+import io.stigg.models.v1.products.ProductUnarchiveProductParams
 import io.stigg.models.v1.products.ProductUpdateProductParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -18,7 +20,14 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val product = productService.archiveProduct("x")
+        val product =
+            productService.archiveProduct(
+                ProductArchiveProductParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         product.validate()
     }
@@ -32,6 +41,8 @@ internal class ProductServiceTest {
         val product =
             productService.createProduct(
                 ProductCreateProductParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .description("description")
@@ -57,6 +68,8 @@ internal class ProductServiceTest {
             productService.duplicateProduct(
                 ProductDuplicateProductParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .targetId("targetId")
                     .description("description")
                     .displayName("displayName")
@@ -83,7 +96,14 @@ internal class ProductServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val productService = client.v1().products()
 
-        val product = productService.unarchiveProduct("x")
+        val product =
+            productService.unarchiveProduct(
+                ProductUnarchiveProductParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         product.validate()
     }
@@ -98,6 +118,8 @@ internal class ProductServiceTest {
             productService.updateProduct(
                 ProductUpdateProductParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .displayName("displayName")
                     .metadata(

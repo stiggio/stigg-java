@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.usage
 
+import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -18,6 +19,8 @@ internal class UsageHistoryParamsTest {
             .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .groupBy("groupBy")
             .resourceId("resourceId")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .build()
     }
 
@@ -37,6 +40,45 @@ internal class UsageHistoryParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            UsageHistoryParams.builder()
+                .customerId("customerId")
+                .featureId("featureId")
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .groupBy("groupBy")
+                .resourceId("resourceId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            UsageHistoryParams.builder()
+                .customerId("customerId")
+                .featureId("featureId")
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun queryParams() {
         val params =
             UsageHistoryParams.builder()
@@ -46,6 +88,8 @@ internal class UsageHistoryParamsTest {
                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .groupBy("groupBy")
                 .resourceId("resourceId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .build()
 
         val queryParams = params._queryParams()

@@ -4,10 +4,13 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.customers.CustomerArchiveParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
+import io.stigg.models.v1.customers.CustomerRetrieveParams
+import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -21,7 +24,14 @@ internal class CustomerServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customerService = client.v1().customers()
 
-        val customerResponse = customerService.retrieve("x")
+        val customerResponse =
+            customerService.retrieve(
+                CustomerRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customerResponse.validate()
     }
@@ -36,6 +46,8 @@ internal class CustomerServiceTest {
             customerService.update(
                 CustomerUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingCurrency(CustomerUpdateParams.BillingCurrency.USD)
                     .billingId("billingId")
                     .couponId(CustomerUpdateParams.CouponId.EMPTY)
@@ -151,7 +163,14 @@ internal class CustomerServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customerService = client.v1().customers()
 
-        val customerResponse = customerService.archive("x")
+        val customerResponse =
+            customerService.archive(
+                CustomerArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customerResponse.validate()
     }
@@ -171,6 +190,8 @@ internal class CustomerServiceTest {
                     .requestedUsage(0L)
                     .addRequestedValue("string")
                     .resourceId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -186,6 +207,8 @@ internal class CustomerServiceTest {
         val response =
             customerService.import_(
                 CustomerImportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addCustomer(
                         CustomerImportParams.Customer.builder()
                             .id("id")
@@ -229,6 +252,8 @@ internal class CustomerServiceTest {
         val customerResponse =
             customerService.provision(
                 CustomerProvisionParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .billingCurrency(CustomerProvisionParams.BillingCurrency.USD)
                     .billingId("billingId")
@@ -352,6 +377,8 @@ internal class CustomerServiceTest {
                 CustomerRetrieveEntitlementsParams.builder()
                     .id("x")
                     .resourceId("resourceId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -364,7 +391,14 @@ internal class CustomerServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val customerService = client.v1().customers()
 
-        val customerResponse = customerService.unarchive("x")
+        val customerResponse =
+            customerService.unarchive(
+                CustomerUnarchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         customerResponse.validate()
     }

@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.subscriptions
 
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,8 @@ internal class SubscriptionTransferParamsTest {
     fun create() {
         SubscriptionTransferParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .destinationResourceId("destinationResourceId")
             .build()
     }
@@ -29,7 +32,56 @@ internal class SubscriptionTransferParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            SubscriptionTransferParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .destinationResourceId("destinationResourceId")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            SubscriptionTransferParams.builder()
+                .id("x")
+                .destinationResourceId("destinationResourceId")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
+        val params =
+            SubscriptionTransferParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .destinationResourceId("destinationResourceId")
+                .build()
+
+        val body = params._body()
+
+        assertThat(body.destinationResourceId()).isEqualTo("destinationResourceId")
+    }
+
+    @Test
+    fun bodyWithoutOptionalFields() {
         val params =
             SubscriptionTransferParams.builder()
                 .id("x")

@@ -20,7 +20,12 @@ internal class IntegrationServiceAsyncTest {
 
         val customerIntegrationResponseFuture =
             integrationServiceAsync.retrieve(
-                IntegrationRetrieveParams.builder().id("id").integrationId("integrationId").build()
+                IntegrationRetrieveParams.builder()
+                    .id("id")
+                    .integrationId("integrationId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         val customerIntegrationResponse = customerIntegrationResponseFuture.get()
@@ -38,6 +43,8 @@ internal class IntegrationServiceAsyncTest {
                 IntegrationUpdateParams.builder()
                     .id("id")
                     .integrationId("integrationId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .syncedEntityId("syncedEntityId")
                     .build()
             )
@@ -68,6 +75,8 @@ internal class IntegrationServiceAsyncTest {
             integrationServiceAsync.link(
                 IntegrationLinkParams.builder()
                     .pathId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .bodyId("id")
                     .syncedEntityId("syncedEntityId")
                     .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
@@ -86,7 +95,12 @@ internal class IntegrationServiceAsyncTest {
 
         val customerIntegrationResponseFuture =
             integrationServiceAsync.unlink(
-                IntegrationUnlinkParams.builder().id("id").integrationId("integrationId").build()
+                IntegrationUnlinkParams.builder()
+                    .id("id")
+                    .integrationId("integrationId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
             )
 
         val customerIntegrationResponse = customerIntegrationResponseFuture.get()

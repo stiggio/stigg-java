@@ -4,7 +4,9 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
+import io.stigg.models.v1.coupons.CouponRetrieveParams
 import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -20,6 +22,8 @@ internal class CouponServiceAsyncTest {
         val couponFuture =
             couponServiceAsync.create(
                 CouponCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .addAmountsOff(
                         CouponCreateParams.AmountsOff.builder()
@@ -49,7 +53,14 @@ internal class CouponServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
-        val couponFuture = couponServiceAsync.retrieve("x")
+        val couponFuture =
+            couponServiceAsync.retrieve(
+                CouponRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val coupon = couponFuture.get()
         coupon.validate()
@@ -73,7 +84,14 @@ internal class CouponServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val couponServiceAsync = client.v1().coupons()
 
-        val couponFuture = couponServiceAsync.archiveCoupon("x")
+        val couponFuture =
+            couponServiceAsync.archiveCoupon(
+                CouponArchiveCouponParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val coupon = couponFuture.get()
         coupon.validate()
@@ -89,6 +107,8 @@ internal class CouponServiceAsyncTest {
             couponServiceAsync.updateCoupon(
                 CouponUpdateCouponParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .metadata(
                         CouponUpdateCouponParams.Metadata.builder()

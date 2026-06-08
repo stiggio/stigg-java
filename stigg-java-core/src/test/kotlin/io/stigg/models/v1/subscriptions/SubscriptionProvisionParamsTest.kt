@@ -3,6 +3,7 @@
 package io.stigg.models.v1.subscriptions
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
@@ -13,6 +14,8 @@ internal class SubscriptionProvisionParamsTest {
     @Test
     fun create() {
         SubscriptionProvisionParams.builder()
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .customerId("customerId")
             .planId("planId")
             .id("id")
@@ -236,9 +239,268 @@ internal class SubscriptionProvisionParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            SubscriptionProvisionParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .customerId("customerId")
+                .planId("planId")
+                .id("id")
+                .addAddon(SubscriptionProvisionParams.Addon.builder().id("id").quantity(0L).build())
+                .appliedCoupon(
+                    SubscriptionProvisionParams.AppliedCoupon.builder()
+                        .billingCouponId("billingCouponId")
+                        .configuration(
+                            SubscriptionProvisionParams.AppliedCoupon.Configuration.builder()
+                                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .couponId("couponId")
+                        .discount(
+                            SubscriptionProvisionParams.AppliedCoupon.Discount.builder()
+                                .addAmountsOff(
+                                    SubscriptionProvisionParams.AppliedCoupon.Discount.AmountsOff
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionProvisionParams.AppliedCoupon.Discount
+                                                .AmountsOff
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .description("description")
+                                .durationInMonths(1.0)
+                                .name("name")
+                                .percentOff(1.0)
+                                .build()
+                        )
+                        .promotionCode("promotionCode")
+                        .build()
+                )
+                .awaitPaymentConfirmation(true)
+                .billingCountryCode("billingCountryCode")
+                .billingCycleAnchor(SubscriptionProvisionParams.BillingCycleAnchor.UNCHANGED)
+                .billingId("billingId")
+                .billingInformation(
+                    SubscriptionProvisionParams.BillingInformation.builder()
+                        .billingAddress(
+                            SubscriptionProvisionParams.BillingInformation.BillingAddress.builder()
+                                .city("city")
+                                .country("country")
+                                .line1("line1")
+                                .line2("line2")
+                                .postalCode("postalCode")
+                                .state("state")
+                                .build()
+                        )
+                        .chargeOnBehalfOfAccount("chargeOnBehalfOfAccount")
+                        .integrationId("integrationId")
+                        .invoiceDaysUntilDue(0.0)
+                        .isBackdated(true)
+                        .isInvoicePaid(true)
+                        .metadata(
+                            SubscriptionProvisionParams.BillingInformation.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .prorationBehavior(
+                            SubscriptionProvisionParams.BillingInformation.ProrationBehavior
+                                .INVOICE_IMMEDIATELY
+                        )
+                        .addTaxId(
+                            SubscriptionProvisionParams.BillingInformation.TaxId.builder()
+                                .type("type")
+                                .value("value")
+                                .build()
+                        )
+                        .taxPercentage(0.0)
+                        .addTaxRateId("string")
+                        .build()
+                )
+                .billingPeriod(SubscriptionProvisionParams.BillingPeriod.MONTHLY)
+                .budget(
+                    SubscriptionProvisionParams.Budget.builder()
+                        .hasSoftLimit(true)
+                        .limit(0.0)
+                        .build()
+                )
+                .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .addCharge(
+                    SubscriptionProvisionParams.Charge.builder()
+                        .id("id")
+                        .quantity(0.0)
+                        .type(SubscriptionProvisionParams.Charge.Type.FEATURE)
+                        .build()
+                )
+                .checkoutOptions(
+                    SubscriptionProvisionParams.CheckoutOptions.builder()
+                        .cancelUrl("https://example.com")
+                        .successUrl("https://example.com")
+                        .allowPromoCodes(true)
+                        .allowTaxIdCollection(true)
+                        .collectBillingAddress(true)
+                        .collectPhoneNumber(true)
+                        .referenceId("referenceId")
+                        .build()
+                )
+                .addEntitlement(
+                    SubscriptionProvisionParams.Entitlement.Feature.builder()
+                        .id("id")
+                        .hasSoftLimit(true)
+                        .hasUnlimitedUsage(true)
+                        .monthlyResetPeriodConfiguration(
+                            SubscriptionProvisionParams.Entitlement.Feature
+                                .MonthlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    SubscriptionProvisionParams.Entitlement.Feature
+                                        .MonthlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .resetPeriod(
+                            SubscriptionProvisionParams.Entitlement.Feature.ResetPeriod.YEAR
+                        )
+                        .usageLimit(0L)
+                        .weeklyResetPeriodConfiguration(
+                            SubscriptionProvisionParams.Entitlement.Feature
+                                .WeeklyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    SubscriptionProvisionParams.Entitlement.Feature
+                                        .WeeklyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .yearlyResetPeriodConfiguration(
+                            SubscriptionProvisionParams.Entitlement.Feature
+                                .YearlyResetPeriodConfiguration
+                                .builder()
+                                .accordingTo(
+                                    SubscriptionProvisionParams.Entitlement.Feature
+                                        .YearlyResetPeriodConfiguration
+                                        .AccordingTo
+                                        .SUBSCRIPTION_START
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .metadata(
+                    SubscriptionProvisionParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .minimumSpend(
+                    SubscriptionProvisionParams.MinimumSpend.builder()
+                        .amount(0.0)
+                        .currency(SubscriptionProvisionParams.MinimumSpend.Currency.USD)
+                        .build()
+                )
+                .payingCustomerId("payingCustomerId")
+                .paymentCollectionMethod(SubscriptionProvisionParams.PaymentCollectionMethod.CHARGE)
+                .addPriceOverride(
+                    SubscriptionProvisionParams.PriceOverride.builder()
+                        .addonId("addonId")
+                        .amount(0.0)
+                        .baseCharge(true)
+                        .billingCountryCode("billingCountryCode")
+                        .blockSize(0.0)
+                        .creditGrantCadence(
+                            SubscriptionProvisionParams.PriceOverride.CreditGrantCadence
+                                .BEGINNING_OF_BILLING_PERIOD
+                        )
+                        .creditRate(
+                            SubscriptionProvisionParams.PriceOverride.CreditRate.builder()
+                                .amount(1.0)
+                                .currencyId("currencyId")
+                                .costFormula("costFormula")
+                                .build()
+                        )
+                        .currency(SubscriptionProvisionParams.PriceOverride.Currency.USD)
+                        .featureId("featureId")
+                        .addTier(
+                            SubscriptionProvisionParams.PriceOverride.Tier.builder()
+                                .flatPrice(
+                                    SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionProvisionParams.PriceOverride.Tier.FlatPrice
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .unitPrice(
+                                    SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
+                                        .builder()
+                                        .amount(0.0)
+                                        .currency(
+                                            SubscriptionProvisionParams.PriceOverride.Tier.UnitPrice
+                                                .Currency
+                                                .USD
+                                        )
+                                        .build()
+                                )
+                                .upTo(0.0)
+                                .build()
+                        )
+                        .build()
+                )
+                .resourceId("resourceId")
+                .salesforceId("salesforceId")
+                .scheduleStrategy(
+                    SubscriptionProvisionParams.ScheduleStrategy.END_OF_BILLING_PERIOD
+                )
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .trialOverrideConfiguration(
+                    SubscriptionProvisionParams.TrialOverrideConfiguration.builder()
+                        .isTrial(true)
+                        .trialEndBehavior(
+                            SubscriptionProvisionParams.TrialOverrideConfiguration.TrialEndBehavior
+                                .CONVERT_TO_PAID
+                        )
+                        .trialEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .build()
+                )
+                .unitQuantity(0L)
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            SubscriptionProvisionParams.builder().customerId("customerId").planId("planId").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             SubscriptionProvisionParams.builder()
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .planId("planId")
                 .id("id")

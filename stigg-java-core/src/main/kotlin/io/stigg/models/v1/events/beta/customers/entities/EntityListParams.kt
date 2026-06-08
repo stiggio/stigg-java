@@ -22,6 +22,8 @@ private constructor(
     private val includeArchived: IncludeArchived?,
     private val limit: Long?,
     private val typeRefId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -42,6 +44,10 @@ private constructor(
 
     /** Filter results to entities of a specific entity type, by the type's refId */
     fun typeRefId(): Optional<String> = Optional.ofNullable(typeRefId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -68,6 +74,8 @@ private constructor(
         private var includeArchived: IncludeArchived? = null
         private var limit: Long? = null
         private var typeRefId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -79,6 +87,8 @@ private constructor(
             includeArchived = entityListParams.includeArchived
             limit = entityListParams.limit
             typeRefId = entityListParams.typeRefId
+            xAccountId = entityListParams.xAccountId
+            xEnvironmentId = entityListParams.xEnvironmentId
             additionalHeaders = entityListParams.additionalHeaders.toBuilder()
             additionalQueryParams = entityListParams.additionalQueryParams.toBuilder()
         }
@@ -127,6 +137,17 @@ private constructor(
 
         /** Alias for calling [Builder.typeRefId] with `typeRefId.orElse(null)`. */
         fun typeRefId(typeRefId: Optional<String>) = typeRefId(typeRefId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -239,6 +260,8 @@ private constructor(
                 includeArchived,
                 limit,
                 typeRefId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -250,7 +273,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -414,6 +444,8 @@ private constructor(
             includeArchived == other.includeArchived &&
             limit == other.limit &&
             typeRefId == other.typeRefId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -426,10 +458,12 @@ private constructor(
             includeArchived,
             limit,
             typeRefId,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "EntityListParams{id=$id, after=$after, before=$before, includeArchived=$includeArchived, limit=$limit, typeRefId=$typeRefId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntityListParams{id=$id, after=$after, before=$before, includeArchived=$includeArchived, limit=$limit, typeRefId=$typeRefId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

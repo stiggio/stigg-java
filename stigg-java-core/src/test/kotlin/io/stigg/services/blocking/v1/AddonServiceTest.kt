@@ -4,8 +4,12 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.addons.AddonArchiveParams
+import io.stigg.models.v1.addons.AddonCreateDraftParams
 import io.stigg.models.v1.addons.AddonCreateParams
 import io.stigg.models.v1.addons.AddonPublishParams
+import io.stigg.models.v1.addons.AddonRemoveDraftParams
+import io.stigg.models.v1.addons.AddonRetrieveParams
 import io.stigg.models.v1.addons.AddonUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +25,8 @@ internal class AddonServiceTest {
         val addon =
             addonService.create(
                 AddonCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .productId("productId")
@@ -46,7 +52,14 @@ internal class AddonServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val addonService = client.v1().addons()
 
-        val addon = addonService.retrieve("x")
+        val addon =
+            addonService.retrieve(
+                AddonRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         addon.validate()
     }
@@ -61,6 +74,8 @@ internal class AddonServiceTest {
             addonService.update(
                 AddonUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingId("billingId")
                     .charges(
                         AddonUpdateParams.Charges.builder()
@@ -426,7 +441,14 @@ internal class AddonServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val addonService = client.v1().addons()
 
-        val addon = addonService.archive("x")
+        val addon =
+            addonService.archive(
+                AddonArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         addon.validate()
     }
@@ -437,7 +459,14 @@ internal class AddonServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val addonService = client.v1().addons()
 
-        val addon = addonService.createDraft("x")
+        val addon =
+            addonService.createDraft(
+                AddonCreateDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         addon.validate()
     }
@@ -463,6 +492,8 @@ internal class AddonServiceTest {
             addonService.publish(
                 AddonPublishParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .migrationType(AddonPublishParams.MigrationType.NEW_CUSTOMERS)
                     .build()
             )
@@ -476,7 +507,14 @@ internal class AddonServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val addonService = client.v1().addons()
 
-        val response = addonService.removeDraft("x")
+        val response =
+            addonService.removeDraft(
+                AddonRemoveDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         response.validate()
     }

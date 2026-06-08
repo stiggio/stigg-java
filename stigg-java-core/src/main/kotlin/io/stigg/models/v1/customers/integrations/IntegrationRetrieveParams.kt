@@ -15,6 +15,8 @@ class IntegrationRetrieveParams
 private constructor(
     private val id: String,
     private val integrationId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -22,6 +24,10 @@ private constructor(
     fun id(): String = id
 
     fun integrationId(): Optional<String> = Optional.ofNullable(integrationId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -49,6 +55,8 @@ private constructor(
 
         private var id: String? = null
         private var integrationId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -56,6 +64,8 @@ private constructor(
         internal fun from(integrationRetrieveParams: IntegrationRetrieveParams) = apply {
             id = integrationRetrieveParams.id
             integrationId = integrationRetrieveParams.integrationId
+            xAccountId = integrationRetrieveParams.xAccountId
+            xEnvironmentId = integrationRetrieveParams.xEnvironmentId
             additionalHeaders = integrationRetrieveParams.additionalHeaders.toBuilder()
             additionalQueryParams = integrationRetrieveParams.additionalQueryParams.toBuilder()
         }
@@ -67,6 +77,17 @@ private constructor(
         /** Alias for calling [Builder.integrationId] with `integrationId.orElse(null)`. */
         fun integrationId(integrationId: Optional<String>) =
             integrationId(integrationId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -182,6 +203,8 @@ private constructor(
             IntegrationRetrieveParams(
                 checkRequired("id", id),
                 integrationId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -194,7 +217,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -206,13 +236,22 @@ private constructor(
         return other is IntegrationRetrieveParams &&
             id == other.id &&
             integrationId == other.integrationId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, integrationId, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            integrationId,
+            xAccountId,
+            xEnvironmentId,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "IntegrationRetrieveParams{id=$id, integrationId=$integrationId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "IntegrationRetrieveParams{id=$id, integrationId=$integrationId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

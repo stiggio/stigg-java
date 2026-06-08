@@ -26,6 +26,8 @@ private constructor(
     private val limit: Long?,
     private val status: List<Status>?,
     private val type: Type?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -50,6 +52,10 @@ private constructor(
 
     /** Filter by coupon type (FIXED or PERCENTAGE) */
     fun type(): Optional<Type> = Optional.ofNullable(type)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -77,6 +83,8 @@ private constructor(
         private var limit: Long? = null
         private var status: MutableList<Status>? = null
         private var type: Type? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -89,6 +97,8 @@ private constructor(
             limit = couponListParams.limit
             status = couponListParams.status?.toMutableList()
             type = couponListParams.type
+            xAccountId = couponListParams.xAccountId
+            xEnvironmentId = couponListParams.xEnvironmentId
             additionalHeaders = couponListParams.additionalHeaders.toBuilder()
             additionalQueryParams = couponListParams.additionalQueryParams.toBuilder()
         }
@@ -150,6 +160,17 @@ private constructor(
 
         /** Alias for calling [Builder.type] with `type.orElse(null)`. */
         fun type(type: Optional<Type>) = type(type.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -263,12 +284,21 @@ private constructor(
                 limit,
                 status?.toImmutable(),
                 type,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -735,6 +765,8 @@ private constructor(
             limit == other.limit &&
             status == other.status &&
             type == other.type &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -748,10 +780,12 @@ private constructor(
             limit,
             status,
             type,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CouponListParams{id=$id, after=$after, before=$before, createdAt=$createdAt, limit=$limit, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CouponListParams{id=$id, after=$after, before=$before, createdAt=$createdAt, limit=$limit, status=$status, type=$type, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

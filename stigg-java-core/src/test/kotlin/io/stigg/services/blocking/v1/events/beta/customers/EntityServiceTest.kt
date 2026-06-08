@@ -20,7 +20,14 @@ internal class EntityServiceTest {
         val entityService = client.v1().events().beta().customers().entities()
 
         val entity =
-            entityService.retrieve(EntityRetrieveParams.builder().id("id").entityId("x").build())
+            entityService.retrieve(
+                EntityRetrieveParams.builder()
+                    .id("id")
+                    .entityId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         entity.validate()
     }
@@ -46,6 +53,8 @@ internal class EntityServiceTest {
             entityService.archive(
                 EntityArchiveParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addId("user-7f3a0c1d")
                     .addId("user-c4d1b2e9")
                     .build()
@@ -64,6 +73,8 @@ internal class EntityServiceTest {
             entityService.unarchive(
                 EntityUnarchiveParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addId("user-7f3a0c1d")
                     .addId("user-c4d1b2e9")
                     .build()
@@ -82,6 +93,8 @@ internal class EntityServiceTest {
             entityService.upsert(
                 EntityUpsertParams.builder()
                     .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEntity(
                         EntityUpsertParams.Entity.builder()
                             .id("user-7f3a0c1d")

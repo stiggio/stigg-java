@@ -22,6 +22,7 @@ import io.stigg.errors.StiggException
 import io.stigg.errors.UnauthorizedException
 import io.stigg.errors.UnexpectedStatusCodeException
 import io.stigg.errors.UnprocessableEntityException
+import io.stigg.models.v1.customers.CustomerRetrieveParams
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
@@ -67,7 +68,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<BadRequestException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<BadRequestException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(400)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -84,7 +94,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<BadRequestException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<BadRequestException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(400)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -101,7 +120,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnauthorizedException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnauthorizedException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(401)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -118,7 +146,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnauthorizedException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnauthorizedException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(401)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -135,7 +172,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<PermissionDeniedException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<PermissionDeniedException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(403)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -152,7 +198,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<PermissionDeniedException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<PermissionDeniedException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(403)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -169,7 +224,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<NotFoundException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<NotFoundException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(404)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -186,7 +250,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<NotFoundException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<NotFoundException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(404)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -203,7 +276,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnprocessableEntityException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnprocessableEntityException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(422)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -220,7 +302,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnprocessableEntityException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnprocessableEntityException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(422)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -237,7 +328,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<RateLimitException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<RateLimitException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(429)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -254,7 +354,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<RateLimitException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<RateLimitException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(429)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -271,7 +380,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<InternalServerException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<InternalServerException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(500)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -288,7 +406,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<InternalServerException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<InternalServerException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(500)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -305,7 +432,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnexpectedStatusCodeException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnexpectedStatusCodeException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(999)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -322,7 +458,16 @@ internal class ErrorHandlingTest {
                 )
         )
 
-        val e = assertThrows<UnexpectedStatusCodeException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<UnexpectedStatusCodeException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e.statusCode()).isEqualTo(999)
         assertThat(e.headers().toMap()).contains(entry(HEADER_NAME, listOf(HEADER_VALUE)))
@@ -337,7 +482,16 @@ internal class ErrorHandlingTest {
                 .willReturn(status(200).withHeader(HEADER_NAME, HEADER_VALUE).withBody(NOT_JSON))
         )
 
-        val e = assertThrows<StiggException> { customerService.retrieve("x") }
+        val e =
+            assertThrows<StiggException> {
+                customerService.retrieve(
+                    CustomerRetrieveParams.builder()
+                        .id("x")
+                        .xAccountId("X-ACCOUNT-ID")
+                        .xEnvironmentId("X-ENVIRONMENT-ID")
+                        .build()
+                )
+            }
 
         assertThat(e).hasMessage("Error reading response")
     }

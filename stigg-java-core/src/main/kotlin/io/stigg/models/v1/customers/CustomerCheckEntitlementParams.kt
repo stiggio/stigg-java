@@ -27,6 +27,8 @@ private constructor(
     private val requestedUsage: Long?,
     private val requestedValues: List<String>?,
     private val resourceId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -49,6 +51,10 @@ private constructor(
 
     /** Resource ID to scope the entitlement check to a specific resource */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -78,6 +84,8 @@ private constructor(
         private var requestedUsage: Long? = null
         private var requestedValues: MutableList<String>? = null
         private var resourceId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -89,6 +97,8 @@ private constructor(
             requestedUsage = customerCheckEntitlementParams.requestedUsage
             requestedValues = customerCheckEntitlementParams.requestedValues?.toMutableList()
             resourceId = customerCheckEntitlementParams.resourceId
+            xAccountId = customerCheckEntitlementParams.xAccountId
+            xEnvironmentId = customerCheckEntitlementParams.xEnvironmentId
             additionalHeaders = customerCheckEntitlementParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerCheckEntitlementParams.additionalQueryParams.toBuilder()
         }
@@ -152,6 +162,17 @@ private constructor(
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
         fun resourceId(resourceId: Optional<String>) = resourceId(resourceId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -264,6 +285,8 @@ private constructor(
                 requestedUsage,
                 requestedValues?.toImmutable(),
                 resourceId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -275,7 +298,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -301,6 +331,8 @@ private constructor(
             requestedUsage == other.requestedUsage &&
             requestedValues == other.requestedValues &&
             resourceId == other.resourceId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -313,10 +345,12 @@ private constructor(
             requestedUsage,
             requestedValues,
             resourceId,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CustomerCheckEntitlementParams{id=$id, currencyId=$currencyId, featureId=$featureId, requestedUsage=$requestedUsage, requestedValues=$requestedValues, resourceId=$resourceId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerCheckEntitlementParams{id=$id, currencyId=$currencyId, featureId=$featureId, requestedUsage=$requestedUsage, requestedValues=$requestedValues, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -4,8 +4,12 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.addons.AddonArchiveParams
+import io.stigg.models.v1.addons.AddonCreateDraftParams
 import io.stigg.models.v1.addons.AddonCreateParams
 import io.stigg.models.v1.addons.AddonPublishParams
+import io.stigg.models.v1.addons.AddonRemoveDraftParams
+import io.stigg.models.v1.addons.AddonRetrieveParams
 import io.stigg.models.v1.addons.AddonUpdateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,6 +25,8 @@ internal class AddonServiceAsyncTest {
         val addonFuture =
             addonServiceAsync.create(
                 AddonCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .displayName("displayName")
                     .productId("productId")
@@ -47,7 +53,14 @@ internal class AddonServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().addons()
 
-        val addonFuture = addonServiceAsync.retrieve("x")
+        val addonFuture =
+            addonServiceAsync.retrieve(
+                AddonRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val addon = addonFuture.get()
         addon.validate()
@@ -63,6 +76,8 @@ internal class AddonServiceAsyncTest {
             addonServiceAsync.update(
                 AddonUpdateParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .billingId("billingId")
                     .charges(
                         AddonUpdateParams.Charges.builder()
@@ -430,7 +445,14 @@ internal class AddonServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().addons()
 
-        val addonFuture = addonServiceAsync.archive("x")
+        val addonFuture =
+            addonServiceAsync.archive(
+                AddonArchiveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val addon = addonFuture.get()
         addon.validate()
@@ -442,7 +464,14 @@ internal class AddonServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().addons()
 
-        val addonFuture = addonServiceAsync.createDraft("x")
+        val addonFuture =
+            addonServiceAsync.createDraft(
+                AddonCreateDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val addon = addonFuture.get()
         addon.validate()
@@ -470,6 +499,8 @@ internal class AddonServiceAsyncTest {
             addonServiceAsync.publish(
                 AddonPublishParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .migrationType(AddonPublishParams.MigrationType.NEW_CUSTOMERS)
                     .build()
             )
@@ -484,7 +515,14 @@ internal class AddonServiceAsyncTest {
         val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
         val addonServiceAsync = client.v1().addons()
 
-        val responseFuture = addonServiceAsync.removeDraft("x")
+        val responseFuture =
+            addonServiceAsync.removeDraft(
+                AddonRemoveDraftParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         val response = responseFuture.get()
         response.validate()

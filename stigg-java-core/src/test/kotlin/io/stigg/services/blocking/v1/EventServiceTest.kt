@@ -20,6 +20,8 @@ internal class EventServiceTest {
         val response =
             eventService.report(
                 EventReportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .addEvent(
                         EventReportParams.Event.builder()
                             .customerId("customerId")

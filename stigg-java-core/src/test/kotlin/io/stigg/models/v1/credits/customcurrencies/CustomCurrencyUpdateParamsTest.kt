@@ -3,6 +3,7 @@
 package io.stigg.models.v1.credits.customcurrencies
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,6 +13,8 @@ internal class CustomCurrencyUpdateParamsTest {
     fun create() {
         CustomCurrencyUpdateParams.builder()
             .currencyId("currencyId")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .description("description")
             .displayName("displayName")
             .metadata(
@@ -39,10 +42,55 @@ internal class CustomCurrencyUpdateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            CustomCurrencyUpdateParams.builder()
+                .currencyId("currencyId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .description("description")
+                .displayName("displayName")
+                .metadata(
+                    CustomCurrencyUpdateParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .symbol("symbol")
+                .units(
+                    CustomCurrencyUpdateParams.Units.builder()
+                        .plural("plural")
+                        .singular("singular")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = CustomCurrencyUpdateParams.builder().currencyId("currencyId").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             CustomCurrencyUpdateParams.builder()
                 .currencyId("currencyId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .description("description")
                 .displayName("displayName")
                 .metadata(

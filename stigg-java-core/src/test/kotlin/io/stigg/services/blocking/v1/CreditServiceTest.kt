@@ -23,6 +23,8 @@ internal class CreditServiceTest {
                 CreditGetAutoRechargeParams.builder()
                     .currencyId("currencyId")
                     .customerId("customerId")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 
@@ -48,6 +50,8 @@ internal class CreditServiceTest {
                     .resourceId("resourceId")
                     .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .timeRange(CreditGetUsageParams.TimeRange.LAST_DAY)
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .build()
             )
 

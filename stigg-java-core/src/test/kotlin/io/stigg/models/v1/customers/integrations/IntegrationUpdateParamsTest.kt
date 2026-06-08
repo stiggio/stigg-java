@@ -2,6 +2,7 @@
 
 package io.stigg.models.v1.customers.integrations
 
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,6 +13,8 @@ internal class IntegrationUpdateParamsTest {
         IntegrationUpdateParams.builder()
             .id("id")
             .integrationId("integrationId")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .syncedEntityId("syncedEntityId")
             .build()
     }
@@ -32,7 +35,59 @@ internal class IntegrationUpdateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            IntegrationUpdateParams.builder()
+                .id("id")
+                .integrationId("integrationId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .syncedEntityId("syncedEntityId")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            IntegrationUpdateParams.builder()
+                .id("id")
+                .integrationId("integrationId")
+                .syncedEntityId("syncedEntityId")
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
+        val params =
+            IntegrationUpdateParams.builder()
+                .id("id")
+                .integrationId("integrationId")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .syncedEntityId("syncedEntityId")
+                .build()
+
+        val body = params._body()
+
+        assertThat(body.syncedEntityId()).contains("syncedEntityId")
+    }
+
+    @Test
+    fun bodyWithoutOptionalFields() {
         val params =
             IntegrationUpdateParams.builder()
                 .id("id")

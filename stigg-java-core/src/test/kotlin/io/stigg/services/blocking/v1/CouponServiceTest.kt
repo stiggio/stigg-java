@@ -4,7 +4,9 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.coupons.CouponArchiveCouponParams
 import io.stigg.models.v1.coupons.CouponCreateParams
+import io.stigg.models.v1.coupons.CouponRetrieveParams
 import io.stigg.models.v1.coupons.CouponUpdateCouponParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -20,6 +22,8 @@ internal class CouponServiceTest {
         val coupon =
             couponService.create(
                 CouponCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .id("id")
                     .addAmountsOff(
                         CouponCreateParams.AmountsOff.builder()
@@ -48,7 +52,14 @@ internal class CouponServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val couponService = client.v1().coupons()
 
-        val coupon = couponService.retrieve("x")
+        val coupon =
+            couponService.retrieve(
+                CouponRetrieveParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         coupon.validate()
     }
@@ -70,7 +81,14 @@ internal class CouponServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val couponService = client.v1().coupons()
 
-        val coupon = couponService.archiveCoupon("x")
+        val coupon =
+            couponService.archiveCoupon(
+                CouponArchiveCouponParams.builder()
+                    .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         coupon.validate()
     }
@@ -85,6 +103,8 @@ internal class CouponServiceTest {
             couponService.updateCoupon(
                 CouponUpdateCouponParams.builder()
                     .id("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .description("description")
                     .metadata(
                         CouponUpdateCouponParams.Metadata.builder()

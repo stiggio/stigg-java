@@ -13,11 +13,17 @@ import kotlin.jvm.optionals.getOrNull
 class EntitlementListParams
 private constructor(
     private val planId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun planId(): Optional<String> = Optional.ofNullable(planId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -39,12 +45,16 @@ private constructor(
     class Builder internal constructor() {
 
         private var planId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(entitlementListParams: EntitlementListParams) = apply {
             planId = entitlementListParams.planId
+            xAccountId = entitlementListParams.xAccountId
+            xEnvironmentId = entitlementListParams.xEnvironmentId
             additionalHeaders = entitlementListParams.additionalHeaders.toBuilder()
             additionalQueryParams = entitlementListParams.additionalQueryParams.toBuilder()
         }
@@ -53,6 +63,17 @@ private constructor(
 
         /** Alias for calling [Builder.planId] with `planId.orElse(null)`. */
         fun planId(planId: Optional<String>) = planId(planId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -158,7 +179,13 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): EntitlementListParams =
-            EntitlementListParams(planId, additionalHeaders.build(), additionalQueryParams.build())
+            EntitlementListParams(
+                planId,
+                xAccountId,
+                xEnvironmentId,
+                additionalHeaders.build(),
+                additionalQueryParams.build(),
+            )
     }
 
     fun _pathParam(index: Int): String =
@@ -167,7 +194,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -178,12 +212,15 @@ private constructor(
 
         return other is EntitlementListParams &&
             planId == other.planId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(planId, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(planId, xAccountId, xEnvironmentId, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "EntitlementListParams{planId=$planId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntitlementListParams{planId=$planId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -21,6 +21,8 @@ private constructor(
     private val capabilityId: String?,
     private val entityId: String?,
     private val limit: Long?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -41,6 +43,10 @@ private constructor(
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -67,6 +73,8 @@ private constructor(
         private var capabilityId: String? = null
         private var entityId: String? = null
         private var limit: Long? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -78,6 +86,8 @@ private constructor(
             capabilityId = assignmentListParams.capabilityId
             entityId = assignmentListParams.entityId
             limit = assignmentListParams.limit
+            xAccountId = assignmentListParams.xAccountId
+            xEnvironmentId = assignmentListParams.xEnvironmentId
             additionalHeaders = assignmentListParams.additionalHeaders.toBuilder()
             additionalQueryParams = assignmentListParams.additionalQueryParams.toBuilder()
         }
@@ -123,6 +133,17 @@ private constructor(
 
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -235,6 +256,8 @@ private constructor(
                 capabilityId,
                 entityId,
                 limit,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -246,7 +269,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
@@ -272,6 +302,8 @@ private constructor(
             capabilityId == other.capabilityId &&
             entityId == other.entityId &&
             limit == other.limit &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -284,10 +316,12 @@ private constructor(
             capabilityId,
             entityId,
             limit,
+            xAccountId,
+            xEnvironmentId,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "AssignmentListParams{id=$id, after=$after, before=$before, capabilityId=$capabilityId, entityId=$entityId, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "AssignmentListParams{id=$id, after=$after, before=$before, capabilityId=$capabilityId, entityId=$entityId, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

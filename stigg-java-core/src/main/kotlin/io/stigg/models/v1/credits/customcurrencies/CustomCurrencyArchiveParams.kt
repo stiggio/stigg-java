@@ -18,12 +18,18 @@ import kotlin.jvm.optionals.getOrNull
 class CustomCurrencyArchiveParams
 private constructor(
     private val currencyId: String?,
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /** Additional body properties to send with the request. */
     fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
@@ -50,6 +56,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var currencyId: String? = null
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -57,6 +65,8 @@ private constructor(
         @JvmSynthetic
         internal fun from(customCurrencyArchiveParams: CustomCurrencyArchiveParams) = apply {
             currencyId = customCurrencyArchiveParams.currencyId
+            xAccountId = customCurrencyArchiveParams.xAccountId
+            xEnvironmentId = customCurrencyArchiveParams.xEnvironmentId
             additionalHeaders = customCurrencyArchiveParams.additionalHeaders.toBuilder()
             additionalQueryParams = customCurrencyArchiveParams.additionalQueryParams.toBuilder()
             additionalBodyProperties =
@@ -67,6 +77,17 @@ private constructor(
 
         /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -196,6 +217,8 @@ private constructor(
         fun build(): CustomCurrencyArchiveParams =
             CustomCurrencyArchiveParams(
                 currencyId,
+                xAccountId,
+                xEnvironmentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
                 additionalBodyProperties.toImmutable(),
@@ -211,7 +234,14 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -222,14 +252,23 @@ private constructor(
 
         return other is CustomCurrencyArchiveParams &&
             currencyId == other.currencyId &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
             additionalBodyProperties == other.additionalBodyProperties
     }
 
     override fun hashCode(): Int =
-        Objects.hash(currencyId, additionalHeaders, additionalQueryParams, additionalBodyProperties)
+        Objects.hash(
+            currencyId,
+            xAccountId,
+            xEnvironmentId,
+            additionalHeaders,
+            additionalQueryParams,
+            additionalBodyProperties,
+        )
 
     override fun toString() =
-        "CustomCurrencyArchiveParams{currencyId=$currencyId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "CustomCurrencyArchiveParams{currencyId=$currencyId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

@@ -3,6 +3,7 @@
 package io.stigg.models.v1.products
 
 import io.stigg.core.JsonValue
+import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,6 +13,8 @@ internal class ProductUpdateProductParamsTest {
     fun create() {
         ProductUpdateProductParams.builder()
             .id("x")
+            .xAccountId("X-ACCOUNT-ID")
+            .xEnvironmentId("X-ENVIRONMENT-ID")
             .description("description")
             .displayName("displayName")
             .metadata(
@@ -57,10 +60,75 @@ internal class ProductUpdateProductParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            ProductUpdateProductParams.builder()
+                .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
+                .description("description")
+                .displayName("displayName")
+                .metadata(
+                    ProductUpdateProductParams.Metadata.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .multipleSubscriptions(true)
+                .productSettings(
+                    ProductUpdateProductParams.ProductSettings.builder()
+                        .subscriptionCancellationTime(
+                            ProductUpdateProductParams.ProductSettings.SubscriptionCancellationTime
+                                .END_OF_BILLING_PERIOD
+                        )
+                        .subscriptionEndSetup(
+                            ProductUpdateProductParams.ProductSettings.SubscriptionEndSetup
+                                .DOWNGRADE_TO_FREE
+                        )
+                        .subscriptionStartSetup(
+                            ProductUpdateProductParams.ProductSettings.SubscriptionStartSetup
+                                .PLAN_SELECTION
+                        )
+                        .downgradePlanId("downgradePlanId")
+                        .prorateAtEndOfBillingPeriod(true)
+                        .subscriptionStartPlanId("subscriptionStartPlanId")
+                        .build()
+                )
+                .usageResetCutoffRule(
+                    ProductUpdateProductParams.UsageResetCutoffRule.builder()
+                        .behavior(
+                            ProductUpdateProductParams.UsageResetCutoffRule.Behavior.NEVER_RESET
+                        )
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("X-ACCOUNT-ID", "X-ACCOUNT-ID")
+                    .put("X-ENVIRONMENT-ID", "X-ENVIRONMENT-ID")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = ProductUpdateProductParams.builder().id("x").build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             ProductUpdateProductParams.builder()
                 .id("x")
+                .xAccountId("X-ACCOUNT-ID")
+                .xEnvironmentId("X-ENVIRONMENT-ID")
                 .description("description")
                 .displayName("displayName")
                 .metadata(
