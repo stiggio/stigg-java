@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.19 (2026-06-10)
+
+Full Changelog: [v0.1.0-beta.18...v0.1.0-beta.19](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.18...v0.1.0-beta.19)
+
+### Features
+
+* **api:** add parentId/scopeEntityIds/currencyId/featureId, remove capabilityId from assignments ([e716d2f](https://github.com/stiggio/stigg-java/commit/e716d2f23608d1815943f34b4eee563e813bc2a6))
+
 ## 0.1.0-beta.18 (2026-06-08)
 
 Full Changelog: [v0.1.0-beta.17...v0.1.0-beta.18](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.17...v0.1.0-beta.18)
