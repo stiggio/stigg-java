@@ -7,7 +7,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.async.v1.events.BetaServiceAsync
 import io.stigg.services.async.v1.events.DataExportServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -26,8 +25,6 @@ interface EventServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
-
-    fun beta(): BetaServiceAsync
 
     fun dataExport(): DataExportServiceAsync
 
@@ -55,8 +52,6 @@ interface EventServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventServiceAsync.WithRawResponse
-
-        fun beta(): BetaServiceAsync.WithRawResponse
 
         fun dataExport(): DataExportServiceAsync.WithRawResponse
 

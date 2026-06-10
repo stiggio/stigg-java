@@ -17,8 +17,6 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.async.v1.events.BetaServiceAsync
-import io.stigg.services.async.v1.events.BetaServiceAsyncImpl
 import io.stigg.services.async.v1.events.DataExportServiceAsync
 import io.stigg.services.async.v1.events.DataExportServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -32,8 +30,6 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
         WithRawResponseImpl(clientOptions)
     }
 
-    private val beta: BetaServiceAsync by lazy { BetaServiceAsyncImpl(clientOptions) }
-
     private val dataExport: DataExportServiceAsync by lazy {
         DataExportServiceAsyncImpl(clientOptions)
     }
@@ -42,8 +38,6 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync =
         EventServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
-
-    override fun beta(): BetaServiceAsync = beta
 
     override fun dataExport(): DataExportServiceAsync = dataExport
 
@@ -60,10 +54,6 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val beta: BetaServiceAsync.WithRawResponse by lazy {
-            BetaServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val dataExport: DataExportServiceAsync.WithRawResponse by lazy {
             DataExportServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -74,8 +64,6 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
             EventServiceAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        override fun beta(): BetaServiceAsync.WithRawResponse = beta
 
         override fun dataExport(): DataExportServiceAsync.WithRawResponse = dataExport
 

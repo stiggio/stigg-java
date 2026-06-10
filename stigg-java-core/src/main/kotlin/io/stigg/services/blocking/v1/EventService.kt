@@ -8,7 +8,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.blocking.v1.events.BetaService
 import io.stigg.services.blocking.v1.events.DataExportService
 import java.util.function.Consumer
 
@@ -26,8 +25,6 @@ interface EventService {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
-
-    fun beta(): BetaService
 
     fun dataExport(): DataExportService
 
@@ -53,8 +50,6 @@ interface EventService {
          * The original service is not modified.
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService.WithRawResponse
-
-        fun beta(): BetaService.WithRawResponse
 
         fun dataExport(): DataExportService.WithRawResponse
 
