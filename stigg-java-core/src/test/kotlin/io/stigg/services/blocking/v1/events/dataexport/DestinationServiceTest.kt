@@ -4,6 +4,7 @@ package io.stigg.services.blocking.v1.events.dataexport
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateParams
+import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -17,7 +18,12 @@ internal class DestinationServiceTest {
 
         val destination =
             destinationService.create(
-                DestinationCreateParams.builder().destinationId("x").destinationType("x").build()
+                DestinationCreateParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .destinationId("x")
+                    .destinationType("x")
+                    .build()
             )
 
         destination.validate()
@@ -29,7 +35,14 @@ internal class DestinationServiceTest {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
         val destinationService = client.v1().events().dataExport().destinations()
 
-        val destination = destinationService.delete("x")
+        val destination =
+            destinationService.delete(
+                DestinationDeleteParams.builder()
+                    .destinationId("x")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
 
         destination.validate()
     }
