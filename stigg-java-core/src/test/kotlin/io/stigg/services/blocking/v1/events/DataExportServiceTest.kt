@@ -19,6 +19,8 @@ internal class DataExportServiceTest {
         val response =
             dataExportService.mintScopedToken(
                 DataExportMintScopedTokenParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
                     .applicationOrigin("x")
                     .destinationType("destinationType")
                     .build()
@@ -35,7 +37,11 @@ internal class DataExportServiceTest {
 
         val response =
             dataExportService.triggerSync(
-                DataExportTriggerSyncParams.builder().destinationId("destinationId").build()
+                DataExportTriggerSyncParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .destinationId("destinationId")
+                    .build()
             )
 
         response.validate()

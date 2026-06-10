@@ -17,8 +17,6 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepare
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.blocking.v1.events.BetaService
-import io.stigg.services.blocking.v1.events.BetaServiceImpl
 import io.stigg.services.blocking.v1.events.DataExportService
 import io.stigg.services.blocking.v1.events.DataExportServiceImpl
 import java.util.function.Consumer
@@ -31,16 +29,12 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         WithRawResponseImpl(clientOptions)
     }
 
-    private val beta: BetaService by lazy { BetaServiceImpl(clientOptions) }
-
     private val dataExport: DataExportService by lazy { DataExportServiceImpl(clientOptions) }
 
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
         EventServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
-
-    override fun beta(): BetaService = beta
 
     override fun dataExport(): DataExportService = dataExport
 
@@ -57,10 +51,6 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val beta: BetaService.WithRawResponse by lazy {
-            BetaServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val dataExport: DataExportService.WithRawResponse by lazy {
             DataExportServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -71,8 +61,6 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             EventServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        override fun beta(): BetaService.WithRawResponse = beta
 
         override fun dataExport(): DataExportService.WithRawResponse = dataExport
 

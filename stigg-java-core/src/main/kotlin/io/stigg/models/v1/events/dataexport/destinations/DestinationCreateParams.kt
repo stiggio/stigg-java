@@ -17,6 +17,8 @@ import io.stigg.core.http.QueryParams
 import io.stigg.errors.StiggInvalidDataException
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Register a destination on the environment's DATA_EXPORT integration. Lazy-creates the integration
@@ -24,10 +26,16 @@ import java.util.Objects
  */
 class DestinationCreateParams
 private constructor(
+    private val xAccountId: String?,
+    private val xEnvironmentId: String?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
+
+    fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
      * The provider destination ID returned by the embedded SDK on connect
@@ -86,16 +94,31 @@ private constructor(
     /** A builder for [DestinationCreateParams]. */
     class Builder internal constructor() {
 
+        private var xAccountId: String? = null
+        private var xEnvironmentId: String? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(destinationCreateParams: DestinationCreateParams) = apply {
+            xAccountId = destinationCreateParams.xAccountId
+            xEnvironmentId = destinationCreateParams.xEnvironmentId
             body = destinationCreateParams.body.toBuilder()
             additionalHeaders = destinationCreateParams.additionalHeaders.toBuilder()
             additionalQueryParams = destinationCreateParams.additionalQueryParams.toBuilder()
         }
+
+        fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
+
+        /** Alias for calling [Builder.xAccountId] with `xAccountId.orElse(null)`. */
+        fun xAccountId(xAccountId: Optional<String>) = xAccountId(xAccountId.getOrNull())
+
+        fun xEnvironmentId(xEnvironmentId: String?) = apply { this.xEnvironmentId = xEnvironmentId }
+
+        /** Alias for calling [Builder.xEnvironmentId] with `xEnvironmentId.orElse(null)`. */
+        fun xEnvironmentId(xEnvironmentId: Optional<String>) =
+            xEnvironmentId(xEnvironmentId.getOrNull())
 
         /**
          * Sets the entire request body.
@@ -269,6 +292,8 @@ private constructor(
          */
         fun build(): DestinationCreateParams =
             DestinationCreateParams(
+                xAccountId,
+                xEnvironmentId,
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -277,7 +302,14 @@ private constructor(
 
     fun _body(): Body = body
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xAccountId?.let { put("X-ACCOUNT-ID", it) }
+                xEnvironmentId?.let { put("X-ENVIRONMENT-ID", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -512,13 +544,16 @@ private constructor(
         }
 
         return other is DestinationCreateParams &&
+            xAccountId == other.xAccountId &&
+            xEnvironmentId == other.xEnvironmentId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(xAccountId, xEnvironmentId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "DestinationCreateParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "DestinationCreateParams{xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
