@@ -1373,6 +1373,7 @@ private constructor(
                 private val currentUsage: JsonField<Double>,
                 private val entityId: JsonField<String>,
                 private val isGranted: JsonField<Boolean>,
+                private val scopeEntityIds: JsonField<List<String>>,
                 private val usageLimit: JsonField<Double>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -1388,10 +1389,20 @@ private constructor(
                     @JsonProperty("isGranted")
                     @ExcludeMissing
                     isGranted: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("scopeEntityIds")
+                    @ExcludeMissing
+                    scopeEntityIds: JsonField<List<String>> = JsonMissing.of(),
                     @JsonProperty("usageLimit")
                     @ExcludeMissing
                     usageLimit: JsonField<Double> = JsonMissing.of(),
-                ) : this(currentUsage, entityId, isGranted, usageLimit, mutableMapOf())
+                ) : this(
+                    currentUsage,
+                    entityId,
+                    isGranted,
+                    scopeEntityIds,
+                    usageLimit,
+                    mutableMapOf(),
+                )
 
                 /**
                  * Amount consumed by this entity in the current cadence period.
@@ -1419,6 +1430,17 @@ private constructor(
                  *   value).
                  */
                 fun isGranted(): Boolean = isGranted.getRequired("isGranted")
+
+                /**
+                 * External ids of the entities this budget is scoped to. Empty (`[]`) is the
+                 * node-wide budget; a non-empty set is the dimension-scoped budget that matched
+                 * this request — use it to tell apart multiple budgets on the same entity.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
                  * Hard usage limit for this node; null when no assignment is configured.
@@ -1459,6 +1481,16 @@ private constructor(
                 fun _isGranted(): JsonField<Boolean> = isGranted
 
                 /**
+                 * Returns the raw JSON value of [scopeEntityIds].
+                 *
+                 * Unlike [scopeEntityIds], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("scopeEntityIds")
+                @ExcludeMissing
+                fun _scopeEntityIds(): JsonField<List<String>> = scopeEntityIds
+
+                /**
                  * Returns the raw JSON value of [usageLimit].
                  *
                  * Unlike [usageLimit], this method doesn't throw if the JSON field has an
@@ -1490,6 +1522,7 @@ private constructor(
                      * .currentUsage()
                      * .entityId()
                      * .isGranted()
+                     * .scopeEntityIds()
                      * .usageLimit()
                      * ```
                      */
@@ -1502,6 +1535,7 @@ private constructor(
                     private var currentUsage: JsonField<Double>? = null
                     private var entityId: JsonField<String>? = null
                     private var isGranted: JsonField<Boolean>? = null
+                    private var scopeEntityIds: JsonField<MutableList<String>>? = null
                     private var usageLimit: JsonField<Double>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1510,6 +1544,7 @@ private constructor(
                         currentUsage = betaChainNode.currentUsage
                         entityId = betaChainNode.entityId
                         isGranted = betaChainNode.isGranted
+                        scopeEntityIds = betaChainNode.scopeEntityIds.map { it.toMutableList() }
                         usageLimit = betaChainNode.usageLimit
                         additionalProperties = betaChainNode.additionalProperties.toMutableMap()
                     }
@@ -1553,6 +1588,37 @@ private constructor(
                      */
                     fun isGranted(isGranted: JsonField<Boolean>) = apply {
                         this.isGranted = isGranted
+                    }
+
+                    /**
+                     * External ids of the entities this budget is scoped to. Empty (`[]`) is the
+                     * node-wide budget; a non-empty set is the dimension-scoped budget that matched
+                     * this request — use it to tell apart multiple budgets on the same entity.
+                     */
+                    fun scopeEntityIds(scopeEntityIds: List<String>) =
+                        scopeEntityIds(JsonField.of(scopeEntityIds))
+
+                    /**
+                     * Sets [Builder.scopeEntityIds] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.scopeEntityIds] with a well-typed
+                     * `List<String>` value instead. This method is primarily for setting the field
+                     * to an undocumented or not yet supported value.
+                     */
+                    fun scopeEntityIds(scopeEntityIds: JsonField<List<String>>) = apply {
+                        this.scopeEntityIds = scopeEntityIds.map { it.toMutableList() }
+                    }
+
+                    /**
+                     * Adds a single [String] to [scopeEntityIds].
+                     *
+                     * @throws IllegalStateException if the field was previously set to a non-list.
+                     */
+                    fun addScopeEntityId(scopeEntityId: String) = apply {
+                        scopeEntityIds =
+                            (scopeEntityIds ?: JsonField.of(mutableListOf())).also {
+                                checkKnown("scopeEntityIds", it).add(scopeEntityId)
+                            }
                     }
 
                     /** Hard usage limit for this node; null when no assignment is configured. */
@@ -1613,6 +1679,7 @@ private constructor(
                      * .currentUsage()
                      * .entityId()
                      * .isGranted()
+                     * .scopeEntityIds()
                      * .usageLimit()
                      * ```
                      *
@@ -1623,6 +1690,9 @@ private constructor(
                             checkRequired("currentUsage", currentUsage),
                             checkRequired("entityId", entityId),
                             checkRequired("isGranted", isGranted),
+                            checkRequired("scopeEntityIds", scopeEntityIds).map {
+                                it.toImmutable()
+                            },
                             checkRequired("usageLimit", usageLimit),
                             additionalProperties.toMutableMap(),
                         )
@@ -1648,6 +1718,7 @@ private constructor(
                     currentUsage()
                     entityId()
                     isGranted()
+                    scopeEntityIds()
                     usageLimit()
                     validated = true
                 }
@@ -1671,6 +1742,7 @@ private constructor(
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                         (if (entityId.asKnown().isPresent) 1 else 0) +
                         (if (isGranted.asKnown().isPresent) 1 else 0) +
+                        (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                         (if (usageLimit.asKnown().isPresent) 1 else 0)
 
                 override fun equals(other: Any?): Boolean {
@@ -1682,6 +1754,7 @@ private constructor(
                         currentUsage == other.currentUsage &&
                         entityId == other.entityId &&
                         isGranted == other.isGranted &&
+                        scopeEntityIds == other.scopeEntityIds &&
                         usageLimit == other.usageLimit &&
                         additionalProperties == other.additionalProperties
                 }
@@ -1691,6 +1764,7 @@ private constructor(
                         currentUsage,
                         entityId,
                         isGranted,
+                        scopeEntityIds,
                         usageLimit,
                         additionalProperties,
                     )
@@ -1699,7 +1773,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
             }
 
             class InnerFeature
@@ -3923,6 +3997,7 @@ private constructor(
                 private val currentUsage: JsonField<Double>,
                 private val entityId: JsonField<String>,
                 private val isGranted: JsonField<Boolean>,
+                private val scopeEntityIds: JsonField<List<String>>,
                 private val usageLimit: JsonField<Double>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
@@ -3938,10 +4013,20 @@ private constructor(
                     @JsonProperty("isGranted")
                     @ExcludeMissing
                     isGranted: JsonField<Boolean> = JsonMissing.of(),
+                    @JsonProperty("scopeEntityIds")
+                    @ExcludeMissing
+                    scopeEntityIds: JsonField<List<String>> = JsonMissing.of(),
                     @JsonProperty("usageLimit")
                     @ExcludeMissing
                     usageLimit: JsonField<Double> = JsonMissing.of(),
-                ) : this(currentUsage, entityId, isGranted, usageLimit, mutableMapOf())
+                ) : this(
+                    currentUsage,
+                    entityId,
+                    isGranted,
+                    scopeEntityIds,
+                    usageLimit,
+                    mutableMapOf(),
+                )
 
                 /**
                  * Amount consumed by this entity in the current cadence period.
@@ -3969,6 +4054,17 @@ private constructor(
                  *   value).
                  */
                 fun isGranted(): Boolean = isGranted.getRequired("isGranted")
+
+                /**
+                 * External ids of the entities this budget is scoped to. Empty (`[]`) is the
+                 * node-wide budget; a non-empty set is the dimension-scoped budget that matched
+                 * this request — use it to tell apart multiple budgets on the same entity.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
                  * Hard usage limit for this node; null when no assignment is configured.
@@ -4009,6 +4105,16 @@ private constructor(
                 fun _isGranted(): JsonField<Boolean> = isGranted
 
                 /**
+                 * Returns the raw JSON value of [scopeEntityIds].
+                 *
+                 * Unlike [scopeEntityIds], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("scopeEntityIds")
+                @ExcludeMissing
+                fun _scopeEntityIds(): JsonField<List<String>> = scopeEntityIds
+
+                /**
                  * Returns the raw JSON value of [usageLimit].
                  *
                  * Unlike [usageLimit], this method doesn't throw if the JSON field has an
@@ -4040,6 +4146,7 @@ private constructor(
                      * .currentUsage()
                      * .entityId()
                      * .isGranted()
+                     * .scopeEntityIds()
                      * .usageLimit()
                      * ```
                      */
@@ -4052,6 +4159,7 @@ private constructor(
                     private var currentUsage: JsonField<Double>? = null
                     private var entityId: JsonField<String>? = null
                     private var isGranted: JsonField<Boolean>? = null
+                    private var scopeEntityIds: JsonField<MutableList<String>>? = null
                     private var usageLimit: JsonField<Double>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -4060,6 +4168,7 @@ private constructor(
                         currentUsage = betaChainNode.currentUsage
                         entityId = betaChainNode.entityId
                         isGranted = betaChainNode.isGranted
+                        scopeEntityIds = betaChainNode.scopeEntityIds.map { it.toMutableList() }
                         usageLimit = betaChainNode.usageLimit
                         additionalProperties = betaChainNode.additionalProperties.toMutableMap()
                     }
@@ -4103,6 +4212,37 @@ private constructor(
                      */
                     fun isGranted(isGranted: JsonField<Boolean>) = apply {
                         this.isGranted = isGranted
+                    }
+
+                    /**
+                     * External ids of the entities this budget is scoped to. Empty (`[]`) is the
+                     * node-wide budget; a non-empty set is the dimension-scoped budget that matched
+                     * this request — use it to tell apart multiple budgets on the same entity.
+                     */
+                    fun scopeEntityIds(scopeEntityIds: List<String>) =
+                        scopeEntityIds(JsonField.of(scopeEntityIds))
+
+                    /**
+                     * Sets [Builder.scopeEntityIds] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.scopeEntityIds] with a well-typed
+                     * `List<String>` value instead. This method is primarily for setting the field
+                     * to an undocumented or not yet supported value.
+                     */
+                    fun scopeEntityIds(scopeEntityIds: JsonField<List<String>>) = apply {
+                        this.scopeEntityIds = scopeEntityIds.map { it.toMutableList() }
+                    }
+
+                    /**
+                     * Adds a single [String] to [scopeEntityIds].
+                     *
+                     * @throws IllegalStateException if the field was previously set to a non-list.
+                     */
+                    fun addScopeEntityId(scopeEntityId: String) = apply {
+                        scopeEntityIds =
+                            (scopeEntityIds ?: JsonField.of(mutableListOf())).also {
+                                checkKnown("scopeEntityIds", it).add(scopeEntityId)
+                            }
                     }
 
                     /** Hard usage limit for this node; null when no assignment is configured. */
@@ -4163,6 +4303,7 @@ private constructor(
                      * .currentUsage()
                      * .entityId()
                      * .isGranted()
+                     * .scopeEntityIds()
                      * .usageLimit()
                      * ```
                      *
@@ -4173,6 +4314,9 @@ private constructor(
                             checkRequired("currentUsage", currentUsage),
                             checkRequired("entityId", entityId),
                             checkRequired("isGranted", isGranted),
+                            checkRequired("scopeEntityIds", scopeEntityIds).map {
+                                it.toImmutable()
+                            },
                             checkRequired("usageLimit", usageLimit),
                             additionalProperties.toMutableMap(),
                         )
@@ -4198,6 +4342,7 @@ private constructor(
                     currentUsage()
                     entityId()
                     isGranted()
+                    scopeEntityIds()
                     usageLimit()
                     validated = true
                 }
@@ -4221,6 +4366,7 @@ private constructor(
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                         (if (entityId.asKnown().isPresent) 1 else 0) +
                         (if (isGranted.asKnown().isPresent) 1 else 0) +
+                        (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                         (if (usageLimit.asKnown().isPresent) 1 else 0)
 
                 override fun equals(other: Any?): Boolean {
@@ -4232,6 +4378,7 @@ private constructor(
                         currentUsage == other.currentUsage &&
                         entityId == other.entityId &&
                         isGranted == other.isGranted &&
+                        scopeEntityIds == other.scopeEntityIds &&
                         usageLimit == other.usageLimit &&
                         additionalProperties == other.additionalProperties
                 }
@@ -4241,6 +4388,7 @@ private constructor(
                         currentUsage,
                         entityId,
                         isGranted,
+                        scopeEntityIds,
                         usageLimit,
                         additionalProperties,
                     )
@@ -4249,7 +4397,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
             }
 
             override fun equals(other: Any?): Boolean {
