@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.20 (2026-06-11)
+
+Full Changelog: [v0.1.0-beta.19...v0.1.0-beta.20](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.19...v0.1.0-beta.20)
+
+### Features
+
+* **api:** add scopeEntityIds field to entitlements check response ([579bacd](https://github.com/stiggio/stigg-java/commit/579bacd049cb26b7c53e2c70f9d8f0088e543cd1))
+
 ## 0.1.0-beta.19 (2026-06-10)
 
 Full Changelog: [v0.1.0-beta.18...v0.1.0-beta.19](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.18...v0.1.0-beta.19)
