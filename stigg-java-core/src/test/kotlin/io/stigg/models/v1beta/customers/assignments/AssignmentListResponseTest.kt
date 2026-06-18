@@ -35,7 +35,7 @@ internal class AssignmentListResponseTest {
         assertThat(assignmentListResponse.scopeEntityIds()).containsExactly("string")
         assertThat(assignmentListResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-        assertThat(assignmentListResponse.usageLimit()).isEqualTo(0.0)
+        assertThat(assignmentListResponse.usageLimit()).contains(0.0)
         assertThat(assignmentListResponse.currencyId()).contains("currencyId")
         assertThat(assignmentListResponse.featureId()).contains("featureId")
     }
