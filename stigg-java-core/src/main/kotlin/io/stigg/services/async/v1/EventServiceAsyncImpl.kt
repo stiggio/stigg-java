@@ -17,6 +17,8 @@ import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
+import io.stigg.services.async.v1.events.BetaServiceAsync
+import io.stigg.services.async.v1.events.BetaServiceAsyncImpl
 import io.stigg.services.async.v1.events.DataExportServiceAsync
 import io.stigg.services.async.v1.events.DataExportServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -34,12 +36,16 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
         DataExportServiceAsyncImpl(clientOptions)
     }
 
+    private val beta: BetaServiceAsync by lazy { BetaServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): EventServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync =
         EventServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun dataExport(): DataExportServiceAsync = dataExport
+
+    override fun beta(): BetaServiceAsync = beta
 
     override fun report(
         params: EventReportParams,
@@ -58,6 +64,10 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
             DataExportServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val beta: BetaServiceAsync.WithRawResponse by lazy {
+            BetaServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventServiceAsync.WithRawResponse =
@@ -66,6 +76,8 @@ class EventServiceAsyncImpl internal constructor(private val clientOptions: Clie
             )
 
         override fun dataExport(): DataExportServiceAsync.WithRawResponse = dataExport
+
+        override fun beta(): BetaServiceAsync.WithRawResponse = beta
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)
