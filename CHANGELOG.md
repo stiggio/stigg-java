@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.22 (2026-06-18)
+
+Full Changelog: [v0.1.0-beta.21...v0.1.0-beta.22](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.21...v0.1.0-beta.22)
+
+### Bug Fixes
+
+* **types:** make usageLimit optional in assignments models ([4c19af5](https://github.com/stiggio/stigg-java/commit/4c19af57dd3883683f5a3102060df104c4a75dc3))
+
 ## 0.1.0-beta.21 (2026-06-18)
 
 Full Changelog: [v0.1.0-beta.20...v0.1.0-beta.21](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.20...v0.1.0-beta.21)
