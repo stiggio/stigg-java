@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.21 (2026-06-18)
+
+Full Changelog: [v0.1.0-beta.20...v0.1.0-beta.21](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.20...v0.1.0-beta.21)
+
+### Features
+
+* **api:** add retrieveGovernance method to customers ([175e618](https://github.com/stiggio/stigg-java/commit/175e61811c83a14affde4d018ed697b31a800826))
+
 ## 0.1.0-beta.20 (2026-06-11)
 
 Full Changelog: [v0.1.0-beta.19...v0.1.0-beta.20](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.19...v0.1.0-beta.20)
