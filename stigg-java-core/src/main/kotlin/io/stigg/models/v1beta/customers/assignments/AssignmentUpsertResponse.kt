@@ -306,10 +306,10 @@ private constructor(
         /**
          * Maximum usage allowed within one cadence window
          *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
          */
-        fun usageLimit(): Double = usageLimit.getRequired("usageLimit")
+        fun usageLimit(): Optional<Double> = usageLimit.getOptional("usageLimit")
 
         /**
          * Currency refId this assignment grants (present for credit capabilities).
@@ -581,7 +581,17 @@ private constructor(
             }
 
             /** Maximum usage allowed within one cadence window */
-            fun usageLimit(usageLimit: Double) = usageLimit(JsonField.of(usageLimit))
+            fun usageLimit(usageLimit: Double?) = usageLimit(JsonField.ofNullable(usageLimit))
+
+            /**
+             * Alias for [Builder.usageLimit].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun usageLimit(usageLimit: Double) = usageLimit(usageLimit as Double?)
+
+            /** Alias for calling [Builder.usageLimit] with `usageLimit.orElse(null)`. */
+            fun usageLimit(usageLimit: Optional<Double>) = usageLimit(usageLimit.getOrNull())
 
             /**
              * Sets [Builder.usageLimit] to an arbitrary JSON value.
