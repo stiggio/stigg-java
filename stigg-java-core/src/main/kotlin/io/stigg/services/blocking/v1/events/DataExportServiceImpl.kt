@@ -15,6 +15,8 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.events.dataexport.DataExportListModelsParams
+import io.stigg.models.v1.events.dataexport.DataExportListModelsResponse
 import io.stigg.models.v1.events.dataexport.DataExportMintScopedTokenParams
 import io.stigg.models.v1.events.dataexport.DataExportMintScopedTokenResponse
 import io.stigg.models.v1.events.dataexport.DataExportTriggerSyncParams
@@ -38,6 +40,13 @@ class DataExportServiceImpl internal constructor(private val clientOptions: Clie
         DataExportServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun destinations(): DestinationService = destinations
+
+    override fun listModels(
+        params: DataExportListModelsParams,
+        requestOptions: RequestOptions,
+    ): DataExportListModelsResponse =
+        // get /api/v1/data-export/models
+        withRawResponse().listModels(params, requestOptions).parse()
 
     override fun mintScopedToken(
         params: DataExportMintScopedTokenParams,
@@ -71,6 +80,33 @@ class DataExportServiceImpl internal constructor(private val clientOptions: Clie
             )
 
         override fun destinations(): DestinationService.WithRawResponse = destinations
+
+        private val listModelsHandler: Handler<DataExportListModelsResponse> =
+            jsonHandler<DataExportListModelsResponse>(clientOptions.jsonMapper)
+
+        override fun listModels(
+            params: DataExportListModelsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<DataExportListModelsResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "data-export", "models")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listModelsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val mintScopedTokenHandler: Handler<DataExportMintScopedTokenResponse> =
             jsonHandler<DataExportMintScopedTokenResponse>(clientOptions.jsonMapper)
