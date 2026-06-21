@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.23 (2026-06-21)
+
+Full Changelog: [v0.1.0-beta.22...v0.1.0-beta.23](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.22...v0.1.0-beta.23)
+
+### Bug Fixes
+
+* **types:** change cadence from enum to string in assignments ([890f8a0](https://github.com/stiggio/stigg-java/commit/890f8a0590ce7f93e7b6be912a65a6b1b74a6e34))
+
 ## 0.1.0-beta.22 (2026-06-18)
 
 Full Changelog: [v0.1.0-beta.21...v0.1.0-beta.22](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.21...v0.1.0-beta.22)
