@@ -23,6 +23,7 @@ internal class DestinationServiceTest {
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .destinationId("x")
                     .destinationType("x")
+                    .addEnabledModel("x")
                     .build()
             )
 

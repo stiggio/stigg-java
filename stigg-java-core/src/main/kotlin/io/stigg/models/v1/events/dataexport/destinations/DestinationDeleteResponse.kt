@@ -348,6 +348,7 @@ private constructor(
             private val destinationId: JsonField<String>,
             private val type: JsonField<String>,
             private val connectionStatus: JsonField<String>,
+            private val enabledModels: JsonField<List<String>>,
             private val lastSyncStatus: JsonField<LastSyncStatus>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
@@ -364,6 +365,9 @@ private constructor(
                 @JsonProperty("connectionStatus")
                 @ExcludeMissing
                 connectionStatus: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("enabledModels")
+                @ExcludeMissing
+                enabledModels: JsonField<List<String>> = JsonMissing.of(),
                 @JsonProperty("lastSyncStatus")
                 @ExcludeMissing
                 lastSyncStatus: JsonField<LastSyncStatus> = JsonMissing.of(),
@@ -372,6 +376,7 @@ private constructor(
                 destinationId,
                 type,
                 connectionStatus,
+                enabledModels,
                 lastSyncStatus,
                 mutableMapOf(),
             )
@@ -411,6 +416,12 @@ private constructor(
              */
             fun connectionStatus(): Optional<String> =
                 connectionStatus.getOptional("connectionStatus")
+
+            /**
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun enabledModels(): Optional<List<String>> = enabledModels.getOptional("enabledModels")
 
             /**
              * Latest sync snapshot for the destination, refreshed by the provider webhook
@@ -459,6 +470,16 @@ private constructor(
             fun _connectionStatus(): JsonField<String> = connectionStatus
 
             /**
+             * Returns the raw JSON value of [enabledModels].
+             *
+             * Unlike [enabledModels], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("enabledModels")
+            @ExcludeMissing
+            fun _enabledModels(): JsonField<List<String>> = enabledModels
+
+            /**
              * Returns the raw JSON value of [lastSyncStatus].
              *
              * Unlike [lastSyncStatus], this method doesn't throw if the JSON field has an
@@ -502,6 +523,7 @@ private constructor(
                 private var destinationId: JsonField<String>? = null
                 private var type: JsonField<String>? = null
                 private var connectionStatus: JsonField<String> = JsonMissing.of()
+                private var enabledModels: JsonField<MutableList<String>>? = null
                 private var lastSyncStatus: JsonField<LastSyncStatus> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -511,6 +533,7 @@ private constructor(
                     destinationId = destination.destinationId
                     type = destination.type
                     connectionStatus = destination.connectionStatus
+                    enabledModels = destination.enabledModels.map { it.toMutableList() }
                     lastSyncStatus = destination.lastSyncStatus
                     additionalProperties = destination.additionalProperties.toMutableMap()
                 }
@@ -571,6 +594,32 @@ private constructor(
                     this.connectionStatus = connectionStatus
                 }
 
+                fun enabledModels(enabledModels: List<String>) =
+                    enabledModels(JsonField.of(enabledModels))
+
+                /**
+                 * Sets [Builder.enabledModels] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.enabledModels] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun enabledModels(enabledModels: JsonField<List<String>>) = apply {
+                    this.enabledModels = enabledModels.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [enabledModels].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addEnabledModel(enabledModel: String) = apply {
+                    enabledModels =
+                        (enabledModels ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("enabledModels", it).add(enabledModel)
+                        }
+                }
+
                 /** Latest sync snapshot for the destination, refreshed by the provider webhook */
                 fun lastSyncStatus(lastSyncStatus: LastSyncStatus) =
                     lastSyncStatus(JsonField.of(lastSyncStatus))
@@ -628,6 +677,7 @@ private constructor(
                         checkRequired("destinationId", destinationId),
                         checkRequired("type", type),
                         connectionStatus,
+                        (enabledModels ?: JsonMissing.of()).map { it.toImmutable() },
                         lastSyncStatus,
                         additionalProperties.toMutableMap(),
                     )
@@ -654,6 +704,7 @@ private constructor(
                 destinationId()
                 type()
                 connectionStatus()
+                enabledModels()
                 lastSyncStatus().ifPresent { it.validate() }
                 validated = true
             }
@@ -678,6 +729,7 @@ private constructor(
                     (if (destinationId.asKnown().isPresent) 1 else 0) +
                     (if (type.asKnown().isPresent) 1 else 0) +
                     (if (connectionStatus.asKnown().isPresent) 1 else 0) +
+                    (enabledModels.asKnown().getOrNull()?.size ?: 0) +
                     (lastSyncStatus.asKnown().getOrNull()?.validity() ?: 0)
 
             /** Latest sync snapshot for the destination, refreshed by the provider webhook */
@@ -1109,6 +1161,7 @@ private constructor(
                     destinationId == other.destinationId &&
                     type == other.type &&
                     connectionStatus == other.connectionStatus &&
+                    enabledModels == other.enabledModels &&
                     lastSyncStatus == other.lastSyncStatus &&
                     additionalProperties == other.additionalProperties
             }
@@ -1119,6 +1172,7 @@ private constructor(
                     destinationId,
                     type,
                     connectionStatus,
+                    enabledModels,
                     lastSyncStatus,
                     additionalProperties,
                 )
@@ -1127,7 +1181,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Destination{connectedAt=$connectedAt, destinationId=$destinationId, type=$type, connectionStatus=$connectionStatus, lastSyncStatus=$lastSyncStatus, additionalProperties=$additionalProperties}"
+                "Destination{connectedAt=$connectedAt, destinationId=$destinationId, type=$type, connectionStatus=$connectionStatus, enabledModels=$enabledModels, lastSyncStatus=$lastSyncStatus, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
