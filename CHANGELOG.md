@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.24 (2026-06-21)
+
+Full Changelog: [v0.1.0-beta.23...v0.1.0-beta.24](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.23...v0.1.0-beta.24)
+
+### Features
+
+* **api:** add listModels method, enabledModels field to data export endpoints ([d470ccc](https://github.com/stiggio/stigg-java/commit/d470cccc9683ba50394e386afe460038fc049289))
+
 ## 0.1.0-beta.23 (2026-06-21)
 
 Full Changelog: [v0.1.0-beta.22...v0.1.0-beta.23](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.22...v0.1.0-beta.23)
