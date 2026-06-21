@@ -16,7 +16,7 @@ internal class CustomerRetrieveGovernanceResponseTest {
             CustomerRetrieveGovernanceResponse.builder()
                 .addData(
                     CustomerRetrieveGovernanceResponse.Data.builder()
-                        .cadence(CustomerRetrieveGovernanceResponse.Data.Cadence.MONTH)
+                        .cadence("cadence")
                         .currentUsage(0.0)
                         .entityId("entityId")
                         .entityType("entityType")
@@ -38,7 +38,7 @@ internal class CustomerRetrieveGovernanceResponseTest {
         assertThat(customerRetrieveGovernanceResponse.data())
             .containsExactly(
                 CustomerRetrieveGovernanceResponse.Data.builder()
-                    .cadence(CustomerRetrieveGovernanceResponse.Data.Cadence.MONTH)
+                    .cadence("cadence")
                     .currentUsage(0.0)
                     .entityId("entityId")
                     .entityType("entityType")
@@ -63,7 +63,7 @@ internal class CustomerRetrieveGovernanceResponseTest {
             CustomerRetrieveGovernanceResponse.builder()
                 .addData(
                     CustomerRetrieveGovernanceResponse.Data.builder()
-                        .cadence(CustomerRetrieveGovernanceResponse.Data.Cadence.MONTH)
+                        .cadence("cadence")
                         .currentUsage(0.0)
                         .entityId("entityId")
                         .entityType("entityType")

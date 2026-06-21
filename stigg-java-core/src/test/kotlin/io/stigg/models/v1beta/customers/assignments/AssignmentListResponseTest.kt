@@ -15,7 +15,7 @@ internal class AssignmentListResponseTest {
         val assignmentListResponse =
             AssignmentListResponse.builder()
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .cadence(AssignmentListResponse.Cadence.MONTH)
+                .cadence("PT869S")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .entityId("entityId")
                 .parentId("parentId")
@@ -27,7 +27,7 @@ internal class AssignmentListResponseTest {
                 .build()
 
         assertThat(assignmentListResponse.id()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-        assertThat(assignmentListResponse.cadence()).isEqualTo(AssignmentListResponse.Cadence.MONTH)
+        assertThat(assignmentListResponse.cadence()).isEqualTo("PT869S")
         assertThat(assignmentListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(assignmentListResponse.entityId()).isEqualTo("entityId")
@@ -46,7 +46,7 @@ internal class AssignmentListResponseTest {
         val assignmentListResponse =
             AssignmentListResponse.builder()
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .cadence(AssignmentListResponse.Cadence.MONTH)
+                .cadence("PT869S")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .entityId("entityId")
                 .parentId("parentId")
