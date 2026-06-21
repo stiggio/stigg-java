@@ -17,7 +17,7 @@ internal class AssignmentUpsertResponseTest {
                 .addData(
                     AssignmentUpsertResponse.Data.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .cadence(AssignmentUpsertResponse.Data.Cadence.MONTH)
+                        .cadence("PT869S")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .entityId("entityId")
                         .parentId("parentId")
@@ -34,7 +34,7 @@ internal class AssignmentUpsertResponseTest {
             .containsExactly(
                 AssignmentUpsertResponse.Data.builder()
                     .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .cadence(AssignmentUpsertResponse.Data.Cadence.MONTH)
+                    .cadence("PT869S")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .entityId("entityId")
                     .parentId("parentId")
@@ -55,7 +55,7 @@ internal class AssignmentUpsertResponseTest {
                 .addData(
                     AssignmentUpsertResponse.Data.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .cadence(AssignmentUpsertResponse.Data.Cadence.MONTH)
+                        .cadence("PT869S")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .entityId("entityId")
                         .parentId("parentId")
