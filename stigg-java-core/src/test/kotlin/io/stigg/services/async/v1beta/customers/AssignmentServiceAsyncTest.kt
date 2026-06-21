@@ -36,7 +36,7 @@ internal class AssignmentServiceAsyncTest {
                     .addAssignment(
                         AssignmentUpsertParams.Assignment.builder()
                             .entityId("workspace-001")
-                            .cadence(AssignmentUpsertParams.Assignment.Cadence.MONTH)
+                            .cadence("P1M")
                             .currencyId("currencyId")
                             .featureId("compute-minutes")
                             .parentId("parentId")
@@ -47,7 +47,7 @@ internal class AssignmentServiceAsyncTest {
                     .addAssignment(
                         AssignmentUpsertParams.Assignment.builder()
                             .entityId("workspace-002")
-                            .cadence(AssignmentUpsertParams.Assignment.Cadence.MONTH)
+                            .cadence("P1M")
                             .currencyId("cred-type-tokens")
                             .featureId("featureId")
                             .parentId("workspace-001")
