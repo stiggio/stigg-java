@@ -3,6 +3,7 @@
 package io.stigg.models.v1.events.dataexport.destinations
 
 import io.stigg.core.http.Headers
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,6 +16,7 @@ internal class DestinationCreateParamsTest {
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .destinationId("x")
             .destinationType("x")
+            .addEnabledModel("x")
             .build()
     }
 
@@ -26,6 +28,7 @@ internal class DestinationCreateParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .destinationId("x")
                 .destinationType("x")
+                .addEnabledModel("x")
                 .build()
 
         val headers = params._headers()
@@ -57,12 +60,14 @@ internal class DestinationCreateParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .destinationId("x")
                 .destinationType("x")
+                .addEnabledModel("x")
                 .build()
 
         val body = params._body()
 
         assertThat(body.destinationId()).isEqualTo("x")
         assertThat(body.destinationType()).isEqualTo("x")
+        assertThat(body.enabledModels().getOrNull()).containsExactly("x")
     }
 
     @Test

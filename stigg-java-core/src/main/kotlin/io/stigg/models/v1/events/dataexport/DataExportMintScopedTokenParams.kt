@@ -11,9 +11,11 @@ import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
 import io.stigg.core.Params
+import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -53,6 +55,12 @@ private constructor(
     fun destinationType(): Optional<String> = body.destinationType()
 
     /**
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun enabledModels(): Optional<List<String>> = body.enabledModels()
+
+    /**
      * Returns the raw JSON value of [applicationOrigin].
      *
      * Unlike [applicationOrigin], this method doesn't throw if the JSON field has an unexpected
@@ -66,6 +74,13 @@ private constructor(
      * Unlike [destinationType], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _destinationType(): JsonField<String> = body._destinationType()
+
+    /**
+     * Returns the raw JSON value of [enabledModels].
+     *
+     * Unlike [enabledModels], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _enabledModels(): JsonField<List<String>> = body._enabledModels()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -129,6 +144,7 @@ private constructor(
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [applicationOrigin]
          * - [destinationType]
+         * - [enabledModels]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -163,6 +179,26 @@ private constructor(
         fun destinationType(destinationType: JsonField<String>) = apply {
             body.destinationType(destinationType)
         }
+
+        fun enabledModels(enabledModels: List<String>) = apply { body.enabledModels(enabledModels) }
+
+        /**
+         * Sets [Builder.enabledModels] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.enabledModels] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun enabledModels(enabledModels: JsonField<List<String>>) = apply {
+            body.enabledModels(enabledModels)
+        }
+
+        /**
+         * Adds a single [String] to [enabledModels].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addEnabledModel(enabledModel: String) = apply { body.addEnabledModel(enabledModel) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -322,6 +358,7 @@ private constructor(
     private constructor(
         private val applicationOrigin: JsonField<String>,
         private val destinationType: JsonField<String>,
+        private val enabledModels: JsonField<List<String>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -333,7 +370,10 @@ private constructor(
             @JsonProperty("destinationType")
             @ExcludeMissing
             destinationType: JsonField<String> = JsonMissing.of(),
-        ) : this(applicationOrigin, destinationType, mutableMapOf())
+            @JsonProperty("enabledModels")
+            @ExcludeMissing
+            enabledModels: JsonField<List<String>> = JsonMissing.of(),
+        ) : this(applicationOrigin, destinationType, enabledModels, mutableMapOf())
 
         /**
          * FE origin the resulting JWT is bound to (provider-side anti-fraud)
@@ -350,6 +390,12 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun destinationType(): Optional<String> = destinationType.getOptional("destinationType")
+
+        /**
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun enabledModels(): Optional<List<String>> = enabledModels.getOptional("enabledModels")
 
         /**
          * Returns the raw JSON value of [applicationOrigin].
@@ -370,6 +416,16 @@ private constructor(
         @JsonProperty("destinationType")
         @ExcludeMissing
         fun _destinationType(): JsonField<String> = destinationType
+
+        /**
+         * Returns the raw JSON value of [enabledModels].
+         *
+         * Unlike [enabledModels], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("enabledModels")
+        @ExcludeMissing
+        fun _enabledModels(): JsonField<List<String>> = enabledModels
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -401,12 +457,14 @@ private constructor(
 
             private var applicationOrigin: JsonField<String>? = null
             private var destinationType: JsonField<String> = JsonMissing.of()
+            private var enabledModels: JsonField<MutableList<String>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 applicationOrigin = body.applicationOrigin
                 destinationType = body.destinationType
+                enabledModels = body.enabledModels.map { it.toMutableList() }
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -438,6 +496,32 @@ private constructor(
              */
             fun destinationType(destinationType: JsonField<String>) = apply {
                 this.destinationType = destinationType
+            }
+
+            fun enabledModels(enabledModels: List<String>) =
+                enabledModels(JsonField.of(enabledModels))
+
+            /**
+             * Sets [Builder.enabledModels] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.enabledModels] with a well-typed `List<String>`
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun enabledModels(enabledModels: JsonField<List<String>>) = apply {
+                this.enabledModels = enabledModels.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [enabledModels].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addEnabledModel(enabledModel: String) = apply {
+                enabledModels =
+                    (enabledModels ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("enabledModels", it).add(enabledModel)
+                    }
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -475,6 +559,7 @@ private constructor(
                 Body(
                     checkRequired("applicationOrigin", applicationOrigin),
                     destinationType,
+                    (enabledModels ?: JsonMissing.of()).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -497,6 +582,7 @@ private constructor(
 
             applicationOrigin()
             destinationType()
+            enabledModels()
             validated = true
         }
 
@@ -517,7 +603,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (applicationOrigin.asKnown().isPresent) 1 else 0) +
-                (if (destinationType.asKnown().isPresent) 1 else 0)
+                (if (destinationType.asKnown().isPresent) 1 else 0) +
+                (enabledModels.asKnown().getOrNull()?.size ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -527,17 +614,18 @@ private constructor(
             return other is Body &&
                 applicationOrigin == other.applicationOrigin &&
                 destinationType == other.destinationType &&
+                enabledModels == other.enabledModels &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(applicationOrigin, destinationType, additionalProperties)
+            Objects.hash(applicationOrigin, destinationType, enabledModels, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{applicationOrigin=$applicationOrigin, destinationType=$destinationType, additionalProperties=$additionalProperties}"
+            "Body{applicationOrigin=$applicationOrigin, destinationType=$destinationType, enabledModels=$enabledModels, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

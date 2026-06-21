@@ -3,6 +3,7 @@
 package io.stigg.models.v1.events.dataexport
 
 import io.stigg.core.http.Headers
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,6 +16,7 @@ internal class DataExportMintScopedTokenParamsTest {
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .applicationOrigin("x")
             .destinationType("destinationType")
+            .addEnabledModel("x")
             .build()
     }
 
@@ -26,6 +28,7 @@ internal class DataExportMintScopedTokenParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .applicationOrigin("x")
                 .destinationType("destinationType")
+                .addEnabledModel("x")
                 .build()
 
         val headers = params._headers()
@@ -56,12 +59,14 @@ internal class DataExportMintScopedTokenParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .applicationOrigin("x")
                 .destinationType("destinationType")
+                .addEnabledModel("x")
                 .build()
 
         val body = params._body()
 
         assertThat(body.applicationOrigin()).isEqualTo("x")
         assertThat(body.destinationType()).contains("destinationType")
+        assertThat(body.enabledModels().getOrNull()).containsExactly("x")
     }
 
     @Test

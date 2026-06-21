@@ -21,6 +21,7 @@ internal class DestinationCreateResponseTest {
                                 .destinationId("destinationId")
                                 .type("type")
                                 .connectionStatus("connectionStatus")
+                                .addEnabledModel("string")
                                 .lastSyncStatus(
                                     DestinationCreateResponse.Data.Destination.LastSyncStatus
                                         .builder()
@@ -47,6 +48,7 @@ internal class DestinationCreateResponseTest {
                             .destinationId("destinationId")
                             .type("type")
                             .connectionStatus("connectionStatus")
+                            .addEnabledModel("string")
                             .lastSyncStatus(
                                 DestinationCreateResponse.Data.Destination.LastSyncStatus.builder()
                                     .finishedAt("finishedAt")
@@ -76,6 +78,7 @@ internal class DestinationCreateResponseTest {
                                 .destinationId("destinationId")
                                 .type("type")
                                 .connectionStatus("connectionStatus")
+                                .addEnabledModel("string")
                                 .lastSyncStatus(
                                     DestinationCreateResponse.Data.Destination.LastSyncStatus
                                         .builder()

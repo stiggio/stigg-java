@@ -23,6 +23,7 @@ internal class DestinationServiceAsyncTest {
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .destinationId("x")
                     .destinationType("x")
+                    .addEnabledModel("x")
                     .build()
             )
 
