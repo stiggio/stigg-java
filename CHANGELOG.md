@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-beta.25 (2026-06-22)
+
+Full Changelog: [v0.1.0-beta.24...v0.1.0-beta.25](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.24...v0.1.0-beta.25)
+
+### Features
+
+* **api:** add credit field to usage report response ([b87667c](https://github.com/stiggio/stigg-java/commit/b87667c0f25cc0a6e65726d4709014da76296688))
+* **api:** add salesforceId parameter to subscription update ([58c0ffb](https://github.com/stiggio/stigg-java/commit/58c0ffb03807dbb21b9a665459d6aac28961e694))
+
 ## 0.1.0-beta.24 (2026-06-21)
 
 Full Changelog: [v0.1.0-beta.23...v0.1.0-beta.24](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.23...v0.1.0-beta.24)
