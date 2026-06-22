@@ -207,6 +207,7 @@ internal class SubscriptionServiceTest {
                             .build()
                     )
                     .promotionCode("promotionCode")
+                    .salesforceId("salesforceId")
                     .scheduleStrategy(
                         SubscriptionUpdateParams.ScheduleStrategy.END_OF_BILLING_PERIOD
                     )

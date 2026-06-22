@@ -149,6 +149,14 @@ private constructor(
     fun promotionCode(): Optional<String> = body.promotionCode()
 
     /**
+     * Salesforce ID
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun salesforceId(): Optional<String> = body.salesforceId()
+
+    /**
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -263,6 +271,13 @@ private constructor(
      * Unlike [promotionCode], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _promotionCode(): JsonField<String> = body._promotionCode()
+
+    /**
+     * Returns the raw JSON value of [salesforceId].
+     *
+     * Unlike [salesforceId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _salesforceId(): JsonField<String> = body._salesforceId()
 
     /**
      * Returns the raw JSON value of [scheduleStrategy].
@@ -598,6 +613,23 @@ private constructor(
             body.promotionCode(promotionCode)
         }
 
+        /** Salesforce ID */
+        fun salesforceId(salesforceId: String?) = apply { body.salesforceId(salesforceId) }
+
+        /** Alias for calling [Builder.salesforceId] with `salesforceId.orElse(null)`. */
+        fun salesforceId(salesforceId: Optional<String>) = salesforceId(salesforceId.getOrNull())
+
+        /**
+         * Sets [Builder.salesforceId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.salesforceId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun salesforceId(salesforceId: JsonField<String>) = apply {
+            body.salesforceId(salesforceId)
+        }
+
         fun scheduleStrategy(scheduleStrategy: ScheduleStrategy) = apply {
             body.scheduleStrategy(scheduleStrategy)
         }
@@ -797,6 +829,7 @@ private constructor(
         private val minimumSpend: JsonField<MinimumSpend>,
         private val priceOverrides: JsonField<List<PriceOverride>>,
         private val promotionCode: JsonField<String>,
+        private val salesforceId: JsonField<String>,
         private val scheduleStrategy: JsonField<ScheduleStrategy>,
         private val trialEndDate: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -844,6 +877,9 @@ private constructor(
             @JsonProperty("promotionCode")
             @ExcludeMissing
             promotionCode: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("salesforceId")
+            @ExcludeMissing
+            salesforceId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("scheduleStrategy")
             @ExcludeMissing
             scheduleStrategy: JsonField<ScheduleStrategy> = JsonMissing.of(),
@@ -865,6 +901,7 @@ private constructor(
             minimumSpend,
             priceOverrides,
             promotionCode,
+            salesforceId,
             scheduleStrategy,
             trialEndDate,
             mutableMapOf(),
@@ -968,6 +1005,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun promotionCode(): Optional<String> = promotionCode.getOptional("promotionCode")
+
+        /**
+         * Salesforce ID
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun salesforceId(): Optional<String> = salesforceId.getOptional("salesforceId")
 
         /**
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -1113,6 +1158,16 @@ private constructor(
         fun _promotionCode(): JsonField<String> = promotionCode
 
         /**
+         * Returns the raw JSON value of [salesforceId].
+         *
+         * Unlike [salesforceId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("salesforceId")
+        @ExcludeMissing
+        fun _salesforceId(): JsonField<String> = salesforceId
+
+        /**
          * Returns the raw JSON value of [scheduleStrategy].
          *
          * Unlike [scheduleStrategy], this method doesn't throw if the JSON field has an unexpected
@@ -1167,6 +1222,7 @@ private constructor(
             private var minimumSpend: JsonField<MinimumSpend> = JsonMissing.of()
             private var priceOverrides: JsonField<MutableList<PriceOverride>>? = null
             private var promotionCode: JsonField<String> = JsonMissing.of()
+            private var salesforceId: JsonField<String> = JsonMissing.of()
             private var scheduleStrategy: JsonField<ScheduleStrategy> = JsonMissing.of()
             private var trialEndDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1187,6 +1243,7 @@ private constructor(
                 minimumSpend = body.minimumSpend
                 priceOverrides = body.priceOverrides.map { it.toMutableList() }
                 promotionCode = body.promotionCode
+                salesforceId = body.salesforceId
                 scheduleStrategy = body.scheduleStrategy
                 trialEndDate = body.trialEndDate
                 additionalProperties = body.additionalProperties.toMutableMap()
@@ -1464,6 +1521,25 @@ private constructor(
                 this.promotionCode = promotionCode
             }
 
+            /** Salesforce ID */
+            fun salesforceId(salesforceId: String?) =
+                salesforceId(JsonField.ofNullable(salesforceId))
+
+            /** Alias for calling [Builder.salesforceId] with `salesforceId.orElse(null)`. */
+            fun salesforceId(salesforceId: Optional<String>) =
+                salesforceId(salesforceId.getOrNull())
+
+            /**
+             * Sets [Builder.salesforceId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.salesforceId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun salesforceId(salesforceId: JsonField<String>) = apply {
+                this.salesforceId = salesforceId
+            }
+
             fun scheduleStrategy(scheduleStrategy: ScheduleStrategy) =
                 scheduleStrategy(JsonField.of(scheduleStrategy))
 
@@ -1533,6 +1609,7 @@ private constructor(
                     minimumSpend,
                     (priceOverrides ?: JsonMissing.of()).map { it.toImmutable() },
                     promotionCode,
+                    salesforceId,
                     scheduleStrategy,
                     trialEndDate,
                     additionalProperties.toMutableMap(),
@@ -1569,6 +1646,7 @@ private constructor(
             minimumSpend().ifPresent { it.validate() }
             priceOverrides().ifPresent { it.forEach { it.validate() } }
             promotionCode()
+            salesforceId()
             scheduleStrategy().ifPresent { it.validate() }
             trialEndDate()
             validated = true
@@ -1604,6 +1682,7 @@ private constructor(
                 (minimumSpend.asKnown().getOrNull()?.validity() ?: 0) +
                 (priceOverrides.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (promotionCode.asKnown().isPresent) 1 else 0) +
+                (if (salesforceId.asKnown().isPresent) 1 else 0) +
                 (scheduleStrategy.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (trialEndDate.asKnown().isPresent) 1 else 0)
 
@@ -1627,6 +1706,7 @@ private constructor(
                 minimumSpend == other.minimumSpend &&
                 priceOverrides == other.priceOverrides &&
                 promotionCode == other.promotionCode &&
+                salesforceId == other.salesforceId &&
                 scheduleStrategy == other.scheduleStrategy &&
                 trialEndDate == other.trialEndDate &&
                 additionalProperties == other.additionalProperties
@@ -1648,6 +1728,7 @@ private constructor(
                 minimumSpend,
                 priceOverrides,
                 promotionCode,
+                salesforceId,
                 scheduleStrategy,
                 trialEndDate,
                 additionalProperties,
@@ -1657,7 +1738,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCycleAnchor=$billingCycleAnchor, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, cancellationDate=$cancellationDate, charges=$charges, entitlements=$entitlements, metadata=$metadata, minimumSpend=$minimumSpend, priceOverrides=$priceOverrides, promotionCode=$promotionCode, scheduleStrategy=$scheduleStrategy, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
+            "Body{addons=$addons, appliedCoupon=$appliedCoupon, awaitPaymentConfirmation=$awaitPaymentConfirmation, billingCycleAnchor=$billingCycleAnchor, billingInformation=$billingInformation, billingPeriod=$billingPeriod, budget=$budget, cancellationDate=$cancellationDate, charges=$charges, entitlements=$entitlements, metadata=$metadata, minimumSpend=$minimumSpend, priceOverrides=$priceOverrides, promotionCode=$promotionCode, salesforceId=$salesforceId, scheduleStrategy=$scheduleStrategy, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
     }
 
     /** Addon configuration */
