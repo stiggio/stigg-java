@@ -197,6 +197,7 @@ private constructor(
         private val featureId: JsonField<String>,
         private val timestamp: JsonField<OffsetDateTime>,
         private val value: JsonField<Long>,
+        private val credit: JsonField<Credit>,
         private val currentUsage: JsonField<Double>,
         private val nextResetDate: JsonField<OffsetDateTime>,
         private val resourceId: JsonField<String>,
@@ -221,6 +222,7 @@ private constructor(
             @ExcludeMissing
             timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("value") @ExcludeMissing value: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("credit") @ExcludeMissing credit: JsonField<Credit> = JsonMissing.of(),
             @JsonProperty("currentUsage")
             @ExcludeMissing
             currentUsage: JsonField<Double> = JsonMissing.of(),
@@ -243,6 +245,7 @@ private constructor(
             featureId,
             timestamp,
             value,
+            credit,
             currentUsage,
             nextResetDate,
             resourceId,
@@ -298,6 +301,14 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun value(): Long = value.getRequired("value")
+
+        /**
+         * Optimistic credit balance for a credit-backed feature
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun credit(): Optional<Credit> = credit.getOptional("credit")
 
         /**
          * The current measured usage value
@@ -392,6 +403,13 @@ private constructor(
         @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Long> = value
 
         /**
+         * Returns the raw JSON value of [credit].
+         *
+         * Unlike [credit], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("credit") @ExcludeMissing fun _credit(): JsonField<Credit> = credit
+
+        /**
          * Returns the raw JSON value of [currentUsage].
          *
          * Unlike [currentUsage], this method doesn't throw if the JSON field has an unexpected
@@ -479,6 +497,7 @@ private constructor(
             private var featureId: JsonField<String>? = null
             private var timestamp: JsonField<OffsetDateTime>? = null
             private var value: JsonField<Long>? = null
+            private var credit: JsonField<Credit> = JsonMissing.of()
             private var currentUsage: JsonField<Double> = JsonMissing.of()
             private var nextResetDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var resourceId: JsonField<String> = JsonMissing.of()
@@ -494,6 +513,7 @@ private constructor(
                 featureId = data.featureId
                 timestamp = data.timestamp
                 value = data.value
+                credit = data.credit
                 currentUsage = data.currentUsage
                 nextResetDate = data.nextResetDate
                 resourceId = data.resourceId
@@ -577,6 +597,21 @@ private constructor(
              * value.
              */
             fun value(value: JsonField<Long>) = apply { this.value = value }
+
+            /** Optimistic credit balance for a credit-backed feature */
+            fun credit(credit: Credit?) = credit(JsonField.ofNullable(credit))
+
+            /** Alias for calling [Builder.credit] with `credit.orElse(null)`. */
+            fun credit(credit: Optional<Credit>) = credit(credit.getOrNull())
+
+            /**
+             * Sets [Builder.credit] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.credit] with a well-typed [Credit] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun credit(credit: JsonField<Credit>) = apply { this.credit = credit }
 
             /** The current measured usage value */
             fun currentUsage(currentUsage: Double?) =
@@ -728,6 +763,7 @@ private constructor(
                     checkRequired("featureId", featureId),
                     checkRequired("timestamp", timestamp),
                     checkRequired("value", value),
+                    credit,
                     currentUsage,
                     nextResetDate,
                     resourceId,
@@ -759,6 +795,7 @@ private constructor(
             featureId()
             timestamp()
             value()
+            credit().ifPresent { it.validate() }
             currentUsage()
             nextResetDate()
             resourceId()
@@ -789,11 +826,336 @@ private constructor(
                 (if (featureId.asKnown().isPresent) 1 else 0) +
                 (if (timestamp.asKnown().isPresent) 1 else 0) +
                 (if (value.asKnown().isPresent) 1 else 0) +
+                (credit.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (currentUsage.asKnown().isPresent) 1 else 0) +
                 (if (nextResetDate.asKnown().isPresent) 1 else 0) +
                 (if (resourceId.asKnown().isPresent) 1 else 0) +
                 (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
                 (if (usagePeriodStart.asKnown().isPresent) 1 else 0)
+
+        /** Optimistic credit balance for a credit-backed feature */
+        class Credit
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val currencyId: JsonField<String>,
+            private val currentUsage: JsonField<Double>,
+            private val timestamp: JsonField<OffsetDateTime>,
+            private val usageLimit: JsonField<Double>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("currencyId")
+                @ExcludeMissing
+                currencyId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("currentUsage")
+                @ExcludeMissing
+                currentUsage: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("timestamp")
+                @ExcludeMissing
+                timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
+                @JsonProperty("usageLimit")
+                @ExcludeMissing
+                usageLimit: JsonField<Double> = JsonMissing.of(),
+            ) : this(currencyId, currentUsage, timestamp, usageLimit, mutableMapOf())
+
+            /**
+             * The credit currency identifier
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currencyId(): String = currencyId.getRequired("currencyId")
+
+            /**
+             * The credits consumed (optimistic — includes not-yet-reconciled usage)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currentUsage(): Double = currentUsage.getRequired("currentUsage")
+
+            /**
+             * The grant-version timestamp of this balance, used by the SDK for last-write-wins
+             * reconciliation
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
+
+            /**
+             * The total credits granted
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun usageLimit(): Double = usageLimit.getRequired("usageLimit")
+
+            /**
+             * Returns the raw JSON value of [currencyId].
+             *
+             * Unlike [currencyId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencyId")
+            @ExcludeMissing
+            fun _currencyId(): JsonField<String> = currencyId
+
+            /**
+             * Returns the raw JSON value of [currentUsage].
+             *
+             * Unlike [currentUsage], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currentUsage")
+            @ExcludeMissing
+            fun _currentUsage(): JsonField<Double> = currentUsage
+
+            /**
+             * Returns the raw JSON value of [timestamp].
+             *
+             * Unlike [timestamp], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("timestamp")
+            @ExcludeMissing
+            fun _timestamp(): JsonField<OffsetDateTime> = timestamp
+
+            /**
+             * Returns the raw JSON value of [usageLimit].
+             *
+             * Unlike [usageLimit], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("usageLimit")
+            @ExcludeMissing
+            fun _usageLimit(): JsonField<Double> = usageLimit
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Credit].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .currencyId()
+                 * .currentUsage()
+                 * .timestamp()
+                 * .usageLimit()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Credit]. */
+            class Builder internal constructor() {
+
+                private var currencyId: JsonField<String>? = null
+                private var currentUsage: JsonField<Double>? = null
+                private var timestamp: JsonField<OffsetDateTime>? = null
+                private var usageLimit: JsonField<Double>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(credit: Credit) = apply {
+                    currencyId = credit.currencyId
+                    currentUsage = credit.currentUsage
+                    timestamp = credit.timestamp
+                    usageLimit = credit.usageLimit
+                    additionalProperties = credit.additionalProperties.toMutableMap()
+                }
+
+                /** The credit currency identifier */
+                fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
+
+                /**
+                 * Sets [Builder.currencyId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencyId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currencyId(currencyId: JsonField<String>) = apply {
+                    this.currencyId = currencyId
+                }
+
+                /** The credits consumed (optimistic — includes not-yet-reconciled usage) */
+                fun currentUsage(currentUsage: Double) = currentUsage(JsonField.of(currentUsage))
+
+                /**
+                 * Sets [Builder.currentUsage] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currentUsage] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currentUsage(currentUsage: JsonField<Double>) = apply {
+                    this.currentUsage = currentUsage
+                }
+
+                /**
+                 * The grant-version timestamp of this balance, used by the SDK for last-write-wins
+                 * reconciliation
+                 */
+                fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
+
+                /**
+                 * Sets [Builder.timestamp] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.timestamp] with a well-typed [OffsetDateTime]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply {
+                    this.timestamp = timestamp
+                }
+
+                /** The total credits granted */
+                fun usageLimit(usageLimit: Double) = usageLimit(JsonField.of(usageLimit))
+
+                /**
+                 * Sets [Builder.usageLimit] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.usageLimit] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun usageLimit(usageLimit: JsonField<Double>) = apply {
+                    this.usageLimit = usageLimit
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Credit].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .currencyId()
+                 * .currentUsage()
+                 * .timestamp()
+                 * .usageLimit()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Credit =
+                    Credit(
+                        checkRequired("currencyId", currencyId),
+                        checkRequired("currentUsage", currentUsage),
+                        checkRequired("timestamp", timestamp),
+                        checkRequired("usageLimit", usageLimit),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Credit = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                currencyId()
+                currentUsage()
+                timestamp()
+                usageLimit()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (currencyId.asKnown().isPresent) 1 else 0) +
+                    (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                    (if (timestamp.asKnown().isPresent) 1 else 0) +
+                    (if (usageLimit.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Credit &&
+                    currencyId == other.currencyId &&
+                    currentUsage == other.currentUsage &&
+                    timestamp == other.timestamp &&
+                    usageLimit == other.usageLimit &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(currencyId, currentUsage, timestamp, usageLimit, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Credit{currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -807,6 +1169,7 @@ private constructor(
                 featureId == other.featureId &&
                 timestamp == other.timestamp &&
                 value == other.value &&
+                credit == other.credit &&
                 currentUsage == other.currentUsage &&
                 nextResetDate == other.nextResetDate &&
                 resourceId == other.resourceId &&
@@ -823,6 +1186,7 @@ private constructor(
                 featureId,
                 timestamp,
                 value,
+                credit,
                 currentUsage,
                 nextResetDate,
                 resourceId,
@@ -835,7 +1199,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, createdAt=$createdAt, customerId=$customerId, featureId=$featureId, timestamp=$timestamp, value=$value, currentUsage=$currentUsage, nextResetDate=$nextResetDate, resourceId=$resourceId, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, additionalProperties=$additionalProperties}"
+            "Data{id=$id, createdAt=$createdAt, customerId=$customerId, featureId=$featureId, timestamp=$timestamp, value=$value, credit=$credit, currentUsage=$currentUsage, nextResetDate=$nextResetDate, resourceId=$resourceId, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
