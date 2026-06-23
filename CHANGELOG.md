@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.28 (2026-06-23)
+
+Full Changelog: [v0.1.0-beta.27...v0.1.0-beta.28](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.27...v0.1.0-beta.28)
+
+### Features
+
+* **api:** add update method to data export destinations ([9a94a14](https://github.com/stiggio/stigg-java/commit/9a94a14cff1d576e5adf891c29a82727ee935fb7))
+
 ## 0.1.0-beta.27 (2026-06-23)
 
 Full Changelog: [v0.1.0-beta.26...v0.1.0-beta.27](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.26...v0.1.0-beta.27)
