@@ -841,6 +841,7 @@ private constructor(
             private val currentUsage: JsonField<Double>,
             private val timestamp: JsonField<OffsetDateTime>,
             private val usageLimit: JsonField<Double>,
+            private val usagePeriodEnd: JsonField<OffsetDateTime>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -858,7 +859,17 @@ private constructor(
                 @JsonProperty("usageLimit")
                 @ExcludeMissing
                 usageLimit: JsonField<Double> = JsonMissing.of(),
-            ) : this(currencyId, currentUsage, timestamp, usageLimit, mutableMapOf())
+                @JsonProperty("usagePeriodEnd")
+                @ExcludeMissing
+                usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
+            ) : this(
+                currencyId,
+                currentUsage,
+                timestamp,
+                usageLimit,
+                usagePeriodEnd,
+                mutableMapOf(),
+            )
 
             /**
              * The credit currency identifier
@@ -896,6 +907,15 @@ private constructor(
              *   value).
              */
             fun usageLimit(): Double = usageLimit.getRequired("usageLimit")
+
+            /**
+             * End of the current credit grant period (when recurring credits reset), if applicable
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun usagePeriodEnd(): Optional<OffsetDateTime> =
+                usagePeriodEnd.getOptional("usagePeriodEnd")
 
             /**
              * Returns the raw JSON value of [currencyId].
@@ -937,6 +957,16 @@ private constructor(
             @ExcludeMissing
             fun _usageLimit(): JsonField<Double> = usageLimit
 
+            /**
+             * Returns the raw JSON value of [usagePeriodEnd].
+             *
+             * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("usagePeriodEnd")
+            @ExcludeMissing
+            fun _usagePeriodEnd(): JsonField<OffsetDateTime> = usagePeriodEnd
+
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
                 additionalProperties.put(key, value)
@@ -972,6 +1002,7 @@ private constructor(
                 private var currentUsage: JsonField<Double>? = null
                 private var timestamp: JsonField<OffsetDateTime>? = null
                 private var usageLimit: JsonField<Double>? = null
+                private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -980,6 +1011,7 @@ private constructor(
                     currentUsage = credit.currentUsage
                     timestamp = credit.timestamp
                     usageLimit = credit.usageLimit
+                    usagePeriodEnd = credit.usagePeriodEnd
                     additionalProperties = credit.additionalProperties.toMutableMap()
                 }
 
@@ -1042,6 +1074,30 @@ private constructor(
                     this.usageLimit = usageLimit
                 }
 
+                /**
+                 * End of the current credit grant period (when recurring credits reset), if
+                 * applicable
+                 */
+                fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime?) =
+                    usagePeriodEnd(JsonField.ofNullable(usagePeriodEnd))
+
+                /**
+                 * Alias for calling [Builder.usagePeriodEnd] with `usagePeriodEnd.orElse(null)`.
+                 */
+                fun usagePeriodEnd(usagePeriodEnd: Optional<OffsetDateTime>) =
+                    usagePeriodEnd(usagePeriodEnd.getOrNull())
+
+                /**
+                 * Sets [Builder.usagePeriodEnd] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.usagePeriodEnd] with a well-typed
+                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
+                 * an undocumented or not yet supported value.
+                 */
+                fun usagePeriodEnd(usagePeriodEnd: JsonField<OffsetDateTime>) = apply {
+                    this.usagePeriodEnd = usagePeriodEnd
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -1085,6 +1141,7 @@ private constructor(
                         checkRequired("currentUsage", currentUsage),
                         checkRequired("timestamp", timestamp),
                         checkRequired("usageLimit", usageLimit),
+                        usagePeriodEnd,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -1110,6 +1167,7 @@ private constructor(
                 currentUsage()
                 timestamp()
                 usageLimit()
+                usagePeriodEnd()
                 validated = true
             }
 
@@ -1132,7 +1190,8 @@ private constructor(
                 (if (currencyId.asKnown().isPresent) 1 else 0) +
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                     (if (timestamp.asKnown().isPresent) 1 else 0) +
-                    (if (usageLimit.asKnown().isPresent) 1 else 0)
+                    (if (usageLimit.asKnown().isPresent) 1 else 0) +
+                    (if (usagePeriodEnd.asKnown().isPresent) 1 else 0)
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
@@ -1144,17 +1203,25 @@ private constructor(
                     currentUsage == other.currentUsage &&
                     timestamp == other.timestamp &&
                     usageLimit == other.usageLimit &&
+                    usagePeriodEnd == other.usagePeriodEnd &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(currencyId, currentUsage, timestamp, usageLimit, additionalProperties)
+                Objects.hash(
+                    currencyId,
+                    currentUsage,
+                    timestamp,
+                    usageLimit,
+                    usagePeriodEnd,
+                    additionalProperties,
+                )
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+                "Credit{currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
