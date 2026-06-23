@@ -3338,6 +3338,7 @@ private constructor(
             private val createdAt: JsonField<OffsetDateTime>,
             private val description: JsonField<String>,
             private val displayNameOverride: JsonField<String>,
+            private val hasSoftLimit: JsonField<Boolean>,
             private val hiddenFromWidgets: JsonField<List<HiddenFromWidget>>,
             private val isCustom: JsonField<Boolean>,
             private val isGranted: JsonField<Boolean>,
@@ -3369,6 +3370,9 @@ private constructor(
                 @JsonProperty("displayNameOverride")
                 @ExcludeMissing
                 displayNameOverride: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
                 @JsonProperty("hiddenFromWidgets")
                 @ExcludeMissing
                 hiddenFromWidgets: JsonField<List<HiddenFromWidget>> = JsonMissing.of(),
@@ -3394,6 +3398,7 @@ private constructor(
                 createdAt,
                 description,
                 displayNameOverride,
+                hasSoftLimit,
                 hiddenFromWidgets,
                 isCustom,
                 isGranted,
@@ -3463,6 +3468,15 @@ private constructor(
              */
             fun displayNameOverride(): Optional<String> =
                 displayNameOverride.getOptional("displayNameOverride")
+
+            /**
+             * Whether the credit wallet is soft-limited. When true, getEntitlement returns
+             * hasAccess=true past the limit; vendors decide whether to enforce. Defaults to false.
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun hasSoftLimit(): Optional<Boolean> = hasSoftLimit.getOptional("hasSoftLimit")
 
             /**
              * Widget types where this entitlement is hidden
@@ -3593,6 +3607,16 @@ private constructor(
             fun _displayNameOverride(): JsonField<String> = displayNameOverride
 
             /**
+             * Returns the raw JSON value of [hasSoftLimit].
+             *
+             * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("hasSoftLimit")
+            @ExcludeMissing
+            fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
+
+            /**
              * Returns the raw JSON value of [hiddenFromWidgets].
              *
              * Unlike [hiddenFromWidgets], this method doesn't throw if the JSON field has an
@@ -3673,6 +3697,7 @@ private constructor(
                  * .createdAt()
                  * .description()
                  * .displayNameOverride()
+                 * .hasSoftLimit()
                  * .hiddenFromWidgets()
                  * .isCustom()
                  * .isGranted()
@@ -3693,6 +3718,7 @@ private constructor(
                 private var createdAt: JsonField<OffsetDateTime>? = null
                 private var description: JsonField<String>? = null
                 private var displayNameOverride: JsonField<String>? = null
+                private var hasSoftLimit: JsonField<Boolean>? = null
                 private var hiddenFromWidgets: JsonField<MutableList<HiddenFromWidget>>? = null
                 private var isCustom: JsonField<Boolean>? = null
                 private var isGranted: JsonField<Boolean>? = null
@@ -3711,6 +3737,7 @@ private constructor(
                     createdAt = credit.createdAt
                     description = credit.description
                     displayNameOverride = credit.displayNameOverride
+                    hasSoftLimit = credit.hasSoftLimit
                     hiddenFromWidgets = credit.hiddenFromWidgets.map { it.toMutableList() }
                     isCustom = credit.isCustom
                     isGranted = credit.isGranted
@@ -3835,6 +3862,36 @@ private constructor(
                  */
                 fun displayNameOverride(displayNameOverride: JsonField<String>) = apply {
                     this.displayNameOverride = displayNameOverride
+                }
+
+                /**
+                 * Whether the credit wallet is soft-limited. When true, getEntitlement returns
+                 * hasAccess=true past the limit; vendors decide whether to enforce. Defaults to
+                 * false.
+                 */
+                fun hasSoftLimit(hasSoftLimit: Boolean?) =
+                    hasSoftLimit(JsonField.ofNullable(hasSoftLimit))
+
+                /**
+                 * Alias for [Builder.hasSoftLimit].
+                 *
+                 * This unboxed primitive overload exists for backwards compatibility.
+                 */
+                fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(hasSoftLimit as Boolean?)
+
+                /** Alias for calling [Builder.hasSoftLimit] with `hasSoftLimit.orElse(null)`. */
+                fun hasSoftLimit(hasSoftLimit: Optional<Boolean>) =
+                    hasSoftLimit(hasSoftLimit.getOrNull())
+
+                /**
+                 * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                    this.hasSoftLimit = hasSoftLimit
                 }
 
                 /** Widget types where this entitlement is hidden */
@@ -4011,6 +4068,7 @@ private constructor(
                  * .createdAt()
                  * .description()
                  * .displayNameOverride()
+                 * .hasSoftLimit()
                  * .hiddenFromWidgets()
                  * .isCustom()
                  * .isGranted()
@@ -4029,6 +4087,7 @@ private constructor(
                         checkRequired("createdAt", createdAt),
                         checkRequired("description", description),
                         checkRequired("displayNameOverride", displayNameOverride),
+                        checkRequired("hasSoftLimit", hasSoftLimit),
                         checkRequired("hiddenFromWidgets", hiddenFromWidgets).map {
                             it.toImmutable()
                         },
@@ -4066,6 +4125,7 @@ private constructor(
                 createdAt()
                 description()
                 displayNameOverride()
+                hasSoftLimit()
                 hiddenFromWidgets().forEach { it.validate() }
                 isCustom()
                 isGranted()
@@ -4103,6 +4163,7 @@ private constructor(
                     (if (createdAt.asKnown().isPresent) 1 else 0) +
                     (if (description.asKnown().isPresent) 1 else 0) +
                     (if (displayNameOverride.asKnown().isPresent) 1 else 0) +
+                    (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                     (hiddenFromWidgets.asKnown().getOrNull()?.sumOf { it.validity().toInt() }
                         ?: 0) +
                     (if (isCustom.asKnown().isPresent) 1 else 0) +
@@ -4559,6 +4620,7 @@ private constructor(
                     createdAt == other.createdAt &&
                     description == other.description &&
                     displayNameOverride == other.displayNameOverride &&
+                    hasSoftLimit == other.hasSoftLimit &&
                     hiddenFromWidgets == other.hiddenFromWidgets &&
                     isCustom == other.isCustom &&
                     isGranted == other.isGranted &&
@@ -4578,6 +4640,7 @@ private constructor(
                     createdAt,
                     description,
                     displayNameOverride,
+                    hasSoftLimit,
                     hiddenFromWidgets,
                     isCustom,
                     isGranted,
@@ -4592,7 +4655,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{id=$id, amount=$amount, behavior=$behavior, cadence=$cadence, createdAt=$createdAt, description=$description, displayNameOverride=$displayNameOverride, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, type=$type, updatedAt=$updatedAt, dependencyFeatureId=$dependencyFeatureId, additionalProperties=$additionalProperties}"
+                "Credit{id=$id, amount=$amount, behavior=$behavior, cadence=$cadence, createdAt=$createdAt, description=$description, displayNameOverride=$displayNameOverride, hasSoftLimit=$hasSoftLimit, hiddenFromWidgets=$hiddenFromWidgets, isCustom=$isCustom, isGranted=$isGranted, order=$order, type=$type, updatedAt=$updatedAt, dependencyFeatureId=$dependencyFeatureId, additionalProperties=$additionalProperties}"
         }
     }
 
