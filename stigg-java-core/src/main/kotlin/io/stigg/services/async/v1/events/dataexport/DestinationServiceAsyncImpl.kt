@@ -20,6 +20,8 @@ import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateResponse
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteResponse
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateParams
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -42,6 +44,13 @@ class DestinationServiceAsyncImpl internal constructor(private val clientOptions
     ): CompletableFuture<DestinationCreateResponse> =
         // post /api/v1/data-export/destinations
         withRawResponse().create(params, requestOptions).thenApply { it.parse() }
+
+    override fun update(
+        params: DestinationUpdateParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<DestinationUpdateResponse> =
+        // patch /api/v1/data-export/destinations/{destinationId}
+        withRawResponse().update(params, requestOptions).thenApply { it.parse() }
 
     override fun delete(
         params: DestinationDeleteParams,
@@ -85,6 +94,46 @@ class DestinationServiceAsyncImpl internal constructor(private val clientOptions
                     errorHandler.handle(response).parseable {
                         response
                             .use { createHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val updateHandler: Handler<DestinationUpdateResponse> =
+            jsonHandler<DestinationUpdateResponse>(clientOptions.jsonMapper)
+
+        override fun update(
+            params: DestinationUpdateParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("destinationId", params.destinationId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "api",
+                        "v1",
+                        "data-export",
+                        "destinations",
+                        params._pathParam(0),
+                    )
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { updateHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
