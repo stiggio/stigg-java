@@ -10,6 +10,8 @@ import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateResponse
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteResponse
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateParams
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateResponse
 import java.util.function.Consumer
 
 interface DestinationService {
@@ -38,6 +40,31 @@ interface DestinationService {
         params: DestinationCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): DestinationCreateResponse
+
+    /**
+     * Update a destination's entity selection. Pushes the new enabled_models to the provider first,
+     * then persists the selection. Applies on the next scheduled transfer.
+     */
+    fun update(destinationId: String, params: DestinationUpdateParams): DestinationUpdateResponse =
+        update(destinationId, params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        destinationId: String,
+        params: DestinationUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): DestinationUpdateResponse =
+        update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+    /** @see update */
+    fun update(params: DestinationUpdateParams): DestinationUpdateResponse =
+        update(params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        params: DestinationUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): DestinationUpdateResponse
 
     /** Remove a destination from the DATA_EXPORT integration metadata. Idempotent. */
     fun delete(destinationId: String): DestinationDeleteResponse =
@@ -99,6 +126,38 @@ interface DestinationService {
             params: DestinationCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<DestinationCreateResponse>
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/data-export/destinations/{destinationId}`,
+         * but is otherwise the same as [DestinationService.update].
+         */
+        @MustBeClosed
+        fun update(
+            destinationId: String,
+            params: DestinationUpdateParams,
+        ): HttpResponseFor<DestinationUpdateResponse> =
+            update(destinationId, params, RequestOptions.none())
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            destinationId: String,
+            params: DestinationUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<DestinationUpdateResponse> =
+            update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+        /** @see update */
+        @MustBeClosed
+        fun update(params: DestinationUpdateParams): HttpResponseFor<DestinationUpdateResponse> =
+            update(params, RequestOptions.none())
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            params: DestinationUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<DestinationUpdateResponse>
 
         /**
          * Returns a raw HTTP response for `delete

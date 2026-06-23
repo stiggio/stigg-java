@@ -9,6 +9,8 @@ import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateResponse
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteResponse
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateParams
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -38,6 +40,34 @@ interface DestinationServiceAsync {
         params: DestinationCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<DestinationCreateResponse>
+
+    /**
+     * Update a destination's entity selection. Pushes the new enabled_models to the provider first,
+     * then persists the selection. Applies on the next scheduled transfer.
+     */
+    fun update(
+        destinationId: String,
+        params: DestinationUpdateParams,
+    ): CompletableFuture<DestinationUpdateResponse> =
+        update(destinationId, params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        destinationId: String,
+        params: DestinationUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<DestinationUpdateResponse> =
+        update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+    /** @see update */
+    fun update(params: DestinationUpdateParams): CompletableFuture<DestinationUpdateResponse> =
+        update(params, RequestOptions.none())
+
+    /** @see update */
+    fun update(
+        params: DestinationUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<DestinationUpdateResponse>
 
     /** Remove a destination from the DATA_EXPORT integration metadata. Idempotent. */
     fun delete(destinationId: String): CompletableFuture<DestinationDeleteResponse> =
@@ -104,6 +134,36 @@ interface DestinationServiceAsync {
             params: DestinationCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<DestinationCreateResponse>>
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/data-export/destinations/{destinationId}`,
+         * but is otherwise the same as [DestinationServiceAsync.update].
+         */
+        fun update(
+            destinationId: String,
+            params: DestinationUpdateParams,
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
+            update(destinationId, params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            destinationId: String,
+            params: DestinationUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
+            update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+        /** @see update */
+        fun update(
+            params: DestinationUpdateParams
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
+            update(params, RequestOptions.none())
+
+        /** @see update */
+        fun update(
+            params: DestinationUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>>
 
         /**
          * Returns a raw HTTP response for `delete
