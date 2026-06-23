@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.26 (2026-06-23)
+
+Full Changelog: [v0.1.0-beta.25...v0.1.0-beta.26](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.25...v0.1.0-beta.26)
+
+### Features
+
+* **api:** add hasSoftLimit field to addon/plan entitlement credit models ([9d0a964](https://github.com/stiggio/stigg-java/commit/9d0a964fa1731e351cfa71f9cd46043a539e31b5))
+
 ## 0.1.0-beta.25 (2026-06-22)
 
 Full Changelog: [v0.1.0-beta.24...v0.1.0-beta.25](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.24...v0.1.0-beta.25)
