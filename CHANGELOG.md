@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.27 (2026-06-23)
+
+Full Changelog: [v0.1.0-beta.26...v0.1.0-beta.27](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.26...v0.1.0-beta.27)
+
+### Features
+
+* **api:** add usagePeriodEnd field to usage report response credit ([eba2893](https://github.com/stiggio/stigg-java/commit/eba28932d315b3a288e134f9da9f9a10c89dcc88))
+
 ## 0.1.0-beta.26 (2026-06-23)
 
 Full Changelog: [v0.1.0-beta.25...v0.1.0-beta.26](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.25...v0.1.0-beta.26)
