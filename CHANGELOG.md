@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.29 (2026-06-28)
+
+Full Changelog: [v0.1.0-beta.28...v0.1.0-beta.29](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.28...v0.1.0-beta.29)
+
+### Features
+
+* **stainless:** update production server to edge.api.stigg.io ([288e3b8](https://github.com/stiggio/stigg-java/commit/288e3b83cc7af4671c61eb10d20dda16a8940138))
+
 ## 0.1.0-beta.28 (2026-06-23)
 
 Full Changelog: [v0.1.0-beta.27...v0.1.0-beta.28](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.27...v0.1.0-beta.28)
