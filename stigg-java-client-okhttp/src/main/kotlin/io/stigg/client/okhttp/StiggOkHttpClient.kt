@@ -237,7 +237,7 @@ class StiggOkHttpClient private constructor() {
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api.stigg.io`.
+         * Defaults to the production environment: `https://edge.api.stigg.io`.
          */
         fun baseUrl(baseUrl: String?) = apply { clientOptions.baseUrl(baseUrl) }
 
