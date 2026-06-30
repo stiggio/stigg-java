@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.30 (2026-06-30)
+
+Full Changelog: [v0.1.0-beta.29...v0.1.0-beta.30](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.29...v0.1.0-beta.30)
+
+### Features
+
+* **api:** add AIRWALLEX to VendorIdentifier enum in customers ([b8e9041](https://github.com/stiggio/stigg-java/commit/b8e9041fd5ff39812e8ed2e50dbf239e0d19b80c))
+
 ## 0.1.0-beta.29 (2026-06-28)
 
 Full Changelog: [v0.1.0-beta.28...v0.1.0-beta.29](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.28...v0.1.0-beta.29)
