@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.31 (2026-07-01)
+
+Full Changelog: [v0.1.0-beta.30...v0.1.0-beta.31](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.30...v0.1.0-beta.31)
+
+### Features
+
+* **api:** add consume/consumeAsync methods to credits consumption ([32b02b4](https://github.com/stiggio/stigg-java/commit/32b02b4663bf1b98966b08288afc958b03a7d12d))
+
 ## 0.1.0-beta.30 (2026-06-30)
 
 Full Changelog: [v0.1.0-beta.29...v0.1.0-beta.30](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.29...v0.1.0-beta.30)
