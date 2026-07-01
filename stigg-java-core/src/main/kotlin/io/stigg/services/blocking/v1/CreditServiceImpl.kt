@@ -21,6 +21,8 @@ import io.stigg.models.v1.credits.CreditGetUsageResponse
 import io.stigg.models.v1.credits.CreditListLedgerPage
 import io.stigg.models.v1.credits.CreditListLedgerPageResponse
 import io.stigg.models.v1.credits.CreditListLedgerParams
+import io.stigg.services.blocking.v1.credits.ConsumptionService
+import io.stigg.services.blocking.v1.credits.ConsumptionServiceImpl
 import io.stigg.services.blocking.v1.credits.CustomCurrencyService
 import io.stigg.services.blocking.v1.credits.CustomCurrencyServiceImpl
 import io.stigg.services.blocking.v1.credits.GrantService
@@ -40,6 +42,8 @@ class CreditServiceImpl internal constructor(private val clientOptions: ClientOp
         CustomCurrencyServiceImpl(clientOptions)
     }
 
+    private val consumption: ConsumptionService by lazy { ConsumptionServiceImpl(clientOptions) }
+
     override fun withRawResponse(): CreditService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CreditService =
@@ -50,6 +54,8 @@ class CreditServiceImpl internal constructor(private val clientOptions: ClientOp
 
     /** Operations related to custom currencies */
     override fun customCurrencies(): CustomCurrencyService = customCurrencies
+
+    override fun consumption(): ConsumptionService = consumption
 
     override fun getAutoRecharge(
         params: CreditGetAutoRechargeParams,
@@ -86,6 +92,10 @@ class CreditServiceImpl internal constructor(private val clientOptions: ClientOp
             CustomCurrencyServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val consumption: ConsumptionService.WithRawResponse by lazy {
+            ConsumptionServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CreditService.WithRawResponse =
@@ -98,6 +108,8 @@ class CreditServiceImpl internal constructor(private val clientOptions: ClientOp
 
         /** Operations related to custom currencies */
         override fun customCurrencies(): CustomCurrencyService.WithRawResponse = customCurrencies
+
+        override fun consumption(): ConsumptionService.WithRawResponse = consumption
 
         private val getAutoRechargeHandler: Handler<CreditGetAutoRechargeResponse> =
             jsonHandler<CreditGetAutoRechargeResponse>(clientOptions.jsonMapper)
