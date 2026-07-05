@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.32 (2026-07-05)
+
+Full Changelog: [v0.1.0-beta.31...v0.1.0-beta.32](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.31...v0.1.0-beta.32)
+
+### Bug Fixes
+
+* **api:** rename entity/governance type fields to entityTypeId ([b825f13](https://github.com/stiggio/stigg-java/commit/b825f136604d90441b85bf7659de29d52ae674c4))
+
 ## 0.1.0-beta.31 (2026-07-01)
 
 Full Changelog: [v0.1.0-beta.30...v0.1.0-beta.31](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.30...v0.1.0-beta.31)
