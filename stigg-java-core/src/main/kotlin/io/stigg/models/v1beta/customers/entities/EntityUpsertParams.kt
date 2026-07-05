@@ -497,21 +497,21 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
+        private val entityTypeId: JsonField<String>,
         private val metadata: JsonField<Metadata>,
-        private val typeRefId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("entityTypeId")
+            @ExcludeMissing
+            entityTypeId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
-            @JsonProperty("typeRefId")
-            @ExcludeMissing
-            typeRefId: JsonField<String> = JsonMissing.of(),
-        ) : this(id, metadata, typeRefId, mutableMapOf())
+        ) : this(id, entityTypeId, metadata, mutableMapOf())
 
         /**
          * The unique identifier for the entity
@@ -520,6 +520,16 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun id(): String = id.getRequired("id")
+
+        /**
+         * The entity type ID this entity instantiates. Required when creating a new entity; on a
+         * re-upsert may be omitted to preserve the existing type. Governance returns 400 if missing
+         * on create.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun entityTypeId(): Optional<String> = entityTypeId.getOptional("entityTypeId")
 
         /**
          * Free-form key/value metadata. Patch semantics: empty-string value removes a key, omitted
@@ -531,16 +541,6 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
-         * The entity type refId this entity instantiates. Required when creating a new entity; on a
-         * re-upsert may be omitted to preserve the existing type. Governance returns 400 if missing
-         * on create.
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun typeRefId(): Optional<String> = typeRefId.getOptional("typeRefId")
-
-        /**
          * Returns the raw JSON value of [id].
          *
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -548,18 +548,21 @@ private constructor(
         @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
+         * Returns the raw JSON value of [entityTypeId].
+         *
+         * Unlike [entityTypeId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("entityTypeId")
+        @ExcludeMissing
+        fun _entityTypeId(): JsonField<String> = entityTypeId
+
+        /**
          * Returns the raw JSON value of [metadata].
          *
          * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
-
-        /**
-         * Returns the raw JSON value of [typeRefId].
-         *
-         * Unlike [typeRefId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("typeRefId") @ExcludeMissing fun _typeRefId(): JsonField<String> = typeRefId
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -590,15 +593,15 @@ private constructor(
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
+            private var entityTypeId: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
-            private var typeRefId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(entity: Entity) = apply {
                 id = entity.id
+                entityTypeId = entity.entityTypeId
                 metadata = entity.metadata
-                typeRefId = entity.typeRefId
                 additionalProperties = entity.additionalProperties.toMutableMap()
             }
 
@@ -615,6 +618,24 @@ private constructor(
             fun id(id: JsonField<String>) = apply { this.id = id }
 
             /**
+             * The entity type ID this entity instantiates. Required when creating a new entity; on
+             * a re-upsert may be omitted to preserve the existing type. Governance returns 400 if
+             * missing on create.
+             */
+            fun entityTypeId(entityTypeId: String) = entityTypeId(JsonField.of(entityTypeId))
+
+            /**
+             * Sets [Builder.entityTypeId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.entityTypeId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun entityTypeId(entityTypeId: JsonField<String>) = apply {
+                this.entityTypeId = entityTypeId
+            }
+
+            /**
              * Free-form key/value metadata. Patch semantics: empty-string value removes a key,
              * omitted keys are preserved.
              */
@@ -628,22 +649,6 @@ private constructor(
              * supported value.
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
-
-            /**
-             * The entity type refId this entity instantiates. Required when creating a new entity;
-             * on a re-upsert may be omitted to preserve the existing type. Governance returns 400
-             * if missing on create.
-             */
-            fun typeRefId(typeRefId: String) = typeRefId(JsonField.of(typeRefId))
-
-            /**
-             * Sets [Builder.typeRefId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.typeRefId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun typeRefId(typeRefId: JsonField<String>) = apply { this.typeRefId = typeRefId }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -679,8 +684,8 @@ private constructor(
             fun build(): Entity =
                 Entity(
                     checkRequired("id", id),
+                    entityTypeId,
                     metadata,
-                    typeRefId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -702,8 +707,8 @@ private constructor(
             }
 
             id()
+            entityTypeId()
             metadata().ifPresent { it.validate() }
-            typeRefId()
             validated = true
         }
 
@@ -724,8 +729,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
-                (metadata.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (typeRefId.asKnown().isPresent) 1 else 0)
+                (if (entityTypeId.asKnown().isPresent) 1 else 0) +
+                (metadata.asKnown().getOrNull()?.validity() ?: 0)
 
         /**
          * Free-form key/value metadata. Patch semantics: empty-string value removes a key, omitted
@@ -850,19 +855,19 @@ private constructor(
 
             return other is Entity &&
                 id == other.id &&
+                entityTypeId == other.entityTypeId &&
                 metadata == other.metadata &&
-                typeRefId == other.typeRefId &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(id, metadata, typeRefId, additionalProperties)
+            Objects.hash(id, entityTypeId, metadata, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Entity{id=$id, metadata=$metadata, typeRefId=$typeRefId, additionalProperties=$additionalProperties}"
+            "Entity{id=$id, entityTypeId=$entityTypeId, metadata=$metadata, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

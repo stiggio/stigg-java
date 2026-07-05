@@ -102,24 +102,24 @@ internal class EntityServiceAsyncTest {
                     .addEntity(
                         EntityUpsertParams.Entity.builder()
                             .id("user-7f3a0c1d")
+                            .entityTypeId("user")
                             .metadata(
                                 EntityUpsertParams.Entity.Metadata.builder()
                                     .putAdditionalProperty("email", JsonValue.from("jane@acme.com"))
                                     .putAdditionalProperty("role", JsonValue.from("admin"))
                                     .build()
                             )
-                            .typeRefId("user")
                             .build()
                     )
                     .addEntity(
                         EntityUpsertParams.Entity.builder()
                             .id("user-c4d1b2e9")
+                            .entityTypeId("user")
                             .metadata(
                                 EntityUpsertParams.Entity.Metadata.builder()
                                     .putAdditionalProperty("email", JsonValue.from("john@acme.com"))
                                     .build()
                             )
-                            .typeRefId("user")
                             .build()
                     )
                     .build()

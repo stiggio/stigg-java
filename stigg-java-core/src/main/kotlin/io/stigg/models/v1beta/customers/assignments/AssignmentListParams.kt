@@ -35,10 +35,10 @@ private constructor(
     /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
-    /** Filter assignments to a specific capability refId */
+    /** Filter assignments to a specific capability ID */
     fun capabilityId(): Optional<String> = Optional.ofNullable(capabilityId)
 
-    /** Filter assignments to a specific entity refId */
+    /** Filter assignments to a specific entity ID */
     fun entityId(): Optional<String> = Optional.ofNullable(entityId)
 
     /** Maximum number of items to return */
@@ -109,13 +109,13 @@ private constructor(
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
 
-        /** Filter assignments to a specific capability refId */
+        /** Filter assignments to a specific capability ID */
         fun capabilityId(capabilityId: String?) = apply { this.capabilityId = capabilityId }
 
         /** Alias for calling [Builder.capabilityId] with `capabilityId.orElse(null)`. */
         fun capabilityId(capabilityId: Optional<String>) = capabilityId(capabilityId.getOrNull())
 
-        /** Filter assignments to a specific entity refId */
+        /** Filter assignments to a specific entity ID */
         fun entityId(entityId: String?) = apply { this.entityId = entityId }
 
         /** Alias for calling [Builder.entityId] with `entityId.orElse(null)`. */
