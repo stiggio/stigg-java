@@ -269,7 +269,7 @@ private constructor(
         fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
         /**
-         * The entity refId this assignment is attached to
+         * The entity ID this assignment is attached to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -277,7 +277,7 @@ private constructor(
         fun entityId(): String = entityId.getRequired("entityId")
 
         /**
-         * Parent entity refId in the hierarchy, or `null` for a root.
+         * Parent entity ID in the hierarchy, or `null` for a root.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -285,9 +285,9 @@ private constructor(
         fun parentId(): Optional<String> = parentId.getOptional("parentId")
 
         /**
-         * Dimension-scoped sub-budget key: the set of entity refIds this budget applies to. Empty
-         * is the node-wide budget that always matches; a non-empty set only applies when every
-         * listed entity is present in the resolved set (order-insensitive).
+         * Dimension-scoped sub-budget key: the set of entity IDs this budget applies to. Empty is
+         * the node-wide budget that always matches; a non-empty set only applies when every listed
+         * entity is present in the resolved set (order-insensitive).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -311,7 +311,7 @@ private constructor(
         fun usageLimit(): Optional<Double> = usageLimit.getOptional("usageLimit")
 
         /**
-         * Currency refId this assignment grants (present for credit capabilities).
+         * Currency ID this assignment grants (present for credit capabilities).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -319,7 +319,7 @@ private constructor(
         fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
 
         /**
-         * Feature refId this assignment grants (present for feature capabilities).
+         * Feature ID this assignment grants (present for feature capabilities).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -509,7 +509,7 @@ private constructor(
                 this.createdAt = createdAt
             }
 
-            /** The entity refId this assignment is attached to */
+            /** The entity ID this assignment is attached to */
             fun entityId(entityId: String) = entityId(JsonField.of(entityId))
 
             /**
@@ -521,7 +521,7 @@ private constructor(
              */
             fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
 
-            /** Parent entity refId in the hierarchy, or `null` for a root. */
+            /** Parent entity ID in the hierarchy, or `null` for a root. */
             fun parentId(parentId: String?) = parentId(JsonField.ofNullable(parentId))
 
             /** Alias for calling [Builder.parentId] with `parentId.orElse(null)`. */
@@ -537,9 +537,9 @@ private constructor(
             fun parentId(parentId: JsonField<String>) = apply { this.parentId = parentId }
 
             /**
-             * Dimension-scoped sub-budget key: the set of entity refIds this budget applies to.
-             * Empty is the node-wide budget that always matches; a non-empty set only applies when
-             * every listed entity is present in the resolved set (order-insensitive).
+             * Dimension-scoped sub-budget key: the set of entity IDs this budget applies to. Empty
+             * is the node-wide budget that always matches; a non-empty set only applies when every
+             * listed entity is present in the resolved set (order-insensitive).
              */
             fun scopeEntityIds(scopeEntityIds: List<String>) =
                 scopeEntityIds(JsonField.of(scopeEntityIds))
@@ -603,7 +603,7 @@ private constructor(
              */
             fun usageLimit(usageLimit: JsonField<Double>) = apply { this.usageLimit = usageLimit }
 
-            /** Currency refId this assignment grants (present for credit capabilities). */
+            /** Currency ID this assignment grants (present for credit capabilities). */
             fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
 
             /**
@@ -615,7 +615,7 @@ private constructor(
              */
             fun currencyId(currencyId: JsonField<String>) = apply { this.currencyId = currencyId }
 
-            /** Feature refId this assignment grants (present for feature capabilities). */
+            /** Feature ID this assignment grants (present for feature capabilities). */
             fun featureId(featureId: String) = featureId(JsonField.of(featureId))
 
             /**

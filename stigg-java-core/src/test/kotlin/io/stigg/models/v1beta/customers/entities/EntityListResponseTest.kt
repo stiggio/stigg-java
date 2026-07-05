@@ -18,12 +18,12 @@ internal class EntityListResponseTest {
                 .id("id")
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .entityTypeId("entityTypeId")
                 .metadata(
                     EntityListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
-                .typeId("typeId")
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 
@@ -32,13 +32,13 @@ internal class EntityListResponseTest {
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(entityListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(entityListResponse.entityTypeId()).isEqualTo("entityTypeId")
         assertThat(entityListResponse.metadata())
             .isEqualTo(
                 EntityListResponse.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
-        assertThat(entityListResponse.typeId()).isEqualTo("typeId")
         assertThat(entityListResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
     }
@@ -51,12 +51,12 @@ internal class EntityListResponseTest {
                 .id("id")
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .entityTypeId("entityTypeId")
                 .metadata(
                     EntityListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
-                .typeId("typeId")
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 

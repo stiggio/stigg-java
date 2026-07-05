@@ -188,8 +188,8 @@ private constructor(
         private val id: JsonField<String>,
         private val archivedAt: JsonField<OffsetDateTime>,
         private val createdAt: JsonField<OffsetDateTime>,
+        private val entityTypeId: JsonField<String>,
         private val metadata: JsonField<Metadata>,
-        private val typeId: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -203,14 +203,16 @@ private constructor(
             @JsonProperty("createdAt")
             @ExcludeMissing
             createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("entityTypeId")
+            @ExcludeMissing
+            entityTypeId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
-            @JsonProperty("typeId") @ExcludeMissing typeId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(id, archivedAt, createdAt, metadata, typeId, updatedAt, mutableMapOf())
+        ) : this(id, archivedAt, createdAt, entityTypeId, metadata, updatedAt, mutableMapOf())
 
         /**
          * The unique identifier for the entity
@@ -237,20 +239,20 @@ private constructor(
         fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
         /**
+         * The entity type identifier this entity instantiates
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun entityTypeId(): String = entityTypeId.getRequired("entityTypeId")
+
+        /**
          * Free-form key/value metadata attached to the entity
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun metadata(): Metadata = metadata.getRequired("metadata")
-
-        /**
-         * The entity type identifier this entity instantiates
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun typeId(): String = typeId.getRequired("typeId")
 
         /**
          * Timestamp of when the record was last updated
@@ -286,18 +288,21 @@ private constructor(
         fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
         /**
+         * Returns the raw JSON value of [entityTypeId].
+         *
+         * Unlike [entityTypeId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("entityTypeId")
+        @ExcludeMissing
+        fun _entityTypeId(): JsonField<String> = entityTypeId
+
+        /**
          * Returns the raw JSON value of [metadata].
          *
          * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
-
-        /**
-         * Returns the raw JSON value of [typeId].
-         *
-         * Unlike [typeId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("typeId") @ExcludeMissing fun _typeId(): JsonField<String> = typeId
 
         /**
          * Returns the raw JSON value of [updatedAt].
@@ -330,8 +335,8 @@ private constructor(
              * .id()
              * .archivedAt()
              * .createdAt()
+             * .entityTypeId()
              * .metadata()
-             * .typeId()
              * .updatedAt()
              * ```
              */
@@ -344,8 +349,8 @@ private constructor(
             private var id: JsonField<String>? = null
             private var archivedAt: JsonField<OffsetDateTime>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
+            private var entityTypeId: JsonField<String>? = null
             private var metadata: JsonField<Metadata>? = null
-            private var typeId: JsonField<String>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -354,8 +359,8 @@ private constructor(
                 id = data.id
                 archivedAt = data.archivedAt
                 createdAt = data.createdAt
+                entityTypeId = data.entityTypeId
                 metadata = data.metadata
-                typeId = data.typeId
                 updatedAt = data.updatedAt
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
@@ -405,6 +410,20 @@ private constructor(
                 this.createdAt = createdAt
             }
 
+            /** The entity type identifier this entity instantiates */
+            fun entityTypeId(entityTypeId: String) = entityTypeId(JsonField.of(entityTypeId))
+
+            /**
+             * Sets [Builder.entityTypeId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.entityTypeId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun entityTypeId(entityTypeId: JsonField<String>) = apply {
+                this.entityTypeId = entityTypeId
+            }
+
             /** Free-form key/value metadata attached to the entity */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
@@ -416,18 +435,6 @@ private constructor(
              * supported value.
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
-
-            /** The entity type identifier this entity instantiates */
-            fun typeId(typeId: String) = typeId(JsonField.of(typeId))
-
-            /**
-             * Sets [Builder.typeId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.typeId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun typeId(typeId: JsonField<String>) = apply { this.typeId = typeId }
 
             /** Timestamp of when the record was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -472,8 +479,8 @@ private constructor(
              * .id()
              * .archivedAt()
              * .createdAt()
+             * .entityTypeId()
              * .metadata()
-             * .typeId()
              * .updatedAt()
              * ```
              *
@@ -484,8 +491,8 @@ private constructor(
                     checkRequired("id", id),
                     checkRequired("archivedAt", archivedAt),
                     checkRequired("createdAt", createdAt),
+                    checkRequired("entityTypeId", entityTypeId),
                     checkRequired("metadata", metadata),
-                    checkRequired("typeId", typeId),
                     checkRequired("updatedAt", updatedAt),
                     additionalProperties.toMutableMap(),
                 )
@@ -510,8 +517,8 @@ private constructor(
             id()
             archivedAt()
             createdAt()
+            entityTypeId()
             metadata().validate()
-            typeId()
             updatedAt()
             validated = true
         }
@@ -535,8 +542,8 @@ private constructor(
             (if (id.asKnown().isPresent) 1 else 0) +
                 (if (archivedAt.asKnown().isPresent) 1 else 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
+                (if (entityTypeId.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (typeId.asKnown().isPresent) 1 else 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0)
 
         /** Free-form key/value metadata attached to the entity */
@@ -661,8 +668,8 @@ private constructor(
                 id == other.id &&
                 archivedAt == other.archivedAt &&
                 createdAt == other.createdAt &&
+                entityTypeId == other.entityTypeId &&
                 metadata == other.metadata &&
-                typeId == other.typeId &&
                 updatedAt == other.updatedAt &&
                 additionalProperties == other.additionalProperties
         }
@@ -672,8 +679,8 @@ private constructor(
                 id,
                 archivedAt,
                 createdAt,
+                entityTypeId,
                 metadata,
-                typeId,
                 updatedAt,
                 additionalProperties,
             )
@@ -682,7 +689,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, metadata=$metadata, typeId=$typeId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, entityTypeId=$entityTypeId, metadata=$metadata, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

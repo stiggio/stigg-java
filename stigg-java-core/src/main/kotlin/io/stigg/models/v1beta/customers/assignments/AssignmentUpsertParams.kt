@@ -549,7 +549,7 @@ private constructor(
         )
 
         /**
-         * The entity refId this assignment is attached to
+         * The entity ID this assignment is attached to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -566,8 +566,7 @@ private constructor(
         fun cadence(): Optional<String> = cadence.getOptional("cadence")
 
         /**
-         * Currency refId this assignment grants (credit budgets). Mutually exclusive with
-         * `featureId`.
+         * Currency ID this assignment grants (credit budgets). Mutually exclusive with `featureId`.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -575,7 +574,7 @@ private constructor(
         fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
 
         /**
-         * Feature refId this assignment grants. Mutually exclusive with `currencyId`.
+         * Feature ID this assignment grants. Mutually exclusive with `currencyId`.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -583,8 +582,8 @@ private constructor(
         fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
         /**
-         * Parent entity refId in the hierarchy. Omit to leave the current parent untouched (a new
-         * node defaults to a root); `null` detaches to a root; a refId sets or changes the parent.
+         * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new node
+         * defaults to a root); `null` detaches to a root; an ID sets or changes the parent.
          * Reparenting an existing node is leaf-only.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -711,7 +710,7 @@ private constructor(
                 additionalProperties = assignment.additionalProperties.toMutableMap()
             }
 
-            /** The entity refId this assignment is attached to */
+            /** The entity ID this assignment is attached to */
             fun entityId(entityId: String) = entityId(JsonField.of(entityId))
 
             /**
@@ -739,7 +738,7 @@ private constructor(
             fun cadence(cadence: JsonField<String>) = apply { this.cadence = cadence }
 
             /**
-             * Currency refId this assignment grants (credit budgets). Mutually exclusive with
+             * Currency ID this assignment grants (credit budgets). Mutually exclusive with
              * `featureId`.
              */
             fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
@@ -753,7 +752,7 @@ private constructor(
              */
             fun currencyId(currencyId: JsonField<String>) = apply { this.currencyId = currencyId }
 
-            /** Feature refId this assignment grants. Mutually exclusive with `currencyId`. */
+            /** Feature ID this assignment grants. Mutually exclusive with `currencyId`. */
             fun featureId(featureId: String) = featureId(JsonField.of(featureId))
 
             /**
@@ -766,8 +765,8 @@ private constructor(
             fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
             /**
-             * Parent entity refId in the hierarchy. Omit to leave the current parent untouched (a
-             * new node defaults to a root); `null` detaches to a root; a refId sets or changes the
+             * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new
+             * node defaults to a root); `null` detaches to a root; an ID sets or changes the
              * parent. Reparenting an existing node is leaf-only.
              */
             fun parentId(parentId: String?) = parentId(JsonField.ofNullable(parentId))
