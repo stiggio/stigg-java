@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.33 (2026-07-05)
+
+Full Changelog: [v0.1.0-beta.32...v0.1.0-beta.33](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.32...v0.1.0-beta.33)
+
+### Features
+
+* **api:** add featureId, rename capabilityId to currencyId in assignment list ([5473d2c](https://github.com/stiggio/stigg-java/commit/5473d2cccffca2bcbfb999bda73844ce806c80bc))
+
 ## 0.1.0-beta.32 (2026-07-05)
 
 Full Changelog: [v0.1.0-beta.31...v0.1.0-beta.32](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.31...v0.1.0-beta.32)
