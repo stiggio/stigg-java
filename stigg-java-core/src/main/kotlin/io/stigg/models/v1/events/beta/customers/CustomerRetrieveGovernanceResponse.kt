@@ -232,7 +232,7 @@ private constructor(
         private val cadence: JsonField<String>,
         private val currentUsage: JsonField<Double>,
         private val entityId: JsonField<String>,
-        private val entityType: JsonField<String>,
+        private val entityTypeId: JsonField<String>,
         private val parentId: JsonField<String>,
         private val scopeEntityIds: JsonField<List<String>>,
         private val usageLimit: JsonField<Double>,
@@ -253,9 +253,9 @@ private constructor(
             @JsonProperty("entityId")
             @ExcludeMissing
             entityId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("entityType")
+            @JsonProperty("entityTypeId")
             @ExcludeMissing
-            entityType: JsonField<String> = JsonMissing.of(),
+            entityTypeId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("parentId")
             @ExcludeMissing
             parentId: JsonField<String> = JsonMissing.of(),
@@ -284,7 +284,7 @@ private constructor(
             cadence,
             currentUsage,
             entityId,
-            entityType,
+            entityTypeId,
             parentId,
             scopeEntityIds,
             usageLimit,
@@ -328,7 +328,7 @@ private constructor(
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun entityType(): String = entityType.getRequired("entityType")
+        fun entityTypeId(): String = entityTypeId.getRequired("entityTypeId")
 
         /**
          * External id of the parent entity in the tree; `null` for a root. Use it to rebuild the
@@ -386,7 +386,7 @@ private constructor(
         fun utilization(): Optional<Double> = utilization.getOptional("utilization")
 
         /**
-         * The metered currency refId (present when the configured capability is a credit currency).
+         * The metered currency ID (present when the configured capability is a credit currency).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -394,7 +394,7 @@ private constructor(
         fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
 
         /**
-         * The metered feature refId (present when the configured capability is a feature).
+         * The metered feature ID (present when the configured capability is a feature).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -426,13 +426,14 @@ private constructor(
         @JsonProperty("entityId") @ExcludeMissing fun _entityId(): JsonField<String> = entityId
 
         /**
-         * Returns the raw JSON value of [entityType].
+         * Returns the raw JSON value of [entityTypeId].
          *
-         * Unlike [entityType], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [entityTypeId], this method doesn't throw if the JSON field has an unexpected
+         * type.
          */
-        @JsonProperty("entityType")
+        @JsonProperty("entityTypeId")
         @ExcludeMissing
-        fun _entityType(): JsonField<String> = entityType
+        fun _entityTypeId(): JsonField<String> = entityTypeId
 
         /**
          * Returns the raw JSON value of [parentId].
@@ -527,7 +528,7 @@ private constructor(
              * .cadence()
              * .currentUsage()
              * .entityId()
-             * .entityType()
+             * .entityTypeId()
              * .parentId()
              * .scopeEntityIds()
              * .usageLimit()
@@ -545,7 +546,7 @@ private constructor(
             private var cadence: JsonField<String>? = null
             private var currentUsage: JsonField<Double>? = null
             private var entityId: JsonField<String>? = null
-            private var entityType: JsonField<String>? = null
+            private var entityTypeId: JsonField<String>? = null
             private var parentId: JsonField<String>? = null
             private var scopeEntityIds: JsonField<MutableList<String>>? = null
             private var usageLimit: JsonField<Double>? = null
@@ -561,7 +562,7 @@ private constructor(
                 cadence = data.cadence
                 currentUsage = data.currentUsage
                 entityId = data.entityId
-                entityType = data.entityType
+                entityTypeId = data.entityTypeId
                 parentId = data.parentId
                 scopeEntityIds = data.scopeEntityIds.map { it.toMutableList() }
                 usageLimit = data.usageLimit
@@ -633,16 +634,18 @@ private constructor(
             fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
 
             /** External id of the entity type (e.g. `team`, `user`). */
-            fun entityType(entityType: String) = entityType(JsonField.of(entityType))
+            fun entityTypeId(entityTypeId: String) = entityTypeId(JsonField.of(entityTypeId))
 
             /**
-             * Sets [Builder.entityType] to an arbitrary JSON value.
+             * Sets [Builder.entityTypeId] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.entityType] with a well-typed [String] value
+             * You should usually call [Builder.entityTypeId] with a well-typed [String] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun entityType(entityType: JsonField<String>) = apply { this.entityType = entityType }
+            fun entityTypeId(entityTypeId: JsonField<String>) = apply {
+                this.entityTypeId = entityTypeId
+            }
 
             /**
              * External id of the parent entity in the tree; `null` for a root. Use it to rebuild
@@ -788,7 +791,7 @@ private constructor(
             }
 
             /**
-             * The metered currency refId (present when the configured capability is a credit
+             * The metered currency ID (present when the configured capability is a credit
              * currency).
              */
             fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
@@ -802,7 +805,7 @@ private constructor(
              */
             fun currencyId(currencyId: JsonField<String>) = apply { this.currencyId = currencyId }
 
-            /** The metered feature refId (present when the configured capability is a feature). */
+            /** The metered feature ID (present when the configured capability is a feature). */
             fun featureId(featureId: String) = featureId(JsonField.of(featureId))
 
             /**
@@ -843,7 +846,7 @@ private constructor(
              * .cadence()
              * .currentUsage()
              * .entityId()
-             * .entityType()
+             * .entityTypeId()
              * .parentId()
              * .scopeEntityIds()
              * .usageLimit()
@@ -859,7 +862,7 @@ private constructor(
                     checkRequired("cadence", cadence),
                     checkRequired("currentUsage", currentUsage),
                     checkRequired("entityId", entityId),
-                    checkRequired("entityType", entityType),
+                    checkRequired("entityTypeId", entityTypeId),
                     checkRequired("parentId", parentId),
                     checkRequired("scopeEntityIds", scopeEntityIds).map { it.toImmutable() },
                     checkRequired("usageLimit", usageLimit),
@@ -891,7 +894,7 @@ private constructor(
             cadence()
             currentUsage()
             entityId()
-            entityType()
+            entityTypeId()
             parentId()
             scopeEntityIds()
             usageLimit()
@@ -922,7 +925,7 @@ private constructor(
             (if (cadence.asKnown().isPresent) 1 else 0) +
                 (if (currentUsage.asKnown().isPresent) 1 else 0) +
                 (if (entityId.asKnown().isPresent) 1 else 0) +
-                (if (entityType.asKnown().isPresent) 1 else 0) +
+                (if (entityTypeId.asKnown().isPresent) 1 else 0) +
                 (if (parentId.asKnown().isPresent) 1 else 0) +
                 (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                 (if (usageLimit.asKnown().isPresent) 1 else 0) +
@@ -941,7 +944,7 @@ private constructor(
                 cadence == other.cadence &&
                 currentUsage == other.currentUsage &&
                 entityId == other.entityId &&
-                entityType == other.entityType &&
+                entityTypeId == other.entityTypeId &&
                 parentId == other.parentId &&
                 scopeEntityIds == other.scopeEntityIds &&
                 usageLimit == other.usageLimit &&
@@ -958,7 +961,7 @@ private constructor(
                 cadence,
                 currentUsage,
                 entityId,
-                entityType,
+                entityTypeId,
                 parentId,
                 scopeEntityIds,
                 usageLimit,
@@ -974,7 +977,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{cadence=$cadence, currentUsage=$currentUsage, entityId=$entityId, entityType=$entityType, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+            "Data{cadence=$cadence, currentUsage=$currentUsage, entityId=$entityId, entityTypeId=$entityTypeId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
     }
 
     class Pagination

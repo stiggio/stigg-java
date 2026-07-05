@@ -19,9 +19,9 @@ private constructor(
     private val id: String?,
     private val after: String?,
     private val before: String?,
+    private val entityTypeId: String?,
     private val includeArchived: IncludeArchived?,
     private val limit: Long?,
-    private val typeRefId: String?,
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
@@ -36,14 +36,14 @@ private constructor(
     /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
+    /** Filter results to entities of a specific entity type, by the type's ID */
+    fun entityTypeId(): Optional<String> = Optional.ofNullable(entityTypeId)
+
     /** Whether to include archived entities. One of: true, false */
     fun includeArchived(): Optional<IncludeArchived> = Optional.ofNullable(includeArchived)
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
-
-    /** Filter results to entities of a specific entity type, by the type's refId */
-    fun typeRefId(): Optional<String> = Optional.ofNullable(typeRefId)
 
     fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
 
@@ -71,9 +71,9 @@ private constructor(
         private var id: String? = null
         private var after: String? = null
         private var before: String? = null
+        private var entityTypeId: String? = null
         private var includeArchived: IncludeArchived? = null
         private var limit: Long? = null
-        private var typeRefId: String? = null
         private var xAccountId: String? = null
         private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -84,9 +84,9 @@ private constructor(
             id = entityListParams.id
             after = entityListParams.after
             before = entityListParams.before
+            entityTypeId = entityListParams.entityTypeId
             includeArchived = entityListParams.includeArchived
             limit = entityListParams.limit
-            typeRefId = entityListParams.typeRefId
             xAccountId = entityListParams.xAccountId
             xEnvironmentId = entityListParams.xEnvironmentId
             additionalHeaders = entityListParams.additionalHeaders.toBuilder()
@@ -110,6 +110,12 @@ private constructor(
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
 
+        /** Filter results to entities of a specific entity type, by the type's ID */
+        fun entityTypeId(entityTypeId: String?) = apply { this.entityTypeId = entityTypeId }
+
+        /** Alias for calling [Builder.entityTypeId] with `entityTypeId.orElse(null)`. */
+        fun entityTypeId(entityTypeId: Optional<String>) = entityTypeId(entityTypeId.getOrNull())
+
         /** Whether to include archived entities. One of: true, false */
         fun includeArchived(includeArchived: IncludeArchived?) = apply {
             this.includeArchived = includeArchived
@@ -131,12 +137,6 @@ private constructor(
 
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
-
-        /** Filter results to entities of a specific entity type, by the type's refId */
-        fun typeRefId(typeRefId: String?) = apply { this.typeRefId = typeRefId }
-
-        /** Alias for calling [Builder.typeRefId] with `typeRefId.orElse(null)`. */
-        fun typeRefId(typeRefId: Optional<String>) = typeRefId(typeRefId.getOrNull())
 
         fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
 
@@ -257,9 +257,9 @@ private constructor(
                 id,
                 after,
                 before,
+                entityTypeId,
                 includeArchived,
                 limit,
-                typeRefId,
                 xAccountId,
                 xEnvironmentId,
                 additionalHeaders.build(),
@@ -287,9 +287,9 @@ private constructor(
             .apply {
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
+                entityTypeId?.let { put("entityTypeId", it) }
                 includeArchived?.let { put("includeArchived", it.toString()) }
                 limit?.let { put("limit", it.toString()) }
-                typeRefId?.let { put("typeRefId", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -441,9 +441,9 @@ private constructor(
             id == other.id &&
             after == other.after &&
             before == other.before &&
+            entityTypeId == other.entityTypeId &&
             includeArchived == other.includeArchived &&
             limit == other.limit &&
-            typeRefId == other.typeRefId &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
@@ -455,9 +455,9 @@ private constructor(
             id,
             after,
             before,
+            entityTypeId,
             includeArchived,
             limit,
-            typeRefId,
             xAccountId,
             xEnvironmentId,
             additionalHeaders,
@@ -465,5 +465,5 @@ private constructor(
         )
 
     override fun toString() =
-        "EntityListParams{id=$id, after=$after, before=$before, includeArchived=$includeArchived, limit=$limit, typeRefId=$typeRefId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntityListParams{id=$id, after=$after, before=$before, entityTypeId=$entityTypeId, includeArchived=$includeArchived, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
