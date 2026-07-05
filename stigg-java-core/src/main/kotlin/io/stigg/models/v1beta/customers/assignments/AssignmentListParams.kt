@@ -18,8 +18,9 @@ private constructor(
     private val id: String?,
     private val after: String?,
     private val before: String?,
-    private val capabilityId: String?,
+    private val currencyId: String?,
     private val entityId: String?,
+    private val featureId: String?,
     private val limit: Long?,
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
@@ -35,11 +36,18 @@ private constructor(
     /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
 
-    /** Filter assignments to a specific capability ID */
-    fun capabilityId(): Optional<String> = Optional.ofNullable(capabilityId)
+    /**
+     * Filter assignments to a specific currency, by its ID. Mutually exclusive with `featureId`.
+     */
+    fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
 
     /** Filter assignments to a specific entity ID */
     fun entityId(): Optional<String> = Optional.ofNullable(entityId)
+
+    /**
+     * Filter assignments to a specific feature, by its ID. Mutually exclusive with `currencyId`.
+     */
+    fun featureId(): Optional<String> = Optional.ofNullable(featureId)
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
@@ -70,8 +78,9 @@ private constructor(
         private var id: String? = null
         private var after: String? = null
         private var before: String? = null
-        private var capabilityId: String? = null
+        private var currencyId: String? = null
         private var entityId: String? = null
+        private var featureId: String? = null
         private var limit: Long? = null
         private var xAccountId: String? = null
         private var xEnvironmentId: String? = null
@@ -83,8 +92,9 @@ private constructor(
             id = assignmentListParams.id
             after = assignmentListParams.after
             before = assignmentListParams.before
-            capabilityId = assignmentListParams.capabilityId
+            currencyId = assignmentListParams.currencyId
             entityId = assignmentListParams.entityId
+            featureId = assignmentListParams.featureId
             limit = assignmentListParams.limit
             xAccountId = assignmentListParams.xAccountId
             xEnvironmentId = assignmentListParams.xEnvironmentId
@@ -109,17 +119,29 @@ private constructor(
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
 
-        /** Filter assignments to a specific capability ID */
-        fun capabilityId(capabilityId: String?) = apply { this.capabilityId = capabilityId }
+        /**
+         * Filter assignments to a specific currency, by its ID. Mutually exclusive with
+         * `featureId`.
+         */
+        fun currencyId(currencyId: String?) = apply { this.currencyId = currencyId }
 
-        /** Alias for calling [Builder.capabilityId] with `capabilityId.orElse(null)`. */
-        fun capabilityId(capabilityId: Optional<String>) = capabilityId(capabilityId.getOrNull())
+        /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
+        fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
 
         /** Filter assignments to a specific entity ID */
         fun entityId(entityId: String?) = apply { this.entityId = entityId }
 
         /** Alias for calling [Builder.entityId] with `entityId.orElse(null)`. */
         fun entityId(entityId: Optional<String>) = entityId(entityId.getOrNull())
+
+        /**
+         * Filter assignments to a specific feature, by its ID. Mutually exclusive with
+         * `currencyId`.
+         */
+        fun featureId(featureId: String?) = apply { this.featureId = featureId }
+
+        /** Alias for calling [Builder.featureId] with `featureId.orElse(null)`. */
+        fun featureId(featureId: Optional<String>) = featureId(featureId.getOrNull())
 
         /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -253,8 +275,9 @@ private constructor(
                 id,
                 after,
                 before,
-                capabilityId,
+                currencyId,
                 entityId,
+                featureId,
                 limit,
                 xAccountId,
                 xEnvironmentId,
@@ -283,8 +306,9 @@ private constructor(
             .apply {
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
-                capabilityId?.let { put("capabilityId", it) }
+                currencyId?.let { put("currencyId", it) }
                 entityId?.let { put("entityId", it) }
+                featureId?.let { put("featureId", it) }
                 limit?.let { put("limit", it.toString()) }
                 putAll(additionalQueryParams)
             }
@@ -299,8 +323,9 @@ private constructor(
             id == other.id &&
             after == other.after &&
             before == other.before &&
-            capabilityId == other.capabilityId &&
+            currencyId == other.currencyId &&
             entityId == other.entityId &&
+            featureId == other.featureId &&
             limit == other.limit &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
@@ -313,8 +338,9 @@ private constructor(
             id,
             after,
             before,
-            capabilityId,
+            currencyId,
             entityId,
+            featureId,
             limit,
             xAccountId,
             xEnvironmentId,
@@ -323,5 +349,5 @@ private constructor(
         )
 
     override fun toString() =
-        "AssignmentListParams{id=$id, after=$after, before=$before, capabilityId=$capabilityId, entityId=$entityId, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "AssignmentListParams{id=$id, after=$after, before=$before, currencyId=$currencyId, entityId=$entityId, featureId=$featureId, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
