@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-beta.34 (2026-07-08)
+
+Full Changelog: [v0.1.0-beta.33...v0.1.0-beta.34](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.33...v0.1.0-beta.34)
+
+### Features
+
+* **api:** add idempotencyKey parameter to usage report ([cd81c1a](https://github.com/stiggio/stigg-java/commit/cd81c1a8252aef07c72a78b96f669f7dfbef5172))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([daafaa3](https://github.com/stiggio/stigg-java/commit/daafaa38c123e36b9a7d462ca7f24f3224a64765))
+* **tests:** update maxQuantity test fixtures in addons from 0 to 1 ([c53ef9d](https://github.com/stiggio/stigg-java/commit/c53ef9d0c9baf08a0a481a95206cdcb9f89ef041))
+
 ## 0.1.0-beta.33 (2026-07-05)
 
 Full Changelog: [v0.1.0-beta.32...v0.1.0-beta.33](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.32...v0.1.0-beta.33)
