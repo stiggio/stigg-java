@@ -57,6 +57,7 @@ internal class UsageServiceTest {
                                     .putAdditionalProperty("foo", JsonValue.from("string"))
                                     .build()
                             )
+                            .idempotencyKey("x")
                             .resourceId("resourceId")
                             .updateBehavior(UsageReportParams.Usage.UpdateBehavior.DELTA)
                             .build()
