@@ -483,6 +483,7 @@ private constructor(
         private val value: JsonField<Long>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val dimensions: JsonField<Dimensions>,
+        private val idempotencyKey: JsonField<String>,
         private val resourceId: JsonField<String>,
         private val updateBehavior: JsonField<UpdateBehavior>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -503,6 +504,9 @@ private constructor(
             @JsonProperty("dimensions")
             @ExcludeMissing
             dimensions: JsonField<Dimensions> = JsonMissing.of(),
+            @JsonProperty("idempotencyKey")
+            @ExcludeMissing
+            idempotencyKey: JsonField<String> = JsonMissing.of(),
             @JsonProperty("resourceId")
             @ExcludeMissing
             resourceId: JsonField<String> = JsonMissing.of(),
@@ -515,6 +519,7 @@ private constructor(
             value,
             createdAt,
             dimensions,
+            idempotencyKey,
             resourceId,
             updateBehavior,
             mutableMapOf(),
@@ -559,6 +564,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun dimensions(): Optional<Dimensions> = dimensions.getOptional("dimensions")
+
+        /**
+         * Idempotency key
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun idempotencyKey(): Optional<String> = idempotencyKey.getOptional("idempotencyKey")
 
         /**
          * Resource id
@@ -619,6 +632,16 @@ private constructor(
         fun _dimensions(): JsonField<Dimensions> = dimensions
 
         /**
+         * Returns the raw JSON value of [idempotencyKey].
+         *
+         * Unlike [idempotencyKey], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("idempotencyKey")
+        @ExcludeMissing
+        fun _idempotencyKey(): JsonField<String> = idempotencyKey
+
+        /**
          * Returns the raw JSON value of [resourceId].
          *
          * Unlike [resourceId], this method doesn't throw if the JSON field has an unexpected type.
@@ -672,6 +695,7 @@ private constructor(
             private var value: JsonField<Long>? = null
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var dimensions: JsonField<Dimensions> = JsonMissing.of()
+            private var idempotencyKey: JsonField<String> = JsonMissing.of()
             private var resourceId: JsonField<String> = JsonMissing.of()
             private var updateBehavior: JsonField<UpdateBehavior> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -683,6 +707,7 @@ private constructor(
                 value = usage.value
                 createdAt = usage.createdAt
                 dimensions = usage.dimensions
+                idempotencyKey = usage.idempotencyKey
                 resourceId = usage.resourceId
                 updateBehavior = usage.updateBehavior
                 additionalProperties = usage.additionalProperties.toMutableMap()
@@ -750,6 +775,21 @@ private constructor(
              */
             fun dimensions(dimensions: JsonField<Dimensions>) = apply {
                 this.dimensions = dimensions
+            }
+
+            /** Idempotency key */
+            fun idempotencyKey(idempotencyKey: String) =
+                idempotencyKey(JsonField.of(idempotencyKey))
+
+            /**
+             * Sets [Builder.idempotencyKey] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.idempotencyKey] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun idempotencyKey(idempotencyKey: JsonField<String>) = apply {
+                this.idempotencyKey = idempotencyKey
             }
 
             /** Resource id */
@@ -822,6 +862,7 @@ private constructor(
                     checkRequired("value", value),
                     createdAt,
                     dimensions,
+                    idempotencyKey,
                     resourceId,
                     updateBehavior,
                     additionalProperties.toMutableMap(),
@@ -849,6 +890,7 @@ private constructor(
             value()
             createdAt()
             dimensions().ifPresent { it.validate() }
+            idempotencyKey()
             resourceId()
             updateBehavior().ifPresent { it.validate() }
             validated = true
@@ -875,6 +917,7 @@ private constructor(
                 (if (value.asKnown().isPresent) 1 else 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (dimensions.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (idempotencyKey.asKnown().isPresent) 1 else 0) +
                 (if (resourceId.asKnown().isPresent) 1 else 0) +
                 (updateBehavior.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -1145,6 +1188,7 @@ private constructor(
                 value == other.value &&
                 createdAt == other.createdAt &&
                 dimensions == other.dimensions &&
+                idempotencyKey == other.idempotencyKey &&
                 resourceId == other.resourceId &&
                 updateBehavior == other.updateBehavior &&
                 additionalProperties == other.additionalProperties
@@ -1157,6 +1201,7 @@ private constructor(
                 value,
                 createdAt,
                 dimensions,
+                idempotencyKey,
                 resourceId,
                 updateBehavior,
                 additionalProperties,
@@ -1166,7 +1211,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Usage{customerId=$customerId, featureId=$featureId, value=$value, createdAt=$createdAt, dimensions=$dimensions, resourceId=$resourceId, updateBehavior=$updateBehavior, additionalProperties=$additionalProperties}"
+            "Usage{customerId=$customerId, featureId=$featureId, value=$value, createdAt=$createdAt, dimensions=$dimensions, idempotencyKey=$idempotencyKey, resourceId=$resourceId, updateBehavior=$updateBehavior, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
