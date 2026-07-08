@@ -30,7 +30,7 @@ internal class AddonListPageResponseTest {
                                 .build()
                         )
                         .isLatest(true)
-                        .maxQuantity(0L)
+                        .maxQuantity(1L)
                         .metadata(
                             AddonListResponse.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -67,7 +67,7 @@ internal class AddonListPageResponseTest {
                             .build()
                     )
                     .isLatest(true)
-                    .maxQuantity(0L)
+                    .maxQuantity(1L)
                     .metadata(
                         AddonListResponse.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -109,7 +109,7 @@ internal class AddonListPageResponseTest {
                                 .build()
                         )
                         .isLatest(true)
-                        .maxQuantity(0L)
+                        .maxQuantity(1L)
                         .metadata(
                             AddonListResponse.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))

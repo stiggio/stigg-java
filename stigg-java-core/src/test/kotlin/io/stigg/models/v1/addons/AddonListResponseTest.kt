@@ -29,7 +29,7 @@ internal class AddonListResponseTest {
                         .build()
                 )
                 .isLatest(true)
-                .maxQuantity(0L)
+                .maxQuantity(1L)
                 .metadata(
                     AddonListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -57,7 +57,7 @@ internal class AddonListResponseTest {
                     .build()
             )
         assertThat(addonListResponse.isLatest()).contains(true)
-        assertThat(addonListResponse.maxQuantity()).contains(0L)
+        assertThat(addonListResponse.maxQuantity()).contains(1L)
         assertThat(addonListResponse.metadata())
             .isEqualTo(
                 AddonListResponse.Metadata.builder()
@@ -90,7 +90,7 @@ internal class AddonListResponseTest {
                         .build()
                 )
                 .isLatest(true)
-                .maxQuantity(0L)
+                .maxQuantity(1L)
                 .metadata(
                     AddonListResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
