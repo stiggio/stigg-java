@@ -318,7 +318,7 @@ internal class AddonUpdateParamsTest {
             .addDependency("string")
             .description("description")
             .displayName("displayName")
-            .maxQuantity(0L)
+            .maxQuantity(1L)
             .metadata(
                 AddonUpdateParams.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -664,7 +664,7 @@ internal class AddonUpdateParamsTest {
                 .addDependency("string")
                 .description("description")
                 .displayName("displayName")
-                .maxQuantity(0L)
+                .maxQuantity(1L)
                 .metadata(
                     AddonUpdateParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -1020,7 +1020,7 @@ internal class AddonUpdateParamsTest {
                 .addDependency("string")
                 .description("description")
                 .displayName("displayName")
-                .maxQuantity(0L)
+                .maxQuantity(1L)
                 .metadata(
                     AddonUpdateParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -1334,7 +1334,7 @@ internal class AddonUpdateParamsTest {
         assertThat(body.dependencies().getOrNull()).containsExactly("string")
         assertThat(body.description()).contains("description")
         assertThat(body.displayName()).contains("displayName")
-        assertThat(body.maxQuantity()).contains(0L)
+        assertThat(body.maxQuantity()).contains(1L)
         assertThat(body.metadata())
             .contains(
                 AddonUpdateParams.Metadata.builder()
