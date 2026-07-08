@@ -32,7 +32,7 @@ internal class AddonServiceTest {
                     .productId("productId")
                     .billingId("billingId")
                     .description("description")
-                    .maxQuantity(0L)
+                    .maxQuantity(1L)
                     .metadata(
                         AddonCreateParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -411,7 +411,7 @@ internal class AddonServiceTest {
                     .addDependency("string")
                     .description("description")
                     .displayName("displayName")
-                    .maxQuantity(0L)
+                    .maxQuantity(1L)
                     .metadata(
                         AddonUpdateParams.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))

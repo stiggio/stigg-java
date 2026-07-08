@@ -30,7 +30,7 @@ internal class AddonTest {
                                 .build()
                         )
                         .isLatest(true)
-                        .maxQuantity(0L)
+                        .maxQuantity(1L)
                         .metadata(
                             Addon.Data.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -61,7 +61,7 @@ internal class AddonTest {
                             .build()
                     )
                     .isLatest(true)
-                    .maxQuantity(0L)
+                    .maxQuantity(1L)
                     .metadata(
                         Addon.Data.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -96,7 +96,7 @@ internal class AddonTest {
                                 .build()
                         )
                         .isLatest(true)
-                        .maxQuantity(0L)
+                        .maxQuantity(1L)
                         .metadata(
                             Addon.Data.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
