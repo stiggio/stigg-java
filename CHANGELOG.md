@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.35 (2026-07-12)
+
+Full Changelog: [v0.1.0-beta.34...v0.1.0-beta.35](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.34...v0.1.0-beta.35)
+
+### Features
+
+* **api:** add consumed field to consumption and usage credit responses ([c8b470a](https://github.com/stiggio/stigg-java/commit/c8b470a11415afebaac2363356b0e83196b4d648))
+
 ## 0.1.0-beta.34 (2026-07-08)
 
 Full Changelog: [v0.1.0-beta.33...v0.1.0-beta.34](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.33...v0.1.0-beta.34)
