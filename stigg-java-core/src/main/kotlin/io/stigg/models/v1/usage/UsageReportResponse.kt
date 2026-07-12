@@ -837,6 +837,7 @@ private constructor(
         class Credit
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val consumed: JsonField<Double>,
             private val currencyId: JsonField<String>,
             private val currentUsage: JsonField<Double>,
             private val timestamp: JsonField<OffsetDateTime>,
@@ -847,6 +848,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("consumed")
+                @ExcludeMissing
+                consumed: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("currencyId")
                 @ExcludeMissing
                 currencyId: JsonField<String> = JsonMissing.of(),
@@ -863,6 +867,7 @@ private constructor(
                 @ExcludeMissing
                 usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
             ) : this(
+                consumed,
                 currencyId,
                 currentUsage,
                 timestamp,
@@ -870,6 +875,18 @@ private constructor(
                 usagePeriodEnd,
                 mutableMapOf(),
             )
+
+            /**
+             * The credits this single reportUsage call deducted, in credit units — scoped to this
+             * one measurement (0 for idempotency duplicates). Contrast `currentUsage`, which is the
+             * wallet-wide running total shared across all features on this currency. Use it to
+             * reconcile expected per-call deductions.
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun consumed(): Double = consumed.getRequired("consumed")
 
             /**
              * The credit currency identifier
@@ -881,7 +898,9 @@ private constructor(
             fun currencyId(): String = currencyId.getRequired("currencyId")
 
             /**
-             * The credits consumed (optimistic — includes not-yet-reconciled usage)
+             * The wallet's total consumed credits for this currency (optimistic — includes
+             * not-yet-reconciled usage), shared across every feature that draws on the currency.
+             * This is the running balance, not this call's deduction — see `consumed` for that.
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -916,6 +935,14 @@ private constructor(
              */
             fun usagePeriodEnd(): Optional<OffsetDateTime> =
                 usagePeriodEnd.getOptional("usagePeriodEnd")
+
+            /**
+             * Returns the raw JSON value of [consumed].
+             *
+             * Unlike [consumed], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("consumed") @ExcludeMissing fun _consumed(): JsonField<Double> = consumed
 
             /**
              * Returns the raw JSON value of [currencyId].
@@ -986,6 +1013,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .consumed()
                  * .currencyId()
                  * .currentUsage()
                  * .timestamp()
@@ -998,6 +1026,7 @@ private constructor(
             /** A builder for [Credit]. */
             class Builder internal constructor() {
 
+                private var consumed: JsonField<Double>? = null
                 private var currencyId: JsonField<String>? = null
                 private var currentUsage: JsonField<Double>? = null
                 private var timestamp: JsonField<OffsetDateTime>? = null
@@ -1007,6 +1036,7 @@ private constructor(
 
                 @JvmSynthetic
                 internal fun from(credit: Credit) = apply {
+                    consumed = credit.consumed
                     currencyId = credit.currencyId
                     currentUsage = credit.currentUsage
                     timestamp = credit.timestamp
@@ -1014,6 +1044,23 @@ private constructor(
                     usagePeriodEnd = credit.usagePeriodEnd
                     additionalProperties = credit.additionalProperties.toMutableMap()
                 }
+
+                /**
+                 * The credits this single reportUsage call deducted, in credit units — scoped to
+                 * this one measurement (0 for idempotency duplicates). Contrast `currentUsage`,
+                 * which is the wallet-wide running total shared across all features on this
+                 * currency. Use it to reconcile expected per-call deductions.
+                 */
+                fun consumed(consumed: Double) = consumed(JsonField.of(consumed))
+
+                /**
+                 * Sets [Builder.consumed] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.consumed] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun consumed(consumed: JsonField<Double>) = apply { this.consumed = consumed }
 
                 /** The credit currency identifier */
                 fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
@@ -1029,7 +1076,12 @@ private constructor(
                     this.currencyId = currencyId
                 }
 
-                /** The credits consumed (optimistic — includes not-yet-reconciled usage) */
+                /**
+                 * The wallet's total consumed credits for this currency (optimistic — includes
+                 * not-yet-reconciled usage), shared across every feature that draws on the
+                 * currency. This is the running balance, not this call's deduction — see `consumed`
+                 * for that.
+                 */
                 fun currentUsage(currentUsage: Double) = currentUsage(JsonField.of(currentUsage))
 
                 /**
@@ -1127,6 +1179,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .consumed()
                  * .currencyId()
                  * .currentUsage()
                  * .timestamp()
@@ -1137,6 +1190,7 @@ private constructor(
                  */
                 fun build(): Credit =
                     Credit(
+                        checkRequired("consumed", consumed),
                         checkRequired("currencyId", currencyId),
                         checkRequired("currentUsage", currentUsage),
                         checkRequired("timestamp", timestamp),
@@ -1163,6 +1217,7 @@ private constructor(
                     return@apply
                 }
 
+                consumed()
                 currencyId()
                 currentUsage()
                 timestamp()
@@ -1187,7 +1242,8 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (if (currencyId.asKnown().isPresent) 1 else 0) +
+                (if (consumed.asKnown().isPresent) 1 else 0) +
+                    (if (currencyId.asKnown().isPresent) 1 else 0) +
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                     (if (timestamp.asKnown().isPresent) 1 else 0) +
                     (if (usageLimit.asKnown().isPresent) 1 else 0) +
@@ -1199,6 +1255,7 @@ private constructor(
                 }
 
                 return other is Credit &&
+                    consumed == other.consumed &&
                     currencyId == other.currencyId &&
                     currentUsage == other.currentUsage &&
                     timestamp == other.timestamp &&
@@ -1209,6 +1266,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    consumed,
                     currencyId,
                     currentUsage,
                     timestamp,
@@ -1221,7 +1279,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, additionalProperties=$additionalProperties}"
+                "Credit{consumed=$consumed, currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {

@@ -24,6 +24,7 @@ internal class UsageReportResponseTest {
                         .value(-9007199254740991L)
                         .credit(
                             UsageReportResponse.Data.Credit.builder()
+                                .consumed(0.0)
                                 .currencyId("currencyId")
                                 .currentUsage(0.0)
                                 .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -51,6 +52,7 @@ internal class UsageReportResponseTest {
                     .value(-9007199254740991L)
                     .credit(
                         UsageReportResponse.Data.Credit.builder()
+                            .consumed(0.0)
                             .currencyId("currencyId")
                             .currentUsage(0.0)
                             .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -82,6 +84,7 @@ internal class UsageReportResponseTest {
                         .value(-9007199254740991L)
                         .credit(
                             UsageReportResponse.Data.Credit.builder()
+                                .consumed(0.0)
                                 .currencyId("currencyId")
                                 .currentUsage(0.0)
                                 .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
