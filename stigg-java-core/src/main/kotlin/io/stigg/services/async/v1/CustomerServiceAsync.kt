@@ -264,10 +264,7 @@ interface CustomerServiceAsync {
     ): CompletableFuture<CustomerListResourcesPageAsync> =
         listResources(id, CustomerListResourcesParams.none(), requestOptions)
 
-    /**
-     * Creates a new customer and optionally provisions an initial subscription in a single
-     * operation.
-     */
+    /** Creates a new customer. */
     fun provision(params: CustomerProvisionParams): CompletableFuture<CustomerResponse> =
         provision(params, RequestOptions.none())
 
