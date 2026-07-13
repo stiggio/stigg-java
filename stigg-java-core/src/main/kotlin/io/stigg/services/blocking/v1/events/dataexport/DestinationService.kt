@@ -66,7 +66,11 @@ interface DestinationService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): DestinationUpdateResponse
 
-    /** Remove a destination from the DATA_EXPORT integration metadata. Idempotent. */
+    /**
+     * Disconnect a destination: stops the provider sync (deletes the provider destination) and
+     * removes it from the DATA_EXPORT integration. Non-destructive — the warehouse table is left
+     * intact. Idempotent.
+     */
     fun delete(destinationId: String): DestinationDeleteResponse =
         delete(destinationId, DestinationDeleteParams.none())
 
