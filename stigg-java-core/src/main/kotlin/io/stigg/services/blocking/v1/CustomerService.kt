@@ -247,10 +247,7 @@ interface CustomerService {
     fun listResources(id: String, requestOptions: RequestOptions): CustomerListResourcesPage =
         listResources(id, CustomerListResourcesParams.none(), requestOptions)
 
-    /**
-     * Creates a new customer and optionally provisions an initial subscription in a single
-     * operation.
-     */
+    /** Creates a new customer. */
     fun provision(params: CustomerProvisionParams): CustomerResponse =
         provision(params, RequestOptions.none())
 

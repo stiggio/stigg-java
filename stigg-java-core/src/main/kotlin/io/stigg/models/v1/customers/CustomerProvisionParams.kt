@@ -23,9 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/**
- * Creates a new customer and optionally provisions an initial subscription in a single operation.
- */
+/** Creates a new customer. */
 class CustomerProvisionParams
 private constructor(
     private val xAccountId: String?,
