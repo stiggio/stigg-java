@@ -5,6 +5,8 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.usage.UsageEstimateCostParams
+import io.stigg.models.v1.usage.UsageEstimateCostResponse
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageHistoryResponse
 import io.stigg.models.v1.usage.UsageReportParams
@@ -26,6 +28,20 @@ interface UsageServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageServiceAsync
+
+    /**
+     * Estimates the credit cost of a usage report without recording it. Returns the estimated cost
+     * per credit currency, the current balance, and the balance after the estimated consumption.
+     */
+    fun estimateCost(
+        params: UsageEstimateCostParams
+    ): CompletableFuture<UsageEstimateCostResponse> = estimateCost(params, RequestOptions.none())
+
+    /** @see estimateCost */
+    fun estimateCost(
+        params: UsageEstimateCostParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<UsageEstimateCostResponse>
 
     /** Retrieves historical usage data for a customer's metered feature over time. */
     fun history(
@@ -75,6 +91,21 @@ interface UsageServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): UsageServiceAsync.WithRawResponse
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/usage/estimate`, but is otherwise the same
+         * as [UsageServiceAsync.estimateCost].
+         */
+        fun estimateCost(
+            params: UsageEstimateCostParams
+        ): CompletableFuture<HttpResponseFor<UsageEstimateCostResponse>> =
+            estimateCost(params, RequestOptions.none())
+
+        /** @see estimateCost */
+        fun estimateCost(
+            params: UsageEstimateCostParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<UsageEstimateCostResponse>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/usage/{customerId}/history/{featureId}`, but

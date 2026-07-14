@@ -16,6 +16,8 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.usage.UsageEstimateCostParams
+import io.stigg.models.v1.usage.UsageEstimateCostResponse
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageHistoryResponse
 import io.stigg.models.v1.usage.UsageReportParams
@@ -35,6 +37,13 @@ class UsageServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageService =
         UsageServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    override fun estimateCost(
+        params: UsageEstimateCostParams,
+        requestOptions: RequestOptions,
+    ): UsageEstimateCostResponse =
+        // post /api/v1/usage/estimate
+        withRawResponse().estimateCost(params, requestOptions).parse()
 
     override fun history(
         params: UsageHistoryParams,
@@ -62,6 +71,34 @@ class UsageServiceImpl internal constructor(private val clientOptions: ClientOpt
             UsageServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        private val estimateCostHandler: Handler<UsageEstimateCostResponse> =
+            jsonHandler<UsageEstimateCostResponse>(clientOptions.jsonMapper)
+
+        override fun estimateCost(
+            params: UsageEstimateCostParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<UsageEstimateCostResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "usage", "estimate")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { estimateCostHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val historyHandler: Handler<UsageHistoryResponse> =
             jsonHandler<UsageHistoryResponse>(clientOptions.jsonMapper)

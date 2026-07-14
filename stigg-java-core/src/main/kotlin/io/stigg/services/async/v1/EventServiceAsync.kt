@@ -5,6 +5,8 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.events.EventEstimateCostParams
+import io.stigg.models.v1.events.EventEstimateCostResponse
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import io.stigg.services.async.v1.events.BetaServiceAsync
@@ -30,6 +32,20 @@ interface EventServiceAsync {
     fun dataExport(): DataExportServiceAsync
 
     fun beta(): BetaServiceAsync
+
+    /**
+     * Estimates the credit cost of a usage event without ingesting it. Returns the estimated cost
+     * per credit currency, the current balance, and the balance after the estimated consumption.
+     */
+    fun estimateCost(
+        params: EventEstimateCostParams
+    ): CompletableFuture<EventEstimateCostResponse> = estimateCost(params, RequestOptions.none())
+
+    /** @see estimateCost */
+    fun estimateCost(
+        params: EventEstimateCostParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<EventEstimateCostResponse>
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -59,6 +75,21 @@ interface EventServiceAsync {
         fun dataExport(): DataExportServiceAsync.WithRawResponse
 
         fun beta(): BetaServiceAsync.WithRawResponse
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/events/estimate`, but is otherwise the same
+         * as [EventServiceAsync.estimateCost].
+         */
+        fun estimateCost(
+            params: EventEstimateCostParams
+        ): CompletableFuture<HttpResponseFor<EventEstimateCostResponse>> =
+            estimateCost(params, RequestOptions.none())
+
+        /** @see estimateCost */
+        fun estimateCost(
+            params: EventEstimateCostParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<EventEstimateCostResponse>>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as
