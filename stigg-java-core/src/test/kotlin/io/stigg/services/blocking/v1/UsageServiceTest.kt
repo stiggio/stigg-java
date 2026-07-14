@@ -4,6 +4,7 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.usage.UsageEstimateCostParams
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageReportParams
 import java.time.OffsetDateTime
@@ -11,6 +12,33 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class UsageServiceTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun estimateCost() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val usageService = client.v1().usage()
+
+        val response =
+            usageService.estimateCost(
+                UsageEstimateCostParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .customerId("customerId")
+                    .featureId("featureId")
+                    .value(-9007199254740991L)
+                    .dimensions(
+                        UsageEstimateCostParams.Dimensions.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .resourceId("resourceId")
+                    .updateBehavior(UsageEstimateCostParams.UpdateBehavior.DELTA)
+                    .build()
+            )
+
+        response.validate()
+    }
 
     @Disabled("Mock server tests are disabled")
     @Test
