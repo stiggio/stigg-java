@@ -34,12 +34,16 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
+import io.stigg.services.async.v1.customers.EventServiceAsync
+import io.stigg.services.async.v1.customers.EventServiceAsyncImpl
 import io.stigg.services.async.v1.customers.IntegrationServiceAsync
 import io.stigg.services.async.v1.customers.IntegrationServiceAsyncImpl
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsyncImpl
 import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsync
 import io.stigg.services.async.v1.customers.PromotionalEntitlementServiceAsyncImpl
+import io.stigg.services.async.v1.customers.UsageServiceAsync
+import io.stigg.services.async.v1.customers.UsageServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -63,6 +67,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         IntegrationServiceAsyncImpl(clientOptions)
     }
 
+    private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
+
+    private val usage: UsageServiceAsync by lazy { UsageServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
@@ -76,6 +84,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         promotionalEntitlements
 
     override fun integrations(): IntegrationServiceAsync = integrations
+
+    override fun events(): EventServiceAsync = events
+
+    override fun usage(): UsageServiceAsync = usage
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -166,6 +178,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             IntegrationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val events: EventServiceAsync.WithRawResponse by lazy {
+            EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val usage: UsageServiceAsync.WithRawResponse by lazy {
+            UsageServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -181,6 +201,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             promotionalEntitlements
 
         override fun integrations(): IntegrationServiceAsync.WithRawResponse = integrations
+
+        override fun events(): EventServiceAsync.WithRawResponse = events
+
+        override fun usage(): UsageServiceAsync.WithRawResponse = usage
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)

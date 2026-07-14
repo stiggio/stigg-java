@@ -4,12 +4,38 @@ package io.stigg.services.blocking.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClient
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.events.EventEstimateCostParams
 import io.stigg.models.v1.events.EventReportParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class EventServiceTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun estimateCost() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val eventService = client.v1().events()
+
+        val response =
+            eventService.estimateCost(
+                EventEstimateCostParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .customerId("customerId")
+                    .eventName("x")
+                    .dimensions(
+                        EventEstimateCostParams.Dimensions.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        response.validate()
+    }
 
     @Disabled("Mock server tests are disabled")
     @Test

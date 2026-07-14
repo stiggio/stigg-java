@@ -15,6 +15,8 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
+import io.stigg.models.v1.events.EventEstimateCostParams
+import io.stigg.models.v1.events.EventEstimateCostResponse
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
 import io.stigg.services.blocking.v1.events.BetaService
@@ -43,6 +45,13 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun dataExport(): DataExportService = dataExport
 
     override fun beta(): BetaService = beta
+
+    override fun estimateCost(
+        params: EventEstimateCostParams,
+        requestOptions: RequestOptions,
+    ): EventEstimateCostResponse =
+        // post /api/v1/events/estimate
+        withRawResponse().estimateCost(params, requestOptions).parse()
 
     override fun report(
         params: EventReportParams,
@@ -75,6 +84,34 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
         override fun dataExport(): DataExportService.WithRawResponse = dataExport
 
         override fun beta(): BetaService.WithRawResponse = beta
+
+        private val estimateCostHandler: Handler<EventEstimateCostResponse> =
+            jsonHandler<EventEstimateCostResponse>(clientOptions.jsonMapper)
+
+        override fun estimateCost(
+            params: EventEstimateCostParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<EventEstimateCostResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "events", "estimate")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { estimateCostHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val reportHandler: Handler<EventReportResponse> =
             jsonHandler<EventReportResponse>(clientOptions.jsonMapper)

@@ -6,6 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
+import io.stigg.models.v1.usage.UsageEstimateCostParams
+import io.stigg.models.v1.usage.UsageEstimateCostResponse
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageHistoryResponse
 import io.stigg.models.v1.usage.UsageReportParams
@@ -26,6 +28,19 @@ interface UsageService {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageService
+
+    /**
+     * Estimates the credit cost of a usage report without recording it. Returns the estimated cost
+     * per credit currency, the current balance, and the balance after the estimated consumption.
+     */
+    fun estimateCost(params: UsageEstimateCostParams): UsageEstimateCostResponse =
+        estimateCost(params, RequestOptions.none())
+
+    /** @see estimateCost */
+    fun estimateCost(
+        params: UsageEstimateCostParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): UsageEstimateCostResponse
 
     /** Retrieves historical usage data for a customer's metered feature over time. */
     fun history(featureId: String, params: UsageHistoryParams): UsageHistoryResponse =
@@ -71,6 +86,22 @@ interface UsageService {
          * The original service is not modified.
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageService.WithRawResponse
+
+        /**
+         * Returns a raw HTTP response for `post /api/v1/usage/estimate`, but is otherwise the same
+         * as [UsageService.estimateCost].
+         */
+        @MustBeClosed
+        fun estimateCost(
+            params: UsageEstimateCostParams
+        ): HttpResponseFor<UsageEstimateCostResponse> = estimateCost(params, RequestOptions.none())
+
+        /** @see estimateCost */
+        @MustBeClosed
+        fun estimateCost(
+            params: UsageEstimateCostParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<UsageEstimateCostResponse>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/usage/{customerId}/history/{featureId}`, but

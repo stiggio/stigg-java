@@ -4,12 +4,39 @@ package io.stigg.services.async.v1
 
 import io.stigg.client.okhttp.StiggOkHttpClientAsync
 import io.stigg.core.JsonValue
+import io.stigg.models.v1.events.EventEstimateCostParams
 import io.stigg.models.v1.events.EventReportParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class EventServiceAsyncTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun estimateCost() {
+        val client = StiggOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val eventServiceAsync = client.v1().events()
+
+        val responseFuture =
+            eventServiceAsync.estimateCost(
+                EventEstimateCostParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .customerId("customerId")
+                    .eventName("x")
+                    .dimensions(
+                        EventEstimateCostParams.Dimensions.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .resourceId("resourceId")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
 
     @Disabled("Mock server tests are disabled")
     @Test
