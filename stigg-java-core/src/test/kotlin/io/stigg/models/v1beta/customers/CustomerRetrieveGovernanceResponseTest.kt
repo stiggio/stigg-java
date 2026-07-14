@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.events.beta.customers
+package io.stigg.models.v1beta.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.core.jsonMapper
