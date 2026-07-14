@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0-beta.36 (2026-07-14)
+
+Full Changelog: [v0.1.0-beta.35...v0.1.0-beta.36](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.35...v0.1.0-beta.36)
+
+### Features
+
+* **api:** add estimate methods to customers events and usage ([dc24672](https://github.com/stiggio/stigg-java/commit/dc24672fb5c966e169deb68bf50a4711f0036b5a))
+
+
+### Documentation
+
+* **api:** update destinations delete method documentation ([13fbcfa](https://github.com/stiggio/stigg-java/commit/13fbcfa9657f66933cff7e06d458c02c9bee0ecf))
+* **api:** update provision method description in customers ([81905d1](https://github.com/stiggio/stigg-java/commit/81905d157dbcc99dd85629a5ef0092df9cbda44d))
+
 ## 0.1.0-beta.35 (2026-07-12)
 
 Full Changelog: [v0.1.0-beta.34...v0.1.0-beta.35](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.34...v0.1.0-beta.35)
