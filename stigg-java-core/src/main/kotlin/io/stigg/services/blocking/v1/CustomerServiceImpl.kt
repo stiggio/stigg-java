@@ -34,16 +34,12 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
-import io.stigg.services.blocking.v1.customers.EventService
-import io.stigg.services.blocking.v1.customers.EventServiceImpl
 import io.stigg.services.blocking.v1.customers.IntegrationService
 import io.stigg.services.blocking.v1.customers.IntegrationServiceImpl
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
 import io.stigg.services.blocking.v1.customers.PaymentMethodServiceImpl
 import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
 import io.stigg.services.blocking.v1.customers.PromotionalEntitlementServiceImpl
-import io.stigg.services.blocking.v1.customers.UsageService
-import io.stigg.services.blocking.v1.customers.UsageServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -64,10 +60,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     private val integrations: IntegrationService by lazy { IntegrationServiceImpl(clientOptions) }
 
-    private val events: EventService by lazy { EventServiceImpl(clientOptions) }
-
-    private val usage: UsageService by lazy { UsageServiceImpl(clientOptions) }
-
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
@@ -80,10 +72,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun promotionalEntitlements(): PromotionalEntitlementService = promotionalEntitlements
 
     override fun integrations(): IntegrationService = integrations
-
-    override fun events(): EventService = events
-
-    override fun usage(): UsageService = usage
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -173,14 +161,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             IntegrationServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val events: EventService.WithRawResponse by lazy {
-            EventServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val usage: UsageService.WithRawResponse by lazy {
-            UsageServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -196,10 +176,6 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             promotionalEntitlements
 
         override fun integrations(): IntegrationService.WithRawResponse = integrations
-
-        override fun events(): EventService.WithRawResponse = events
-
-        override fun usage(): UsageService.WithRawResponse = usage
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)
