@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.37 (2026-07-14)
+
+Full Changelog: [v0.1.0-beta.36...v0.1.0-beta.37](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.36...v0.1.0-beta.37)
+
+### Features
+
+* **api:** add STRIPE_INVOICING to VendorIdentifier enum in customers ([ca17340](https://github.com/stiggio/stigg-java/commit/ca17340940a718b2f3cf70bf5380999181446038))
+
 ## 0.1.0-beta.36 (2026-07-14)
 
 Full Changelog: [v0.1.0-beta.35...v0.1.0-beta.36](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.35...v0.1.0-beta.36)
