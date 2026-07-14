@@ -9,7 +9,6 @@ import io.stigg.models.v1.events.EventEstimateCostParams
 import io.stigg.models.v1.events.EventEstimateCostResponse
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
-import io.stigg.services.async.v1.events.BetaServiceAsync
 import io.stigg.services.async.v1.events.DataExportServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -30,8 +29,6 @@ interface EventServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
     fun dataExport(): DataExportServiceAsync
-
-    fun beta(): BetaServiceAsync
 
     /**
      * Estimates the credit cost of a usage event without ingesting it. Returns the estimated cost
@@ -73,8 +70,6 @@ interface EventServiceAsync {
         ): EventServiceAsync.WithRawResponse
 
         fun dataExport(): DataExportServiceAsync.WithRawResponse
-
-        fun beta(): BetaServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events/estimate`, but is otherwise the same
