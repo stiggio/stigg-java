@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-beta.38 (2026-07-18)
+
+Full Changelog: [v0.1.0-beta.37...v0.1.0-beta.38](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.37...v0.1.0-beta.38)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([1265fc4](https://github.com/stiggio/stigg-java/commit/1265fc4bbe9b433dd1b559a7aa2e4c849de56f4d))
+
+
+### Chores
+
+* **internal:** move governance endpoint from events.beta to v1beta customers ([525b9c9](https://github.com/stiggio/stigg-java/commit/525b9c9bc745071dea9f213d25ca29e4b3ba5166))
+
 ## 0.1.0-beta.37 (2026-07-14)
 
 Full Changelog: [v0.1.0-beta.36...v0.1.0-beta.37](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.36...v0.1.0-beta.37)
