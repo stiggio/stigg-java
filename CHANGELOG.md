@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.40 (2026-07-21)
+
+Full Changelog: [v0.1.0-beta.39...v0.1.0-beta.40](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.39...v0.1.0-beta.40)
+
+### Features
+
+* **api:** add syncStates field to credit grant responses ([c118f29](https://github.com/stiggio/stigg-java/commit/c118f29662e04bb0bd24d48335edea9e1fb32f30))
+
 ## 0.1.0-beta.39 (2026-07-21)
 
 Full Changelog: [v0.1.0-beta.38...v0.1.0-beta.39](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.38...v0.1.0-beta.39)
