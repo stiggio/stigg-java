@@ -17,6 +17,7 @@ private constructor(
     private val after: String?,
     private val before: String?,
     private val currencyId: String?,
+    private val eventType: String?,
     private val limit: Long?,
     private val resourceId: String?,
     private val xAccountId: String?,
@@ -36,6 +37,9 @@ private constructor(
 
     /** Filter by currency ID */
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
+
+    /** Filter by event type(s), comma-separated */
+    fun eventType(): Optional<String> = Optional.ofNullable(eventType)
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
@@ -75,6 +79,7 @@ private constructor(
         private var after: String? = null
         private var before: String? = null
         private var currencyId: String? = null
+        private var eventType: String? = null
         private var limit: Long? = null
         private var resourceId: String? = null
         private var xAccountId: String? = null
@@ -88,6 +93,7 @@ private constructor(
             after = creditListLedgerParams.after
             before = creditListLedgerParams.before
             currencyId = creditListLedgerParams.currencyId
+            eventType = creditListLedgerParams.eventType
             limit = creditListLedgerParams.limit
             resourceId = creditListLedgerParams.resourceId
             xAccountId = creditListLedgerParams.xAccountId
@@ -116,6 +122,12 @@ private constructor(
 
         /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
+
+        /** Filter by event type(s), comma-separated */
+        fun eventType(eventType: String?) = apply { this.eventType = eventType }
+
+        /** Alias for calling [Builder.eventType] with `eventType.orElse(null)`. */
+        fun eventType(eventType: Optional<String>) = eventType(eventType.getOrNull())
 
         /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -263,6 +275,7 @@ private constructor(
                 after,
                 before,
                 currencyId,
+                eventType,
                 limit,
                 resourceId,
                 xAccountId,
@@ -288,6 +301,7 @@ private constructor(
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
                 currencyId?.let { put("currencyId", it) }
+                eventType?.let { put("eventType", it) }
                 limit?.let { put("limit", it.toString()) }
                 resourceId?.let { put("resourceId", it) }
                 putAll(additionalQueryParams)
@@ -304,6 +318,7 @@ private constructor(
             after == other.after &&
             before == other.before &&
             currencyId == other.currencyId &&
+            eventType == other.eventType &&
             limit == other.limit &&
             resourceId == other.resourceId &&
             xAccountId == other.xAccountId &&
@@ -318,6 +333,7 @@ private constructor(
             after,
             before,
             currencyId,
+            eventType,
             limit,
             resourceId,
             xAccountId,
@@ -327,5 +343,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, limit=$limit, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, eventType=$eventType, limit=$limit, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
