@@ -63,6 +63,15 @@ internal class GrantListPageResponseTest {
                         .resourceId("resourceId")
                         .sourceType(GrantListResponse.SourceType.PRICE)
                         .status(GrantListResponse.Status.PAYMENT_PENDING)
+                        .addSyncState(
+                            GrantListResponse.SyncState.builder()
+                                .status(GrantListResponse.SyncState.Status.PENDING)
+                                .syncedEntityId("syncedEntityId")
+                                .vendorIdentifier(
+                                    GrantListResponse.SyncState.VendorIdentifier.AUTH0
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
@@ -119,6 +128,13 @@ internal class GrantListPageResponseTest {
                     .resourceId("resourceId")
                     .sourceType(GrantListResponse.SourceType.PRICE)
                     .status(GrantListResponse.Status.PAYMENT_PENDING)
+                    .addSyncState(
+                        GrantListResponse.SyncState.builder()
+                            .status(GrantListResponse.SyncState.Status.PENDING)
+                            .syncedEntityId("syncedEntityId")
+                            .vendorIdentifier(GrantListResponse.SyncState.VendorIdentifier.AUTH0)
+                            .build()
+                    )
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
@@ -185,6 +201,15 @@ internal class GrantListPageResponseTest {
                         .resourceId("resourceId")
                         .sourceType(GrantListResponse.SourceType.PRICE)
                         .status(GrantListResponse.Status.PAYMENT_PENDING)
+                        .addSyncState(
+                            GrantListResponse.SyncState.builder()
+                                .status(GrantListResponse.SyncState.Status.PENDING)
+                                .syncedEntityId("syncedEntityId")
+                                .vendorIdentifier(
+                                    GrantListResponse.SyncState.VendorIdentifier.AUTH0
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()

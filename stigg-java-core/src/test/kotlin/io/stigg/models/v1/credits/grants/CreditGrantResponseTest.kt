@@ -65,6 +65,15 @@ internal class CreditGrantResponseTest {
                         .resourceId("resourceId")
                         .sourceType(CreditGrantResponse.Data.SourceType.PRICE)
                         .status(CreditGrantResponse.Data.Status.PAYMENT_PENDING)
+                        .addSyncState(
+                            CreditGrantResponse.Data.SyncState.builder()
+                                .status(CreditGrantResponse.Data.SyncState.Status.PENDING)
+                                .syncedEntityId("syncedEntityId")
+                                .vendorIdentifier(
+                                    CreditGrantResponse.Data.SyncState.VendorIdentifier.AUTH0
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
@@ -122,6 +131,15 @@ internal class CreditGrantResponseTest {
                     .resourceId("resourceId")
                     .sourceType(CreditGrantResponse.Data.SourceType.PRICE)
                     .status(CreditGrantResponse.Data.Status.PAYMENT_PENDING)
+                    .addSyncState(
+                        CreditGrantResponse.Data.SyncState.builder()
+                            .status(CreditGrantResponse.Data.SyncState.Status.PENDING)
+                            .syncedEntityId("syncedEntityId")
+                            .vendorIdentifier(
+                                CreditGrantResponse.Data.SyncState.VendorIdentifier.AUTH0
+                            )
+                            .build()
+                    )
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
@@ -183,6 +201,15 @@ internal class CreditGrantResponseTest {
                         .resourceId("resourceId")
                         .sourceType(CreditGrantResponse.Data.SourceType.PRICE)
                         .status(CreditGrantResponse.Data.Status.PAYMENT_PENDING)
+                        .addSyncState(
+                            CreditGrantResponse.Data.SyncState.builder()
+                                .status(CreditGrantResponse.Data.SyncState.Status.PENDING)
+                                .syncedEntityId("syncedEntityId")
+                                .vendorIdentifier(
+                                    CreditGrantResponse.Data.SyncState.VendorIdentifier.AUTH0
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()

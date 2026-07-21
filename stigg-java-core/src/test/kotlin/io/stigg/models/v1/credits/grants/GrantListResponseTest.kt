@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -56,6 +57,13 @@ internal class GrantListResponseTest {
                 .resourceId("resourceId")
                 .sourceType(GrantListResponse.SourceType.PRICE)
                 .status(GrantListResponse.Status.PAYMENT_PENDING)
+                .addSyncState(
+                    GrantListResponse.SyncState.builder()
+                        .status(GrantListResponse.SyncState.Status.PENDING)
+                        .syncedEntityId("syncedEntityId")
+                        .vendorIdentifier(GrantListResponse.SyncState.VendorIdentifier.AUTH0)
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
@@ -108,6 +116,14 @@ internal class GrantListResponseTest {
         assertThat(grantListResponse.resourceId()).contains("resourceId")
         assertThat(grantListResponse.sourceType()).contains(GrantListResponse.SourceType.PRICE)
         assertThat(grantListResponse.status()).isEqualTo(GrantListResponse.Status.PAYMENT_PENDING)
+        assertThat(grantListResponse.syncStates().getOrNull())
+            .containsExactly(
+                GrantListResponse.SyncState.builder()
+                    .status(GrantListResponse.SyncState.Status.PENDING)
+                    .syncedEntityId("syncedEntityId")
+                    .vendorIdentifier(GrantListResponse.SyncState.VendorIdentifier.AUTH0)
+                    .build()
+            )
         assertThat(grantListResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(grantListResponse.voidedAt())
@@ -160,6 +176,13 @@ internal class GrantListResponseTest {
                 .resourceId("resourceId")
                 .sourceType(GrantListResponse.SourceType.PRICE)
                 .status(GrantListResponse.Status.PAYMENT_PENDING)
+                .addSyncState(
+                    GrantListResponse.SyncState.builder()
+                        .status(GrantListResponse.SyncState.Status.PENDING)
+                        .syncedEntityId("syncedEntityId")
+                        .vendorIdentifier(GrantListResponse.SyncState.VendorIdentifier.AUTH0)
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .voidedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
