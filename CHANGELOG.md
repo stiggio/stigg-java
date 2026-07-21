@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.39 (2026-07-21)
+
+Full Changelog: [v0.1.0-beta.38...v0.1.0-beta.39](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.38...v0.1.0-beta.39)
+
+### Features
+
+* **api:** add eventType parameter to credits list ledger method ([5680757](https://github.com/stiggio/stigg-java/commit/5680757a0b720ca93d15fbc76ebc54cc066550bc))
+
 ## 0.1.0-beta.38 (2026-07-18)
 
 Full Changelog: [v0.1.0-beta.37...v0.1.0-beta.38](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.37...v0.1.0-beta.38)
