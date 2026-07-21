@@ -11,6 +11,7 @@ import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
+import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
 import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
@@ -44,6 +45,7 @@ private constructor(
     private val resourceId: JsonField<String>,
     private val sourceType: JsonField<SourceType>,
     private val status: JsonField<Status>,
+    private val syncStates: JsonField<List<SyncState>>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val voidedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -95,6 +97,9 @@ private constructor(
         @ExcludeMissing
         sourceType: JsonField<SourceType> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("syncStates")
+        @ExcludeMissing
+        syncStates: JsonField<List<SyncState>> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -122,6 +127,7 @@ private constructor(
         resourceId,
         sourceType,
         status,
+        syncStates,
         updatedAt,
         voidedAt,
         mutableMapOf(),
@@ -286,6 +292,14 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun status(): Status = status.getRequired("status")
+
+    /**
+     * The synchronization states of the entity with external systems
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun syncStates(): Optional<List<SyncState>> = syncStates.getOptional("syncStates")
 
     /**
      * Timestamp of when the record was last updated
@@ -457,6 +471,15 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
+     * Returns the raw JSON value of [syncStates].
+     *
+     * Unlike [syncStates], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("syncStates")
+    @ExcludeMissing
+    fun _syncStates(): JsonField<List<SyncState>> = syncStates
+
+    /**
      * Returns the raw JSON value of [updatedAt].
      *
      * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -511,6 +534,7 @@ private constructor(
          * .resourceId()
          * .sourceType()
          * .status()
+         * .syncStates()
          * .updatedAt()
          * .voidedAt()
          * ```
@@ -541,6 +565,7 @@ private constructor(
         private var resourceId: JsonField<String>? = null
         private var sourceType: JsonField<SourceType>? = null
         private var status: JsonField<Status>? = null
+        private var syncStates: JsonField<MutableList<SyncState>>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var voidedAt: JsonField<OffsetDateTime>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -567,6 +592,7 @@ private constructor(
             resourceId = grantListResponse.resourceId
             sourceType = grantListResponse.sourceType
             status = grantListResponse.status
+            syncStates = grantListResponse.syncStates.map { it.toMutableList() }
             updatedAt = grantListResponse.updatedAt
             voidedAt = grantListResponse.voidedAt
             additionalProperties = grantListResponse.additionalProperties.toMutableMap()
@@ -835,6 +861,35 @@ private constructor(
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
 
+        /** The synchronization states of the entity with external systems */
+        fun syncStates(syncStates: List<SyncState>?) = syncStates(JsonField.ofNullable(syncStates))
+
+        /** Alias for calling [Builder.syncStates] with `syncStates.orElse(null)`. */
+        fun syncStates(syncStates: Optional<List<SyncState>>) = syncStates(syncStates.getOrNull())
+
+        /**
+         * Sets [Builder.syncStates] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.syncStates] with a well-typed `List<SyncState>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun syncStates(syncStates: JsonField<List<SyncState>>) = apply {
+            this.syncStates = syncStates.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [SyncState] to [syncStates].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addSyncState(syncState: SyncState) = apply {
+            syncStates =
+                (syncStates ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("syncStates", it).add(syncState)
+                }
+        }
+
         /** Timestamp of when the record was last updated */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -908,6 +963,7 @@ private constructor(
          * .resourceId()
          * .sourceType()
          * .status()
+         * .syncStates()
          * .updatedAt()
          * .voidedAt()
          * ```
@@ -936,6 +992,7 @@ private constructor(
                 checkRequired("resourceId", resourceId),
                 checkRequired("sourceType", sourceType),
                 checkRequired("status", status),
+                checkRequired("syncStates", syncStates).map { it.toImmutable() },
                 checkRequired("updatedAt", updatedAt),
                 checkRequired("voidedAt", voidedAt),
                 additionalProperties.toMutableMap(),
@@ -977,6 +1034,7 @@ private constructor(
         resourceId()
         sourceType().ifPresent { it.validate() }
         status().validate()
+        syncStates().ifPresent { it.forEach { it.validate() } }
         updatedAt()
         voidedAt()
         validated = true
@@ -1017,6 +1075,7 @@ private constructor(
             (if (resourceId.asKnown().isPresent) 1 else 0) +
             (sourceType.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
+            (syncStates.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
             (if (voidedAt.asKnown().isPresent) 1 else 0)
 
@@ -3001,6 +3060,640 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    class SyncState
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val status: JsonField<Status>,
+        private val syncedEntityId: JsonField<String>,
+        private val vendorIdentifier: JsonField<VendorIdentifier>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+            @JsonProperty("syncedEntityId")
+            @ExcludeMissing
+            syncedEntityId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("vendorIdentifier")
+            @ExcludeMissing
+            vendorIdentifier: JsonField<VendorIdentifier> = JsonMissing.of(),
+        ) : this(status, syncedEntityId, vendorIdentifier, mutableMapOf())
+
+        /**
+         * Status of the integration sync
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun status(): Status = status.getRequired("status")
+
+        /**
+         * Synced entity id
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun syncedEntityId(): Optional<String> = syncedEntityId.getOptional("syncedEntityId")
+
+        /**
+         * The vendor identifier of integration
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun vendorIdentifier(): VendorIdentifier = vendorIdentifier.getRequired("vendorIdentifier")
+
+        /**
+         * Returns the raw JSON value of [status].
+         *
+         * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+        /**
+         * Returns the raw JSON value of [syncedEntityId].
+         *
+         * Unlike [syncedEntityId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("syncedEntityId")
+        @ExcludeMissing
+        fun _syncedEntityId(): JsonField<String> = syncedEntityId
+
+        /**
+         * Returns the raw JSON value of [vendorIdentifier].
+         *
+         * Unlike [vendorIdentifier], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("vendorIdentifier")
+        @ExcludeMissing
+        fun _vendorIdentifier(): JsonField<VendorIdentifier> = vendorIdentifier
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [SyncState].
+             *
+             * The following fields are required:
+             * ```java
+             * .status()
+             * .syncedEntityId()
+             * .vendorIdentifier()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [SyncState]. */
+        class Builder internal constructor() {
+
+            private var status: JsonField<Status>? = null
+            private var syncedEntityId: JsonField<String>? = null
+            private var vendorIdentifier: JsonField<VendorIdentifier>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(syncState: SyncState) = apply {
+                status = syncState.status
+                syncedEntityId = syncState.syncedEntityId
+                vendorIdentifier = syncState.vendorIdentifier
+                additionalProperties = syncState.additionalProperties.toMutableMap()
+            }
+
+            /** Status of the integration sync */
+            fun status(status: Status) = status(JsonField.of(status))
+
+            /**
+             * Sets [Builder.status] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.status] with a well-typed [Status] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun status(status: JsonField<Status>) = apply { this.status = status }
+
+            /** Synced entity id */
+            fun syncedEntityId(syncedEntityId: String?) =
+                syncedEntityId(JsonField.ofNullable(syncedEntityId))
+
+            /** Alias for calling [Builder.syncedEntityId] with `syncedEntityId.orElse(null)`. */
+            fun syncedEntityId(syncedEntityId: Optional<String>) =
+                syncedEntityId(syncedEntityId.getOrNull())
+
+            /**
+             * Sets [Builder.syncedEntityId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.syncedEntityId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun syncedEntityId(syncedEntityId: JsonField<String>) = apply {
+                this.syncedEntityId = syncedEntityId
+            }
+
+            /** The vendor identifier of integration */
+            fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
+                vendorIdentifier(JsonField.of(vendorIdentifier))
+
+            /**
+             * Sets [Builder.vendorIdentifier] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.vendorIdentifier] with a well-typed
+             * [VendorIdentifier] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun vendorIdentifier(vendorIdentifier: JsonField<VendorIdentifier>) = apply {
+                this.vendorIdentifier = vendorIdentifier
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [SyncState].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .status()
+             * .syncedEntityId()
+             * .vendorIdentifier()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): SyncState =
+                SyncState(
+                    checkRequired("status", status),
+                    checkRequired("syncedEntityId", syncedEntityId),
+                    checkRequired("vendorIdentifier", vendorIdentifier),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StiggInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): SyncState = apply {
+            if (validated) {
+                return@apply
+            }
+
+            status().validate()
+            syncedEntityId()
+            vendorIdentifier().validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (status.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (syncedEntityId.asKnown().isPresent) 1 else 0) +
+                (vendorIdentifier.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Status of the integration sync */
+        class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val PENDING = of("PENDING")
+
+                @JvmField val ERROR = of("ERROR")
+
+                @JvmField val SUCCESS = of("SUCCESS")
+
+                @JvmField val NO_SYNC_REQUIRED = of("NO_SYNC_REQUIRED")
+
+                @JvmStatic fun of(value: String) = Status(JsonField.of(value))
+            }
+
+            /** An enum containing [Status]'s known values. */
+            enum class Known {
+                PENDING,
+                ERROR,
+                SUCCESS,
+                NO_SYNC_REQUIRED,
+            }
+
+            /**
+             * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Status] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                PENDING,
+                ERROR,
+                SUCCESS,
+                NO_SYNC_REQUIRED,
+                /**
+                 * An enum member indicating that [Status] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    PENDING -> Value.PENDING
+                    ERROR -> Value.ERROR
+                    SUCCESS -> Value.SUCCESS
+                    NO_SYNC_REQUIRED -> Value.NO_SYNC_REQUIRED
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    PENDING -> Known.PENDING
+                    ERROR -> Known.ERROR
+                    SUCCESS -> Known.SUCCESS
+                    NO_SYNC_REQUIRED -> Known.NO_SYNC_REQUIRED
+                    else -> throw StiggInvalidDataException("Unknown Status: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Status = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Status && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** The vendor identifier of integration */
+        class VendorIdentifier
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val AUTH0 = of("AUTH0")
+
+                @JvmField val ZUORA = of("ZUORA")
+
+                @JvmField val STRIPE = of("STRIPE")
+
+                @JvmField val HUBSPOT = of("HUBSPOT")
+
+                @JvmField val AWS_MARKETPLACE = of("AWS_MARKETPLACE")
+
+                @JvmField val SNOWFLAKE = of("SNOWFLAKE")
+
+                @JvmField val SALESFORCE = of("SALESFORCE")
+
+                @JvmField val BIG_QUERY = of("BIG_QUERY")
+
+                @JvmField val OPEN_FGA = of("OPEN_FGA")
+
+                @JvmField val APP_STORE = of("APP_STORE")
+
+                @JvmField val RECEIVED = of("RECEIVED")
+
+                @JvmField val PREQUEL = of("PREQUEL")
+
+                @JvmField val AIRWALLEX = of("AIRWALLEX")
+
+                @JvmField val STRIPE_INVOICING = of("STRIPE_INVOICING")
+
+                @JvmStatic fun of(value: String) = VendorIdentifier(JsonField.of(value))
+            }
+
+            /** An enum containing [VendorIdentifier]'s known values. */
+            enum class Known {
+                AUTH0,
+                ZUORA,
+                STRIPE,
+                HUBSPOT,
+                AWS_MARKETPLACE,
+                SNOWFLAKE,
+                SALESFORCE,
+                BIG_QUERY,
+                OPEN_FGA,
+                APP_STORE,
+                RECEIVED,
+                PREQUEL,
+                AIRWALLEX,
+                STRIPE_INVOICING,
+            }
+
+            /**
+             * An enum containing [VendorIdentifier]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [VendorIdentifier] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                AUTH0,
+                ZUORA,
+                STRIPE,
+                HUBSPOT,
+                AWS_MARKETPLACE,
+                SNOWFLAKE,
+                SALESFORCE,
+                BIG_QUERY,
+                OPEN_FGA,
+                APP_STORE,
+                RECEIVED,
+                PREQUEL,
+                AIRWALLEX,
+                STRIPE_INVOICING,
+                /**
+                 * An enum member indicating that [VendorIdentifier] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    AUTH0 -> Value.AUTH0
+                    ZUORA -> Value.ZUORA
+                    STRIPE -> Value.STRIPE
+                    HUBSPOT -> Value.HUBSPOT
+                    AWS_MARKETPLACE -> Value.AWS_MARKETPLACE
+                    SNOWFLAKE -> Value.SNOWFLAKE
+                    SALESFORCE -> Value.SALESFORCE
+                    BIG_QUERY -> Value.BIG_QUERY
+                    OPEN_FGA -> Value.OPEN_FGA
+                    APP_STORE -> Value.APP_STORE
+                    RECEIVED -> Value.RECEIVED
+                    PREQUEL -> Value.PREQUEL
+                    AIRWALLEX -> Value.AIRWALLEX
+                    STRIPE_INVOICING -> Value.STRIPE_INVOICING
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    AUTH0 -> Known.AUTH0
+                    ZUORA -> Known.ZUORA
+                    STRIPE -> Known.STRIPE
+                    HUBSPOT -> Known.HUBSPOT
+                    AWS_MARKETPLACE -> Known.AWS_MARKETPLACE
+                    SNOWFLAKE -> Known.SNOWFLAKE
+                    SALESFORCE -> Known.SALESFORCE
+                    BIG_QUERY -> Known.BIG_QUERY
+                    OPEN_FGA -> Known.OPEN_FGA
+                    APP_STORE -> Known.APP_STORE
+                    RECEIVED -> Known.RECEIVED
+                    PREQUEL -> Known.PREQUEL
+                    AIRWALLEX -> Known.AIRWALLEX
+                    STRIPE_INVOICING -> Known.STRIPE_INVOICING
+                    else -> throw StiggInvalidDataException("Unknown VendorIdentifier: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): VendorIdentifier = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is VendorIdentifier && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is SyncState &&
+                status == other.status &&
+                syncedEntityId == other.syncedEntityId &&
+                vendorIdentifier == other.vendorIdentifier &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(status, syncedEntityId, vendorIdentifier, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "SyncState{status=$status, syncedEntityId=$syncedEntityId, vendorIdentifier=$vendorIdentifier, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -3027,6 +3720,7 @@ private constructor(
             resourceId == other.resourceId &&
             sourceType == other.sourceType &&
             status == other.status &&
+            syncStates == other.syncStates &&
             updatedAt == other.updatedAt &&
             voidedAt == other.voidedAt &&
             additionalProperties == other.additionalProperties
@@ -3054,6 +3748,7 @@ private constructor(
             resourceId,
             sourceType,
             status,
+            syncStates,
             updatedAt,
             voidedAt,
             additionalProperties,
@@ -3063,5 +3758,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GrantListResponse{id=$id, amount=$amount, comment=$comment, consumedAmount=$consumedAmount, cost=$cost, createdAt=$createdAt, currencyId=$currencyId, customerId=$customerId, displayName=$displayName, effectiveAt=$effectiveAt, expireAt=$expireAt, grantType=$grantType, invoiceId=$invoiceId, latestInvoice=$latestInvoice, metadata=$metadata, paymentCollection=$paymentCollection, priority=$priority, resourceId=$resourceId, sourceType=$sourceType, status=$status, updatedAt=$updatedAt, voidedAt=$voidedAt, additionalProperties=$additionalProperties}"
+        "GrantListResponse{id=$id, amount=$amount, comment=$comment, consumedAmount=$consumedAmount, cost=$cost, createdAt=$createdAt, currencyId=$currencyId, customerId=$customerId, displayName=$displayName, effectiveAt=$effectiveAt, expireAt=$expireAt, grantType=$grantType, invoiceId=$invoiceId, latestInvoice=$latestInvoice, metadata=$metadata, paymentCollection=$paymentCollection, priority=$priority, resourceId=$resourceId, sourceType=$sourceType, status=$status, syncStates=$syncStates, updatedAt=$updatedAt, voidedAt=$voidedAt, additionalProperties=$additionalProperties}"
 }
