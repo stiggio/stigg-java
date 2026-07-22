@@ -8,7 +8,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":stigg-java"))
+    implementation(project(":stigg-java-core"))
+    implementation(project(":stigg-java-client-okhttp"))
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -19,7 +20,7 @@ tasks.withType<JavaCompile>().configureEach {
 application {
     // Use `./gradlew :stigg-java-example:run` to run `Main`
     // Use `./gradlew :stigg-java-example:run -Pexample=Something` to run `SomethingExample`
-    mainClass = "com.stigg.api.example.${
+    mainClass = "io.stigg.example.${
         if (project.hasProperty("example"))
             "${project.property("example")}Example"
         else
