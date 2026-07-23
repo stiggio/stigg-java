@@ -6,11 +6,11 @@ import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class DestinationUpdateParamsTest {
+internal class DestinationUpdateSelectionParamsTest {
 
     @Test
     fun create() {
-        DestinationUpdateParams.builder()
+        DestinationUpdateSelectionParams.builder()
             .destinationId("x")
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
@@ -22,7 +22,7 @@ internal class DestinationUpdateParamsTest {
     @Test
     fun pathParams() {
         val params =
-            DestinationUpdateParams.builder()
+            DestinationUpdateSelectionParams.builder()
                 .destinationId("x")
                 .addEnabledModel("x")
                 .integrationId("x")
@@ -36,7 +36,7 @@ internal class DestinationUpdateParamsTest {
     @Test
     fun headers() {
         val params =
-            DestinationUpdateParams.builder()
+            DestinationUpdateSelectionParams.builder()
                 .destinationId("x")
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
@@ -58,7 +58,7 @@ internal class DestinationUpdateParamsTest {
     @Test
     fun headersWithoutOptionalFields() {
         val params =
-            DestinationUpdateParams.builder()
+            DestinationUpdateSelectionParams.builder()
                 .destinationId("x")
                 .addEnabledModel("x")
                 .integrationId("x")
@@ -72,7 +72,7 @@ internal class DestinationUpdateParamsTest {
     @Test
     fun body() {
         val params =
-            DestinationUpdateParams.builder()
+            DestinationUpdateSelectionParams.builder()
                 .destinationId("x")
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
@@ -89,7 +89,7 @@ internal class DestinationUpdateParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            DestinationUpdateParams.builder()
+            DestinationUpdateSelectionParams.builder()
                 .destinationId("x")
                 .addEnabledModel("x")
                 .integrationId("x")

@@ -205,6 +205,7 @@ internal class AddonServiceAsyncTest {
                                         AddonUpdateParams.Charges.OveragePricingModel.BillingCadence
                                             .RECURRING
                                     )
+                                    .currencyId("currencyId")
                                     .entitlement(
                                         AddonUpdateParams.Charges.OveragePricingModel.Entitlement
                                             .builder()
@@ -266,7 +267,6 @@ internal class AddonServiceAsyncTest {
                                             .build()
                                     )
                                     .featureId("featureId")
-                                    .topUpCustomCurrencyId("topUpCustomCurrencyId")
                                     .build()
                             )
                             .addPricingModel(

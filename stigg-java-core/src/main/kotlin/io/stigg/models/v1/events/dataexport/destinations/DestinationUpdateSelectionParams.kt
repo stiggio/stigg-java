@@ -26,7 +26,7 @@ import kotlin.jvm.optionals.getOrNull
  * Update a destination's entity selection. Pushes the new enabled_models to the provider first,
  * then persists the selection. Applies on the next scheduled transfer.
  */
-class DestinationUpdateParams
+class DestinationUpdateSelectionParams
 private constructor(
     private val destinationId: String?,
     private val xAccountId: String?,
@@ -83,7 +83,8 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [DestinationUpdateParams].
+         * Returns a mutable builder for constructing an instance of
+         * [DestinationUpdateSelectionParams].
          *
          * The following fields are required:
          * ```java
@@ -94,7 +95,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [DestinationUpdateParams]. */
+    /** A builder for [DestinationUpdateSelectionParams]. */
     class Builder internal constructor() {
 
         private var destinationId: String? = null
@@ -105,14 +106,16 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(destinationUpdateParams: DestinationUpdateParams) = apply {
-            destinationId = destinationUpdateParams.destinationId
-            xAccountId = destinationUpdateParams.xAccountId
-            xEnvironmentId = destinationUpdateParams.xEnvironmentId
-            body = destinationUpdateParams.body.toBuilder()
-            additionalHeaders = destinationUpdateParams.additionalHeaders.toBuilder()
-            additionalQueryParams = destinationUpdateParams.additionalQueryParams.toBuilder()
-        }
+        internal fun from(destinationUpdateSelectionParams: DestinationUpdateSelectionParams) =
+            apply {
+                destinationId = destinationUpdateSelectionParams.destinationId
+                xAccountId = destinationUpdateSelectionParams.xAccountId
+                xEnvironmentId = destinationUpdateSelectionParams.xEnvironmentId
+                body = destinationUpdateSelectionParams.body.toBuilder()
+                additionalHeaders = destinationUpdateSelectionParams.additionalHeaders.toBuilder()
+                additionalQueryParams =
+                    destinationUpdateSelectionParams.additionalQueryParams.toBuilder()
+            }
 
         fun destinationId(destinationId: String?) = apply { this.destinationId = destinationId }
 
@@ -293,7 +296,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [DestinationUpdateParams].
+         * Returns an immutable instance of [DestinationUpdateSelectionParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -305,8 +308,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): DestinationUpdateParams =
-            DestinationUpdateParams(
+        fun build(): DestinationUpdateSelectionParams =
+            DestinationUpdateSelectionParams(
                 destinationId,
                 xAccountId,
                 xEnvironmentId,
@@ -574,7 +577,7 @@ private constructor(
             return true
         }
 
-        return other is DestinationUpdateParams &&
+        return other is DestinationUpdateSelectionParams &&
             destinationId == other.destinationId &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
@@ -594,5 +597,5 @@ private constructor(
         )
 
     override fun toString() =
-        "DestinationUpdateParams{destinationId=$destinationId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "DestinationUpdateSelectionParams{destinationId=$destinationId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

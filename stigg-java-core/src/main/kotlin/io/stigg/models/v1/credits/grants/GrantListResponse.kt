@@ -222,7 +222,7 @@ private constructor(
     fun expireAt(): Optional<OffsetDateTime> = expireAt.getOptional("expireAt")
 
     /**
-     * The type of credit grant (PAID, PROMOTIONAL, RECURRING)
+     * The type of credit grant (PAID, PROMOTIONAL, RECURRING, OVERDRAFT)
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -736,7 +736,7 @@ private constructor(
          */
         fun expireAt(expireAt: JsonField<OffsetDateTime>) = apply { this.expireAt = expireAt }
 
-        /** The type of credit grant (PAID, PROMOTIONAL, RECURRING) */
+        /** The type of credit grant (PAID, PROMOTIONAL, RECURRING, OVERDRAFT) */
         fun grantType(grantType: GrantType) = grantType(JsonField.of(grantType))
 
         /**
@@ -1287,7 +1287,7 @@ private constructor(
             "Cost{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
     }
 
-    /** The type of credit grant (PAID, PROMOTIONAL, RECURRING) */
+    /** The type of credit grant (PAID, PROMOTIONAL, RECURRING, OVERDRAFT) */
     class GrantType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**

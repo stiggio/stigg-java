@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.usage
+package io.stigg.models.v1.events
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -21,7 +21,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Response object */
-class UsageEstimateCostResponse
+class EventEstimateResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -63,7 +63,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [UsageEstimateCostResponse].
+         * Returns a mutable builder for constructing an instance of [EventEstimateResponse].
          *
          * The following fields are required:
          * ```java
@@ -73,16 +73,16 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [UsageEstimateCostResponse]. */
+    /** A builder for [EventEstimateResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(usageEstimateCostResponse: UsageEstimateCostResponse) = apply {
-            data = usageEstimateCostResponse.data
-            additionalProperties = usageEstimateCostResponse.additionalProperties.toMutableMap()
+        internal fun from(eventEstimateResponse: EventEstimateResponse) = apply {
+            data = eventEstimateResponse.data
+            additionalProperties = eventEstimateResponse.additionalProperties.toMutableMap()
         }
 
         /** Estimated credit cost, current balance and balance after */
@@ -116,7 +116,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [UsageEstimateCostResponse].
+         * Returns an immutable instance of [EventEstimateResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -127,11 +127,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): UsageEstimateCostResponse =
-            UsageEstimateCostResponse(
-                checkRequired("data", data),
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): EventEstimateResponse =
+            EventEstimateResponse(checkRequired("data", data), additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -144,7 +141,7 @@ private constructor(
      * @throws StiggInvalidDataException if any value type in this object doesn't match its expected
      *   type.
      */
-    fun validate(): UsageEstimateCostResponse = apply {
+    fun validate(): EventEstimateResponse = apply {
         if (validated) {
             return@apply
         }
@@ -1423,7 +1420,7 @@ private constructor(
             return true
         }
 
-        return other is UsageEstimateCostResponse &&
+        return other is EventEstimateResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -1433,5 +1430,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "UsageEstimateCostResponse{data=$data, additionalProperties=$additionalProperties}"
+        "EventEstimateResponse{data=$data, additionalProperties=$additionalProperties}"
 }

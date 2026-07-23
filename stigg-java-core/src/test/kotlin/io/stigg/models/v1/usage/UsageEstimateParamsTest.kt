@@ -7,42 +7,42 @@ import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class UsageEstimateCostParamsTest {
+internal class UsageEstimateParamsTest {
 
     @Test
     fun create() {
-        UsageEstimateCostParams.builder()
+        UsageEstimateParams.builder()
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .customerId("customerId")
             .featureId("featureId")
             .value(-9007199254740991L)
             .dimensions(
-                UsageEstimateCostParams.Dimensions.builder()
+                UsageEstimateParams.Dimensions.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
             .resourceId("resourceId")
-            .updateBehavior(UsageEstimateCostParams.UpdateBehavior.DELTA)
+            .updateBehavior(UsageEstimateParams.UpdateBehavior.DELTA)
             .build()
     }
 
     @Test
     fun headers() {
         val params =
-            UsageEstimateCostParams.builder()
+            UsageEstimateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .featureId("featureId")
                 .value(-9007199254740991L)
                 .dimensions(
-                    UsageEstimateCostParams.Dimensions.builder()
+                    UsageEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
                 .resourceId("resourceId")
-                .updateBehavior(UsageEstimateCostParams.UpdateBehavior.DELTA)
+                .updateBehavior(UsageEstimateParams.UpdateBehavior.DELTA)
                 .build()
 
         val headers = params._headers()
@@ -59,7 +59,7 @@ internal class UsageEstimateCostParamsTest {
     @Test
     fun headersWithoutOptionalFields() {
         val params =
-            UsageEstimateCostParams.builder()
+            UsageEstimateParams.builder()
                 .customerId("customerId")
                 .featureId("featureId")
                 .value(-9007199254740991L)
@@ -73,19 +73,19 @@ internal class UsageEstimateCostParamsTest {
     @Test
     fun body() {
         val params =
-            UsageEstimateCostParams.builder()
+            UsageEstimateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .featureId("featureId")
                 .value(-9007199254740991L)
                 .dimensions(
-                    UsageEstimateCostParams.Dimensions.builder()
+                    UsageEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
                 .resourceId("resourceId")
-                .updateBehavior(UsageEstimateCostParams.UpdateBehavior.DELTA)
+                .updateBehavior(UsageEstimateParams.UpdateBehavior.DELTA)
                 .build()
 
         val body = params._body()
@@ -95,18 +95,18 @@ internal class UsageEstimateCostParamsTest {
         assertThat(body.value()).isEqualTo(-9007199254740991L)
         assertThat(body.dimensions())
             .contains(
-                UsageEstimateCostParams.Dimensions.builder()
+                UsageEstimateParams.Dimensions.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
         assertThat(body.resourceId()).contains("resourceId")
-        assertThat(body.updateBehavior()).contains(UsageEstimateCostParams.UpdateBehavior.DELTA)
+        assertThat(body.updateBehavior()).contains(UsageEstimateParams.UpdateBehavior.DELTA)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            UsageEstimateCostParams.builder()
+            UsageEstimateParams.builder()
                 .customerId("customerId")
                 .featureId("featureId")
                 .value(-9007199254740991L)

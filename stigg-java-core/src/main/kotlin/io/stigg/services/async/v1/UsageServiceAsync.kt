@@ -5,8 +5,8 @@ package io.stigg.services.async.v1
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.usage.UsageEstimateCostParams
-import io.stigg.models.v1.usage.UsageEstimateCostResponse
+import io.stigg.models.v1.usage.UsageEstimateParams
+import io.stigg.models.v1.usage.UsageEstimateResponse
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageHistoryResponse
 import io.stigg.models.v1.usage.UsageReportParams
@@ -33,15 +33,14 @@ interface UsageServiceAsync {
      * Estimates the credit cost of a usage report without recording it. Returns the estimated cost
      * per credit currency, the current balance, and the balance after the estimated consumption.
      */
-    fun estimateCost(
-        params: UsageEstimateCostParams
-    ): CompletableFuture<UsageEstimateCostResponse> = estimateCost(params, RequestOptions.none())
+    fun estimate(params: UsageEstimateParams): CompletableFuture<UsageEstimateResponse> =
+        estimate(params, RequestOptions.none())
 
-    /** @see estimateCost */
-    fun estimateCost(
-        params: UsageEstimateCostParams,
+    /** @see estimate */
+    fun estimate(
+        params: UsageEstimateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<UsageEstimateCostResponse>
+    ): CompletableFuture<UsageEstimateResponse>
 
     /** Retrieves historical usage data for a customer's metered feature over time. */
     fun history(
@@ -94,18 +93,18 @@ interface UsageServiceAsync {
 
         /**
          * Returns a raw HTTP response for `post /api/v1/usage/estimate`, but is otherwise the same
-         * as [UsageServiceAsync.estimateCost].
+         * as [UsageServiceAsync.estimate].
          */
-        fun estimateCost(
-            params: UsageEstimateCostParams
-        ): CompletableFuture<HttpResponseFor<UsageEstimateCostResponse>> =
-            estimateCost(params, RequestOptions.none())
+        fun estimate(
+            params: UsageEstimateParams
+        ): CompletableFuture<HttpResponseFor<UsageEstimateResponse>> =
+            estimate(params, RequestOptions.none())
 
-        /** @see estimateCost */
-        fun estimateCost(
-            params: UsageEstimateCostParams,
+        /** @see estimate */
+        fun estimate(
+            params: UsageEstimateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<UsageEstimateCostResponse>>
+        ): CompletableFuture<HttpResponseFor<UsageEstimateResponse>>
 
         /**
          * Returns a raw HTTP response for `get /api/v1/usage/{customerId}/history/{featureId}`, but

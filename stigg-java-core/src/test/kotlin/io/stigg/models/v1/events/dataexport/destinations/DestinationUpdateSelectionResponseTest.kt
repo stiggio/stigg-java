@@ -7,23 +7,24 @@ import io.stigg.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class DestinationUpdateResponseTest {
+internal class DestinationUpdateSelectionResponseTest {
 
     @Test
     fun create() {
-        val destinationUpdateResponse =
-            DestinationUpdateResponse.builder()
+        val destinationUpdateSelectionResponse =
+            DestinationUpdateSelectionResponse.builder()
                 .data(
-                    DestinationUpdateResponse.Data.builder()
+                    DestinationUpdateSelectionResponse.Data.builder()
                         .addDestination(
-                            DestinationUpdateResponse.Data.Destination.builder()
+                            DestinationUpdateSelectionResponse.Data.Destination.builder()
                                 .connectedAt("connectedAt")
                                 .destinationId("destinationId")
                                 .type("type")
                                 .connectionStatus("connectionStatus")
                                 .addEnabledModel("string")
                                 .lastSyncStatus(
-                                    DestinationUpdateResponse.Data.Destination.LastSyncStatus
+                                    DestinationUpdateSelectionResponse.Data.Destination
+                                        .LastSyncStatus
                                         .builder()
                                         .finishedAt("finishedAt")
                                         .status("status")
@@ -39,18 +40,19 @@ internal class DestinationUpdateResponseTest {
                 )
                 .build()
 
-        assertThat(destinationUpdateResponse.data())
+        assertThat(destinationUpdateSelectionResponse.data())
             .isEqualTo(
-                DestinationUpdateResponse.Data.builder()
+                DestinationUpdateSelectionResponse.Data.builder()
                     .addDestination(
-                        DestinationUpdateResponse.Data.Destination.builder()
+                        DestinationUpdateSelectionResponse.Data.Destination.builder()
                             .connectedAt("connectedAt")
                             .destinationId("destinationId")
                             .type("type")
                             .connectionStatus("connectionStatus")
                             .addEnabledModel("string")
                             .lastSyncStatus(
-                                DestinationUpdateResponse.Data.Destination.LastSyncStatus.builder()
+                                DestinationUpdateSelectionResponse.Data.Destination.LastSyncStatus
+                                    .builder()
                                     .finishedAt("finishedAt")
                                     .status("status")
                                     .transferId("transferId")
@@ -68,19 +70,20 @@ internal class DestinationUpdateResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val destinationUpdateResponse =
-            DestinationUpdateResponse.builder()
+        val destinationUpdateSelectionResponse =
+            DestinationUpdateSelectionResponse.builder()
                 .data(
-                    DestinationUpdateResponse.Data.builder()
+                    DestinationUpdateSelectionResponse.Data.builder()
                         .addDestination(
-                            DestinationUpdateResponse.Data.Destination.builder()
+                            DestinationUpdateSelectionResponse.Data.Destination.builder()
                                 .connectedAt("connectedAt")
                                 .destinationId("destinationId")
                                 .type("type")
                                 .connectionStatus("connectionStatus")
                                 .addEnabledModel("string")
                                 .lastSyncStatus(
-                                    DestinationUpdateResponse.Data.Destination.LastSyncStatus
+                                    DestinationUpdateSelectionResponse.Data.Destination
+                                        .LastSyncStatus
                                         .builder()
                                         .finishedAt("finishedAt")
                                         .status("status")
@@ -96,12 +99,13 @@ internal class DestinationUpdateResponseTest {
                 )
                 .build()
 
-        val roundtrippedDestinationUpdateResponse =
+        val roundtrippedDestinationUpdateSelectionResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(destinationUpdateResponse),
-                jacksonTypeRef<DestinationUpdateResponse>(),
+                jsonMapper.writeValueAsString(destinationUpdateSelectionResponse),
+                jacksonTypeRef<DestinationUpdateSelectionResponse>(),
             )
 
-        assertThat(roundtrippedDestinationUpdateResponse).isEqualTo(destinationUpdateResponse)
+        assertThat(roundtrippedDestinationUpdateSelectionResponse)
+            .isEqualTo(destinationUpdateSelectionResponse)
     }
 }
