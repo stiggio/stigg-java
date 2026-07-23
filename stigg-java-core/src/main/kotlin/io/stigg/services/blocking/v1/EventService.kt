@@ -6,10 +6,11 @@ import com.google.errorprone.annotations.MustBeClosed
 import io.stigg.core.ClientOptions
 import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
-import io.stigg.models.v1.events.EventEstimateCostParams
-import io.stigg.models.v1.events.EventEstimateCostResponse
+import io.stigg.models.v1.events.EventEstimateParams
+import io.stigg.models.v1.events.EventEstimateResponse
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
+import io.stigg.services.blocking.v1.events.BetaService
 import io.stigg.services.blocking.v1.events.DataExportService
 import java.util.function.Consumer
 
@@ -30,18 +31,20 @@ interface EventService {
 
     fun dataExport(): DataExportService
 
+    fun beta(): BetaService
+
     /**
      * Estimates the credit cost of a usage event without ingesting it. Returns the estimated cost
      * per credit currency, the current balance, and the balance after the estimated consumption.
      */
-    fun estimateCost(params: EventEstimateCostParams): EventEstimateCostResponse =
-        estimateCost(params, RequestOptions.none())
+    fun estimate(params: EventEstimateParams): EventEstimateResponse =
+        estimate(params, RequestOptions.none())
 
-    /** @see estimateCost */
-    fun estimateCost(
-        params: EventEstimateCostParams,
+    /** @see estimate */
+    fun estimate(
+        params: EventEstimateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EventEstimateCostResponse
+    ): EventEstimateResponse
 
     /**
      * Reports raw usage events for event-based metering. Events are ingested asynchronously and
@@ -68,21 +71,22 @@ interface EventService {
 
         fun dataExport(): DataExportService.WithRawResponse
 
+        fun beta(): BetaService.WithRawResponse
+
         /**
          * Returns a raw HTTP response for `post /api/v1/events/estimate`, but is otherwise the same
-         * as [EventService.estimateCost].
+         * as [EventService.estimate].
          */
         @MustBeClosed
-        fun estimateCost(
-            params: EventEstimateCostParams
-        ): HttpResponseFor<EventEstimateCostResponse> = estimateCost(params, RequestOptions.none())
+        fun estimate(params: EventEstimateParams): HttpResponseFor<EventEstimateResponse> =
+            estimate(params, RequestOptions.none())
 
-        /** @see estimateCost */
+        /** @see estimate */
         @MustBeClosed
-        fun estimateCost(
-            params: EventEstimateCostParams,
+        fun estimate(
+            params: EventEstimateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EventEstimateCostResponse>
+        ): HttpResponseFor<EventEstimateResponse>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/events`, but is otherwise the same as

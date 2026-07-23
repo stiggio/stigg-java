@@ -20,7 +20,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Response object */
-class DestinationUpdateResponse
+class DestinationUpdateSelectionResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<Data>,
@@ -62,7 +62,8 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [DestinationUpdateResponse].
+         * Returns a mutable builder for constructing an instance of
+         * [DestinationUpdateSelectionResponse].
          *
          * The following fields are required:
          * ```java
@@ -72,17 +73,19 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [DestinationUpdateResponse]. */
+    /** A builder for [DestinationUpdateSelectionResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<Data>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(destinationUpdateResponse: DestinationUpdateResponse) = apply {
-            data = destinationUpdateResponse.data
-            additionalProperties = destinationUpdateResponse.additionalProperties.toMutableMap()
-        }
+        internal fun from(destinationUpdateSelectionResponse: DestinationUpdateSelectionResponse) =
+            apply {
+                data = destinationUpdateSelectionResponse.data
+                additionalProperties =
+                    destinationUpdateSelectionResponse.additionalProperties.toMutableMap()
+            }
 
         /** Current destinations under the DATA_EXPORT integration. */
         fun data(data: Data) = data(JsonField.of(data))
@@ -115,7 +118,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [DestinationUpdateResponse].
+         * Returns an immutable instance of [DestinationUpdateSelectionResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -126,8 +129,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): DestinationUpdateResponse =
-            DestinationUpdateResponse(
+        fun build(): DestinationUpdateSelectionResponse =
+            DestinationUpdateSelectionResponse(
                 checkRequired("data", data),
                 additionalProperties.toMutableMap(),
             )
@@ -143,7 +146,7 @@ private constructor(
      * @throws StiggInvalidDataException if any value type in this object doesn't match its expected
      *   type.
      */
-    fun validate(): DestinationUpdateResponse = apply {
+    fun validate(): DestinationUpdateSelectionResponse = apply {
         if (validated) {
             return@apply
         }
@@ -1207,7 +1210,7 @@ private constructor(
             return true
         }
 
-        return other is DestinationUpdateResponse &&
+        return other is DestinationUpdateSelectionResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -1217,5 +1220,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DestinationUpdateResponse{data=$data, additionalProperties=$additionalProperties}"
+        "DestinationUpdateSelectionResponse{data=$data, additionalProperties=$additionalProperties}"
 }

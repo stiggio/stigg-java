@@ -3150,9 +3150,9 @@ private constructor(
             private val billingModel: JsonField<BillingModel>,
             private val pricePeriods: JsonField<List<PricePeriod>>,
             private val billingCadence: JsonField<BillingCadence>,
+            private val currencyId: JsonField<String>,
             private val entitlement: JsonField<Entitlement>,
             private val featureId: JsonField<String>,
-            private val topUpCustomCurrencyId: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -3167,22 +3167,22 @@ private constructor(
                 @JsonProperty("billingCadence")
                 @ExcludeMissing
                 billingCadence: JsonField<BillingCadence> = JsonMissing.of(),
+                @JsonProperty("currencyId")
+                @ExcludeMissing
+                currencyId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("entitlement")
                 @ExcludeMissing
                 entitlement: JsonField<Entitlement> = JsonMissing.of(),
                 @JsonProperty("featureId")
                 @ExcludeMissing
                 featureId: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("topUpCustomCurrencyId")
-                @ExcludeMissing
-                topUpCustomCurrencyId: JsonField<String> = JsonMissing.of(),
             ) : this(
                 billingModel,
                 pricePeriods,
                 billingCadence,
+                currencyId,
                 entitlement,
                 featureId,
-                topUpCustomCurrencyId,
                 mutableMapOf(),
             )
 
@@ -3214,6 +3214,14 @@ private constructor(
                 billingCadence.getOptional("billingCadence")
 
             /**
+             * The refId of the custom currency this credit overage applies to
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
+
+            /**
              * Entitlement configuration for the overage feature
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -3228,15 +3236,6 @@ private constructor(
              *   the server responded with an unexpected value).
              */
             fun featureId(): Optional<String> = featureId.getOptional("featureId")
-
-            /**
-             * Custom currency ID for overage top-up
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun topUpCustomCurrencyId(): Optional<String> =
-                topUpCustomCurrencyId.getOptional("topUpCustomCurrencyId")
 
             /**
              * Returns the raw JSON value of [billingModel].
@@ -3269,6 +3268,16 @@ private constructor(
             fun _billingCadence(): JsonField<BillingCadence> = billingCadence
 
             /**
+             * Returns the raw JSON value of [currencyId].
+             *
+             * Unlike [currencyId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencyId")
+            @ExcludeMissing
+            fun _currencyId(): JsonField<String> = currencyId
+
+            /**
              * Returns the raw JSON value of [entitlement].
              *
              * Unlike [entitlement], this method doesn't throw if the JSON field has an unexpected
@@ -3287,16 +3296,6 @@ private constructor(
             @JsonProperty("featureId")
             @ExcludeMissing
             fun _featureId(): JsonField<String> = featureId
-
-            /**
-             * Returns the raw JSON value of [topUpCustomCurrencyId].
-             *
-             * Unlike [topUpCustomCurrencyId], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("topUpCustomCurrencyId")
-            @ExcludeMissing
-            fun _topUpCustomCurrencyId(): JsonField<String> = topUpCustomCurrencyId
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -3330,9 +3329,9 @@ private constructor(
                 private var billingModel: JsonField<BillingModel>? = null
                 private var pricePeriods: JsonField<MutableList<PricePeriod>>? = null
                 private var billingCadence: JsonField<BillingCadence> = JsonMissing.of()
+                private var currencyId: JsonField<String> = JsonMissing.of()
                 private var entitlement: JsonField<Entitlement> = JsonMissing.of()
                 private var featureId: JsonField<String> = JsonMissing.of()
-                private var topUpCustomCurrencyId: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -3340,9 +3339,9 @@ private constructor(
                     billingModel = overagePricingModel.billingModel
                     pricePeriods = overagePricingModel.pricePeriods.map { it.toMutableList() }
                     billingCadence = overagePricingModel.billingCadence
+                    currencyId = overagePricingModel.currencyId
                     entitlement = overagePricingModel.entitlement
                     featureId = overagePricingModel.featureId
-                    topUpCustomCurrencyId = overagePricingModel.topUpCustomCurrencyId
                     additionalProperties = overagePricingModel.additionalProperties.toMutableMap()
                 }
 
@@ -3403,6 +3402,20 @@ private constructor(
                     this.billingCadence = billingCadence
                 }
 
+                /** The refId of the custom currency this credit overage applies to */
+                fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
+
+                /**
+                 * Sets [Builder.currencyId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencyId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currencyId(currencyId: JsonField<String>) = apply {
+                    this.currencyId = currencyId
+                }
+
                 /** Entitlement configuration for the overage feature */
                 fun entitlement(entitlement: Entitlement) = entitlement(JsonField.of(entitlement))
 
@@ -3428,21 +3441,6 @@ private constructor(
                  * yet supported value.
                  */
                 fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
-
-                /** Custom currency ID for overage top-up */
-                fun topUpCustomCurrencyId(topUpCustomCurrencyId: String) =
-                    topUpCustomCurrencyId(JsonField.of(topUpCustomCurrencyId))
-
-                /**
-                 * Sets [Builder.topUpCustomCurrencyId] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.topUpCustomCurrencyId] with a well-typed
-                 * [String] value instead. This method is primarily for setting the field to an
-                 * undocumented or not yet supported value.
-                 */
-                fun topUpCustomCurrencyId(topUpCustomCurrencyId: JsonField<String>) = apply {
-                    this.topUpCustomCurrencyId = topUpCustomCurrencyId
-                }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
@@ -3484,9 +3482,9 @@ private constructor(
                         checkRequired("billingModel", billingModel),
                         checkRequired("pricePeriods", pricePeriods).map { it.toImmutable() },
                         billingCadence,
+                        currencyId,
                         entitlement,
                         featureId,
-                        topUpCustomCurrencyId,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -3511,9 +3509,9 @@ private constructor(
                 billingModel().validate()
                 pricePeriods().forEach { it.validate() }
                 billingCadence().ifPresent { it.validate() }
+                currencyId()
                 entitlement().ifPresent { it.validate() }
                 featureId()
-                topUpCustomCurrencyId()
                 validated = true
             }
 
@@ -3536,9 +3534,9 @@ private constructor(
                 (billingModel.asKnown().getOrNull()?.validity() ?: 0) +
                     (pricePeriods.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                     (billingCadence.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (currencyId.asKnown().isPresent) 1 else 0) +
                     (entitlement.asKnown().getOrNull()?.validity() ?: 0) +
-                    (if (featureId.asKnown().isPresent) 1 else 0) +
-                    (if (topUpCustomCurrencyId.asKnown().isPresent) 1 else 0)
+                    (if (featureId.asKnown().isPresent) 1 else 0)
 
             /** The billing model for overages */
             class BillingModel
@@ -10070,9 +10068,9 @@ private constructor(
                     billingModel == other.billingModel &&
                     pricePeriods == other.pricePeriods &&
                     billingCadence == other.billingCadence &&
+                    currencyId == other.currencyId &&
                     entitlement == other.entitlement &&
                     featureId == other.featureId &&
-                    topUpCustomCurrencyId == other.topUpCustomCurrencyId &&
                     additionalProperties == other.additionalProperties
             }
 
@@ -10081,9 +10079,9 @@ private constructor(
                     billingModel,
                     pricePeriods,
                     billingCadence,
+                    currencyId,
                     entitlement,
                     featureId,
-                    topUpCustomCurrencyId,
                     additionalProperties,
                 )
             }
@@ -10091,7 +10089,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "OveragePricingModel{billingModel=$billingModel, pricePeriods=$pricePeriods, billingCadence=$billingCadence, entitlement=$entitlement, featureId=$featureId, topUpCustomCurrencyId=$topUpCustomCurrencyId, additionalProperties=$additionalProperties}"
+                "OveragePricingModel{billingModel=$billingModel, pricePeriods=$pricePeriods, billingCadence=$billingCadence, currencyId=$currencyId, entitlement=$entitlement, featureId=$featureId, additionalProperties=$additionalProperties}"
         }
 
         /** A pricing model configuration with billing details and price periods. */

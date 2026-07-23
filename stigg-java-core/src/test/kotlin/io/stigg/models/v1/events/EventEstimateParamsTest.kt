@@ -7,17 +7,17 @@ import io.stigg.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class EventEstimateCostParamsTest {
+internal class EventEstimateParamsTest {
 
     @Test
     fun create() {
-        EventEstimateCostParams.builder()
+        EventEstimateParams.builder()
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .customerId("customerId")
             .eventName("x")
             .dimensions(
-                EventEstimateCostParams.Dimensions.builder()
+                EventEstimateParams.Dimensions.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
@@ -28,13 +28,13 @@ internal class EventEstimateCostParamsTest {
     @Test
     fun headers() {
         val params =
-            EventEstimateCostParams.builder()
+            EventEstimateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .eventName("x")
                 .dimensions(
-                    EventEstimateCostParams.Dimensions.builder()
+                    EventEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
@@ -54,8 +54,7 @@ internal class EventEstimateCostParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params =
-            EventEstimateCostParams.builder().customerId("customerId").eventName("x").build()
+        val params = EventEstimateParams.builder().customerId("customerId").eventName("x").build()
 
         val headers = params._headers()
 
@@ -65,13 +64,13 @@ internal class EventEstimateCostParamsTest {
     @Test
     fun body() {
         val params =
-            EventEstimateCostParams.builder()
+            EventEstimateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .eventName("x")
                 .dimensions(
-                    EventEstimateCostParams.Dimensions.builder()
+                    EventEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
@@ -84,7 +83,7 @@ internal class EventEstimateCostParamsTest {
         assertThat(body.eventName()).isEqualTo("x")
         assertThat(body.dimensions())
             .contains(
-                EventEstimateCostParams.Dimensions.builder()
+                EventEstimateParams.Dimensions.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
@@ -93,8 +92,7 @@ internal class EventEstimateCostParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            EventEstimateCostParams.builder().customerId("customerId").eventName("x").build()
+        val params = EventEstimateParams.builder().customerId("customerId").eventName("x").build()
 
         val body = params._body()
 

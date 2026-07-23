@@ -16,8 +16,8 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepareAsync
-import io.stigg.models.v1.usage.UsageEstimateCostParams
-import io.stigg.models.v1.usage.UsageEstimateCostResponse
+import io.stigg.models.v1.usage.UsageEstimateParams
+import io.stigg.models.v1.usage.UsageEstimateResponse
 import io.stigg.models.v1.usage.UsageHistoryParams
 import io.stigg.models.v1.usage.UsageHistoryResponse
 import io.stigg.models.v1.usage.UsageReportParams
@@ -39,12 +39,12 @@ class UsageServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): UsageServiceAsync =
         UsageServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun estimateCost(
-        params: UsageEstimateCostParams,
+    override fun estimate(
+        params: UsageEstimateParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<UsageEstimateCostResponse> =
+    ): CompletableFuture<UsageEstimateResponse> =
         // post /api/v1/usage/estimate
-        withRawResponse().estimateCost(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().estimate(params, requestOptions).thenApply { it.parse() }
 
     override fun history(
         params: UsageHistoryParams,
@@ -73,13 +73,13 @@ class UsageServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val estimateCostHandler: Handler<UsageEstimateCostResponse> =
-            jsonHandler<UsageEstimateCostResponse>(clientOptions.jsonMapper)
+        private val estimateHandler: Handler<UsageEstimateResponse> =
+            jsonHandler<UsageEstimateResponse>(clientOptions.jsonMapper)
 
-        override fun estimateCost(
-            params: UsageEstimateCostParams,
+        override fun estimate(
+            params: UsageEstimateParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<UsageEstimateCostResponse>> {
+        ): CompletableFuture<HttpResponseFor<UsageEstimateResponse>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -94,7 +94,7 @@ class UsageServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { estimateCostHandler.handle(it) }
+                            .use { estimateHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

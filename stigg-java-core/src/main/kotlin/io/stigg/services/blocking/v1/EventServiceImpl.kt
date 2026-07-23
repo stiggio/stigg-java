@@ -15,10 +15,12 @@ import io.stigg.core.http.HttpResponseFor
 import io.stigg.core.http.json
 import io.stigg.core.http.parseable
 import io.stigg.core.prepare
-import io.stigg.models.v1.events.EventEstimateCostParams
-import io.stigg.models.v1.events.EventEstimateCostResponse
+import io.stigg.models.v1.events.EventEstimateParams
+import io.stigg.models.v1.events.EventEstimateResponse
 import io.stigg.models.v1.events.EventReportParams
 import io.stigg.models.v1.events.EventReportResponse
+import io.stigg.services.blocking.v1.events.BetaService
+import io.stigg.services.blocking.v1.events.BetaServiceImpl
 import io.stigg.services.blocking.v1.events.DataExportService
 import io.stigg.services.blocking.v1.events.DataExportServiceImpl
 import java.util.function.Consumer
@@ -33,6 +35,8 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     private val dataExport: DataExportService by lazy { DataExportServiceImpl(clientOptions) }
 
+    private val beta: BetaService by lazy { BetaServiceImpl(clientOptions) }
+
     override fun withRawResponse(): EventService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService =
@@ -40,12 +44,14 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
 
     override fun dataExport(): DataExportService = dataExport
 
-    override fun estimateCost(
-        params: EventEstimateCostParams,
+    override fun beta(): BetaService = beta
+
+    override fun estimate(
+        params: EventEstimateParams,
         requestOptions: RequestOptions,
-    ): EventEstimateCostResponse =
+    ): EventEstimateResponse =
         // post /api/v1/events/estimate
-        withRawResponse().estimateCost(params, requestOptions).parse()
+        withRawResponse().estimate(params, requestOptions).parse()
 
     override fun report(
         params: EventReportParams,
@@ -64,6 +70,10 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             DataExportServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val beta: BetaService.WithRawResponse by lazy {
+            BetaServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): EventService.WithRawResponse =
@@ -73,13 +83,15 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
 
         override fun dataExport(): DataExportService.WithRawResponse = dataExport
 
-        private val estimateCostHandler: Handler<EventEstimateCostResponse> =
-            jsonHandler<EventEstimateCostResponse>(clientOptions.jsonMapper)
+        override fun beta(): BetaService.WithRawResponse = beta
 
-        override fun estimateCost(
-            params: EventEstimateCostParams,
+        private val estimateHandler: Handler<EventEstimateResponse> =
+            jsonHandler<EventEstimateResponse>(clientOptions.jsonMapper)
+
+        override fun estimate(
+            params: EventEstimateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EventEstimateCostResponse> {
+        ): HttpResponseFor<EventEstimateResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -92,7 +104,7 @@ class EventServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { estimateCostHandler.handle(it) }
+                    .use { estimateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

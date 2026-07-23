@@ -1,9 +1,9 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.services.blocking.v1beta
+package io.stigg.services.blocking.v1.events.beta
 
 import io.stigg.client.okhttp.StiggOkHttpClient
-import io.stigg.models.v1beta.customers.CustomerRetrieveGovernanceParams
+import io.stigg.models.v1.events.beta.customers.CustomerRetrieveGovernanceParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ internal class CustomerServiceTest {
     @Test
     fun retrieveGovernance() {
         val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
-        val customerService = client.v1Beta().customers()
+        val customerService = client.v1().events().beta().customers()
 
         val response =
             customerService.retrieveGovernance(
