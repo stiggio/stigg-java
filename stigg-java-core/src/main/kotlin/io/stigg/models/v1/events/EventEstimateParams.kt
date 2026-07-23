@@ -1,12 +1,11 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package io.stigg.models.v1.usage
+package io.stigg.models.v1.events
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.stigg.core.Enum
 import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
@@ -23,10 +22,10 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Estimates the credit cost of a usage report without recording it. Returns the estimated cost per
+ * Estimates the credit cost of a usage event without ingesting it. Returns the estimated cost per
  * credit currency, the current balance, and the balance after the estimated consumption.
  */
-class UsageEstimateCostParams
+class EventEstimateParams
 private constructor(
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
@@ -48,23 +47,15 @@ private constructor(
     fun customerId(): String = body.customerId()
 
     /**
-     * Feature id
+     * The name of the usage event
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun featureId(): String = body.featureId()
+    fun eventName(): String = body.eventName()
 
     /**
-     * The value to report for usage
-     *
-     * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
-     *   missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun value(): Long = body.value()
-
-    /**
-     * Additional dimensions for the usage report
+     * Dimensions associated with the usage event
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -80,14 +71,6 @@ private constructor(
     fun resourceId(): Optional<String> = body.resourceId()
 
     /**
-     * The method by which the usage value should be updated
-     *
-     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun updateBehavior(): Optional<UpdateBehavior> = body.updateBehavior()
-
-    /**
      * Returns the raw JSON value of [customerId].
      *
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -95,18 +78,11 @@ private constructor(
     fun _customerId(): JsonField<String> = body._customerId()
 
     /**
-     * Returns the raw JSON value of [featureId].
+     * Returns the raw JSON value of [eventName].
      *
-     * Unlike [featureId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [eventName], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _featureId(): JsonField<String> = body._featureId()
-
-    /**
-     * Returns the raw JSON value of [value].
-     *
-     * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _value(): JsonField<Long> = body._value()
+    fun _eventName(): JsonField<String> = body._eventName()
 
     /**
      * Returns the raw JSON value of [dimensions].
@@ -122,13 +98,6 @@ private constructor(
      */
     fun _resourceId(): JsonField<String> = body._resourceId()
 
-    /**
-     * Returns the raw JSON value of [updateBehavior].
-     *
-     * Unlike [updateBehavior], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _updateBehavior(): JsonField<UpdateBehavior> = body._updateBehavior()
-
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
@@ -142,19 +111,18 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [UsageEstimateCostParams].
+         * Returns a mutable builder for constructing an instance of [EventEstimateParams].
          *
          * The following fields are required:
          * ```java
          * .customerId()
-         * .featureId()
-         * .value()
+         * .eventName()
          * ```
          */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [UsageEstimateCostParams]. */
+    /** A builder for [EventEstimateParams]. */
     class Builder internal constructor() {
 
         private var xAccountId: String? = null
@@ -164,12 +132,12 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(usageEstimateCostParams: UsageEstimateCostParams) = apply {
-            xAccountId = usageEstimateCostParams.xAccountId
-            xEnvironmentId = usageEstimateCostParams.xEnvironmentId
-            body = usageEstimateCostParams.body.toBuilder()
-            additionalHeaders = usageEstimateCostParams.additionalHeaders.toBuilder()
-            additionalQueryParams = usageEstimateCostParams.additionalQueryParams.toBuilder()
+        internal fun from(eventEstimateParams: EventEstimateParams) = apply {
+            xAccountId = eventEstimateParams.xAccountId
+            xEnvironmentId = eventEstimateParams.xEnvironmentId
+            body = eventEstimateParams.body.toBuilder()
+            additionalHeaders = eventEstimateParams.additionalHeaders.toBuilder()
+            additionalQueryParams = eventEstimateParams.additionalQueryParams.toBuilder()
         }
 
         fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
@@ -189,11 +157,9 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [customerId]
-         * - [featureId]
-         * - [value]
+         * - [eventName]
          * - [dimensions]
          * - [resourceId]
-         * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -209,30 +175,19 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { body.customerId(customerId) }
 
-        /** Feature id */
-        fun featureId(featureId: String) = apply { body.featureId(featureId) }
+        /** The name of the usage event */
+        fun eventName(eventName: String) = apply { body.eventName(eventName) }
 
         /**
-         * Sets [Builder.featureId] to an arbitrary JSON value.
+         * Sets [Builder.eventName] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.featureId] with a well-typed [String] value instead.
+         * You should usually call [Builder.eventName] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun featureId(featureId: JsonField<String>) = apply { body.featureId(featureId) }
+        fun eventName(eventName: JsonField<String>) = apply { body.eventName(eventName) }
 
-        /** The value to report for usage */
-        fun value(value: Long) = apply { body.value(value) }
-
-        /**
-         * Sets [Builder.value] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.value] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun value(value: JsonField<Long>) = apply { body.value(value) }
-
-        /** Additional dimensions for the usage report */
+        /** Dimensions associated with the usage event */
         fun dimensions(dimensions: Dimensions) = apply { body.dimensions(dimensions) }
 
         /**
@@ -258,22 +213,6 @@ private constructor(
          * value.
          */
         fun resourceId(resourceId: JsonField<String>) = apply { body.resourceId(resourceId) }
-
-        /** The method by which the usage value should be updated */
-        fun updateBehavior(updateBehavior: UpdateBehavior) = apply {
-            body.updateBehavior(updateBehavior)
-        }
-
-        /**
-         * Sets [Builder.updateBehavior] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.updateBehavior] with a well-typed [UpdateBehavior] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun updateBehavior(updateBehavior: JsonField<UpdateBehavior>) = apply {
-            body.updateBehavior(updateBehavior)
-        }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -393,21 +332,20 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [UsageEstimateCostParams].
+         * Returns an immutable instance of [EventEstimateParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```java
          * .customerId()
-         * .featureId()
-         * .value()
+         * .eventName()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): UsageEstimateCostParams =
-            UsageEstimateCostParams(
+        fun build(): EventEstimateParams =
+            EventEstimateParams(
                 xAccountId,
                 xEnvironmentId,
                 body.build(),
@@ -429,16 +367,14 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Estimate the credit cost of a usage report before reporting it */
+    /** Estimate the credit cost of a usage event before reporting it */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val customerId: JsonField<String>,
-        private val featureId: JsonField<String>,
-        private val value: JsonField<Long>,
+        private val eventName: JsonField<String>,
         private val dimensions: JsonField<Dimensions>,
         private val resourceId: JsonField<String>,
-        private val updateBehavior: JsonField<UpdateBehavior>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -447,28 +383,16 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("featureId")
+            @JsonProperty("eventName")
             @ExcludeMissing
-            featureId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("value") @ExcludeMissing value: JsonField<Long> = JsonMissing.of(),
+            eventName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("dimensions")
             @ExcludeMissing
             dimensions: JsonField<Dimensions> = JsonMissing.of(),
             @JsonProperty("resourceId")
             @ExcludeMissing
             resourceId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("updateBehavior")
-            @ExcludeMissing
-            updateBehavior: JsonField<UpdateBehavior> = JsonMissing.of(),
-        ) : this(
-            customerId,
-            featureId,
-            value,
-            dimensions,
-            resourceId,
-            updateBehavior,
-            mutableMapOf(),
-        )
+        ) : this(customerId, eventName, dimensions, resourceId, mutableMapOf())
 
         /**
          * Customer id
@@ -479,23 +403,15 @@ private constructor(
         fun customerId(): String = customerId.getRequired("customerId")
 
         /**
-         * Feature id
+         * The name of the usage event
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun featureId(): String = featureId.getRequired("featureId")
+        fun eventName(): String = eventName.getRequired("eventName")
 
         /**
-         * The value to report for usage
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun value(): Long = value.getRequired("value")
-
-        /**
-         * Additional dimensions for the usage report
+         * Dimensions associated with the usage event
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -511,15 +427,6 @@ private constructor(
         fun resourceId(): Optional<String> = resourceId.getOptional("resourceId")
 
         /**
-         * The method by which the usage value should be updated
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
-         *   server responded with an unexpected value).
-         */
-        fun updateBehavior(): Optional<UpdateBehavior> =
-            updateBehavior.getOptional("updateBehavior")
-
-        /**
          * Returns the raw JSON value of [customerId].
          *
          * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -529,18 +436,11 @@ private constructor(
         fun _customerId(): JsonField<String> = customerId
 
         /**
-         * Returns the raw JSON value of [featureId].
+         * Returns the raw JSON value of [eventName].
          *
-         * Unlike [featureId], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [eventName], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("featureId") @ExcludeMissing fun _featureId(): JsonField<String> = featureId
-
-        /**
-         * Returns the raw JSON value of [value].
-         *
-         * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Long> = value
+        @JsonProperty("eventName") @ExcludeMissing fun _eventName(): JsonField<String> = eventName
 
         /**
          * Returns the raw JSON value of [dimensions].
@@ -559,16 +459,6 @@ private constructor(
         @JsonProperty("resourceId")
         @ExcludeMissing
         fun _resourceId(): JsonField<String> = resourceId
-
-        /**
-         * Returns the raw JSON value of [updateBehavior].
-         *
-         * Unlike [updateBehavior], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("updateBehavior")
-        @ExcludeMissing
-        fun _updateBehavior(): JsonField<UpdateBehavior> = updateBehavior
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -590,8 +480,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .customerId()
-             * .featureId()
-             * .value()
+             * .eventName()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -601,21 +490,17 @@ private constructor(
         class Builder internal constructor() {
 
             private var customerId: JsonField<String>? = null
-            private var featureId: JsonField<String>? = null
-            private var value: JsonField<Long>? = null
+            private var eventName: JsonField<String>? = null
             private var dimensions: JsonField<Dimensions> = JsonMissing.of()
             private var resourceId: JsonField<String> = JsonMissing.of()
-            private var updateBehavior: JsonField<UpdateBehavior> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 customerId = body.customerId
-                featureId = body.featureId
-                value = body.value
+                eventName = body.eventName
                 dimensions = body.dimensions
                 resourceId = body.resourceId
-                updateBehavior = body.updateBehavior
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -631,31 +516,19 @@ private constructor(
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-            /** Feature id */
-            fun featureId(featureId: String) = featureId(JsonField.of(featureId))
+            /** The name of the usage event */
+            fun eventName(eventName: String) = eventName(JsonField.of(eventName))
 
             /**
-             * Sets [Builder.featureId] to an arbitrary JSON value.
+             * Sets [Builder.eventName] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.featureId] with a well-typed [String] value instead.
+             * You should usually call [Builder.eventName] with a well-typed [String] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
+            fun eventName(eventName: JsonField<String>) = apply { this.eventName = eventName }
 
-            /** The value to report for usage */
-            fun value(value: Long) = value(JsonField.of(value))
-
-            /**
-             * Sets [Builder.value] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.value] with a well-typed [Long] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun value(value: JsonField<Long>) = apply { this.value = value }
-
-            /** Additional dimensions for the usage report */
+            /** Dimensions associated with the usage event */
             fun dimensions(dimensions: Dimensions) = dimensions(JsonField.of(dimensions))
 
             /**
@@ -684,21 +557,6 @@ private constructor(
              */
             fun resourceId(resourceId: JsonField<String>) = apply { this.resourceId = resourceId }
 
-            /** The method by which the usage value should be updated */
-            fun updateBehavior(updateBehavior: UpdateBehavior) =
-                updateBehavior(JsonField.of(updateBehavior))
-
-            /**
-             * Sets [Builder.updateBehavior] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.updateBehavior] with a well-typed [UpdateBehavior]
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun updateBehavior(updateBehavior: JsonField<UpdateBehavior>) = apply {
-                this.updateBehavior = updateBehavior
-            }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -726,8 +584,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .customerId()
-             * .featureId()
-             * .value()
+             * .eventName()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -735,11 +592,9 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("customerId", customerId),
-                    checkRequired("featureId", featureId),
-                    checkRequired("value", value),
+                    checkRequired("eventName", eventName),
                     dimensions,
                     resourceId,
-                    updateBehavior,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -761,11 +616,9 @@ private constructor(
             }
 
             customerId()
-            featureId()
-            value()
+            eventName()
             dimensions().ifPresent { it.validate() }
             resourceId()
-            updateBehavior().ifPresent { it.validate() }
             validated = true
         }
 
@@ -786,11 +639,9 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (customerId.asKnown().isPresent) 1 else 0) +
-                (if (featureId.asKnown().isPresent) 1 else 0) +
-                (if (value.asKnown().isPresent) 1 else 0) +
+                (if (eventName.asKnown().isPresent) 1 else 0) +
                 (dimensions.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (resourceId.asKnown().isPresent) 1 else 0) +
-                (updateBehavior.asKnown().getOrNull()?.validity() ?: 0)
+                (if (resourceId.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -799,33 +650,23 @@ private constructor(
 
             return other is Body &&
                 customerId == other.customerId &&
-                featureId == other.featureId &&
-                value == other.value &&
+                eventName == other.eventName &&
                 dimensions == other.dimensions &&
                 resourceId == other.resourceId &&
-                updateBehavior == other.updateBehavior &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(
-                customerId,
-                featureId,
-                value,
-                dimensions,
-                resourceId,
-                updateBehavior,
-                additionalProperties,
-            )
+            Objects.hash(customerId, eventName, dimensions, resourceId, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{customerId=$customerId, featureId=$featureId, value=$value, dimensions=$dimensions, resourceId=$resourceId, updateBehavior=$updateBehavior, additionalProperties=$additionalProperties}"
+            "Body{customerId=$customerId, eventName=$eventName, dimensions=$dimensions, resourceId=$resourceId, additionalProperties=$additionalProperties}"
     }
 
-    /** Additional dimensions for the usage report */
+    /** Dimensions associated with the usage event */
     class Dimensions
     @JsonCreator
     private constructor(
@@ -934,150 +775,12 @@ private constructor(
         override fun toString() = "Dimensions{additionalProperties=$additionalProperties}"
     }
 
-    /** The method by which the usage value should be updated */
-    class UpdateBehavior @JsonCreator private constructor(private val value: JsonField<String>) :
-        Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val DELTA = of("DELTA")
-
-            @JvmField val SET = of("SET")
-
-            @JvmStatic fun of(value: String) = UpdateBehavior(JsonField.of(value))
-        }
-
-        /** An enum containing [UpdateBehavior]'s known values. */
-        enum class Known {
-            DELTA,
-            SET,
-        }
-
-        /**
-         * An enum containing [UpdateBehavior]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [UpdateBehavior] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            DELTA,
-            SET,
-            /**
-             * An enum member indicating that [UpdateBehavior] was instantiated with an unknown
-             * value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                DELTA -> Value.DELTA
-                SET -> Value.SET
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
-         */
-        fun known(): Known =
-            when (this) {
-                DELTA -> Known.DELTA
-                SET -> Known.SET
-                else -> throw StiggInvalidDataException("Unknown UpdateBehavior: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws StiggInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws StiggInvalidDataException if any value type in this object doesn't match its
-         *   expected type.
-         */
-        fun validate(): UpdateBehavior = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: StiggInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is UpdateBehavior && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is UsageEstimateCostParams &&
+        return other is EventEstimateParams &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
             body == other.body &&
@@ -1089,5 +792,5 @@ private constructor(
         Objects.hash(xAccountId, xEnvironmentId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "UsageEstimateCostParams{xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EventEstimateParams{xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

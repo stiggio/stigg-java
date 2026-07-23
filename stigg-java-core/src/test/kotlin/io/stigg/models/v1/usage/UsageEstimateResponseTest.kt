@@ -7,23 +7,23 @@ import io.stigg.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class UsageEstimateCostResponseTest {
+internal class UsageEstimateResponseTest {
 
     @Test
     fun create() {
-        val usageEstimateCostResponse =
-            UsageEstimateCostResponse.builder()
+        val usageEstimateResponse =
+            UsageEstimateResponse.builder()
                 .data(
-                    UsageEstimateCostResponse.Data.builder()
+                    UsageEstimateResponse.Data.builder()
                         .addEstimate(
-                            UsageEstimateCostResponse.Data.Estimate.builder()
+                            UsageEstimateResponse.Data.Estimate.builder()
                                 .balanceAfterEstimate(0.0)
                                 .addBreakdown(
-                                    UsageEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                    UsageEstimateResponse.Data.Estimate.Breakdown.builder()
                                         .cost(0.0)
                                         .featureId("featureId")
                                         .warningCode(
-                                            UsageEstimateCostResponse.Data.Estimate.Breakdown
+                                            UsageEstimateResponse.Data.Estimate.Breakdown
                                                 .WarningCode
                                                 .UNSUPPORTED_AGGREGATION
                                         )
@@ -36,26 +36,24 @@ internal class UsageEstimateCostResponseTest {
                                 .build()
                         )
                         .addWarning(
-                            UsageEstimateCostResponse.Data.Warning
-                                .RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                            UsageEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                         )
                         .build()
                 )
                 .build()
 
-        assertThat(usageEstimateCostResponse.data())
+        assertThat(usageEstimateResponse.data())
             .isEqualTo(
-                UsageEstimateCostResponse.Data.builder()
+                UsageEstimateResponse.Data.builder()
                     .addEstimate(
-                        UsageEstimateCostResponse.Data.Estimate.builder()
+                        UsageEstimateResponse.Data.Estimate.builder()
                             .balanceAfterEstimate(0.0)
                             .addBreakdown(
-                                UsageEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                UsageEstimateResponse.Data.Estimate.Breakdown.builder()
                                     .cost(0.0)
                                     .featureId("featureId")
                                     .warningCode(
-                                        UsageEstimateCostResponse.Data.Estimate.Breakdown
-                                            .WarningCode
+                                        UsageEstimateResponse.Data.Estimate.Breakdown.WarningCode
                                             .UNSUPPORTED_AGGREGATION
                                     )
                                     .build()
@@ -67,7 +65,7 @@ internal class UsageEstimateCostResponseTest {
                             .build()
                     )
                     .addWarning(
-                        UsageEstimateCostResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                        UsageEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                     )
                     .build()
             )
@@ -76,19 +74,19 @@ internal class UsageEstimateCostResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val usageEstimateCostResponse =
-            UsageEstimateCostResponse.builder()
+        val usageEstimateResponse =
+            UsageEstimateResponse.builder()
                 .data(
-                    UsageEstimateCostResponse.Data.builder()
+                    UsageEstimateResponse.Data.builder()
                         .addEstimate(
-                            UsageEstimateCostResponse.Data.Estimate.builder()
+                            UsageEstimateResponse.Data.Estimate.builder()
                                 .balanceAfterEstimate(0.0)
                                 .addBreakdown(
-                                    UsageEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                    UsageEstimateResponse.Data.Estimate.Breakdown.builder()
                                         .cost(0.0)
                                         .featureId("featureId")
                                         .warningCode(
-                                            UsageEstimateCostResponse.Data.Estimate.Breakdown
+                                            UsageEstimateResponse.Data.Estimate.Breakdown
                                                 .WarningCode
                                                 .UNSUPPORTED_AGGREGATION
                                         )
@@ -101,19 +99,18 @@ internal class UsageEstimateCostResponseTest {
                                 .build()
                         )
                         .addWarning(
-                            UsageEstimateCostResponse.Data.Warning
-                                .RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                            UsageEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                         )
                         .build()
                 )
                 .build()
 
-        val roundtrippedUsageEstimateCostResponse =
+        val roundtrippedUsageEstimateResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(usageEstimateCostResponse),
-                jacksonTypeRef<UsageEstimateCostResponse>(),
+                jsonMapper.writeValueAsString(usageEstimateResponse),
+                jacksonTypeRef<UsageEstimateResponse>(),
             )
 
-        assertThat(roundtrippedUsageEstimateCostResponse).isEqualTo(usageEstimateCostResponse)
+        assertThat(roundtrippedUsageEstimateResponse).isEqualTo(usageEstimateResponse)
     }
 }

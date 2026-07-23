@@ -217,6 +217,7 @@ internal class PlanServiceAsyncTest {
                                         PlanUpdateParams.Charges.OveragePricingModel.BillingCadence
                                             .RECURRING
                                     )
+                                    .currencyId("currencyId")
                                     .entitlement(
                                         PlanUpdateParams.Charges.OveragePricingModel.Entitlement
                                             .builder()
@@ -275,7 +276,6 @@ internal class PlanServiceAsyncTest {
                                             .build()
                                     )
                                     .featureId("featureId")
-                                    .topUpCustomCurrencyId("topUpCustomCurrencyId")
                                     .build()
                             )
                             .addPricingModel(

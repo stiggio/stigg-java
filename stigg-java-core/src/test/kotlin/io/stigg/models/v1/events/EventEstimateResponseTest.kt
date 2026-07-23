@@ -7,23 +7,23 @@ import io.stigg.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class EventEstimateCostResponseTest {
+internal class EventEstimateResponseTest {
 
     @Test
     fun create() {
-        val eventEstimateCostResponse =
-            EventEstimateCostResponse.builder()
+        val eventEstimateResponse =
+            EventEstimateResponse.builder()
                 .data(
-                    EventEstimateCostResponse.Data.builder()
+                    EventEstimateResponse.Data.builder()
                         .addEstimate(
-                            EventEstimateCostResponse.Data.Estimate.builder()
+                            EventEstimateResponse.Data.Estimate.builder()
                                 .balanceAfterEstimate(0.0)
                                 .addBreakdown(
-                                    EventEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                    EventEstimateResponse.Data.Estimate.Breakdown.builder()
                                         .cost(0.0)
                                         .featureId("featureId")
                                         .warningCode(
-                                            EventEstimateCostResponse.Data.Estimate.Breakdown
+                                            EventEstimateResponse.Data.Estimate.Breakdown
                                                 .WarningCode
                                                 .UNSUPPORTED_AGGREGATION
                                         )
@@ -36,26 +36,24 @@ internal class EventEstimateCostResponseTest {
                                 .build()
                         )
                         .addWarning(
-                            EventEstimateCostResponse.Data.Warning
-                                .RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                            EventEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                         )
                         .build()
                 )
                 .build()
 
-        assertThat(eventEstimateCostResponse.data())
+        assertThat(eventEstimateResponse.data())
             .isEqualTo(
-                EventEstimateCostResponse.Data.builder()
+                EventEstimateResponse.Data.builder()
                     .addEstimate(
-                        EventEstimateCostResponse.Data.Estimate.builder()
+                        EventEstimateResponse.Data.Estimate.builder()
                             .balanceAfterEstimate(0.0)
                             .addBreakdown(
-                                EventEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                EventEstimateResponse.Data.Estimate.Breakdown.builder()
                                     .cost(0.0)
                                     .featureId("featureId")
                                     .warningCode(
-                                        EventEstimateCostResponse.Data.Estimate.Breakdown
-                                            .WarningCode
+                                        EventEstimateResponse.Data.Estimate.Breakdown.WarningCode
                                             .UNSUPPORTED_AGGREGATION
                                     )
                                     .build()
@@ -67,7 +65,7 @@ internal class EventEstimateCostResponseTest {
                             .build()
                     )
                     .addWarning(
-                        EventEstimateCostResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                        EventEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                     )
                     .build()
             )
@@ -76,19 +74,19 @@ internal class EventEstimateCostResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val eventEstimateCostResponse =
-            EventEstimateCostResponse.builder()
+        val eventEstimateResponse =
+            EventEstimateResponse.builder()
                 .data(
-                    EventEstimateCostResponse.Data.builder()
+                    EventEstimateResponse.Data.builder()
                         .addEstimate(
-                            EventEstimateCostResponse.Data.Estimate.builder()
+                            EventEstimateResponse.Data.Estimate.builder()
                                 .balanceAfterEstimate(0.0)
                                 .addBreakdown(
-                                    EventEstimateCostResponse.Data.Estimate.Breakdown.builder()
+                                    EventEstimateResponse.Data.Estimate.Breakdown.builder()
                                         .cost(0.0)
                                         .featureId("featureId")
                                         .warningCode(
-                                            EventEstimateCostResponse.Data.Estimate.Breakdown
+                                            EventEstimateResponse.Data.Estimate.Breakdown
                                                 .WarningCode
                                                 .UNSUPPORTED_AGGREGATION
                                         )
@@ -101,19 +99,18 @@ internal class EventEstimateCostResponseTest {
                                 .build()
                         )
                         .addWarning(
-                            EventEstimateCostResponse.Data.Warning
-                                .RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
+                            EventEstimateResponse.Data.Warning.RESOURCE_SCOPED_SUBSCRIPTION_EXISTS
                         )
                         .build()
                 )
                 .build()
 
-        val roundtrippedEventEstimateCostResponse =
+        val roundtrippedEventEstimateResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(eventEstimateCostResponse),
-                jacksonTypeRef<EventEstimateCostResponse>(),
+                jsonMapper.writeValueAsString(eventEstimateResponse),
+                jacksonTypeRef<EventEstimateResponse>(),
             )
 
-        assertThat(roundtrippedEventEstimateCostResponse).isEqualTo(eventEstimateCostResponse)
+        assertThat(roundtrippedEventEstimateResponse).isEqualTo(eventEstimateResponse)
     }
 }

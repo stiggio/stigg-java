@@ -9,8 +9,8 @@ import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationCreateResponse
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteParams
 import io.stigg.models.v1.events.dataexport.destinations.DestinationDeleteResponse
-import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateParams
-import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateResponse
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateSelectionParams
+import io.stigg.models.v1.events.dataexport.destinations.DestinationUpdateSelectionResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -40,34 +40,6 @@ interface DestinationServiceAsync {
         params: DestinationCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<DestinationCreateResponse>
-
-    /**
-     * Update a destination's entity selection. Pushes the new enabled_models to the provider first,
-     * then persists the selection. Applies on the next scheduled transfer.
-     */
-    fun update(
-        destinationId: String,
-        params: DestinationUpdateParams,
-    ): CompletableFuture<DestinationUpdateResponse> =
-        update(destinationId, params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        destinationId: String,
-        params: DestinationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<DestinationUpdateResponse> =
-        update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
-
-    /** @see update */
-    fun update(params: DestinationUpdateParams): CompletableFuture<DestinationUpdateResponse> =
-        update(params, RequestOptions.none())
-
-    /** @see update */
-    fun update(
-        params: DestinationUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<DestinationUpdateResponse>
 
     /**
      * Disconnect a destination: stops the provider sync (deletes the provider destination) and
@@ -110,6 +82,36 @@ interface DestinationServiceAsync {
         delete(destinationId, DestinationDeleteParams.none(), requestOptions)
 
     /**
+     * Update a destination's entity selection. Pushes the new enabled_models to the provider first,
+     * then persists the selection. Applies on the next scheduled transfer.
+     */
+    fun updateSelection(
+        destinationId: String,
+        params: DestinationUpdateSelectionParams,
+    ): CompletableFuture<DestinationUpdateSelectionResponse> =
+        updateSelection(destinationId, params, RequestOptions.none())
+
+    /** @see updateSelection */
+    fun updateSelection(
+        destinationId: String,
+        params: DestinationUpdateSelectionParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<DestinationUpdateSelectionResponse> =
+        updateSelection(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+    /** @see updateSelection */
+    fun updateSelection(
+        params: DestinationUpdateSelectionParams
+    ): CompletableFuture<DestinationUpdateSelectionResponse> =
+        updateSelection(params, RequestOptions.none())
+
+    /** @see updateSelection */
+    fun updateSelection(
+        params: DestinationUpdateSelectionParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<DestinationUpdateSelectionResponse>
+
+    /**
      * A view of [DestinationServiceAsync] that provides access to raw HTTP responses for each
      * method.
      */
@@ -138,36 +140,6 @@ interface DestinationServiceAsync {
             params: DestinationCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<DestinationCreateResponse>>
-
-        /**
-         * Returns a raw HTTP response for `patch /api/v1/data-export/destinations/{destinationId}`,
-         * but is otherwise the same as [DestinationServiceAsync.update].
-         */
-        fun update(
-            destinationId: String,
-            params: DestinationUpdateParams,
-        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
-            update(destinationId, params, RequestOptions.none())
-
-        /** @see update */
-        fun update(
-            destinationId: String,
-            params: DestinationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
-            update(params.toBuilder().destinationId(destinationId).build(), requestOptions)
-
-        /** @see update */
-        fun update(
-            params: DestinationUpdateParams
-        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>> =
-            update(params, RequestOptions.none())
-
-        /** @see update */
-        fun update(
-            params: DestinationUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<DestinationUpdateResponse>>
 
         /**
          * Returns a raw HTTP response for `delete
@@ -212,5 +184,35 @@ interface DestinationServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<DestinationDeleteResponse>> =
             delete(destinationId, DestinationDeleteParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /api/v1/data-export/destinations/{destinationId}`,
+         * but is otherwise the same as [DestinationServiceAsync.updateSelection].
+         */
+        fun updateSelection(
+            destinationId: String,
+            params: DestinationUpdateSelectionParams,
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateSelectionResponse>> =
+            updateSelection(destinationId, params, RequestOptions.none())
+
+        /** @see updateSelection */
+        fun updateSelection(
+            destinationId: String,
+            params: DestinationUpdateSelectionParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateSelectionResponse>> =
+            updateSelection(params.toBuilder().destinationId(destinationId).build(), requestOptions)
+
+        /** @see updateSelection */
+        fun updateSelection(
+            params: DestinationUpdateSelectionParams
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateSelectionResponse>> =
+            updateSelection(params, RequestOptions.none())
+
+        /** @see updateSelection */
+        fun updateSelection(
+            params: DestinationUpdateSelectionParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<DestinationUpdateSelectionResponse>>
     }
 }
