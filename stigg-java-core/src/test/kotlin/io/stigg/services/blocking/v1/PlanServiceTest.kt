@@ -215,6 +215,20 @@ internal class PlanServiceTest {
                                         PlanUpdateParams.Charges.OveragePricingModel.BillingCadence
                                             .RECURRING
                                     )
+                                    .creditEntitlement(
+                                        PlanUpdateParams.Charges.OveragePricingModel
+                                            .CreditEntitlement
+                                            .builder()
+                                            .amount(1.0)
+                                            .cadence(
+                                                PlanUpdateParams.Charges.OveragePricingModel
+                                                    .CreditEntitlement
+                                                    .Cadence
+                                                    .MONTH
+                                            )
+                                            .customCurrencyId("customCurrencyId")
+                                            .build()
+                                    )
                                     .currencyId("currencyId")
                                     .entitlement(
                                         PlanUpdateParams.Charges.OveragePricingModel.Entitlement
