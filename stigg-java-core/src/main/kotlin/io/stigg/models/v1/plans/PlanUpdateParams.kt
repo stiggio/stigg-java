@@ -3150,6 +3150,7 @@ private constructor(
             private val billingModel: JsonField<BillingModel>,
             private val pricePeriods: JsonField<List<PricePeriod>>,
             private val billingCadence: JsonField<BillingCadence>,
+            private val creditEntitlement: JsonField<CreditEntitlement>,
             private val currencyId: JsonField<String>,
             private val entitlement: JsonField<Entitlement>,
             private val featureId: JsonField<String>,
@@ -3167,6 +3168,9 @@ private constructor(
                 @JsonProperty("billingCadence")
                 @ExcludeMissing
                 billingCadence: JsonField<BillingCadence> = JsonMissing.of(),
+                @JsonProperty("creditEntitlement")
+                @ExcludeMissing
+                creditEntitlement: JsonField<CreditEntitlement> = JsonMissing.of(),
                 @JsonProperty("currencyId")
                 @ExcludeMissing
                 currencyId: JsonField<String> = JsonMissing.of(),
@@ -3180,6 +3184,7 @@ private constructor(
                 billingModel,
                 pricePeriods,
                 billingCadence,
+                creditEntitlement,
                 currencyId,
                 entitlement,
                 featureId,
@@ -3212,6 +3217,16 @@ private constructor(
              */
             fun billingCadence(): Optional<BillingCadence> =
                 billingCadence.getOptional("billingCadence")
+
+            /**
+             * Credit entitlement to grant when a credit overage targets a currency not yet granted
+             * on the plan
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun creditEntitlement(): Optional<CreditEntitlement> =
+                creditEntitlement.getOptional("creditEntitlement")
 
             /**
              * The refId of the custom currency this credit overage applies to
@@ -3266,6 +3281,16 @@ private constructor(
             @JsonProperty("billingCadence")
             @ExcludeMissing
             fun _billingCadence(): JsonField<BillingCadence> = billingCadence
+
+            /**
+             * Returns the raw JSON value of [creditEntitlement].
+             *
+             * Unlike [creditEntitlement], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("creditEntitlement")
+            @ExcludeMissing
+            fun _creditEntitlement(): JsonField<CreditEntitlement> = creditEntitlement
 
             /**
              * Returns the raw JSON value of [currencyId].
@@ -3329,6 +3354,7 @@ private constructor(
                 private var billingModel: JsonField<BillingModel>? = null
                 private var pricePeriods: JsonField<MutableList<PricePeriod>>? = null
                 private var billingCadence: JsonField<BillingCadence> = JsonMissing.of()
+                private var creditEntitlement: JsonField<CreditEntitlement> = JsonMissing.of()
                 private var currencyId: JsonField<String> = JsonMissing.of()
                 private var entitlement: JsonField<Entitlement> = JsonMissing.of()
                 private var featureId: JsonField<String> = JsonMissing.of()
@@ -3339,6 +3365,7 @@ private constructor(
                     billingModel = overagePricingModel.billingModel
                     pricePeriods = overagePricingModel.pricePeriods.map { it.toMutableList() }
                     billingCadence = overagePricingModel.billingCadence
+                    creditEntitlement = overagePricingModel.creditEntitlement
                     currencyId = overagePricingModel.currencyId
                     entitlement = overagePricingModel.entitlement
                     featureId = overagePricingModel.featureId
@@ -3400,6 +3427,24 @@ private constructor(
                  */
                 fun billingCadence(billingCadence: JsonField<BillingCadence>) = apply {
                     this.billingCadence = billingCadence
+                }
+
+                /**
+                 * Credit entitlement to grant when a credit overage targets a currency not yet
+                 * granted on the plan
+                 */
+                fun creditEntitlement(creditEntitlement: CreditEntitlement) =
+                    creditEntitlement(JsonField.of(creditEntitlement))
+
+                /**
+                 * Sets [Builder.creditEntitlement] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.creditEntitlement] with a well-typed
+                 * [CreditEntitlement] value instead. This method is primarily for setting the field
+                 * to an undocumented or not yet supported value.
+                 */
+                fun creditEntitlement(creditEntitlement: JsonField<CreditEntitlement>) = apply {
+                    this.creditEntitlement = creditEntitlement
                 }
 
                 /** The refId of the custom currency this credit overage applies to */
@@ -3482,6 +3527,7 @@ private constructor(
                         checkRequired("billingModel", billingModel),
                         checkRequired("pricePeriods", pricePeriods).map { it.toImmutable() },
                         billingCadence,
+                        creditEntitlement,
                         currencyId,
                         entitlement,
                         featureId,
@@ -3509,6 +3555,7 @@ private constructor(
                 billingModel().validate()
                 pricePeriods().forEach { it.validate() }
                 billingCadence().ifPresent { it.validate() }
+                creditEntitlement().ifPresent { it.validate() }
                 currencyId()
                 entitlement().ifPresent { it.validate() }
                 featureId()
@@ -3534,6 +3581,7 @@ private constructor(
                 (billingModel.asKnown().getOrNull()?.validity() ?: 0) +
                     (pricePeriods.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                     (billingCadence.asKnown().getOrNull()?.validity() ?: 0) +
+                    (creditEntitlement.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (currencyId.asKnown().isPresent) 1 else 0) +
                     (entitlement.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (featureId.asKnown().isPresent) 1 else 0)
@@ -8307,6 +8355,425 @@ private constructor(
                 override fun toString() = value.toString()
             }
 
+            /**
+             * Credit entitlement to grant when a credit overage targets a currency not yet granted
+             * on the plan
+             */
+            class CreditEntitlement
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val amount: JsonField<Double>,
+                private val cadence: JsonField<Cadence>,
+                private val customCurrencyId: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("amount")
+                    @ExcludeMissing
+                    amount: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("cadence")
+                    @ExcludeMissing
+                    cadence: JsonField<Cadence> = JsonMissing.of(),
+                    @JsonProperty("customCurrencyId")
+                    @ExcludeMissing
+                    customCurrencyId: JsonField<String> = JsonMissing.of(),
+                ) : this(amount, cadence, customCurrencyId, mutableMapOf())
+
+                /**
+                 * The base credit balance granted per cadence
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun amount(): Double = amount.getRequired("amount")
+
+                /**
+                 * The credit grant cadence (MONTH or YEAR)
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun cadence(): Cadence = cadence.getRequired("cadence")
+
+                /**
+                 * The refId of the custom currency to grant
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun customCurrencyId(): String = customCurrencyId.getRequired("customCurrencyId")
+
+                /**
+                 * Returns the raw JSON value of [amount].
+                 *
+                 * Unlike [amount], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Double> = amount
+
+                /**
+                 * Returns the raw JSON value of [cadence].
+                 *
+                 * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("cadence")
+                @ExcludeMissing
+                fun _cadence(): JsonField<Cadence> = cadence
+
+                /**
+                 * Returns the raw JSON value of [customCurrencyId].
+                 *
+                 * Unlike [customCurrencyId], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("customCurrencyId")
+                @ExcludeMissing
+                fun _customCurrencyId(): JsonField<String> = customCurrencyId
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of
+                     * [CreditEntitlement].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .cadence()
+                     * .customCurrencyId()
+                     * ```
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [CreditEntitlement]. */
+                class Builder internal constructor() {
+
+                    private var amount: JsonField<Double>? = null
+                    private var cadence: JsonField<Cadence>? = null
+                    private var customCurrencyId: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(creditEntitlement: CreditEntitlement) = apply {
+                        amount = creditEntitlement.amount
+                        cadence = creditEntitlement.cadence
+                        customCurrencyId = creditEntitlement.customCurrencyId
+                        additionalProperties = creditEntitlement.additionalProperties.toMutableMap()
+                    }
+
+                    /** The base credit balance granted per cadence */
+                    fun amount(amount: Double) = amount(JsonField.of(amount))
+
+                    /**
+                     * Sets [Builder.amount] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.amount] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
+
+                    /** The credit grant cadence (MONTH or YEAR) */
+                    fun cadence(cadence: Cadence) = cadence(JsonField.of(cadence))
+
+                    /**
+                     * Sets [Builder.cadence] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.cadence] with a well-typed [Cadence] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun cadence(cadence: JsonField<Cadence>) = apply { this.cadence = cadence }
+
+                    /** The refId of the custom currency to grant */
+                    fun customCurrencyId(customCurrencyId: String) =
+                        customCurrencyId(JsonField.of(customCurrencyId))
+
+                    /**
+                     * Sets [Builder.customCurrencyId] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.customCurrencyId] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun customCurrencyId(customCurrencyId: JsonField<String>) = apply {
+                        this.customCurrencyId = customCurrencyId
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [CreditEntitlement].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .amount()
+                     * .cadence()
+                     * .customCurrencyId()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): CreditEntitlement =
+                        CreditEntitlement(
+                            checkRequired("amount", amount),
+                            checkRequired("cadence", cadence),
+                            checkRequired("customCurrencyId", customCurrencyId),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StiggInvalidDataException if any value type in this object doesn't match
+                 *   its expected type.
+                 */
+                fun validate(): CreditEntitlement = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    amount()
+                    cadence().validate()
+                    customCurrencyId()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (amount.asKnown().isPresent) 1 else 0) +
+                        (cadence.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (customCurrencyId.asKnown().isPresent) 1 else 0)
+
+                /** The credit grant cadence (MONTH or YEAR) */
+                class Cadence
+                @JsonCreator
+                private constructor(private val value: JsonField<String>) : Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val MONTH = of("MONTH")
+
+                        @JvmField val YEAR = of("YEAR")
+
+                        @JvmStatic fun of(value: String) = Cadence(JsonField.of(value))
+                    }
+
+                    /** An enum containing [Cadence]'s known values. */
+                    enum class Known {
+                        MONTH,
+                        YEAR,
+                    }
+
+                    /**
+                     * An enum containing [Cadence]'s known values, as well as an [_UNKNOWN] member.
+                     *
+                     * An instance of [Cadence] can contain an unknown value in a couple of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        MONTH,
+                        YEAR,
+                        /**
+                         * An enum member indicating that [Cadence] was instantiated with an unknown
+                         * value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            MONTH -> Value.MONTH
+                            YEAR -> Value.YEAR
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            MONTH -> Known.MONTH
+                            YEAR -> Known.YEAR
+                            else -> throw StiggInvalidDataException("Unknown Cadence: $value")
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StiggInvalidDataException if any value type in this object doesn't
+                     *   match its expected type.
+                     */
+                    fun validate(): Cadence = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Cadence && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is CreditEntitlement &&
+                        amount == other.amount &&
+                        cadence == other.cadence &&
+                        customCurrencyId == other.customCurrencyId &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(amount, cadence, customCurrencyId, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "CreditEntitlement{amount=$amount, cadence=$cadence, customCurrencyId=$customCurrencyId, additionalProperties=$additionalProperties}"
+            }
+
             /** Entitlement configuration for the overage feature */
             class Entitlement
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -10068,6 +10535,7 @@ private constructor(
                     billingModel == other.billingModel &&
                     pricePeriods == other.pricePeriods &&
                     billingCadence == other.billingCadence &&
+                    creditEntitlement == other.creditEntitlement &&
                     currencyId == other.currencyId &&
                     entitlement == other.entitlement &&
                     featureId == other.featureId &&
@@ -10079,6 +10547,7 @@ private constructor(
                     billingModel,
                     pricePeriods,
                     billingCadence,
+                    creditEntitlement,
                     currencyId,
                     entitlement,
                     featureId,
@@ -10089,7 +10558,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "OveragePricingModel{billingModel=$billingModel, pricePeriods=$pricePeriods, billingCadence=$billingCadence, currencyId=$currencyId, entitlement=$entitlement, featureId=$featureId, additionalProperties=$additionalProperties}"
+                "OveragePricingModel{billingModel=$billingModel, pricePeriods=$pricePeriods, billingCadence=$billingCadence, creditEntitlement=$creditEntitlement, currencyId=$currencyId, entitlement=$entitlement, featureId=$featureId, additionalProperties=$additionalProperties}"
         }
 
         /** A pricing model configuration with billing details and price periods. */
