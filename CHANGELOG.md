@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-beta.41 (2026-07-26)
+
+Full Changelog: [v0.1.0-beta.40...v0.1.0-beta.41](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.40...v0.1.0-beta.41)
+
+### Features
+
+* **api:** add creditEntitlement field to addon/plan overage pricing ([fc6460e](https://github.com/stiggio/stigg-java/commit/fc6460e5a7e1efcb95c14cdb6fed1a42a2d4e4dc))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([dd164e0](https://github.com/stiggio/stigg-java/commit/dd164e04deb902319aba95c7e6562bd258dbdd20))
+
 ## 0.1.0-beta.40 (2026-07-21)
 
 Full Changelog: [v0.1.0-beta.39...v0.1.0-beta.40](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.39...v0.1.0-beta.40)
