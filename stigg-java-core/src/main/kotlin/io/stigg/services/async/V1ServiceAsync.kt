@@ -4,6 +4,7 @@ package io.stigg.services.async
 
 import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1.AddonServiceAsync
+import io.stigg.services.async.v1.ContractServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CreditServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsync
@@ -56,6 +57,8 @@ interface V1ServiceAsync {
     /** Operations related to products */
     fun products(): ProductServiceAsync
 
+    fun contracts(): ContractServiceAsync
+
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -92,5 +95,7 @@ interface V1ServiceAsync {
 
         /** Operations related to products */
         fun products(): ProductServiceAsync.WithRawResponse
+
+        fun contracts(): ContractServiceAsync.WithRawResponse
     }
 }

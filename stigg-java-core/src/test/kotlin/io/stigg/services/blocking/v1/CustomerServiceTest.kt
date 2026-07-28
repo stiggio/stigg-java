@@ -7,6 +7,7 @@ import io.stigg.core.JsonValue
 import io.stigg.models.v1.customers.CustomerArchiveParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerImportParams
+import io.stigg.models.v1.customers.CustomerListContractsParams
 import io.stigg.models.v1.customers.CustomerProvisionParams
 import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsParams
 import io.stigg.models.v1.customers.CustomerRetrieveParams
@@ -230,6 +231,35 @@ internal class CustomerServiceTest {
             )
 
         response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listContracts() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val customerService = client.v1().customers()
+
+        val response =
+            customerService.listContracts(
+                CustomerListContractsParams.builder()
+                    .id("id")
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listInvoices() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val customerService = client.v1().customers()
+
+        val page = customerService.listInvoices("id")
+
+        page.response().validate()
     }
 
     @Disabled("Mock server tests are disabled")

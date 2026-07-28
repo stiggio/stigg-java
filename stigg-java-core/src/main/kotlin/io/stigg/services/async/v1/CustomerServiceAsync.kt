@@ -10,6 +10,10 @@ import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
+import io.stigg.models.v1.customers.CustomerListContractsParams
+import io.stigg.models.v1.customers.CustomerListContractsResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesPageAsync
+import io.stigg.models.v1.customers.CustomerListInvoicesParams
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListParams
 import io.stigg.models.v1.customers.CustomerListResourcesPageAsync
@@ -225,6 +229,92 @@ interface CustomerServiceAsync {
         params: CustomerImportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<CustomerImportResponse>
+
+    /**
+     * Retrieves a customer's contracts, fetched live from the connected billing provider, each
+     * enriched with a preview of its upcoming (next) invoice when available. Returns an empty list
+     * when no billing provider is connected or the customer is not synced.
+     */
+    fun listContracts(id: String): CompletableFuture<CustomerListContractsResponse> =
+        listContracts(id, CustomerListContractsParams.none())
+
+    /** @see listContracts */
+    fun listContracts(
+        id: String,
+        params: CustomerListContractsParams = CustomerListContractsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListContractsResponse> =
+        listContracts(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listContracts */
+    fun listContracts(
+        id: String,
+        params: CustomerListContractsParams = CustomerListContractsParams.none(),
+    ): CompletableFuture<CustomerListContractsResponse> =
+        listContracts(id, params, RequestOptions.none())
+
+    /** @see listContracts */
+    fun listContracts(
+        params: CustomerListContractsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListContractsResponse>
+
+    /** @see listContracts */
+    fun listContracts(
+        params: CustomerListContractsParams
+    ): CompletableFuture<CustomerListContractsResponse> =
+        listContracts(params, RequestOptions.none())
+
+    /** @see listContracts */
+    fun listContracts(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListContractsResponse> =
+        listContracts(id, CustomerListContractsParams.none(), requestOptions)
+
+    /**
+     * Retrieves a cursor-paginated list of a customer's invoices, fetched live from the connected
+     * billing provider. Ordered by issue date ascending by default; override with orderBy
+     * (issueDate | dueDate | total) and orderDir (ASC | DESC). Optionally narrowed to one contract,
+     * an issue-date range, and/or a set of invoice states. Returns an empty list when no billing
+     * provider is connected or the customer is not synced.
+     */
+    fun listInvoices(id: String): CompletableFuture<CustomerListInvoicesPageAsync> =
+        listInvoices(id, CustomerListInvoicesParams.none())
+
+    /** @see listInvoices */
+    fun listInvoices(
+        id: String,
+        params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListInvoicesPageAsync> =
+        listInvoices(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listInvoices */
+    fun listInvoices(
+        id: String,
+        params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+    ): CompletableFuture<CustomerListInvoicesPageAsync> =
+        listInvoices(id, params, RequestOptions.none())
+
+    /** @see listInvoices */
+    fun listInvoices(
+        params: CustomerListInvoicesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CustomerListInvoicesPageAsync>
+
+    /** @see listInvoices */
+    fun listInvoices(
+        params: CustomerListInvoicesParams
+    ): CompletableFuture<CustomerListInvoicesPageAsync> =
+        listInvoices(params, RequestOptions.none())
+
+    /** @see listInvoices */
+    fun listInvoices(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListInvoicesPageAsync> =
+        listInvoices(id, CustomerListInvoicesParams.none(), requestOptions)
 
     /** Retrieves a paginated list of resources within the same customer. */
     fun listResources(id: String): CompletableFuture<CustomerListResourcesPageAsync> =
@@ -579,6 +669,92 @@ interface CustomerServiceAsync {
             params: CustomerImportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<CustomerImportResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/contracts`, but is otherwise
+         * the same as [CustomerServiceAsync.listContracts].
+         */
+        fun listContracts(
+            id: String
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> =
+            listContracts(id, CustomerListContractsParams.none())
+
+        /** @see listContracts */
+        fun listContracts(
+            id: String,
+            params: CustomerListContractsParams = CustomerListContractsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> =
+            listContracts(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listContracts */
+        fun listContracts(
+            id: String,
+            params: CustomerListContractsParams = CustomerListContractsParams.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> =
+            listContracts(id, params, RequestOptions.none())
+
+        /** @see listContracts */
+        fun listContracts(
+            params: CustomerListContractsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>>
+
+        /** @see listContracts */
+        fun listContracts(
+            params: CustomerListContractsParams
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> =
+            listContracts(params, RequestOptions.none())
+
+        /** @see listContracts */
+        fun listContracts(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> =
+            listContracts(id, CustomerListContractsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/invoices`, but is otherwise
+         * the same as [CustomerServiceAsync.listInvoices].
+         */
+        fun listInvoices(
+            id: String
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> =
+            listInvoices(id, CustomerListInvoicesParams.none())
+
+        /** @see listInvoices */
+        fun listInvoices(
+            id: String,
+            params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> =
+            listInvoices(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listInvoices */
+        fun listInvoices(
+            id: String,
+            params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> =
+            listInvoices(id, params, RequestOptions.none())
+
+        /** @see listInvoices */
+        fun listInvoices(
+            params: CustomerListInvoicesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>>
+
+        /** @see listInvoices */
+        fun listInvoices(
+            params: CustomerListInvoicesParams
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> =
+            listInvoices(params, RequestOptions.none())
+
+        /** @see listInvoices */
+        fun listInvoices(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> =
+            listInvoices(id, CustomerListInvoicesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}/resources`, but is otherwise

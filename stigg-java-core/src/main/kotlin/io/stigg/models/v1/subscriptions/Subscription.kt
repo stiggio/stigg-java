@@ -184,6 +184,7 @@ private constructor(
         private val budget: JsonField<Budget>,
         private val cancellationDate: JsonField<OffsetDateTime>,
         private val cancelReason: JsonField<CancelReason>,
+        private val contractId: JsonField<String>,
         private val coupons: JsonField<List<Coupon>>,
         private val currentBillingPeriodEnd: JsonField<OffsetDateTime>,
         private val currentBillingPeriodStart: JsonField<OffsetDateTime>,
@@ -239,6 +240,9 @@ private constructor(
             @JsonProperty("cancelReason")
             @ExcludeMissing
             cancelReason: JsonField<CancelReason> = JsonMissing.of(),
+            @JsonProperty("contractId")
+            @ExcludeMissing
+            contractId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("coupons")
             @ExcludeMissing
             coupons: JsonField<List<Coupon>> = JsonMissing.of(),
@@ -300,6 +304,7 @@ private constructor(
             budget,
             cancellationDate,
             cancelReason,
+            contractId,
             coupons,
             currentBillingPeriodEnd,
             currentBillingPeriodStart,
@@ -431,6 +436,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun cancelReason(): Optional<CancelReason> = cancelReason.getOptional("cancelReason")
+
+        /**
+         * The Stigg contract this subscription is linked to, when any
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun contractId(): Optional<String> = contractId.getOptional("contractId")
 
         /**
          * Coupons applied to the subscription
@@ -683,6 +696,15 @@ private constructor(
         fun _cancelReason(): JsonField<CancelReason> = cancelReason
 
         /**
+         * Returns the raw JSON value of [contractId].
+         *
+         * Unlike [contractId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("contractId")
+        @ExcludeMissing
+        fun _contractId(): JsonField<String> = contractId
+
+        /**
          * Returns the raw JSON value of [coupons].
          *
          * Unlike [coupons], this method doesn't throw if the JSON field has an unexpected type.
@@ -877,6 +899,7 @@ private constructor(
             private var budget: JsonField<Budget> = JsonMissing.of()
             private var cancellationDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var cancelReason: JsonField<CancelReason> = JsonMissing.of()
+            private var contractId: JsonField<String> = JsonMissing.of()
             private var coupons: JsonField<MutableList<Coupon>>? = null
             private var currentBillingPeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
             private var currentBillingPeriodStart: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -913,6 +936,7 @@ private constructor(
                 budget = data.budget
                 cancellationDate = data.cancellationDate
                 cancelReason = data.cancelReason
+                contractId = data.contractId
                 coupons = data.coupons.map { it.toMutableList() }
                 currentBillingPeriodEnd = data.currentBillingPeriodEnd
                 currentBillingPeriodStart = data.currentBillingPeriodStart
@@ -1153,6 +1177,21 @@ private constructor(
             fun cancelReason(cancelReason: JsonField<CancelReason>) = apply {
                 this.cancelReason = cancelReason
             }
+
+            /** The Stigg contract this subscription is linked to, when any */
+            fun contractId(contractId: String?) = contractId(JsonField.ofNullable(contractId))
+
+            /** Alias for calling [Builder.contractId] with `contractId.orElse(null)`. */
+            fun contractId(contractId: Optional<String>) = contractId(contractId.getOrNull())
+
+            /**
+             * Sets [Builder.contractId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.contractId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun contractId(contractId: JsonField<String>) = apply { this.contractId = contractId }
 
             /** Coupons applied to the subscription */
             fun coupons(coupons: List<Coupon>) = coupons(JsonField.of(coupons))
@@ -1542,6 +1581,7 @@ private constructor(
                     budget,
                     cancellationDate,
                     cancelReason,
+                    contractId,
                     (coupons ?: JsonMissing.of()).map { it.toImmutable() },
                     currentBillingPeriodEnd,
                     currentBillingPeriodStart,
@@ -1592,6 +1632,7 @@ private constructor(
             budget().ifPresent { it.validate() }
             cancellationDate()
             cancelReason().ifPresent { it.validate() }
+            contractId()
             coupons().ifPresent { it.forEach { it.validate() } }
             currentBillingPeriodEnd()
             currentBillingPeriodStart()
@@ -1641,6 +1682,7 @@ private constructor(
                 (budget.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (cancellationDate.asKnown().isPresent) 1 else 0) +
                 (cancelReason.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (contractId.asKnown().isPresent) 1 else 0) +
                 (coupons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (currentBillingPeriodEnd.asKnown().isPresent) 1 else 0) +
                 (if (currentBillingPeriodStart.asKnown().isPresent) 1 else 0) +
@@ -11736,6 +11778,7 @@ private constructor(
                 budget == other.budget &&
                 cancellationDate == other.cancellationDate &&
                 cancelReason == other.cancelReason &&
+                contractId == other.contractId &&
                 coupons == other.coupons &&
                 currentBillingPeriodEnd == other.currentBillingPeriodEnd &&
                 currentBillingPeriodStart == other.currentBillingPeriodStart &&
@@ -11771,6 +11814,7 @@ private constructor(
                 budget,
                 cancellationDate,
                 cancelReason,
+                contractId,
                 coupons,
                 currentBillingPeriodEnd,
                 currentBillingPeriodStart,
@@ -11794,7 +11838,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, addons=$addons, billingCycleAnchor=$billingCycleAnchor, budget=$budget, cancellationDate=$cancellationDate, cancelReason=$cancelReason, coupons=$coupons, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, futureUpdates=$futureUpdates, latestInvoice=$latestInvoice, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, subscriptionEntitlements=$subscriptionEntitlements, trial=$trial, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
+            "Data{id=$id, billingId=$billingId, createdAt=$createdAt, customerId=$customerId, paymentCollection=$paymentCollection, planId=$planId, pricingType=$pricingType, startDate=$startDate, status=$status, addons=$addons, billingCycleAnchor=$billingCycleAnchor, budget=$budget, cancellationDate=$cancellationDate, cancelReason=$cancelReason, contractId=$contractId, coupons=$coupons, currentBillingPeriodEnd=$currentBillingPeriodEnd, currentBillingPeriodStart=$currentBillingPeriodStart, effectiveEndDate=$effectiveEndDate, endDate=$endDate, futureUpdates=$futureUpdates, latestInvoice=$latestInvoice, metadata=$metadata, minimumSpend=$minimumSpend, payingCustomerId=$payingCustomerId, paymentCollectionMethod=$paymentCollectionMethod, prices=$prices, resourceId=$resourceId, subscriptionEntitlements=$subscriptionEntitlements, trial=$trial, trialEndDate=$trialEndDate, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
