@@ -5,6 +5,8 @@ package io.stigg.services.async
 import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1.AddonServiceAsync
 import io.stigg.services.async.v1.AddonServiceAsyncImpl
+import io.stigg.services.async.v1.ContractServiceAsync
+import io.stigg.services.async.v1.ContractServiceAsyncImpl
 import io.stigg.services.async.v1.CouponServiceAsync
 import io.stigg.services.async.v1.CouponServiceAsyncImpl
 import io.stigg.services.async.v1.CreditServiceAsync
@@ -54,6 +56,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val products: ProductServiceAsync by lazy { ProductServiceAsyncImpl(clientOptions) }
 
+    private val contracts: ContractServiceAsync by lazy { ContractServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): V1ServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync =
@@ -85,6 +89,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** Operations related to products */
     override fun products(): ProductServiceAsync = products
+
+    override fun contracts(): ContractServiceAsync = contracts
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
@@ -129,6 +135,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             ProductServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val contracts: ContractServiceAsync.WithRawResponse by lazy {
+            ContractServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1ServiceAsync.WithRawResponse =
@@ -162,5 +172,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Operations related to products */
         override fun products(): ProductServiceAsync.WithRawResponse = products
+
+        override fun contracts(): ContractServiceAsync.WithRawResponse = contracts
     }
 }

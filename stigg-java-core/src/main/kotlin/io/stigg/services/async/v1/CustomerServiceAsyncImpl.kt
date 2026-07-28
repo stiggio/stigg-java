@@ -21,6 +21,11 @@ import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
+import io.stigg.models.v1.customers.CustomerListContractsParams
+import io.stigg.models.v1.customers.CustomerListContractsResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesPageAsync
+import io.stigg.models.v1.customers.CustomerListInvoicesPageResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesParams
 import io.stigg.models.v1.customers.CustomerListPageAsync
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
@@ -118,6 +123,20 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CompletableFuture<CustomerImportResponse> =
         // post /api/v1/customers/import
         withRawResponse().import_(params, requestOptions).thenApply { it.parse() }
+
+    override fun listContracts(
+        params: CustomerListContractsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListContractsResponse> =
+        // get /api/v1/customers/{id}/contracts
+        withRawResponse().listContracts(params, requestOptions).thenApply { it.parse() }
+
+    override fun listInvoices(
+        params: CustomerListInvoicesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CustomerListInvoicesPageAsync> =
+        // get /api/v1/customers/{id}/invoices
+        withRawResponse().listInvoices(params, requestOptions).thenApply { it.parse() }
 
     override fun listResources(
         params: CustomerListResourcesParams,
@@ -387,6 +406,80 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
                                 }
+                            }
+                    }
+                }
+        }
+
+        private val listContractsHandler: Handler<CustomerListContractsResponse> =
+            jsonHandler<CustomerListContractsResponse>(clientOptions.jsonMapper)
+
+        override fun listContracts(
+            params: CustomerListContractsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListContractsResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "contracts")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listContractsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val listInvoicesHandler: Handler<CustomerListInvoicesPageResponse> =
+            jsonHandler<CustomerListInvoicesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listInvoices(
+            params: CustomerListInvoicesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CustomerListInvoicesPageAsync>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "invoices")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { listInvoicesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                            .let {
+                                CustomerListInvoicesPageAsync.builder()
+                                    .service(CustomerServiceAsyncImpl(clientOptions))
+                                    .streamHandlerExecutor(clientOptions.streamHandlerExecutor)
+                                    .params(params)
+                                    .response(it)
+                                    .build()
                             }
                     }
                 }

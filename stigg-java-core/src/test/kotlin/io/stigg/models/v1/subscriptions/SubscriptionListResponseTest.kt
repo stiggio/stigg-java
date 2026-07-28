@@ -32,6 +32,7 @@ internal class SubscriptionListResponseTest {
                 )
                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+                .contractId("contractId")
                 .addCoupon(
                     SubscriptionListResponse.Coupon.builder()
                         .id("id")
@@ -171,6 +172,7 @@ internal class SubscriptionListResponseTest {
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(subscriptionListResponse.cancelReason())
             .contains(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+        assertThat(subscriptionListResponse.contractId()).contains("contractId")
         assertThat(subscriptionListResponse.coupons().getOrNull())
             .containsExactly(
                 SubscriptionListResponse.Coupon.builder()
@@ -317,6 +319,7 @@ internal class SubscriptionListResponseTest {
                 )
                 .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .cancelReason(SubscriptionListResponse.CancelReason.UPGRADE_OR_DOWNGRADE)
+                .contractId("contractId")
                 .addCoupon(
                     SubscriptionListResponse.Coupon.builder()
                         .id("id")
