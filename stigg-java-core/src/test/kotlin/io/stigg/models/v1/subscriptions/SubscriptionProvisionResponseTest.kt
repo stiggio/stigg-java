@@ -116,6 +116,7 @@ internal class SubscriptionProvisionResponseTest {
                                     SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                         .UPGRADE_OR_DOWNGRADE
                                 )
+                                .contractId("contractId")
                                 .addCoupon(
                                     SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
                                         .id("id")
@@ -409,6 +410,7 @@ internal class SubscriptionProvisionResponseTest {
                                 SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                     .UPGRADE_OR_DOWNGRADE
                             )
+                            .contractId("contractId")
                             .addCoupon(
                                 SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
                                     .id("id")
@@ -710,6 +712,7 @@ internal class SubscriptionProvisionResponseTest {
                                     SubscriptionProvisionResponse.Data.Subscription.CancelReason
                                         .UPGRADE_OR_DOWNGRADE
                                 )
+                                .contractId("contractId")
                                 .addCoupon(
                                     SubscriptionProvisionResponse.Data.Subscription.Coupon.builder()
                                         .id("id")

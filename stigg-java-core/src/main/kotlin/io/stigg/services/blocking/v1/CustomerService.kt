@@ -11,6 +11,10 @@ import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
+import io.stigg.models.v1.customers.CustomerListContractsParams
+import io.stigg.models.v1.customers.CustomerListContractsResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesPage
+import io.stigg.models.v1.customers.CustomerListInvoicesParams
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListParams
 import io.stigg.models.v1.customers.CustomerListResourcesPage
@@ -215,6 +219,79 @@ interface CustomerService {
         params: CustomerImportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerImportResponse
+
+    /**
+     * Retrieves a customer's contracts, fetched live from the connected billing provider, each
+     * enriched with a preview of its upcoming (next) invoice when available. Returns an empty list
+     * when no billing provider is connected or the customer is not synced.
+     */
+    fun listContracts(id: String): CustomerListContractsResponse =
+        listContracts(id, CustomerListContractsParams.none())
+
+    /** @see listContracts */
+    fun listContracts(
+        id: String,
+        params: CustomerListContractsParams = CustomerListContractsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListContractsResponse =
+        listContracts(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listContracts */
+    fun listContracts(
+        id: String,
+        params: CustomerListContractsParams = CustomerListContractsParams.none(),
+    ): CustomerListContractsResponse = listContracts(id, params, RequestOptions.none())
+
+    /** @see listContracts */
+    fun listContracts(
+        params: CustomerListContractsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListContractsResponse
+
+    /** @see listContracts */
+    fun listContracts(params: CustomerListContractsParams): CustomerListContractsResponse =
+        listContracts(params, RequestOptions.none())
+
+    /** @see listContracts */
+    fun listContracts(id: String, requestOptions: RequestOptions): CustomerListContractsResponse =
+        listContracts(id, CustomerListContractsParams.none(), requestOptions)
+
+    /**
+     * Retrieves a cursor-paginated list of a customer's invoices, fetched live from the connected
+     * billing provider. Ordered by issue date ascending by default; override with orderBy
+     * (issueDate | dueDate | total) and orderDir (ASC | DESC). Optionally narrowed to one contract,
+     * an issue-date range, and/or a set of invoice states. Returns an empty list when no billing
+     * provider is connected or the customer is not synced.
+     */
+    fun listInvoices(id: String): CustomerListInvoicesPage =
+        listInvoices(id, CustomerListInvoicesParams.none())
+
+    /** @see listInvoices */
+    fun listInvoices(
+        id: String,
+        params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListInvoicesPage = listInvoices(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see listInvoices */
+    fun listInvoices(
+        id: String,
+        params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+    ): CustomerListInvoicesPage = listInvoices(id, params, RequestOptions.none())
+
+    /** @see listInvoices */
+    fun listInvoices(
+        params: CustomerListInvoicesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerListInvoicesPage
+
+    /** @see listInvoices */
+    fun listInvoices(params: CustomerListInvoicesParams): CustomerListInvoicesPage =
+        listInvoices(params, RequestOptions.none())
+
+    /** @see listInvoices */
+    fun listInvoices(id: String, requestOptions: RequestOptions): CustomerListInvoicesPage =
+        listInvoices(id, CustomerListInvoicesParams.none(), requestOptions)
 
     /** Retrieves a paginated list of resources within the same customer. */
     fun listResources(id: String): CustomerListResourcesPage =
@@ -562,6 +639,99 @@ interface CustomerService {
             params: CustomerImportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerImportResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/contracts`, but is otherwise
+         * the same as [CustomerService.listContracts].
+         */
+        @MustBeClosed
+        fun listContracts(id: String): HttpResponseFor<CustomerListContractsResponse> =
+            listContracts(id, CustomerListContractsParams.none())
+
+        /** @see listContracts */
+        @MustBeClosed
+        fun listContracts(
+            id: String,
+            params: CustomerListContractsParams = CustomerListContractsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListContractsResponse> =
+            listContracts(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listContracts */
+        @MustBeClosed
+        fun listContracts(
+            id: String,
+            params: CustomerListContractsParams = CustomerListContractsParams.none(),
+        ): HttpResponseFor<CustomerListContractsResponse> =
+            listContracts(id, params, RequestOptions.none())
+
+        /** @see listContracts */
+        @MustBeClosed
+        fun listContracts(
+            params: CustomerListContractsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListContractsResponse>
+
+        /** @see listContracts */
+        @MustBeClosed
+        fun listContracts(
+            params: CustomerListContractsParams
+        ): HttpResponseFor<CustomerListContractsResponse> =
+            listContracts(params, RequestOptions.none())
+
+        /** @see listContracts */
+        @MustBeClosed
+        fun listContracts(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListContractsResponse> =
+            listContracts(id, CustomerListContractsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /api/v1/customers/{id}/invoices`, but is otherwise
+         * the same as [CustomerService.listInvoices].
+         */
+        @MustBeClosed
+        fun listInvoices(id: String): HttpResponseFor<CustomerListInvoicesPage> =
+            listInvoices(id, CustomerListInvoicesParams.none())
+
+        /** @see listInvoices */
+        @MustBeClosed
+        fun listInvoices(
+            id: String,
+            params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListInvoicesPage> =
+            listInvoices(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see listInvoices */
+        @MustBeClosed
+        fun listInvoices(
+            id: String,
+            params: CustomerListInvoicesParams = CustomerListInvoicesParams.none(),
+        ): HttpResponseFor<CustomerListInvoicesPage> =
+            listInvoices(id, params, RequestOptions.none())
+
+        /** @see listInvoices */
+        @MustBeClosed
+        fun listInvoices(
+            params: CustomerListInvoicesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerListInvoicesPage>
+
+        /** @see listInvoices */
+        @MustBeClosed
+        fun listInvoices(
+            params: CustomerListInvoicesParams
+        ): HttpResponseFor<CustomerListInvoicesPage> = listInvoices(params, RequestOptions.none())
+
+        /** @see listInvoices */
+        @MustBeClosed
+        fun listInvoices(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListInvoicesPage> =
+            listInvoices(id, CustomerListInvoicesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}/resources`, but is otherwise

@@ -5,6 +5,8 @@ package io.stigg.services.blocking
 import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1.AddonService
 import io.stigg.services.blocking.v1.AddonServiceImpl
+import io.stigg.services.blocking.v1.ContractService
+import io.stigg.services.blocking.v1.ContractServiceImpl
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CouponServiceImpl
 import io.stigg.services.blocking.v1.CreditService
@@ -53,6 +55,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val products: ProductService by lazy { ProductServiceImpl(clientOptions) }
 
+    private val contracts: ContractService by lazy { ContractServiceImpl(clientOptions) }
+
     override fun withRawResponse(): V1Service.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service =
@@ -84,6 +88,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Operations related to products */
     override fun products(): ProductService = products
+
+    override fun contracts(): ContractService = contracts
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1Service.WithRawResponse {
@@ -128,6 +134,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             ProductServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val contracts: ContractService.WithRawResponse by lazy {
+            ContractServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1Service.WithRawResponse =
@@ -161,5 +171,7 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Operations related to products */
         override fun products(): ProductService.WithRawResponse = products
+
+        override fun contracts(): ContractService.WithRawResponse = contracts
     }
 }

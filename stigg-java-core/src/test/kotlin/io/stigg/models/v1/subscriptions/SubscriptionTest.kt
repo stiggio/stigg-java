@@ -33,6 +33,7 @@ internal class SubscriptionTest {
                         )
                         .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cancelReason(Subscription.Data.CancelReason.UPGRADE_OR_DOWNGRADE)
+                        .contractId("contractId")
                         .addCoupon(
                             Subscription.Data.Coupon.builder()
                                 .id("id")
@@ -170,6 +171,7 @@ internal class SubscriptionTest {
                     )
                     .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .cancelReason(Subscription.Data.CancelReason.UPGRADE_OR_DOWNGRADE)
+                    .contractId("contractId")
                     .addCoupon(
                         Subscription.Data.Coupon.builder()
                             .id("id")
@@ -308,6 +310,7 @@ internal class SubscriptionTest {
                         )
                         .cancellationDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .cancelReason(Subscription.Data.CancelReason.UPGRADE_OR_DOWNGRADE)
+                        .contractId("contractId")
                         .addCoupon(
                             Subscription.Data.Coupon.builder()
                                 .id("id")

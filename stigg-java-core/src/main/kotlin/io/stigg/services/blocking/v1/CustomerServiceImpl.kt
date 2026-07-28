@@ -21,6 +21,11 @@ import io.stigg.models.v1.customers.CustomerCheckEntitlementParams
 import io.stigg.models.v1.customers.CustomerCheckEntitlementResponse
 import io.stigg.models.v1.customers.CustomerImportParams
 import io.stigg.models.v1.customers.CustomerImportResponse
+import io.stigg.models.v1.customers.CustomerListContractsParams
+import io.stigg.models.v1.customers.CustomerListContractsResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesPage
+import io.stigg.models.v1.customers.CustomerListInvoicesPageResponse
+import io.stigg.models.v1.customers.CustomerListInvoicesParams
 import io.stigg.models.v1.customers.CustomerListPage
 import io.stigg.models.v1.customers.CustomerListPageResponse
 import io.stigg.models.v1.customers.CustomerListParams
@@ -114,6 +119,20 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     ): CustomerImportResponse =
         // post /api/v1/customers/import
         withRawResponse().import_(params, requestOptions).parse()
+
+    override fun listContracts(
+        params: CustomerListContractsParams,
+        requestOptions: RequestOptions,
+    ): CustomerListContractsResponse =
+        // get /api/v1/customers/{id}/contracts
+        withRawResponse().listContracts(params, requestOptions).parse()
+
+    override fun listInvoices(
+        params: CustomerListInvoicesParams,
+        requestOptions: RequestOptions,
+    ): CustomerListInvoicesPage =
+        // get /api/v1/customers/{id}/invoices
+        withRawResponse().listInvoices(params, requestOptions).parse()
 
     override fun listResources(
         params: CustomerListResourcesParams,
@@ -364,6 +383,73 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listContractsHandler: Handler<CustomerListContractsResponse> =
+            jsonHandler<CustomerListContractsResponse>(clientOptions.jsonMapper)
+
+        override fun listContracts(
+            params: CustomerListContractsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListContractsResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "contracts")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listContractsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val listInvoicesHandler: Handler<CustomerListInvoicesPageResponse> =
+            jsonHandler<CustomerListInvoicesPageResponse>(clientOptions.jsonMapper)
+
+        override fun listInvoices(
+            params: CustomerListInvoicesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListInvoicesPage> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("api", "v1", "customers", params._pathParam(0), "invoices")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listInvoicesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        CustomerListInvoicesPage.builder()
+                            .service(CustomerServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
