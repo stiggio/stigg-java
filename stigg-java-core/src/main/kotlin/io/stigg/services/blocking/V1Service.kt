@@ -4,6 +4,7 @@ package io.stigg.services.blocking
 
 import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1.AddonService
+import io.stigg.services.blocking.v1.ContractService
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CreditService
 import io.stigg.services.blocking.v1.CustomerService
@@ -56,6 +57,8 @@ interface V1Service {
     /** Operations related to products */
     fun products(): ProductService
 
+    fun contracts(): ContractService
+
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -92,5 +95,7 @@ interface V1Service {
 
         /** Operations related to products */
         fun products(): ProductService.WithRawResponse
+
+        fun contracts(): ContractService.WithRawResponse
     }
 }

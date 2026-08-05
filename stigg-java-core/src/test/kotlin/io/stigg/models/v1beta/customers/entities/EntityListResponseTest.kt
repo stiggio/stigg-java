@@ -18,6 +18,7 @@ internal class EntityListResponseTest {
                 .id("id")
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .displayName("displayName")
                 .entityTypeId("entityTypeId")
                 .metadata(
                     EntityListResponse.Metadata.builder()
@@ -32,6 +33,7 @@ internal class EntityListResponseTest {
             .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(entityListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(entityListResponse.displayName()).contains("displayName")
         assertThat(entityListResponse.entityTypeId()).isEqualTo("entityTypeId")
         assertThat(entityListResponse.metadata())
             .isEqualTo(
@@ -51,6 +53,7 @@ internal class EntityListResponseTest {
                 .id("id")
                 .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .displayName("displayName")
                 .entityTypeId("entityTypeId")
                 .metadata(
                     EntityListResponse.Metadata.builder()

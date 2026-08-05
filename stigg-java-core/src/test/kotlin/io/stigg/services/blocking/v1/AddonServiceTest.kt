@@ -203,6 +203,21 @@ internal class AddonServiceTest {
                                         AddonUpdateParams.Charges.OveragePricingModel.BillingCadence
                                             .RECURRING
                                     )
+                                    .creditEntitlement(
+                                        AddonUpdateParams.Charges.OveragePricingModel
+                                            .CreditEntitlement
+                                            .builder()
+                                            .amount(1.0)
+                                            .cadence(
+                                                AddonUpdateParams.Charges.OveragePricingModel
+                                                    .CreditEntitlement
+                                                    .Cadence
+                                                    .MONTH
+                                            )
+                                            .customCurrencyId("customCurrencyId")
+                                            .build()
+                                    )
+                                    .currencyId("currencyId")
                                     .entitlement(
                                         AddonUpdateParams.Charges.OveragePricingModel.Entitlement
                                             .builder()
@@ -264,7 +279,6 @@ internal class AddonServiceTest {
                                             .build()
                                     )
                                     .featureId("featureId")
-                                    .topUpCustomCurrencyId("topUpCustomCurrencyId")
                                     .build()
                             )
                             .addPricingModel(
