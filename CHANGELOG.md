@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-beta.43 (2026-08-05)
+
+Full Changelog: [v0.1.0-beta.42...v0.1.0-beta.43](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.42...v0.1.0-beta.43)
+
+### Features
+
+* **api:** add displayName to entities, description to entity types ([e645467](https://github.com/stiggio/stigg-java/commit/e6454674875264a0086a16d4db1f66b02aa7f0bc))
+* **api:** add eventCount field to Series and Point in CreditGetUsageResponse ([0ca334c](https://github.com/stiggio/stigg-java/commit/0ca334c63deefe63159fe71f2f02b4e073af8ae5))
+
 ## 0.1.0-beta.42 (2026-08-05)
 
 Full Changelog: [v0.1.0-beta.41...v0.1.0-beta.42](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.41...v0.1.0-beta.42)
