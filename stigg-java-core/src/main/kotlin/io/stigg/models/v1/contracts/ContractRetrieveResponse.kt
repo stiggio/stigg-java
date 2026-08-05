@@ -177,6 +177,7 @@ private constructor(
         private val activationEndDate: JsonField<OffsetDateTime>,
         private val activationStartDate: JsonField<OffsetDateTime>,
         private val billingId: JsonField<String>,
+        private val billingState: JsonField<BillingState>,
         private val contractId: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val customerExternalId: JsonField<String>,
@@ -203,6 +204,9 @@ private constructor(
             @JsonProperty("billingId")
             @ExcludeMissing
             billingId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("billingState")
+            @ExcludeMissing
+            billingState: JsonField<BillingState> = JsonMissing.of(),
             @JsonProperty("contractId")
             @ExcludeMissing
             contractId: JsonField<String> = JsonMissing.of(),
@@ -235,6 +239,7 @@ private constructor(
             activationEndDate,
             activationStartDate,
             billingId,
+            billingState,
             contractId,
             createdAt,
             customerExternalId,
@@ -284,6 +289,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun billingId(): Optional<String> = billingId.getOptional("billingId")
+
+        /**
+         * The current state of the contract
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun billingState(): Optional<BillingState> = billingState.getOptional("billingState")
 
         /**
          * The Stigg contract ref ID (the key used to fetch/update/delete this contract)
@@ -412,6 +425,16 @@ private constructor(
         @JsonProperty("billingId") @ExcludeMissing fun _billingId(): JsonField<String> = billingId
 
         /**
+         * Returns the raw JSON value of [billingState].
+         *
+         * Unlike [billingState], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("billingState")
+        @ExcludeMissing
+        fun _billingState(): JsonField<BillingState> = billingState
+
+        /**
          * Returns the raw JSON value of [contractId].
          *
          * Unlike [contractId], this method doesn't throw if the JSON field has an unexpected type.
@@ -528,6 +551,7 @@ private constructor(
              * .activationEndDate()
              * .activationStartDate()
              * .billingId()
+             * .billingState()
              * .contractId()
              * .createdAt()
              * .customerExternalId()
@@ -551,6 +575,7 @@ private constructor(
             private var activationEndDate: JsonField<OffsetDateTime>? = null
             private var activationStartDate: JsonField<OffsetDateTime>? = null
             private var billingId: JsonField<String>? = null
+            private var billingState: JsonField<BillingState>? = null
             private var contractId: JsonField<String>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
             private var customerExternalId: JsonField<String>? = null
@@ -570,6 +595,7 @@ private constructor(
                 activationEndDate = data.activationEndDate
                 activationStartDate = data.activationStartDate
                 billingId = data.billingId
+                billingState = data.billingState
                 contractId = data.contractId
                 createdAt = data.createdAt
                 customerExternalId = data.customerExternalId
@@ -662,6 +688,25 @@ private constructor(
              * supported value.
              */
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
+
+            /** The current state of the contract */
+            fun billingState(billingState: BillingState?) =
+                billingState(JsonField.ofNullable(billingState))
+
+            /** Alias for calling [Builder.billingState] with `billingState.orElse(null)`. */
+            fun billingState(billingState: Optional<BillingState>) =
+                billingState(billingState.getOrNull())
+
+            /**
+             * Sets [Builder.billingState] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.billingState] with a well-typed [BillingState] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun billingState(billingState: JsonField<BillingState>) = apply {
+                this.billingState = billingState
+            }
 
             /** The Stigg contract ref ID (the key used to fetch/update/delete this contract) */
             fun contractId(contractId: String) = contractId(JsonField.of(contractId))
@@ -887,6 +932,7 @@ private constructor(
              * .activationEndDate()
              * .activationStartDate()
              * .billingId()
+             * .billingState()
              * .contractId()
              * .createdAt()
              * .customerExternalId()
@@ -908,6 +954,7 @@ private constructor(
                     checkRequired("activationEndDate", activationEndDate),
                     checkRequired("activationStartDate", activationStartDate),
                     checkRequired("billingId", billingId),
+                    checkRequired("billingState", billingState),
                     checkRequired("contractId", contractId),
                     checkRequired("createdAt", createdAt),
                     checkRequired("customerExternalId", customerExternalId),
@@ -943,6 +990,7 @@ private constructor(
             activationEndDate()
             activationStartDate()
             billingId()
+            billingState().ifPresent { it.validate() }
             contractId()
             createdAt()
             customerExternalId()
@@ -977,6 +1025,7 @@ private constructor(
                 (if (activationEndDate.asKnown().isPresent) 1 else 0) +
                 (if (activationStartDate.asKnown().isPresent) 1 else 0) +
                 (if (billingId.asKnown().isPresent) 1 else 0) +
+                (billingState.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (contractId.asKnown().isPresent) 1 else 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (if (customerExternalId.asKnown().isPresent) 1 else 0) +
@@ -988,6 +1037,160 @@ private constructor(
                 (if (refId.asKnown().isPresent) 1 else 0) +
                 (state.asKnown().getOrNull()?.validity() ?: 0) +
                 (subscriptions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+
+        /** The current state of the contract */
+        class BillingState @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val DRAFT = of("DRAFT")
+
+                @JvmField val ACTIVE = of("ACTIVE")
+
+                @JvmField val CANCELED = of("CANCELED")
+
+                @JvmField val END_BILLING = of("END_BILLING")
+
+                @JvmStatic fun of(value: String) = BillingState(JsonField.of(value))
+            }
+
+            /** An enum containing [BillingState]'s known values. */
+            enum class Known {
+                DRAFT,
+                ACTIVE,
+                CANCELED,
+                END_BILLING,
+            }
+
+            /**
+             * An enum containing [BillingState]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [BillingState] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                DRAFT,
+                ACTIVE,
+                CANCELED,
+                END_BILLING,
+                /**
+                 * An enum member indicating that [BillingState] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    DRAFT -> Value.DRAFT
+                    ACTIVE -> Value.ACTIVE
+                    CANCELED -> Value.CANCELED
+                    END_BILLING -> Value.END_BILLING
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StiggInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    DRAFT -> Known.DRAFT
+                    ACTIVE -> Known.ACTIVE
+                    CANCELED -> Known.CANCELED
+                    END_BILLING -> Known.END_BILLING
+                    else -> throw StiggInvalidDataException("Unknown BillingState: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StiggInvalidDataException if this class instance's value does not have the
+             *   expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StiggInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): BillingState = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is BillingState && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         /**
          * The most recent non-draft invoice for this contract (open, paid, or canceled), or null
@@ -3702,6 +3905,7 @@ private constructor(
                 activationEndDate == other.activationEndDate &&
                 activationStartDate == other.activationStartDate &&
                 billingId == other.billingId &&
+                billingState == other.billingState &&
                 contractId == other.contractId &&
                 createdAt == other.createdAt &&
                 customerExternalId == other.customerExternalId &&
@@ -3722,6 +3926,7 @@ private constructor(
                 activationEndDate,
                 activationStartDate,
                 billingId,
+                billingState,
                 contractId,
                 createdAt,
                 customerExternalId,
@@ -3740,7 +3945,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, activationEndDate=$activationEndDate, activationStartDate=$activationStartDate, billingId=$billingId, contractId=$contractId, createdAt=$createdAt, customerExternalId=$customerExternalId, externalId=$externalId, latestInvoice=$latestInvoice, name=$name, nextInvoice=$nextInvoice, poNumber=$poNumber, refId=$refId, state=$state, subscriptions=$subscriptions, additionalProperties=$additionalProperties}"
+            "Data{id=$id, activationEndDate=$activationEndDate, activationStartDate=$activationStartDate, billingId=$billingId, billingState=$billingState, contractId=$contractId, createdAt=$createdAt, customerExternalId=$customerExternalId, externalId=$externalId, latestInvoice=$latestInvoice, name=$name, nextInvoice=$nextInvoice, poNumber=$poNumber, refId=$refId, state=$state, subscriptions=$subscriptions, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

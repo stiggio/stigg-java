@@ -33,10 +33,12 @@ internal class CreditGetUsageResponseTest {
                         )
                         .addSeries(
                             CreditGetUsageResponse.Data.Series.builder()
+                                .eventCount(0.0)
                                 .featureId("featureId")
                                 .featureName("featureName")
                                 .addPoint(
                                     CreditGetUsageResponse.Data.Series.Point.builder()
+                                        .eventCount(0.0)
                                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                         .value(0.0)
                                         .build()
@@ -74,10 +76,12 @@ internal class CreditGetUsageResponseTest {
                     )
                     .addSeries(
                         CreditGetUsageResponse.Data.Series.builder()
+                            .eventCount(0.0)
                             .featureId("featureId")
                             .featureName("featureName")
                             .addPoint(
                                 CreditGetUsageResponse.Data.Series.Point.builder()
+                                    .eventCount(0.0)
                                     .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                     .value(0.0)
                                     .build()
@@ -119,10 +123,12 @@ internal class CreditGetUsageResponseTest {
                         )
                         .addSeries(
                             CreditGetUsageResponse.Data.Series.builder()
+                                .eventCount(0.0)
                                 .featureId("featureId")
                                 .featureName("featureName")
                                 .addPoint(
                                     CreditGetUsageResponse.Data.Series.Point.builder()
+                                        .eventCount(0.0)
                                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                         .value(0.0)
                                         .build()
