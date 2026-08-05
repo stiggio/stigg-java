@@ -17,6 +17,7 @@ import io.stigg.errors.StiggInvalidDataException
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -30,6 +31,7 @@ private constructor(
     private val id: JsonField<String>,
     private val attributionKeys: JsonField<List<String>>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val description: JsonField<String>,
     private val displayName: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -44,13 +46,16 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("description")
+        @ExcludeMissing
+        description: JsonField<String> = JsonMissing.of(),
         @JsonProperty("displayName")
         @ExcludeMissing
         displayName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-    ) : this(id, attributionKeys, createdAt, displayName, updatedAt, mutableMapOf())
+    ) : this(id, attributionKeys, createdAt, description, displayName, updatedAt, mutableMapOf())
 
     /**
      * The unique identifier for the entity
@@ -76,6 +81,14 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+    /**
+     * What this entity type represents and what it is for governing, or null when none is set
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun description(): Optional<String> = description.getOptional("description")
 
     /**
      * The display name for the entity type
@@ -119,6 +132,13 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
+     * Returns the raw JSON value of [description].
+     *
+     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
+
+    /**
      * Returns the raw JSON value of [displayName].
      *
      * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
@@ -156,6 +176,7 @@ private constructor(
          * .id()
          * .attributionKeys()
          * .createdAt()
+         * .description()
          * .displayName()
          * .updatedAt()
          * ```
@@ -169,6 +190,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var attributionKeys: JsonField<MutableList<String>>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var description: JsonField<String>? = null
         private var displayName: JsonField<String>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -178,6 +200,7 @@ private constructor(
             id = entityTypeListResponse.id
             attributionKeys = entityTypeListResponse.attributionKeys.map { it.toMutableList() }
             createdAt = entityTypeListResponse.createdAt
+            description = entityTypeListResponse.description
             displayName = entityTypeListResponse.displayName
             updatedAt = entityTypeListResponse.updatedAt
             additionalProperties = entityTypeListResponse.additionalProperties.toMutableMap()
@@ -236,6 +259,23 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
+        /**
+         * What this entity type represents and what it is for governing, or null when none is set
+         */
+        fun description(description: String?) = description(JsonField.ofNullable(description))
+
+        /** Alias for calling [Builder.description] with `description.orElse(null)`. */
+        fun description(description: Optional<String>) = description(description.getOrNull())
+
+        /**
+         * Sets [Builder.description] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun description(description: JsonField<String>) = apply { this.description = description }
+
         /** The display name for the entity type */
         fun displayName(displayName: String) = displayName(JsonField.of(displayName))
 
@@ -289,6 +329,7 @@ private constructor(
          * .id()
          * .attributionKeys()
          * .createdAt()
+         * .description()
          * .displayName()
          * .updatedAt()
          * ```
@@ -300,6 +341,7 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("attributionKeys", attributionKeys).map { it.toImmutable() },
                 checkRequired("createdAt", createdAt),
+                checkRequired("description", description),
                 checkRequired("displayName", displayName),
                 checkRequired("updatedAt", updatedAt),
                 additionalProperties.toMutableMap(),
@@ -324,6 +366,7 @@ private constructor(
         id()
         attributionKeys()
         createdAt()
+        description()
         displayName()
         updatedAt()
         validated = true
@@ -347,6 +390,7 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (attributionKeys.asKnown().getOrNull()?.size ?: 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
+            (if (description.asKnown().isPresent) 1 else 0) +
             (if (displayName.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
 
@@ -359,17 +403,26 @@ private constructor(
             id == other.id &&
             attributionKeys == other.attributionKeys &&
             createdAt == other.createdAt &&
+            description == other.description &&
             displayName == other.displayName &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(id, attributionKeys, createdAt, displayName, updatedAt, additionalProperties)
+        Objects.hash(
+            id,
+            attributionKeys,
+            createdAt,
+            description,
+            displayName,
+            updatedAt,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EntityTypeListResponse{id=$id, attributionKeys=$attributionKeys, createdAt=$createdAt, displayName=$displayName, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "EntityTypeListResponse{id=$id, attributionKeys=$attributionKeys, createdAt=$createdAt, description=$description, displayName=$displayName, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

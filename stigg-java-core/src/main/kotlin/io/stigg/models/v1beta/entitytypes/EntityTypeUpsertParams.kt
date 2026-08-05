@@ -480,6 +480,7 @@ private constructor(
         private val id: JsonField<String>,
         private val attributionKeys: JsonField<List<String>>,
         private val displayName: JsonField<String>,
+        private val description: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -492,7 +493,10 @@ private constructor(
             @JsonProperty("displayName")
             @ExcludeMissing
             displayName: JsonField<String> = JsonMissing.of(),
-        ) : this(id, attributionKeys, displayName, mutableMapOf())
+            @JsonProperty("description")
+            @ExcludeMissing
+            description: JsonField<String> = JsonMissing.of(),
+        ) : this(id, attributionKeys, displayName, description, mutableMapOf())
 
         /**
          * The unique identifier for the entity
@@ -520,6 +524,15 @@ private constructor(
         fun displayName(): String = displayName.getRequired("displayName")
 
         /**
+         * What this entity type represents and what it is for governing. Omit to preserve the
+         * stored value, or send an empty string or null to clear it.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun description(): Optional<String> = description.getOptional("description")
+
+        /**
          * Returns the raw JSON value of [id].
          *
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -544,6 +557,15 @@ private constructor(
         @JsonProperty("displayName")
         @ExcludeMissing
         fun _displayName(): JsonField<String> = displayName
+
+        /**
+         * Returns the raw JSON value of [description].
+         *
+         * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("description")
+        @ExcludeMissing
+        fun _description(): JsonField<String> = description
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -578,6 +600,7 @@ private constructor(
             private var id: JsonField<String>? = null
             private var attributionKeys: JsonField<MutableList<String>>? = null
             private var displayName: JsonField<String>? = null
+            private var description: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -585,6 +608,7 @@ private constructor(
                 id = type.id
                 attributionKeys = type.attributionKeys.map { it.toMutableList() }
                 displayName = type.displayName
+                description = type.description
                 additionalProperties = type.additionalProperties.toMutableMap()
             }
 
@@ -644,6 +668,26 @@ private constructor(
                 this.displayName = displayName
             }
 
+            /**
+             * What this entity type represents and what it is for governing. Omit to preserve the
+             * stored value, or send an empty string or null to clear it.
+             */
+            fun description(description: String?) = description(JsonField.ofNullable(description))
+
+            /** Alias for calling [Builder.description] with `description.orElse(null)`. */
+            fun description(description: Optional<String>) = description(description.getOrNull())
+
+            /**
+             * Sets [Builder.description] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.description] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun description(description: JsonField<String>) = apply {
+                this.description = description
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -682,6 +726,7 @@ private constructor(
                     checkRequired("id", id),
                     checkRequired("attributionKeys", attributionKeys).map { it.toImmutable() },
                     checkRequired("displayName", displayName),
+                    description,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -705,6 +750,7 @@ private constructor(
             id()
             attributionKeys()
             displayName()
+            description()
             validated = true
         }
 
@@ -726,7 +772,8 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
                 (attributionKeys.asKnown().getOrNull()?.size ?: 0) +
-                (if (displayName.asKnown().isPresent) 1 else 0)
+                (if (displayName.asKnown().isPresent) 1 else 0) +
+                (if (description.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -737,17 +784,18 @@ private constructor(
                 id == other.id &&
                 attributionKeys == other.attributionKeys &&
                 displayName == other.displayName &&
+                description == other.description &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(id, attributionKeys, displayName, additionalProperties)
+            Objects.hash(id, attributionKeys, displayName, description, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Type{id=$id, attributionKeys=$attributionKeys, displayName=$displayName, additionalProperties=$additionalProperties}"
+            "Type{id=$id, attributionKeys=$attributionKeys, displayName=$displayName, description=$description, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

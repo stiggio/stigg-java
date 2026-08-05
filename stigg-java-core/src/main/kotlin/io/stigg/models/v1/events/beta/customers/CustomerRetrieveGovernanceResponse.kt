@@ -231,6 +231,7 @@ private constructor(
     private constructor(
         private val cadence: JsonField<String>,
         private val currentUsage: JsonField<Double>,
+        private val displayName: JsonField<String>,
         private val entityId: JsonField<String>,
         private val entityTypeId: JsonField<String>,
         private val parentId: JsonField<String>,
@@ -250,6 +251,9 @@ private constructor(
             @JsonProperty("currentUsage")
             @ExcludeMissing
             currentUsage: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("displayName")
+            @ExcludeMissing
+            displayName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("entityId")
             @ExcludeMissing
             entityId: JsonField<String> = JsonMissing.of(),
@@ -283,6 +287,7 @@ private constructor(
         ) : this(
             cadence,
             currentUsage,
+            displayName,
             entityId,
             entityTypeId,
             parentId,
@@ -315,6 +320,15 @@ private constructor(
         fun currentUsage(): Optional<Double> = currentUsage.getOptional("currentUsage")
 
         /**
+         * Human-readable name of the entity, or null when none is set (display the entity id
+         * instead).
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun displayName(): Optional<String> = displayName.getOptional("displayName")
+
+        /**
          * External id of the entity at this node.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
@@ -331,8 +345,9 @@ private constructor(
         fun entityTypeId(): String = entityTypeId.getRequired("entityTypeId")
 
         /**
-         * External id of the parent entity in the tree; `null` for a root. Use it to rebuild the
-         * tree.
+         * External id of the parent entity in the tree. `null` means the entity is either a root or
+         * not yet placed in the hierarchy — placement rides on an assignment, so an entity with no
+         * limits set has no parent yet. Both render at the top level; use it to rebuild the tree.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -357,8 +372,8 @@ private constructor(
         fun usageLimit(): Optional<Double> = usageLimit.getOptional("usageLimit")
 
         /**
-         * Exclusive end of the cadence period — when usage resets; `null` once the period has
-         * rolled over.
+         * Exclusive end of the cadence period in progress now — when usage resets. `null` when the
+         * node has no usage configuration, or when a stored cadence cannot be parsed.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -367,8 +382,9 @@ private constructor(
             usagePeriodEnd.getOptional("usagePeriodEnd")
 
         /**
-         * Start of the cadence period the usage snapshot belongs to; `null` once the period has
-         * rolled over.
+         * Start of the cadence period in progress now, derived from the cadence and the assignment
+         * anchor — it stays correct across a rollover. `null` when the node has no usage
+         * configuration, or when a stored cadence cannot be parsed.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -417,6 +433,15 @@ private constructor(
         @JsonProperty("currentUsage")
         @ExcludeMissing
         fun _currentUsage(): JsonField<Double> = currentUsage
+
+        /**
+         * Returns the raw JSON value of [displayName].
+         *
+         * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("displayName")
+        @ExcludeMissing
+        fun _displayName(): JsonField<String> = displayName
 
         /**
          * Returns the raw JSON value of [entityId].
@@ -527,6 +552,7 @@ private constructor(
              * ```java
              * .cadence()
              * .currentUsage()
+             * .displayName()
              * .entityId()
              * .entityTypeId()
              * .parentId()
@@ -545,6 +571,7 @@ private constructor(
 
             private var cadence: JsonField<String>? = null
             private var currentUsage: JsonField<Double>? = null
+            private var displayName: JsonField<String>? = null
             private var entityId: JsonField<String>? = null
             private var entityTypeId: JsonField<String>? = null
             private var parentId: JsonField<String>? = null
@@ -561,6 +588,7 @@ private constructor(
             internal fun from(data: Data) = apply {
                 cadence = data.cadence
                 currentUsage = data.currentUsage
+                displayName = data.displayName
                 entityId = data.entityId
                 entityTypeId = data.entityTypeId
                 parentId = data.parentId
@@ -621,6 +649,26 @@ private constructor(
                 this.currentUsage = currentUsage
             }
 
+            /**
+             * Human-readable name of the entity, or null when none is set (display the entity id
+             * instead).
+             */
+            fun displayName(displayName: String?) = displayName(JsonField.ofNullable(displayName))
+
+            /** Alias for calling [Builder.displayName] with `displayName.orElse(null)`. */
+            fun displayName(displayName: Optional<String>) = displayName(displayName.getOrNull())
+
+            /**
+             * Sets [Builder.displayName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.displayName] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun displayName(displayName: JsonField<String>) = apply {
+                this.displayName = displayName
+            }
+
             /** External id of the entity at this node. */
             fun entityId(entityId: String) = entityId(JsonField.of(entityId))
 
@@ -648,8 +696,10 @@ private constructor(
             }
 
             /**
-             * External id of the parent entity in the tree; `null` for a root. Use it to rebuild
-             * the tree.
+             * External id of the parent entity in the tree. `null` means the entity is either a
+             * root or not yet placed in the hierarchy — placement rides on an assignment, so an
+             * entity with no limits set has no parent yet. Both render at the top level; use it to
+             * rebuild the tree.
              */
             fun parentId(parentId: String?) = parentId(JsonField.ofNullable(parentId))
 
@@ -718,8 +768,8 @@ private constructor(
             fun usageLimit(usageLimit: JsonField<Double>) = apply { this.usageLimit = usageLimit }
 
             /**
-             * Exclusive end of the cadence period — when usage resets; `null` once the period has
-             * rolled over.
+             * Exclusive end of the cadence period in progress now — when usage resets. `null` when
+             * the node has no usage configuration, or when a stored cadence cannot be parsed.
              */
             fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime?) =
                 usagePeriodEnd(JsonField.ofNullable(usagePeriodEnd))
@@ -740,8 +790,9 @@ private constructor(
             }
 
             /**
-             * Start of the cadence period the usage snapshot belongs to; `null` once the period has
-             * rolled over.
+             * Start of the cadence period in progress now, derived from the cadence and the
+             * assignment anchor — it stays correct across a rollover. `null` when the node has no
+             * usage configuration, or when a stored cadence cannot be parsed.
              */
             fun usagePeriodStart(usagePeriodStart: OffsetDateTime?) =
                 usagePeriodStart(JsonField.ofNullable(usagePeriodStart))
@@ -845,6 +896,7 @@ private constructor(
              * ```java
              * .cadence()
              * .currentUsage()
+             * .displayName()
              * .entityId()
              * .entityTypeId()
              * .parentId()
@@ -861,6 +913,7 @@ private constructor(
                 Data(
                     checkRequired("cadence", cadence),
                     checkRequired("currentUsage", currentUsage),
+                    checkRequired("displayName", displayName),
                     checkRequired("entityId", entityId),
                     checkRequired("entityTypeId", entityTypeId),
                     checkRequired("parentId", parentId),
@@ -893,6 +946,7 @@ private constructor(
 
             cadence()
             currentUsage()
+            displayName()
             entityId()
             entityTypeId()
             parentId()
@@ -924,6 +978,7 @@ private constructor(
         internal fun validity(): Int =
             (if (cadence.asKnown().isPresent) 1 else 0) +
                 (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                (if (displayName.asKnown().isPresent) 1 else 0) +
                 (if (entityId.asKnown().isPresent) 1 else 0) +
                 (if (entityTypeId.asKnown().isPresent) 1 else 0) +
                 (if (parentId.asKnown().isPresent) 1 else 0) +
@@ -943,6 +998,7 @@ private constructor(
             return other is Data &&
                 cadence == other.cadence &&
                 currentUsage == other.currentUsage &&
+                displayName == other.displayName &&
                 entityId == other.entityId &&
                 entityTypeId == other.entityTypeId &&
                 parentId == other.parentId &&
@@ -960,6 +1016,7 @@ private constructor(
             Objects.hash(
                 cadence,
                 currentUsage,
+                displayName,
                 entityId,
                 entityTypeId,
                 parentId,
@@ -977,7 +1034,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{cadence=$cadence, currentUsage=$currentUsage, entityId=$entityId, entityTypeId=$entityTypeId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+            "Data{cadence=$cadence, currentUsage=$currentUsage, displayName=$displayName, entityId=$entityId, entityTypeId=$entityTypeId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
     }
 
     class Pagination
