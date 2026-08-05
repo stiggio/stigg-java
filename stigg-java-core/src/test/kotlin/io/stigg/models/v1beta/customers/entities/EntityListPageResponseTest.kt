@@ -20,6 +20,7 @@ internal class EntityListPageResponseTest {
                         .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .displayName("displayName")
                         .entityTypeId("entityTypeId")
                         .metadata(
                             EntityListResponse.Metadata.builder()
@@ -43,6 +44,7 @@ internal class EntityListPageResponseTest {
                     .id("id")
                     .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .displayName("displayName")
                     .entityTypeId("entityTypeId")
                     .metadata(
                         EntityListResponse.Metadata.builder()
@@ -71,6 +73,7 @@ internal class EntityListPageResponseTest {
                         .id("id")
                         .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .displayName("displayName")
                         .entityTypeId("entityTypeId")
                         .metadata(
                             EntityListResponse.Metadata.builder()

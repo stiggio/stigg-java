@@ -497,6 +497,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
+        private val displayName: JsonField<String>,
         private val entityTypeId: JsonField<String>,
         private val metadata: JsonField<Metadata>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -505,13 +506,16 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("displayName")
+            @ExcludeMissing
+            displayName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("entityTypeId")
             @ExcludeMissing
             entityTypeId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
-        ) : this(id, entityTypeId, metadata, mutableMapOf())
+        ) : this(id, displayName, entityTypeId, metadata, mutableMapOf())
 
         /**
          * The unique identifier for the entity
@@ -520,6 +524,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun id(): String = id.getRequired("id")
+
+        /**
+         * Human-readable name for the entity. Omit to preserve the stored value, or send an empty
+         * string or null to clear it.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun displayName(): Optional<String> = displayName.getOptional("displayName")
 
         /**
          * The entity type ID this entity instantiates. Required when creating a new entity; on a
@@ -546,6 +559,15 @@ private constructor(
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [displayName].
+         *
+         * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("displayName")
+        @ExcludeMissing
+        fun _displayName(): JsonField<String> = displayName
 
         /**
          * Returns the raw JSON value of [entityTypeId].
@@ -593,6 +615,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
+            private var displayName: JsonField<String> = JsonMissing.of()
             private var entityTypeId: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -600,6 +623,7 @@ private constructor(
             @JvmSynthetic
             internal fun from(entity: Entity) = apply {
                 id = entity.id
+                displayName = entity.displayName
                 entityTypeId = entity.entityTypeId
                 metadata = entity.metadata
                 additionalProperties = entity.additionalProperties.toMutableMap()
@@ -616,6 +640,26 @@ private constructor(
              * value.
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
+
+            /**
+             * Human-readable name for the entity. Omit to preserve the stored value, or send an
+             * empty string or null to clear it.
+             */
+            fun displayName(displayName: String?) = displayName(JsonField.ofNullable(displayName))
+
+            /** Alias for calling [Builder.displayName] with `displayName.orElse(null)`. */
+            fun displayName(displayName: Optional<String>) = displayName(displayName.getOrNull())
+
+            /**
+             * Sets [Builder.displayName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.displayName] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun displayName(displayName: JsonField<String>) = apply {
+                this.displayName = displayName
+            }
 
             /**
              * The entity type ID this entity instantiates. Required when creating a new entity; on
@@ -684,6 +728,7 @@ private constructor(
             fun build(): Entity =
                 Entity(
                     checkRequired("id", id),
+                    displayName,
                     entityTypeId,
                     metadata,
                     additionalProperties.toMutableMap(),
@@ -707,6 +752,7 @@ private constructor(
             }
 
             id()
+            displayName()
             entityTypeId()
             metadata().ifPresent { it.validate() }
             validated = true
@@ -729,6 +775,7 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
+                (if (displayName.asKnown().isPresent) 1 else 0) +
                 (if (entityTypeId.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -855,19 +902,20 @@ private constructor(
 
             return other is Entity &&
                 id == other.id &&
+                displayName == other.displayName &&
                 entityTypeId == other.entityTypeId &&
                 metadata == other.metadata &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(id, entityTypeId, metadata, additionalProperties)
+            Objects.hash(id, displayName, entityTypeId, metadata, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Entity{id=$id, entityTypeId=$entityTypeId, metadata=$metadata, additionalProperties=$additionalProperties}"
+            "Entity{id=$id, displayName=$displayName, entityTypeId=$entityTypeId, metadata=$metadata, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
