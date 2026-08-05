@@ -18,6 +18,9 @@ internal class EntityTypeUpsertParamsTest {
                     .id("org")
                     .addAttributionKey("organizationId")
                     .displayName("Organization")
+                    .description(
+                        "A customer organization — the top of the hierarchy, holding the account-wide budget."
+                    )
                     .build()
             )
             .addType(
@@ -25,6 +28,7 @@ internal class EntityTypeUpsertParamsTest {
                     .id("team")
                     .addAttributionKey("teamId")
                     .displayName("Team")
+                    .description("description")
                     .build()
             )
             .build()
@@ -41,6 +45,9 @@ internal class EntityTypeUpsertParamsTest {
                         .id("org")
                         .addAttributionKey("organizationId")
                         .displayName("Organization")
+                        .description(
+                            "A customer organization — the top of the hierarchy, holding the account-wide budget."
+                        )
                         .build()
                 )
                 .addType(
@@ -48,6 +55,7 @@ internal class EntityTypeUpsertParamsTest {
                         .id("team")
                         .addAttributionKey("teamId")
                         .displayName("Team")
+                        .description("description")
                         .build()
                 )
                 .build()
@@ -99,6 +107,9 @@ internal class EntityTypeUpsertParamsTest {
                         .id("org")
                         .addAttributionKey("organizationId")
                         .displayName("Organization")
+                        .description(
+                            "A customer organization — the top of the hierarchy, holding the account-wide budget."
+                        )
                         .build()
                 )
                 .addType(
@@ -106,6 +117,7 @@ internal class EntityTypeUpsertParamsTest {
                         .id("team")
                         .addAttributionKey("teamId")
                         .displayName("Team")
+                        .description("description")
                         .build()
                 )
                 .build()
@@ -118,11 +130,15 @@ internal class EntityTypeUpsertParamsTest {
                     .id("org")
                     .addAttributionKey("organizationId")
                     .displayName("Organization")
+                    .description(
+                        "A customer organization — the top of the hierarchy, holding the account-wide budget."
+                    )
                     .build(),
                 EntityTypeUpsertParams.Type.builder()
                     .id("team")
                     .addAttributionKey("teamId")
                     .displayName("Team")
+                    .description("description")
                     .build(),
             )
     }

@@ -36,6 +36,9 @@ internal class EntityTypeServiceTest {
                             .id("org")
                             .addAttributionKey("organizationId")
                             .displayName("Organization")
+                            .description(
+                                "A customer organization — the top of the hierarchy, holding the account-wide budget."
+                            )
                             .build()
                     )
                     .addType(
@@ -43,6 +46,7 @@ internal class EntityTypeServiceTest {
                             .id("team")
                             .addAttributionKey("teamId")
                             .displayName("Team")
+                            .description("description")
                             .build()
                     )
                     .build()

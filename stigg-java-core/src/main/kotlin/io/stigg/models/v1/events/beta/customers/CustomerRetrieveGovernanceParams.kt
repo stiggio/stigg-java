@@ -50,7 +50,10 @@ private constructor(
      */
     fun currencyIds(): Optional<List<String>> = Optional.ofNullable(currencyIds)
 
-    /** Case-insensitive substring match on the entity id (`%`/`_` matched literally). */
+    /**
+     * Case-insensitive substring match on the entity id or its display name (`%`/`_` matched
+     * literally).
+     */
     fun entityIdSearch(): Optional<String> = Optional.ofNullable(entityIdSearch)
 
     /**
@@ -181,7 +184,10 @@ private constructor(
             currencyIds = (currencyIds ?: mutableListOf()).apply { add(currencyId) }
         }
 
-        /** Case-insensitive substring match on the entity id (`%`/`_` matched literally). */
+        /**
+         * Case-insensitive substring match on the entity id or its display name (`%`/`_` matched
+         * literally).
+         */
         fun entityIdSearch(entityIdSearch: String?) = apply { this.entityIdSearch = entityIdSearch }
 
         /** Alias for calling [Builder.entityIdSearch] with `entityIdSearch.orElse(null)`. */

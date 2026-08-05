@@ -26,6 +26,7 @@ private constructor(
     private val id: JsonField<String>,
     private val archivedAt: JsonField<OffsetDateTime>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val displayName: JsonField<String>,
     private val entityTypeId: JsonField<String>,
     private val metadata: JsonField<Metadata>,
     private val updatedAt: JsonField<OffsetDateTime>,
@@ -41,6 +42,9 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("displayName")
+        @ExcludeMissing
+        displayName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("entityTypeId")
         @ExcludeMissing
         entityTypeId: JsonField<String> = JsonMissing.of(),
@@ -48,7 +52,16 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-    ) : this(id, archivedAt, createdAt, entityTypeId, metadata, updatedAt, mutableMapOf())
+    ) : this(
+        id,
+        archivedAt,
+        createdAt,
+        displayName,
+        entityTypeId,
+        metadata,
+        updatedAt,
+        mutableMapOf(),
+    )
 
     /**
      * The unique identifier for the entity
@@ -73,6 +86,15 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+    /**
+     * Human-readable name for the entity, or null when none is set — in which case clients display
+     * the entity ID
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun displayName(): Optional<String> = displayName.getOptional("displayName")
 
     /**
      * The entity type identifier this entity instantiates
@@ -124,6 +146,13 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
+     * Returns the raw JSON value of [displayName].
+     *
+     * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("displayName") @ExcludeMissing fun _displayName(): JsonField<String> = displayName
+
+    /**
      * Returns the raw JSON value of [entityTypeId].
      *
      * Unlike [entityTypeId], this method doesn't throw if the JSON field has an unexpected type.
@@ -170,6 +199,7 @@ private constructor(
          * .id()
          * .archivedAt()
          * .createdAt()
+         * .displayName()
          * .entityTypeId()
          * .metadata()
          * .updatedAt()
@@ -184,6 +214,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var archivedAt: JsonField<OffsetDateTime>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var displayName: JsonField<String>? = null
         private var entityTypeId: JsonField<String>? = null
         private var metadata: JsonField<Metadata>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
@@ -194,6 +225,7 @@ private constructor(
             id = entityListResponse.id
             archivedAt = entityListResponse.archivedAt
             createdAt = entityListResponse.createdAt
+            displayName = entityListResponse.displayName
             entityTypeId = entityListResponse.entityTypeId
             metadata = entityListResponse.metadata
             updatedAt = entityListResponse.updatedAt
@@ -239,6 +271,24 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+
+        /**
+         * Human-readable name for the entity, or null when none is set — in which case clients
+         * display the entity ID
+         */
+        fun displayName(displayName: String?) = displayName(JsonField.ofNullable(displayName))
+
+        /** Alias for calling [Builder.displayName] with `displayName.orElse(null)`. */
+        fun displayName(displayName: Optional<String>) = displayName(displayName.getOrNull())
+
+        /**
+         * Sets [Builder.displayName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.displayName] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun displayName(displayName: JsonField<String>) = apply { this.displayName = displayName }
 
         /** The entity type identifier this entity instantiates */
         fun entityTypeId(entityTypeId: String) = entityTypeId(JsonField.of(entityTypeId))
@@ -307,6 +357,7 @@ private constructor(
          * .id()
          * .archivedAt()
          * .createdAt()
+         * .displayName()
          * .entityTypeId()
          * .metadata()
          * .updatedAt()
@@ -319,6 +370,7 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("archivedAt", archivedAt),
                 checkRequired("createdAt", createdAt),
+                checkRequired("displayName", displayName),
                 checkRequired("entityTypeId", entityTypeId),
                 checkRequired("metadata", metadata),
                 checkRequired("updatedAt", updatedAt),
@@ -344,6 +396,7 @@ private constructor(
         id()
         archivedAt()
         createdAt()
+        displayName()
         entityTypeId()
         metadata().validate()
         updatedAt()
@@ -368,6 +421,7 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (archivedAt.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
+            (if (displayName.asKnown().isPresent) 1 else 0) +
             (if (entityTypeId.asKnown().isPresent) 1 else 0) +
             (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
@@ -490,6 +544,7 @@ private constructor(
             id == other.id &&
             archivedAt == other.archivedAt &&
             createdAt == other.createdAt &&
+            displayName == other.displayName &&
             entityTypeId == other.entityTypeId &&
             metadata == other.metadata &&
             updatedAt == other.updatedAt &&
@@ -501,6 +556,7 @@ private constructor(
             id,
             archivedAt,
             createdAt,
+            displayName,
             entityTypeId,
             metadata,
             updatedAt,
@@ -511,5 +567,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EntityListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, entityTypeId=$entityTypeId, metadata=$metadata, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "EntityListResponse{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, displayName=$displayName, entityTypeId=$entityTypeId, metadata=$metadata, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
