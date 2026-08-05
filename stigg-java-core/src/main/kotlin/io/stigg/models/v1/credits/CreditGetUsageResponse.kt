@@ -1013,6 +1013,7 @@ private constructor(
         class Series
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val eventCount: JsonField<Double>,
             private val featureId: JsonField<String>,
             private val featureName: JsonField<String>,
             private val points: JsonField<List<Point>>,
@@ -1023,6 +1024,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("eventCount")
+                @ExcludeMissing
+                eventCount: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("featureId")
                 @ExcludeMissing
                 featureId: JsonField<String> = JsonMissing.of(),
@@ -1036,7 +1040,18 @@ private constructor(
                 @ExcludeMissing
                 totalCredits: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("tags") @ExcludeMissing tags: JsonField<List<Tag>> = JsonMissing.of(),
-            ) : this(featureId, featureName, points, totalCredits, tags, mutableMapOf())
+            ) : this(eventCount, featureId, featureName, points, totalCredits, tags, mutableMapOf())
+
+            /**
+             * Number of distinct usage events that consumed credits in this series. This count is
+             * not additive across series, because an event matched by several meters appears in
+             * more than one series.
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun eventCount(): Double = eventCount.getRequired("eventCount")
 
             /**
              * The feature ID; null when grouping by dimensions only
@@ -1079,6 +1094,16 @@ private constructor(
              *   the server responded with an unexpected value).
              */
             fun tags(): Optional<List<Tag>> = tags.getOptional("tags")
+
+            /**
+             * Returns the raw JSON value of [eventCount].
+             *
+             * Unlike [eventCount], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("eventCount")
+            @ExcludeMissing
+            fun _eventCount(): JsonField<Double> = eventCount
 
             /**
              * Returns the raw JSON value of [featureId].
@@ -1143,6 +1168,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .eventCount()
                  * .featureId()
                  * .featureName()
                  * .points()
@@ -1155,6 +1181,7 @@ private constructor(
             /** A builder for [Series]. */
             class Builder internal constructor() {
 
+                private var eventCount: JsonField<Double>? = null
                 private var featureId: JsonField<String>? = null
                 private var featureName: JsonField<String>? = null
                 private var points: JsonField<MutableList<Point>>? = null
@@ -1164,12 +1191,31 @@ private constructor(
 
                 @JvmSynthetic
                 internal fun from(series: Series) = apply {
+                    eventCount = series.eventCount
                     featureId = series.featureId
                     featureName = series.featureName
                     points = series.points.map { it.toMutableList() }
                     totalCredits = series.totalCredits
                     tags = series.tags.map { it.toMutableList() }
                     additionalProperties = series.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Number of distinct usage events that consumed credits in this series. This count
+                 * is not additive across series, because an event matched by several meters appears
+                 * in more than one series.
+                 */
+                fun eventCount(eventCount: Double) = eventCount(JsonField.of(eventCount))
+
+                /**
+                 * Sets [Builder.eventCount] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.eventCount] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun eventCount(eventCount: JsonField<Double>) = apply {
+                    this.eventCount = eventCount
                 }
 
                 /** The feature ID; null when grouping by dimensions only */
@@ -1301,6 +1347,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .eventCount()
                  * .featureId()
                  * .featureName()
                  * .points()
@@ -1311,6 +1358,7 @@ private constructor(
                  */
                 fun build(): Series =
                     Series(
+                        checkRequired("eventCount", eventCount),
                         checkRequired("featureId", featureId),
                         checkRequired("featureName", featureName),
                         checkRequired("points", points).map { it.toImmutable() },
@@ -1337,6 +1385,7 @@ private constructor(
                     return@apply
                 }
 
+                eventCount()
                 featureId()
                 featureName()
                 points().forEach { it.validate() }
@@ -1361,7 +1410,8 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (if (featureId.asKnown().isPresent) 1 else 0) +
+                (if (eventCount.asKnown().isPresent) 1 else 0) +
+                    (if (featureId.asKnown().isPresent) 1 else 0) +
                     (if (featureName.asKnown().isPresent) 1 else 0) +
                     (points.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                     (if (totalCredits.asKnown().isPresent) 1 else 0) +
@@ -1371,6 +1421,7 @@ private constructor(
             class Point
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
+                private val eventCount: JsonField<Double>,
                 private val timestamp: JsonField<OffsetDateTime>,
                 private val value: JsonField<Double>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1378,13 +1429,25 @@ private constructor(
 
                 @JsonCreator
                 private constructor(
+                    @JsonProperty("eventCount")
+                    @ExcludeMissing
+                    eventCount: JsonField<Double> = JsonMissing.of(),
                     @JsonProperty("timestamp")
                     @ExcludeMissing
                     timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
                     @JsonProperty("value")
                     @ExcludeMissing
                     value: JsonField<Double> = JsonMissing.of(),
-                ) : this(timestamp, value, mutableMapOf())
+                ) : this(eventCount, timestamp, value, mutableMapOf())
+
+                /**
+                 * Number of distinct usage events that consumed credits in this time bucket
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun eventCount(): Double = eventCount.getRequired("eventCount")
 
                 /**
                  * The timestamp of the data point
@@ -1403,6 +1466,16 @@ private constructor(
                  *   value).
                  */
                 fun value(): Double = value.getRequired("value")
+
+                /**
+                 * Returns the raw JSON value of [eventCount].
+                 *
+                 * Unlike [eventCount], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("eventCount")
+                @ExcludeMissing
+                fun _eventCount(): JsonField<Double> = eventCount
 
                 /**
                  * Returns the raw JSON value of [timestamp].
@@ -1441,6 +1514,7 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
+                     * .eventCount()
                      * .timestamp()
                      * .value()
                      * ```
@@ -1451,15 +1525,31 @@ private constructor(
                 /** A builder for [Point]. */
                 class Builder internal constructor() {
 
+                    private var eventCount: JsonField<Double>? = null
                     private var timestamp: JsonField<OffsetDateTime>? = null
                     private var value: JsonField<Double>? = null
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     @JvmSynthetic
                     internal fun from(point: Point) = apply {
+                        eventCount = point.eventCount
                         timestamp = point.timestamp
                         value = point.value
                         additionalProperties = point.additionalProperties.toMutableMap()
+                    }
+
+                    /** Number of distinct usage events that consumed credits in this time bucket */
+                    fun eventCount(eventCount: Double) = eventCount(JsonField.of(eventCount))
+
+                    /**
+                     * Sets [Builder.eventCount] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.eventCount] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun eventCount(eventCount: JsonField<Double>) = apply {
+                        this.eventCount = eventCount
                     }
 
                     /** The timestamp of the data point */
@@ -1517,6 +1607,7 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
+                     * .eventCount()
                      * .timestamp()
                      * .value()
                      * ```
@@ -1525,6 +1616,7 @@ private constructor(
                      */
                     fun build(): Point =
                         Point(
+                            checkRequired("eventCount", eventCount),
                             checkRequired("timestamp", timestamp),
                             checkRequired("value", value),
                             additionalProperties.toMutableMap(),
@@ -1548,6 +1640,7 @@ private constructor(
                         return@apply
                     }
 
+                    eventCount()
                     timestamp()
                     value()
                     validated = true
@@ -1569,7 +1662,8 @@ private constructor(
                  */
                 @JvmSynthetic
                 internal fun validity(): Int =
-                    (if (timestamp.asKnown().isPresent) 1 else 0) +
+                    (if (eventCount.asKnown().isPresent) 1 else 0) +
+                        (if (timestamp.asKnown().isPresent) 1 else 0) +
                         (if (value.asKnown().isPresent) 1 else 0)
 
                 override fun equals(other: Any?): Boolean {
@@ -1578,19 +1672,20 @@ private constructor(
                     }
 
                     return other is Point &&
+                        eventCount == other.eventCount &&
                         timestamp == other.timestamp &&
                         value == other.value &&
                         additionalProperties == other.additionalProperties
                 }
 
                 private val hashCode: Int by lazy {
-                    Objects.hash(timestamp, value, additionalProperties)
+                    Objects.hash(eventCount, timestamp, value, additionalProperties)
                 }
 
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "Point{timestamp=$timestamp, value=$value, additionalProperties=$additionalProperties}"
+                    "Point{eventCount=$eventCount, timestamp=$timestamp, value=$value, additionalProperties=$additionalProperties}"
             }
 
             /** Dimension key/value pair identifying a credit usage series */
@@ -1816,6 +1911,7 @@ private constructor(
                 }
 
                 return other is Series &&
+                    eventCount == other.eventCount &&
                     featureId == other.featureId &&
                     featureName == other.featureName &&
                     points == other.points &&
@@ -1826,6 +1922,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    eventCount,
                     featureId,
                     featureName,
                     points,
@@ -1838,7 +1935,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Series{featureId=$featureId, featureName=$featureName, points=$points, totalCredits=$totalCredits, tags=$tags, additionalProperties=$additionalProperties}"
+                "Series{eventCount=$eventCount, featureId=$featureId, featureName=$featureName, points=$points, totalCredits=$totalCredits, tags=$tags, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
