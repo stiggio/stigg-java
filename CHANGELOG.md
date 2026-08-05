@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-beta.42 (2026-08-05)
+
+Full Changelog: [v0.1.0-beta.41...v0.1.0-beta.42](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.41...v0.1.0-beta.42)
+
+### Features
+
+* **contracts:** create contracts backed by shared Received enterprise contract ([7c7c30a](https://github.com/stiggio/stigg-java/commit/7c7c30aa9c732bddfb596c4c2496a700e213ade0))
+
+
+### Chores
+
+* **internal:** codegen related update ([f227f5f](https://github.com/stiggio/stigg-java/commit/f227f5f1c6f64c5f0886442a3797ad916abc4630))
+
 ## 0.1.0-beta.41 (2026-07-26)
 
 Full Changelog: [v0.1.0-beta.40...v0.1.0-beta.41](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.40...v0.1.0-beta.41)
