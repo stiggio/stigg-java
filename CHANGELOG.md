@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.1.0-beta.43 (2026-08-05)
+
+Full Changelog: [v0.1.0-beta.42...v0.1.0-beta.43](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.42...v0.1.0-beta.43)
+
+### Features
+
+* **api:** add displayName to entities, description to entity types ([e645467](https://github.com/stiggio/stigg-java/commit/e6454674875264a0086a16d4db1f66b02aa7f0bc))
+* **api:** add eventCount field to Series and Point in CreditGetUsageResponse ([0ca334c](https://github.com/stiggio/stigg-java/commit/0ca334c63deefe63159fe71f2f02b4e073af8ae5))
+
+## 0.1.0-beta.42 (2026-08-05)
+
+Full Changelog: [v0.1.0-beta.41...v0.1.0-beta.42](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.41...v0.1.0-beta.42)
+
+### Features
+
+* **contracts:** create contracts backed by shared Received enterprise contract ([7c7c30a](https://github.com/stiggio/stigg-java/commit/7c7c30aa9c732bddfb596c4c2496a700e213ade0))
+
+
+### Chores
+
+* **internal:** codegen related update ([f227f5f](https://github.com/stiggio/stigg-java/commit/f227f5f1c6f64c5f0886442a3797ad916abc4630))
+
+## 0.1.0-beta.41 (2026-07-26)
+
+Full Changelog: [v0.1.0-beta.40...v0.1.0-beta.41](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.40...v0.1.0-beta.41)
+
+### Features
+
+* **api:** add creditEntitlement field to addon/plan overage pricing ([fc6460e](https://github.com/stiggio/stigg-java/commit/fc6460e5a7e1efcb95c14cdb6fed1a42a2d4e4dc))
+
+
+### Chores
+
+* **internal:** regenerate SDK with no functional changes ([dd164e0](https://github.com/stiggio/stigg-java/commit/dd164e04deb902319aba95c7e6562bd258dbdd20))
+
 ## 0.1.0-beta.40 (2026-07-21)
 
 Full Changelog: [v0.1.0-beta.39...v0.1.0-beta.40](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.39...v0.1.0-beta.40)
