@@ -119,10 +119,6 @@ internal class PlanServiceTest {
                             )
                             .addOveragePricingModel(
                                 PlanUpdateParams.Charges.OveragePricingModel.builder()
-                                    .billingModel(
-                                        PlanUpdateParams.Charges.OveragePricingModel.BillingModel
-                                            .FLAT_FEE
-                                    )
                                     .addPricePeriod(
                                         PlanUpdateParams.Charges.OveragePricingModel.PricePeriod
                                             .builder()
@@ -210,10 +206,6 @@ internal class PlanServiceTest {
                                                     .build()
                                             )
                                             .build()
-                                    )
-                                    .billingCadence(
-                                        PlanUpdateParams.Charges.OveragePricingModel.BillingCadence
-                                            .RECURRING
                                     )
                                     .creditEntitlement(
                                         PlanUpdateParams.Charges.OveragePricingModel
