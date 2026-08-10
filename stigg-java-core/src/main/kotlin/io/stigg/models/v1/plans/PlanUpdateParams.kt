@@ -3147,9 +3147,7 @@ private constructor(
         class OveragePricingModel
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
-            private val billingModel: JsonField<BillingModel>,
             private val pricePeriods: JsonField<List<PricePeriod>>,
-            private val billingCadence: JsonField<BillingCadence>,
             private val creditEntitlement: JsonField<CreditEntitlement>,
             private val currencyId: JsonField<String>,
             private val entitlement: JsonField<Entitlement>,
@@ -3159,15 +3157,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
-                @JsonProperty("billingModel")
-                @ExcludeMissing
-                billingModel: JsonField<BillingModel> = JsonMissing.of(),
                 @JsonProperty("pricePeriods")
                 @ExcludeMissing
                 pricePeriods: JsonField<List<PricePeriod>> = JsonMissing.of(),
-                @JsonProperty("billingCadence")
-                @ExcludeMissing
-                billingCadence: JsonField<BillingCadence> = JsonMissing.of(),
                 @JsonProperty("creditEntitlement")
                 @ExcludeMissing
                 creditEntitlement: JsonField<CreditEntitlement> = JsonMissing.of(),
@@ -3181,24 +3173,13 @@ private constructor(
                 @ExcludeMissing
                 featureId: JsonField<String> = JsonMissing.of(),
             ) : this(
-                billingModel,
                 pricePeriods,
-                billingCadence,
                 creditEntitlement,
                 currencyId,
                 entitlement,
                 featureId,
                 mutableMapOf(),
             )
-
-            /**
-             * The billing model for overages
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun billingModel(): BillingModel = billingModel.getRequired("billingModel")
 
             /**
              * Price periods for overage pricing
@@ -3208,15 +3189,6 @@ private constructor(
              *   value).
              */
             fun pricePeriods(): List<PricePeriod> = pricePeriods.getRequired("pricePeriods")
-
-            /**
-             * The billing cadence for overages
-             *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
-             *   the server responded with an unexpected value).
-             */
-            fun billingCadence(): Optional<BillingCadence> =
-                billingCadence.getOptional("billingCadence")
 
             /**
              * Credit entitlement to grant when a credit overage targets a currency not yet granted
@@ -3253,16 +3225,6 @@ private constructor(
             fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
             /**
-             * Returns the raw JSON value of [billingModel].
-             *
-             * Unlike [billingModel], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("billingModel")
-            @ExcludeMissing
-            fun _billingModel(): JsonField<BillingModel> = billingModel
-
-            /**
              * Returns the raw JSON value of [pricePeriods].
              *
              * Unlike [pricePeriods], this method doesn't throw if the JSON field has an unexpected
@@ -3271,16 +3233,6 @@ private constructor(
             @JsonProperty("pricePeriods")
             @ExcludeMissing
             fun _pricePeriods(): JsonField<List<PricePeriod>> = pricePeriods
-
-            /**
-             * Returns the raw JSON value of [billingCadence].
-             *
-             * Unlike [billingCadence], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("billingCadence")
-            @ExcludeMissing
-            fun _billingCadence(): JsonField<BillingCadence> = billingCadence
 
             /**
              * Returns the raw JSON value of [creditEntitlement].
@@ -3341,7 +3293,6 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
-                 * .billingModel()
                  * .pricePeriods()
                  * ```
                  */
@@ -3351,9 +3302,7 @@ private constructor(
             /** A builder for [OveragePricingModel]. */
             class Builder internal constructor() {
 
-                private var billingModel: JsonField<BillingModel>? = null
                 private var pricePeriods: JsonField<MutableList<PricePeriod>>? = null
-                private var billingCadence: JsonField<BillingCadence> = JsonMissing.of()
                 private var creditEntitlement: JsonField<CreditEntitlement> = JsonMissing.of()
                 private var currencyId: JsonField<String> = JsonMissing.of()
                 private var entitlement: JsonField<Entitlement> = JsonMissing.of()
@@ -3362,29 +3311,12 @@ private constructor(
 
                 @JvmSynthetic
                 internal fun from(overagePricingModel: OveragePricingModel) = apply {
-                    billingModel = overagePricingModel.billingModel
                     pricePeriods = overagePricingModel.pricePeriods.map { it.toMutableList() }
-                    billingCadence = overagePricingModel.billingCadence
                     creditEntitlement = overagePricingModel.creditEntitlement
                     currencyId = overagePricingModel.currencyId
                     entitlement = overagePricingModel.entitlement
                     featureId = overagePricingModel.featureId
                     additionalProperties = overagePricingModel.additionalProperties.toMutableMap()
-                }
-
-                /** The billing model for overages */
-                fun billingModel(billingModel: BillingModel) =
-                    billingModel(JsonField.of(billingModel))
-
-                /**
-                 * Sets [Builder.billingModel] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.billingModel] with a well-typed [BillingModel]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun billingModel(billingModel: JsonField<BillingModel>) = apply {
-                    this.billingModel = billingModel
                 }
 
                 /** Price periods for overage pricing */
@@ -3412,21 +3344,6 @@ private constructor(
                         (pricePeriods ?: JsonField.of(mutableListOf())).also {
                             checkKnown("pricePeriods", it).add(pricePeriod)
                         }
-                }
-
-                /** The billing cadence for overages */
-                fun billingCadence(billingCadence: BillingCadence) =
-                    billingCadence(JsonField.of(billingCadence))
-
-                /**
-                 * Sets [Builder.billingCadence] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.billingCadence] with a well-typed
-                 * [BillingCadence] value instead. This method is primarily for setting the field to
-                 * an undocumented or not yet supported value.
-                 */
-                fun billingCadence(billingCadence: JsonField<BillingCadence>) = apply {
-                    this.billingCadence = billingCadence
                 }
 
                 /**
@@ -3516,7 +3433,6 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
-                 * .billingModel()
                  * .pricePeriods()
                  * ```
                  *
@@ -3524,9 +3440,7 @@ private constructor(
                  */
                 fun build(): OveragePricingModel =
                     OveragePricingModel(
-                        checkRequired("billingModel", billingModel),
                         checkRequired("pricePeriods", pricePeriods).map { it.toImmutable() },
-                        billingCadence,
                         creditEntitlement,
                         currencyId,
                         entitlement,
@@ -3552,9 +3466,7 @@ private constructor(
                     return@apply
                 }
 
-                billingModel().validate()
                 pricePeriods().forEach { it.validate() }
-                billingCadence().ifPresent { it.validate() }
                 creditEntitlement().ifPresent { it.validate() }
                 currencyId()
                 entitlement().ifPresent { it.validate() }
@@ -3578,175 +3490,11 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (billingModel.asKnown().getOrNull()?.validity() ?: 0) +
-                    (pricePeriods.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (billingCadence.asKnown().getOrNull()?.validity() ?: 0) +
+                (pricePeriods.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                     (creditEntitlement.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (currencyId.asKnown().isPresent) 1 else 0) +
                     (entitlement.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (featureId.asKnown().isPresent) 1 else 0)
-
-            /** The billing model for overages */
-            class BillingModel
-            @JsonCreator
-            private constructor(private val value: JsonField<String>) : Enum {
-
-                /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
-                 */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-                companion object {
-
-                    @JvmField val FLAT_FEE = of("FLAT_FEE")
-
-                    @JvmField val MINIMUM_SPEND = of("MINIMUM_SPEND")
-
-                    @JvmField val PER_UNIT = of("PER_UNIT")
-
-                    @JvmField val USAGE_BASED = of("USAGE_BASED")
-
-                    @JvmField val CREDIT_BASED = of("CREDIT_BASED")
-
-                    @JvmStatic fun of(value: String) = BillingModel(JsonField.of(value))
-                }
-
-                /** An enum containing [BillingModel]'s known values. */
-                enum class Known {
-                    FLAT_FEE,
-                    MINIMUM_SPEND,
-                    PER_UNIT,
-                    USAGE_BASED,
-                    CREDIT_BASED,
-                }
-
-                /**
-                 * An enum containing [BillingModel]'s known values, as well as an [_UNKNOWN]
-                 * member.
-                 *
-                 * An instance of [BillingModel] can contain an unknown value in a couple of cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    FLAT_FEE,
-                    MINIMUM_SPEND,
-                    PER_UNIT,
-                    USAGE_BASED,
-                    CREDIT_BASED,
-                    /**
-                     * An enum member indicating that [BillingModel] was instantiated with an
-                     * unknown value.
-                     */
-                    _UNKNOWN,
-                }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        FLAT_FEE -> Value.FLAT_FEE
-                        MINIMUM_SPEND -> Value.MINIMUM_SPEND
-                        PER_UNIT -> Value.PER_UNIT
-                        USAGE_BASED -> Value.USAGE_BASED
-                        CREDIT_BASED -> Value.CREDIT_BASED
-                        else -> Value._UNKNOWN
-                    }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        FLAT_FEE -> Known.FLAT_FEE
-                        MINIMUM_SPEND -> Known.MINIMUM_SPEND
-                        PER_UNIT -> Known.PER_UNIT
-                        USAGE_BASED -> Known.USAGE_BASED
-                        CREDIT_BASED -> Known.CREDIT_BASED
-                        else -> throw StiggInvalidDataException("Unknown BillingModel: $value")
-                    }
-
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
-                    }
-
-                private var validated: Boolean = false
-
-                /**
-                 * Validates that the types of all values in this object match their expected types
-                 * recursively.
-                 *
-                 * This method is _not_ forwards compatible with new types from the API for existing
-                 * fields.
-                 *
-                 * @throws StiggInvalidDataException if any value type in this object doesn't match
-                 *   its expected type.
-                 */
-                fun validate(): BillingModel = apply {
-                    if (validated) {
-                        return@apply
-                    }
-
-                    known()
-                    validated = true
-                }
-
-                fun isValid(): Boolean =
-                    try {
-                        validate()
-                        true
-                    } catch (e: StiggInvalidDataException) {
-                        false
-                    }
-
-                /**
-                 * Returns a score indicating how many valid values are contained in this object
-                 * recursively.
-                 *
-                 * Used for best match union deserialization.
-                 */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) {
-                        return true
-                    }
-
-                    return other is BillingModel && value == other.value
-                }
-
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
 
             /** Price configuration for a specific billing period. */
             class PricePeriod
@@ -8210,151 +7958,6 @@ private constructor(
                     "PricePeriod{billingPeriod=$billingPeriod, billingCountryCode=$billingCountryCode, blockSize=$blockSize, creditGrantCadence=$creditGrantCadence, creditRate=$creditRate, price=$price, tiers=$tiers, additionalProperties=$additionalProperties}"
             }
 
-            /** The billing cadence for overages */
-            class BillingCadence
-            @JsonCreator
-            private constructor(private val value: JsonField<String>) : Enum {
-
-                /**
-                 * Returns this class instance's raw value.
-                 *
-                 * This is usually only useful if this instance was deserialized from data that
-                 * doesn't match any known member, and you want to know that value. For example, if
-                 * the SDK is on an older version than the API, then the API may respond with new
-                 * members that the SDK is unaware of.
-                 */
-                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-                companion object {
-
-                    @JvmField val RECURRING = of("RECURRING")
-
-                    @JvmField val ONE_OFF = of("ONE_OFF")
-
-                    @JvmStatic fun of(value: String) = BillingCadence(JsonField.of(value))
-                }
-
-                /** An enum containing [BillingCadence]'s known values. */
-                enum class Known {
-                    RECURRING,
-                    ONE_OFF,
-                }
-
-                /**
-                 * An enum containing [BillingCadence]'s known values, as well as an [_UNKNOWN]
-                 * member.
-                 *
-                 * An instance of [BillingCadence] can contain an unknown value in a couple of
-                 * cases:
-                 * - It was deserialized from data that doesn't match any known member. For example,
-                 *   if the SDK is on an older version than the API, then the API may respond with
-                 *   new members that the SDK is unaware of.
-                 * - It was constructed with an arbitrary value using the [of] method.
-                 */
-                enum class Value {
-                    RECURRING,
-                    ONE_OFF,
-                    /**
-                     * An enum member indicating that [BillingCadence] was instantiated with an
-                     * unknown value.
-                     */
-                    _UNKNOWN,
-                }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value, or
-                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-                 *
-                 * Use the [known] method instead if you're certain the value is always known or if
-                 * you want to throw for the unknown case.
-                 */
-                fun value(): Value =
-                    when (this) {
-                        RECURRING -> Value.RECURRING
-                        ONE_OFF -> Value.ONE_OFF
-                        else -> Value._UNKNOWN
-                    }
-
-                /**
-                 * Returns an enum member corresponding to this class instance's value.
-                 *
-                 * Use the [value] method instead if you're uncertain the value is always known and
-                 * don't want to throw for the unknown case.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value is a not a known
-                 *   member.
-                 */
-                fun known(): Known =
-                    when (this) {
-                        RECURRING -> Known.RECURRING
-                        ONE_OFF -> Known.ONE_OFF
-                        else -> throw StiggInvalidDataException("Unknown BillingCadence: $value")
-                    }
-
-                /**
-                 * Returns this class instance's primitive wire representation.
-                 *
-                 * This differs from the [toString] method because that method is primarily for
-                 * debugging and generally doesn't throw.
-                 *
-                 * @throws StiggInvalidDataException if this class instance's value does not have
-                 *   the expected primitive type.
-                 */
-                fun asString(): String =
-                    _value().asString().orElseThrow {
-                        StiggInvalidDataException("Value is not a String")
-                    }
-
-                private var validated: Boolean = false
-
-                /**
-                 * Validates that the types of all values in this object match their expected types
-                 * recursively.
-                 *
-                 * This method is _not_ forwards compatible with new types from the API for existing
-                 * fields.
-                 *
-                 * @throws StiggInvalidDataException if any value type in this object doesn't match
-                 *   its expected type.
-                 */
-                fun validate(): BillingCadence = apply {
-                    if (validated) {
-                        return@apply
-                    }
-
-                    known()
-                    validated = true
-                }
-
-                fun isValid(): Boolean =
-                    try {
-                        validate()
-                        true
-                    } catch (e: StiggInvalidDataException) {
-                        false
-                    }
-
-                /**
-                 * Returns a score indicating how many valid values are contained in this object
-                 * recursively.
-                 *
-                 * Used for best match union deserialization.
-                 */
-                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) {
-                        return true
-                    }
-
-                    return other is BillingCadence && value == other.value
-                }
-
-                override fun hashCode() = value.hashCode()
-
-                override fun toString() = value.toString()
-            }
-
             /**
              * Credit entitlement to grant when a credit overage targets a currency not yet granted
              * on the plan
@@ -10532,9 +10135,7 @@ private constructor(
                 }
 
                 return other is OveragePricingModel &&
-                    billingModel == other.billingModel &&
                     pricePeriods == other.pricePeriods &&
-                    billingCadence == other.billingCadence &&
                     creditEntitlement == other.creditEntitlement &&
                     currencyId == other.currencyId &&
                     entitlement == other.entitlement &&
@@ -10544,9 +10145,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
-                    billingModel,
                     pricePeriods,
-                    billingCadence,
                     creditEntitlement,
                     currencyId,
                     entitlement,
@@ -10558,7 +10157,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "OveragePricingModel{billingModel=$billingModel, pricePeriods=$pricePeriods, billingCadence=$billingCadence, creditEntitlement=$creditEntitlement, currencyId=$currencyId, entitlement=$entitlement, featureId=$featureId, additionalProperties=$additionalProperties}"
+                "OveragePricingModel{pricePeriods=$pricePeriods, creditEntitlement=$creditEntitlement, currencyId=$currencyId, entitlement=$entitlement, featureId=$featureId, additionalProperties=$additionalProperties}"
         }
 
         /** A pricing model configuration with billing details and price periods. */
