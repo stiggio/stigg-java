@@ -104,10 +104,6 @@ internal class AddonServiceTest {
                             )
                             .addOveragePricingModel(
                                 AddonUpdateParams.Charges.OveragePricingModel.builder()
-                                    .billingModel(
-                                        AddonUpdateParams.Charges.OveragePricingModel.BillingModel
-                                            .FLAT_FEE
-                                    )
                                     .addPricePeriod(
                                         AddonUpdateParams.Charges.OveragePricingModel.PricePeriod
                                             .builder()
@@ -198,10 +194,6 @@ internal class AddonServiceTest {
                                                     .build()
                                             )
                                             .build()
-                                    )
-                                    .billingCadence(
-                                        AddonUpdateParams.Charges.OveragePricingModel.BillingCadence
-                                            .RECURRING
                                     )
                                     .creditEntitlement(
                                         AddonUpdateParams.Charges.OveragePricingModel
