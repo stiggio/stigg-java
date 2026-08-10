@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-beta.44 (2026-08-10)
+
+Full Changelog: [v0.1.0-beta.43...v0.1.0-beta.44](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.43...v0.1.0-beta.44)
+
+### Bug Fixes
+
+* **api:** remove billingModel/billingCadence from addon and plan update params ([27372f4](https://github.com/stiggio/stigg-java/commit/27372f40ba319d9be91ba06a124fd401a6b83c62))
+
 ## 0.1.0-beta.43 (2026-08-05)
 
 Full Changelog: [v0.1.0-beta.42...v0.1.0-beta.43](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.42...v0.1.0-beta.43)
