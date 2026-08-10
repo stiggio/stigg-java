@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0-beta.45 (2026-08-10)
+
+Full Changelog: [v0.1.0-beta.44...v0.1.0-beta.45](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.44...v0.1.0-beta.45)
+
 ## 0.1.0-beta.44 (2026-08-10)
 
 Full Changelog: [v0.1.0-beta.43...v0.1.0-beta.44](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.43...v0.1.0-beta.44)
