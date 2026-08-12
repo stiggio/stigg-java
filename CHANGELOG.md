@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-beta.46](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.45...v0.1.0-beta.46) (2026-08-12)
+
+
+### Styles
+
+* satisfy prettier in the trunk-sync lock ([d0cb68b](https://github.com/stiggio/stigg-java/commit/d0cb68b45b395f6116027670461d42a2a9e78c07))
+
 ## 0.1.0-beta.45 (2026-08-10)
 
 Full Changelog: [v0.1.0-beta.44...v0.1.0-beta.45](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.44...v0.1.0-beta.45)
