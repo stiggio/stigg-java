@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-beta.47](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.46...v0.1.0-beta.47) (2026-08-13)
+
+
+### Bug Fixes
+
+* bump stale javadoc doc-link to 0.1.0-beta.46 ([8729daf](https://github.com/stiggio/stigg-java/commit/8729daf6b82d7957fc0d34d044ba10ad77182c02))
+
 ## [0.1.0-beta.46](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.45...v0.1.0-beta.46) (2026-08-12)
 
 
