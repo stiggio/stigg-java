@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0-beta.48](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.47...v0.1.0-beta.48) (2026-09-03)
+
+
+### Bug Fixes
+
+* regenerate after clearing the java version-stamp conflict ([e704908](https://github.com/stiggio/stigg-java/commit/e7049088e1d6f71913861aba72d673bbd39aa850))
+
+
+### Chores
+
+* align README javadoc link with the release manifest (0.1.0-beta.47) ([b222d24](https://github.com/stiggio/stigg-java/commit/b222d24841d863cd47f3a41b32b3d7b63f124a48))
+* align README version references with the release manifest for stlc codegen ([c068803](https://github.com/stiggio/stigg-java/commit/c0688038655180ed3e6e65af977a5f6c17b17116))
+
 ## [0.1.0-beta.47](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.46...v0.1.0-beta.47) (2026-08-13)
 
 
