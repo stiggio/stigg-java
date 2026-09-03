@@ -3,7 +3,7 @@
 <!-- x-release-please-start-version -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.stigg/stigg-java)](https://central.sonatype.com/artifact/io.stigg/stigg-java/0.1.0-beta.47)
-[![javadoc](https://javadoc.io/badge2/io.stigg/stigg-java/0.1.0-beta.47/javadoc.svg)](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-beta.47)
+[![javadoc](https://javadoc.io/badge2/io.stigg/stigg-java/0.1.0-beta.47/javadoc.svg)](https://javadoc.io/doc/io.stigg/stigg-java/0.1.0-beta.46)
 
 <!-- x-release-please-end -->
 
