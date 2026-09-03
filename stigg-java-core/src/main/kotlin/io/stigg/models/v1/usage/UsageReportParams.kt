@@ -542,7 +542,9 @@ private constructor(
         fun featureId(): String = featureId.getRequired("featureId")
 
         /**
-         * The value to report for usage
+         * The value to report for usage. Must be a whole number — the REST API does not accept
+         * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
+         * milliseconds instead of seconds) if you need sub-unit precision.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -566,7 +568,9 @@ private constructor(
         fun dimensions(): Optional<Dimensions> = dimensions.getOptional("dimensions")
 
         /**
-         * Idempotency key
+         * A key you provide to safely retry the same usage report without double-counting it.
+         * Reports with a previously-seen idempotency key are deduplicated for 7 days; after that
+         * window a retry is treated as new usage.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -574,7 +578,9 @@ private constructor(
         fun idempotencyKey(): Optional<String> = idempotencyKey.getOptional("idempotencyKey")
 
         /**
-         * Resource id
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -582,7 +588,9 @@ private constructor(
         fun resourceId(): Optional<String> = resourceId.getOptional("resourceId")
 
         /**
-         * The method by which the usage value should be updated
+         * How the reported value is applied: DELTA (default) adds it to the feature's current
+         * usage; SET treats it as the new absolute usage total, and Stigg computes the delta
+         * internally.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -737,7 +745,11 @@ private constructor(
              */
             fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
-            /** The value to report for usage */
+            /**
+             * The value to report for usage. Must be a whole number — the REST API does not accept
+             * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
+             * milliseconds instead of seconds) if you need sub-unit precision.
+             */
             fun value(value: Long) = value(JsonField.of(value))
 
             /**
@@ -777,7 +789,11 @@ private constructor(
                 this.dimensions = dimensions
             }
 
-            /** Idempotency key */
+            /**
+             * A key you provide to safely retry the same usage report without double-counting it.
+             * Reports with a previously-seen idempotency key are deduplicated for 7 days; after
+             * that window a retry is treated as new usage.
+             */
             fun idempotencyKey(idempotencyKey: String) =
                 idempotencyKey(JsonField.of(idempotencyKey))
 
@@ -792,7 +808,12 @@ private constructor(
                 this.idempotencyKey = idempotencyKey
             }
 
-            /** Resource id */
+            /**
+             * The customer resource this usage applies to. Optional — only required if the customer
+             * has multiple resources (for example, one subscription per workspace or site) and
+             * usage needs to be tracked separately per resource; omit it to report usage at the
+             * customer level.
+             */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
             /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
@@ -807,7 +828,11 @@ private constructor(
              */
             fun resourceId(resourceId: JsonField<String>) = apply { this.resourceId = resourceId }
 
-            /** The method by which the usage value should be updated */
+            /**
+             * How the reported value is applied: DELTA (default) adds it to the feature's current
+             * usage; SET treats it as the new absolute usage total, and Stigg computes the delta
+             * internally.
+             */
             fun updateBehavior(updateBehavior: UpdateBehavior) =
                 updateBehavior(JsonField.of(updateBehavior))
 
@@ -1034,7 +1059,11 @@ private constructor(
             override fun toString() = "Dimensions{additionalProperties=$additionalProperties}"
         }
 
-        /** The method by which the usage value should be updated */
+        /**
+         * How the reported value is applied: DELTA (default) adds it to the feature's current
+         * usage; SET treats it as the new absolute usage total, and Stigg computes the delta
+         * internally.
+         */
         class UpdateBehavior
         @JsonCreator
         private constructor(private val value: JsonField<String>) : Enum {

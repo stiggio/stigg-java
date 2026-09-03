@@ -36,14 +36,14 @@ internal class FeatureUpdateFeatureParamsTest {
                     .aggregation(
                         FeatureUpdateFeatureParams.Meter.Aggregation.builder()
                             .function(FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM)
-                            .field("field")
+                            .field("x")
                             .build()
                     )
                     .addFilter(
                         FeatureUpdateFeatureParams.Meter.Filter.builder()
                             .addCondition(
                                 FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
-                                    .field("field")
+                                    .field("x")
                                     .operation(
                                         FeatureUpdateFeatureParams.Meter.Filter.Condition.Operation
                                             .EQUALS
@@ -103,14 +103,14 @@ internal class FeatureUpdateFeatureParamsTest {
                         .aggregation(
                             FeatureUpdateFeatureParams.Meter.Aggregation.builder()
                                 .function(FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM)
-                                .field("field")
+                                .field("x")
                                 .build()
                         )
                         .addFilter(
                             FeatureUpdateFeatureParams.Meter.Filter.builder()
                                 .addCondition(
                                     FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
-                                        .field("field")
+                                        .field("x")
                                         .operation(
                                             FeatureUpdateFeatureParams.Meter.Filter.Condition
                                                 .Operation
@@ -181,14 +181,14 @@ internal class FeatureUpdateFeatureParamsTest {
                         .aggregation(
                             FeatureUpdateFeatureParams.Meter.Aggregation.builder()
                                 .function(FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM)
-                                .field("field")
+                                .field("x")
                                 .build()
                         )
                         .addFilter(
                             FeatureUpdateFeatureParams.Meter.Filter.builder()
                                 .addCondition(
                                     FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
-                                        .field("field")
+                                        .field("x")
                                         .operation(
                                             FeatureUpdateFeatureParams.Meter.Filter.Condition
                                                 .Operation
@@ -237,14 +237,14 @@ internal class FeatureUpdateFeatureParamsTest {
                     .aggregation(
                         FeatureUpdateFeatureParams.Meter.Aggregation.builder()
                             .function(FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM)
-                            .field("field")
+                            .field("x")
                             .build()
                     )
                     .addFilter(
                         FeatureUpdateFeatureParams.Meter.Filter.builder()
                             .addCondition(
                                 FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
-                                    .field("field")
+                                    .field("x")
                                     .operation(
                                         FeatureUpdateFeatureParams.Meter.Filter.Condition.Operation
                                             .EQUALS

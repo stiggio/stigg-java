@@ -327,7 +327,9 @@ private constructor(
         fun nextResetDate(): Optional<OffsetDateTime> = nextResetDate.getOptional("nextResetDate")
 
         /**
-         * Resource id
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -658,7 +660,12 @@ private constructor(
                 this.nextResetDate = nextResetDate
             }
 
-            /** Resource id */
+            /**
+             * The customer resource this usage applies to. Optional — only required if the customer
+             * has multiple resources (for example, one subscription per workspace or site) and
+             * usage needs to be tracked separately per resource; omit it to report usage at the
+             * customer level.
+             */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
             /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */

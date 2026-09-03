@@ -36,7 +36,12 @@ import kotlin.jvm.optionals.getOrNull
 
 /**
  * Updates an active subscription's properties including billing period, add-ons, unit quantities,
- * and discounts.
+ * and discounts. This is a partial update — only the fields present in the request body change.
+ * Object fields such as `metadata` are replaced wholesale rather than merged, and list fields such
+ * as `addons` and `priceOverrides` must be sent in full: any existing item that isn't included in
+ * the array is removed from the subscription. Changes classified as a downgrade may be scheduled
+ * for the end of the current billing period instead of applying immediately, depending on your
+ * update scheduling configuration.
  */
 class SubscriptionUpdateParams
 private constructor(
@@ -119,7 +124,7 @@ private constructor(
     fun entitlements(): Optional<List<Entitlement>> = body.entitlements()
 
     /**
-     * Additional metadata for the subscription
+     * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -545,7 +550,9 @@ private constructor(
         /** Alias for calling [addEntitlement] with `Entitlement.ofCredit(credit)`. */
         fun addEntitlement(credit: Entitlement.Credit) = apply { body.addEntitlement(credit) }
 
-        /** Additional metadata for the subscription */
+        /**
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
+         */
         fun metadata(metadata: Metadata) = apply { body.metadata(metadata) }
 
         /**
@@ -811,7 +818,16 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Partially update an existing subscriptoin. Only provided fields are updated. */
+    /**
+     * Partially updates an existing subscription — only the fields included in the request body are
+     * changed; any field left out keeps its current value. Object fields such as `metadata` are
+     * replaced wholesale rather than merged key by key, so a request that includes `metadata` must
+     * repeat any existing keys it's supposed to keep (to clear metadata entirely, send `metadata:
+     * {}`). List fields such as `addons`, `priceOverrides`, and `entitlements` work the same way:
+     * the array you send becomes the field's complete new value, so an existing addon or
+     * entitlement that isn't included in the array is removed from the subscription, not left
+     * untouched.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -976,7 +992,7 @@ private constructor(
         fun entitlements(): Optional<List<Entitlement>> = entitlements.getOptional("entitlements")
 
         /**
-         * Additional metadata for the subscription
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1450,7 +1466,10 @@ private constructor(
             fun addEntitlement(credit: Entitlement.Credit) =
                 addEntitlement(Entitlement.ofCredit(credit))
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -4089,7 +4108,7 @@ private constructor(
         fun isInvoicePaid(): Optional<Boolean> = isInvoicePaid.getOptional("isInvoicePaid")
 
         /**
-         * Additional metadata for the subscription
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -4375,7 +4394,10 @@ private constructor(
                 this.isInvoicePaid = isInvoicePaid
             }
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -4913,7 +4935,9 @@ private constructor(
                 "BillingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
         }
 
-        /** Additional metadata for the subscription */
+        /**
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
+         */
         class Metadata
         @JsonCreator
         private constructor(
@@ -8163,6 +8187,7 @@ private constructor(
             private val amount: JsonField<Double>,
             private val cadence: JsonField<Cadence>,
             private val type: JsonValue,
+            private val hasSoftLimit: JsonField<Boolean>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -8176,7 +8201,10 @@ private constructor(
                 @ExcludeMissing
                 cadence: JsonField<Cadence> = JsonMissing.of(),
                 @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
-            ) : this(id, amount, cadence, type, mutableMapOf())
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
+            ) : this(id, amount, cadence, type, hasSoftLimit, mutableMapOf())
 
             /**
              * The custom currency ID for the credit entitlement
@@ -8219,6 +8247,14 @@ private constructor(
             @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
             /**
+             * Whether the credit balance is a soft limit
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun hasSoftLimit(): Optional<Boolean> = hasSoftLimit.getOptional("hasSoftLimit")
+
+            /**
              * Returns the raw JSON value of [id].
              *
              * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -8238,6 +8274,16 @@ private constructor(
              * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("cadence") @ExcludeMissing fun _cadence(): JsonField<Cadence> = cadence
+
+            /**
+             * Returns the raw JSON value of [hasSoftLimit].
+             *
+             * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("hasSoftLimit")
+            @ExcludeMissing
+            fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -8273,6 +8319,7 @@ private constructor(
                 private var amount: JsonField<Double>? = null
                 private var cadence: JsonField<Cadence>? = null
                 private var type: JsonValue = JsonValue.from("CREDIT")
+                private var hasSoftLimit: JsonField<Boolean> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -8281,6 +8328,7 @@ private constructor(
                     amount = credit.amount
                     cadence = credit.cadence
                     type = credit.type
+                    hasSoftLimit = credit.hasSoftLimit
                     additionalProperties = credit.additionalProperties.toMutableMap()
                 }
 
@@ -8334,6 +8382,20 @@ private constructor(
                  */
                 fun type(type: JsonValue) = apply { this.type = type }
 
+                /** Whether the credit balance is a soft limit */
+                fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(JsonField.of(hasSoftLimit))
+
+                /**
+                 * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                    this.hasSoftLimit = hasSoftLimit
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -8376,6 +8438,7 @@ private constructor(
                         checkRequired("amount", amount),
                         checkRequired("cadence", cadence),
                         type,
+                        hasSoftLimit,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -8405,6 +8468,7 @@ private constructor(
                         throw StiggInvalidDataException("'type' is invalid, received $it")
                     }
                 }
+                hasSoftLimit()
                 validated = true
             }
 
@@ -8427,7 +8491,8 @@ private constructor(
                 (if (id.asKnown().isPresent) 1 else 0) +
                     (if (amount.asKnown().isPresent) 1 else 0) +
                     (cadence.asKnown().getOrNull()?.validity() ?: 0) +
-                    type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 }
+                    type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 } +
+                    (if (hasSoftLimit.asKnown().isPresent) 1 else 0)
 
             /** Credit grant cadence (MONTH or YEAR) */
             class Cadence @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -8581,21 +8646,22 @@ private constructor(
                     amount == other.amount &&
                     cadence == other.cadence &&
                     type == other.type &&
+                    hasSoftLimit == other.hasSoftLimit &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(id, amount, cadence, type, additionalProperties)
+                Objects.hash(id, amount, cadence, type, hasSoftLimit, additionalProperties)
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, additionalProperties=$additionalProperties}"
+                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, hasSoftLimit=$hasSoftLimit, additionalProperties=$additionalProperties}"
         }
     }
 
-    /** Additional metadata for the subscription */
+    /** Additional metadata for the subscription, stored as an arbitrary flat key-value object. */
     class Metadata
     @JsonCreator
     private constructor(

@@ -813,7 +813,8 @@ private constructor(
             subscriptionStartSetup.getRequired("subscriptionStartSetup")
 
         /**
-         * ID of the plan to downgrade to at the end of the billing period
+         * ID of the plan to downgrade to at the end of the billing period. Only relevant when
+         * subscriptionEndSetup is DOWNGRADE_TO_FREE — ignored otherwise.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -830,7 +831,8 @@ private constructor(
             prorateAtEndOfBillingPeriod.getOptional("prorateAtEndOfBillingPeriod")
 
         /**
-         * ID of the plan to start the subscription with
+         * ID of the plan to start the subscription with. Only relevant when subscriptionStartSetup
+         * is PLAN_SELECTION — ignored otherwise.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -997,7 +999,10 @@ private constructor(
                     this.subscriptionStartSetup = subscriptionStartSetup
                 }
 
-            /** ID of the plan to downgrade to at the end of the billing period */
+            /**
+             * ID of the plan to downgrade to at the end of the billing period. Only relevant when
+             * subscriptionEndSetup is DOWNGRADE_TO_FREE — ignored otherwise.
+             */
             fun downgradePlanId(downgradePlanId: String?) =
                 downgradePlanId(JsonField.ofNullable(downgradePlanId))
 
@@ -1047,7 +1052,10 @@ private constructor(
                     this.prorateAtEndOfBillingPeriod = prorateAtEndOfBillingPeriod
                 }
 
-            /** ID of the plan to start the subscription with */
+            /**
+             * ID of the plan to start the subscription with. Only relevant when
+             * subscriptionStartSetup is PLAN_SELECTION — ignored otherwise.
+             */
             fun subscriptionStartPlanId(subscriptionStartPlanId: String?) =
                 subscriptionStartPlanId(JsonField.ofNullable(subscriptionStartPlanId))
 

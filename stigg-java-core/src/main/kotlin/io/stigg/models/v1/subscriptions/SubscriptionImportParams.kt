@@ -695,7 +695,7 @@ private constructor(
         fun endDate(): Optional<OffsetDateTime> = endDate.getOptional("endDate")
 
         /**
-         * Additional metadata for the subscription
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -994,7 +994,10 @@ private constructor(
              */
             fun endDate(endDate: JsonField<OffsetDateTime>) = apply { this.endDate = endDate }
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -1900,7 +1903,9 @@ private constructor(
                 "Charge{id=$id, quantity=$quantity, type=$type, additionalProperties=$additionalProperties}"
         }
 
-        /** Additional metadata for the subscription */
+        /**
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
+         */
         class Metadata
         @JsonCreator
         private constructor(

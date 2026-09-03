@@ -124,7 +124,7 @@ internal class PlanUpdateParamsTest {
                             .creditEntitlement(
                                 PlanUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                     .builder()
-                                    .amount(1.0)
+                                    .amount(0.0)
                                     .cadence(
                                         PlanUpdateParams.Charges.OveragePricingModel
                                             .CreditEntitlement
@@ -471,7 +471,7 @@ internal class PlanUpdateParamsTest {
                                 .creditEntitlement(
                                     PlanUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                         .builder()
-                                        .amount(1.0)
+                                        .amount(0.0)
                                         .cadence(
                                             PlanUpdateParams.Charges.OveragePricingModel
                                                 .CreditEntitlement
@@ -835,7 +835,7 @@ internal class PlanUpdateParamsTest {
                                 .creditEntitlement(
                                     PlanUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                         .builder()
-                                        .amount(1.0)
+                                        .amount(0.0)
                                         .cadence(
                                             PlanUpdateParams.Charges.OveragePricingModel
                                                 .CreditEntitlement
@@ -1171,7 +1171,7 @@ internal class PlanUpdateParamsTest {
                             .creditEntitlement(
                                 PlanUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                     .builder()
-                                    .amount(1.0)
+                                    .amount(0.0)
                                     .cadence(
                                         PlanUpdateParams.Charges.OveragePricingModel
                                             .CreditEntitlement

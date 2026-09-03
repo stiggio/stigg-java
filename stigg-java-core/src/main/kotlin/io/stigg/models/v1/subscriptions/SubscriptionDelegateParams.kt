@@ -21,8 +21,10 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Delegates the payment responsibility of a subscription to a different customer. The delegated
- * customer will be billed for this subscription.
+ * Delegates a subscription to a different customer, who becomes responsible for managing it. The
+ * original customer remains the paying customer for this subscription, unless payment was already
+ * delegated to the target customer, in which case the target customer becomes the paying customer
+ * as well.
  */
 class SubscriptionDelegateParams
 private constructor(
@@ -41,9 +43,9 @@ private constructor(
     fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
-     * The unique identifier of the customer who will assume payment responsibility for this
-     * subscription. This customer must already exist in your Stigg account and have a valid payment
-     * method if the subscription requires payment.
+     * The unique identifier of the customer who will manage this subscription going forward. This
+     * customer must already exist in your Stigg account. The paying customer for the subscription
+     * does not change as a result of this request.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -127,9 +129,9 @@ private constructor(
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /**
-         * The unique identifier of the customer who will assume payment responsibility for this
-         * subscription. This customer must already exist in your Stigg account and have a valid
-         * payment method if the subscription requires payment.
+         * The unique identifier of the customer who will manage this subscription going forward.
+         * This customer must already exist in your Stigg account. The paying customer for the
+         * subscription does not change as a result of this request.
          */
         fun targetCustomerId(targetCustomerId: String) = apply {
             body.targetCustomerId(targetCustomerId)
@@ -306,10 +308,11 @@ private constructor(
     override fun _queryParams(): QueryParams = additionalQueryParams
 
     /**
-     * Delegate the payment responsibility for a subscription to a different customer. The
-     * subscription remains associated with the original customer, but billing and payment
-     * obligations are transferred to the target customer. This is useful for B2B scenarios where
-     * one entity consumes the service while another handles payment.
+     * Delegates a subscription to a different customer, who becomes responsible for managing it.
+     * The original customer remains the paying customer for this subscription, unless payment was
+     * already delegated to the target customer, in which case the target customer becomes the
+     * paying customer as well. This is useful for B2B scenarios where a different entity should
+     * manage the subscription while the original customer continues handling payment.
      */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -326,9 +329,9 @@ private constructor(
         ) : this(targetCustomerId, mutableMapOf())
 
         /**
-         * The unique identifier of the customer who will assume payment responsibility for this
-         * subscription. This customer must already exist in your Stigg account and have a valid
-         * payment method if the subscription requires payment.
+         * The unique identifier of the customer who will manage this subscription going forward.
+         * This customer must already exist in your Stigg account. The paying customer for the
+         * subscription does not change as a result of this request.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -383,9 +386,9 @@ private constructor(
             }
 
             /**
-             * The unique identifier of the customer who will assume payment responsibility for this
-             * subscription. This customer must already exist in your Stigg account and have a valid
-             * payment method if the subscription requires payment.
+             * The unique identifier of the customer who will manage this subscription going
+             * forward. This customer must already exist in your Stigg account. The paying customer
+             * for the subscription does not change as a result of this request.
              */
             fun targetCustomerId(targetCustomerId: String) =
                 targetCustomerId(JsonField.of(targetCustomerId))

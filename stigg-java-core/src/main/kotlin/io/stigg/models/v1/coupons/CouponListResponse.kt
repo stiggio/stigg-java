@@ -97,7 +97,8 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Fixed amount discounts in different currencies
+     * Fixed amount discounts in different currencies. Provide exactly one of percentOff or
+     * amountsOff — not both, not neither.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -137,7 +138,8 @@ private constructor(
     fun description(): Optional<String> = description.getOptional("description")
 
     /**
-     * Duration of the coupon validity in months
+     * How many billing cycles the discount applies for once redeemed. Leave unset for a discount
+     * that lasts for the lifetime of the subscription.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -161,7 +163,8 @@ private constructor(
     fun name(): String = name.getRequired("name")
 
     /**
-     * Percentage discount off the original price
+     * Percentage discount off the original price. Provide exactly one of percentOff or amountsOff —
+     * not both, not neither.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -396,7 +399,10 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** Fixed amount discounts in different currencies */
+        /**
+         * Fixed amount discounts in different currencies. Provide exactly one of percentOff or
+         * amountsOff — not both, not neither.
+         */
         fun amountsOff(amountsOff: List<AmountsOff>?) = amountsOff(JsonField.ofNullable(amountsOff))
 
         /** Alias for calling [Builder.amountsOff] with `amountsOff.orElse(null)`. */
@@ -486,7 +492,10 @@ private constructor(
          */
         fun description(description: JsonField<String>) = apply { this.description = description }
 
-        /** Duration of the coupon validity in months */
+        /**
+         * How many billing cycles the discount applies for once redeemed. Leave unset for a
+         * discount that lasts for the lifetime of the subscription.
+         */
         fun durationInMonths(durationInMonths: Long?) =
             durationInMonths(JsonField.ofNullable(durationInMonths))
 
@@ -538,7 +547,10 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** Percentage discount off the original price */
+        /**
+         * Percentage discount off the original price. Provide exactly one of percentOff or
+         * amountsOff — not both, not neither.
+         */
         fun percentOff(percentOff: Long?) = percentOff(JsonField.ofNullable(percentOff))
 
         /**

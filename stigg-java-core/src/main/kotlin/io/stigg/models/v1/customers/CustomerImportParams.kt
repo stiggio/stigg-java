@@ -46,7 +46,7 @@ private constructor(
     fun customers(): List<Customer> = body.customers()
 
     /**
-     * Integration details
+     * The internal ID of the integration this record is linked to
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -148,7 +148,7 @@ private constructor(
          */
         fun addCustomer(customer: Customer) = apply { body.addCustomer(customer) }
 
-        /** Integration details */
+        /** The internal ID of the integration this record is linked to */
         fun integrationId(integrationId: String) = apply { body.integrationId(integrationId) }
 
         /**
@@ -342,7 +342,7 @@ private constructor(
         fun customers(): List<Customer> = customers.getRequired("customers")
 
         /**
-         * Integration details
+         * The internal ID of the integration this record is linked to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -433,7 +433,7 @@ private constructor(
                     }
             }
 
-            /** Integration details */
+            /** The internal ID of the integration this record is linked to */
             fun integrationId(integrationId: String) = integrationId(JsonField.of(integrationId))
 
             /**
@@ -626,7 +626,10 @@ private constructor(
         fun billingId(): Optional<String> = billingId.getOptional("billingId")
 
         /**
-         * Additional metadata
+         * Custom key-value metadata to attach to the customer. When creating a customer, this sets
+         * the initial metadata. When updating a customer, this replaces the customer's existing
+         * metadata object entirely — it is not merged key by key. Omit this field on update to
+         * leave the customer's existing metadata untouched; pass an empty object to clear it.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -634,7 +637,9 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
-         * Billing provider payment method id
+         * Billing provider payment method id. Attaching it makes it the customer's new default
+         * payment method for future charges; any previously attached payment method is no longer
+         * used as the default, though it is not removed from the billing provider.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -828,7 +833,13 @@ private constructor(
              */
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
-            /** Additional metadata */
+            /**
+             * Custom key-value metadata to attach to the customer. When creating a customer, this
+             * sets the initial metadata. When updating a customer, this replaces the customer's
+             * existing metadata object entirely — it is not merged key by key. Omit this field on
+             * update to leave the customer's existing metadata untouched; pass an empty object to
+             * clear it.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -840,7 +851,11 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
-            /** Billing provider payment method id */
+            /**
+             * Billing provider payment method id. Attaching it makes it the customer's new default
+             * payment method for future charges; any previously attached payment method is no
+             * longer used as the default, though it is not removed from the billing provider.
+             */
             fun paymentMethodId(paymentMethodId: String) =
                 paymentMethodId(JsonField.of(paymentMethodId))
 
@@ -982,7 +997,12 @@ private constructor(
                 (if (salesforceId.asKnown().isPresent) 1 else 0) +
                 (if (updatedAt.asKnown().isPresent) 1 else 0)
 
-        /** Additional metadata */
+        /**
+         * Custom key-value metadata to attach to the customer. When creating a customer, this sets
+         * the initial metadata. When updating a customer, this replaces the customer's existing
+         * metadata object entirely — it is not merged key by key. Omit this field on update to
+         * leave the customer's existing metadata untouched; pass an empty object to clear it.
+         */
         class Metadata
         @JsonCreator
         private constructor(

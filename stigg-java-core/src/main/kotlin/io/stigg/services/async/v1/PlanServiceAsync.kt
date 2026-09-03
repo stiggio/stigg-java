@@ -263,7 +263,13 @@ interface PlanServiceAsync {
     ): CompletableFuture<PlanListOverageChargesPageAsync> =
         listOverageCharges(id, PlanListOverageChargesParams.none(), requestOptions)
 
-    /** Publishes a draft plan, making it available for use in subscriptions. */
+    /**
+     * Publishes a draft plan, making it available for use in subscriptions. The required
+     * `migrationType` field controls whether existing subscribers are moved onto the new version
+     * immediately (`ALL_CUSTOMERS`) or stay on the version they subscribed to — grandfathered —
+     * until you explicitly migrate them, e.g. via the migrate subscription endpoint
+     * (`NEW_CUSTOMERS`).
+     */
     fun publish(id: String, params: PlanPublishParams): CompletableFuture<PlanPublishResponse> =
         publish(id, params, RequestOptions.none())
 

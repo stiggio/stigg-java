@@ -246,7 +246,11 @@ private constructor(
             hasScheduledUpdates.getOptional("hasScheduledUpdates")
 
         /**
-         * Whether this is a downgrade
+         * Whether this change is classified as a downgrade. Stigg determines this by ranking the
+         * target plan against the customer's current plan — primarily by calculated price (or by
+         * plan parent/child inheritance, when your catalog uses it) — rather than by a manually
+         * assigned plan order. Downgrades can be scheduled to take effect at the end of the current
+         * billing period instead of immediately, depending on your update scheduling configuration.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -439,7 +443,14 @@ private constructor(
                 this.hasScheduledUpdates = hasScheduledUpdates
             }
 
-            /** Whether this is a downgrade */
+            /**
+             * Whether this change is classified as a downgrade. Stigg determines this by ranking
+             * the target plan against the customer's current plan — primarily by calculated price
+             * (or by plan parent/child inheritance, when your catalog uses it) — rather than by a
+             * manually assigned plan order. Downgrades can be scheduled to take effect at the end
+             * of the current billing period instead of immediately, depending on your update
+             * scheduling configuration.
+             */
             fun isPlanDowngrade(isPlanDowngrade: Boolean) =
                 isPlanDowngrade(JsonField.of(isPlanDowngrade))
 

@@ -43,7 +43,8 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
-     * External billing or CRM integration link
+     * Links this customer to their record in a specific configured integration (e.g. their Stripe
+     * customer ID under your Stripe integration). A customer has at most one link per integration.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -94,7 +95,11 @@ private constructor(
             additionalProperties = customerIntegrationResponse.additionalProperties.toMutableMap()
         }
 
-        /** External billing or CRM integration link */
+        /**
+         * Links this customer to their record in a specific configured integration (e.g. their
+         * Stripe customer ID under your Stripe integration). A customer has at most one link per
+         * integration.
+         */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -177,7 +182,10 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
-    /** External billing or CRM integration link */
+    /**
+     * Links this customer to their record in a specific configured integration (e.g. their Stripe
+     * customer ID under your Stripe integration). A customer has at most one link per integration.
+     */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -203,7 +211,7 @@ private constructor(
         ) : this(id, syncedEntityId, vendorIdentifier, syncData, mutableMapOf())
 
         /**
-         * Integration details
+         * The internal ID of the integration this record is linked to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -211,7 +219,8 @@ private constructor(
         fun id(): String = id.getRequired("id")
 
         /**
-         * Synced entity id
+         * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+         * customer ID). Null until the link has synced; required when creating the link.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -219,7 +228,7 @@ private constructor(
         fun syncedEntityId(): Optional<String> = syncedEntityId.getOptional("syncedEntityId")
 
         /**
-         * The vendor identifier of integration
+         * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -314,7 +323,7 @@ private constructor(
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
-            /** Integration details */
+            /** The internal ID of the integration this record is linked to */
             fun id(id: String) = id(JsonField.of(id))
 
             /**
@@ -326,7 +335,10 @@ private constructor(
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
 
-            /** Synced entity id */
+            /**
+             * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+             * customer ID). Null until the link has synced; required when creating the link.
+             */
             fun syncedEntityId(syncedEntityId: String?) =
                 syncedEntityId(JsonField.ofNullable(syncedEntityId))
 
@@ -345,7 +357,7 @@ private constructor(
                 this.syncedEntityId = syncedEntityId
             }
 
-            /** The vendor identifier of integration */
+            /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
             fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
                 vendorIdentifier(JsonField.of(vendorIdentifier))
 
@@ -483,7 +495,7 @@ private constructor(
                 (vendorIdentifier.asKnown().getOrNull()?.validity() ?: 0) +
                 (syncData.asKnown().getOrNull()?.validity() ?: 0)
 
-        /** The vendor identifier of integration */
+        /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
         class VendorIdentifier
         @JsonCreator
         private constructor(private val value: JsonField<String>) : Enum {

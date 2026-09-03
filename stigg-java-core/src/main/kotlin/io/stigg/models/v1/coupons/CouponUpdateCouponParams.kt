@@ -340,7 +340,10 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Partially update an existing coupon. Only provided fields are updated. */
+    /**
+     * Partially update an existing coupon. Only provided fields are updated; omitted fields keep
+     * their current value.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

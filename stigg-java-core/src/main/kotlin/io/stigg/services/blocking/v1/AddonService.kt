@@ -208,7 +208,12 @@ interface AddonService {
     fun listCharges(id: String, requestOptions: RequestOptions): AddonListChargesPage =
         listCharges(id, AddonListChargesParams.none(), requestOptions)
 
-    /** Publishes a draft addon, making it available for use in subscriptions. */
+    /**
+     * Publishes a draft addon, making it available for use in subscriptions. The required
+     * `migrationType` field controls whether subscriptions already using this addon are moved onto
+     * the new version immediately (`ALL_CUSTOMERS`) or stay on the version they were using —
+     * grandfathered — until you explicitly migrate them (`NEW_CUSTOMERS`).
+     */
     fun publish(id: String, params: AddonPublishParams): AddonPublishResponse =
         publish(id, params, RequestOptions.none())
 

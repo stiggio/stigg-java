@@ -56,7 +56,9 @@ private constructor(
     fun displayName(): Optional<String> = body.displayName()
 
     /**
-     * Additional metadata for the product
+     * Additional metadata for the product. When included, this replaces the product's entire
+     * metadata object rather than merging with the existing keys — omit the field to leave existing
+     * metadata untouched.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -226,7 +228,11 @@ private constructor(
          */
         fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
-        /** Additional metadata for the product */
+        /**
+         * Additional metadata for the product. When included, this replaces the product's entire
+         * metadata object rather than merging with the existing keys — omit the field to leave
+         * existing metadata untouched.
+         */
         fun metadata(metadata: Metadata?) = apply { body.metadata(metadata) }
 
         /** Alias for calling [Builder.metadata] with `metadata.orElse(null)`. */
@@ -500,7 +506,9 @@ private constructor(
         fun displayName(): Optional<String> = displayName.getOptional("displayName")
 
         /**
-         * Additional metadata for the product
+         * Additional metadata for the product. When included, this replaces the product's entire
+         * metadata object rather than merging with the existing keys — omit the field to leave
+         * existing metadata untouched.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -658,7 +666,11 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** Additional metadata for the product */
+            /**
+             * Additional metadata for the product. When included, this replaces the product's
+             * entire metadata object rather than merging with the existing keys — omit the field to
+             * leave existing metadata untouched.
+             */
             fun metadata(metadata: Metadata?) = metadata(JsonField.ofNullable(metadata))
 
             /** Alias for calling [Builder.metadata] with `metadata.orElse(null)`. */
@@ -835,7 +847,11 @@ private constructor(
             "Body{description=$description, displayName=$displayName, metadata=$metadata, multipleSubscriptions=$multipleSubscriptions, productSettings=$productSettings, usageResetCutoffRule=$usageResetCutoffRule, additionalProperties=$additionalProperties}"
     }
 
-    /** Additional metadata for the product */
+    /**
+     * Additional metadata for the product. When included, this replaces the product's entire
+     * metadata object rather than merging with the existing keys — omit the field to leave existing
+     * metadata untouched.
+     */
     class Metadata
     @JsonCreator
     private constructor(
@@ -1015,7 +1031,8 @@ private constructor(
             subscriptionStartSetup.getRequired("subscriptionStartSetup")
 
         /**
-         * ID of the plan to downgrade to at the end of the billing period
+         * ID of the plan to downgrade to at the end of the billing period. Only relevant when
+         * subscriptionEndSetup is DOWNGRADE_TO_FREE — ignored otherwise.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1032,7 +1049,8 @@ private constructor(
             prorateAtEndOfBillingPeriod.getOptional("prorateAtEndOfBillingPeriod")
 
         /**
-         * ID of the plan to start the subscription with
+         * ID of the plan to start the subscription with. Only relevant when subscriptionStartSetup
+         * is PLAN_SELECTION — ignored otherwise.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1199,7 +1217,10 @@ private constructor(
                     this.subscriptionStartSetup = subscriptionStartSetup
                 }
 
-            /** ID of the plan to downgrade to at the end of the billing period */
+            /**
+             * ID of the plan to downgrade to at the end of the billing period. Only relevant when
+             * subscriptionEndSetup is DOWNGRADE_TO_FREE — ignored otherwise.
+             */
             fun downgradePlanId(downgradePlanId: String?) =
                 downgradePlanId(JsonField.ofNullable(downgradePlanId))
 
@@ -1249,7 +1270,10 @@ private constructor(
                     this.prorateAtEndOfBillingPeriod = prorateAtEndOfBillingPeriod
                 }
 
-            /** ID of the plan to start the subscription with */
+            /**
+             * ID of the plan to start the subscription with. Only relevant when
+             * subscriptionStartSetup is PLAN_SELECTION — ignored otherwise.
+             */
             fun subscriptionStartPlanId(subscriptionStartPlanId: String?) =
                 subscriptionStartPlanId(JsonField.ofNullable(subscriptionStartPlanId))
 

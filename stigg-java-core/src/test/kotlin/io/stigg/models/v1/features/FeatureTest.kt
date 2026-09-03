@@ -36,6 +36,31 @@ internal class FeatureTest {
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
                                 .build()
                         )
+                        .meter(
+                            Feature.Data.Meter.builder()
+                                .aggregation(
+                                    Feature.Data.Meter.Aggregation.builder()
+                                        .function(Feature.Data.Meter.Aggregation.Function.SUM)
+                                        .field("field")
+                                        .build()
+                                )
+                                .addFilter(
+                                    Feature.Data.Meter.Filter.builder()
+                                        .addCondition(
+                                            Feature.Data.Meter.Filter.Condition.builder()
+                                                .field("field")
+                                                .operation(
+                                                    Feature.Data.Meter.Filter.Condition.Operation
+                                                        .EQUALS
+                                                )
+                                                .value("value")
+                                                .addValue("string")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .meterType(Feature.Data.MeterType.NONE)
                         .unitTransformation(
                             Feature.Data.UnitTransformation.builder()
@@ -70,6 +95,30 @@ internal class FeatureTest {
                     .metadata(
                         Feature.Data.Metadata.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .meter(
+                        Feature.Data.Meter.builder()
+                            .aggregation(
+                                Feature.Data.Meter.Aggregation.builder()
+                                    .function(Feature.Data.Meter.Aggregation.Function.SUM)
+                                    .field("field")
+                                    .build()
+                            )
+                            .addFilter(
+                                Feature.Data.Meter.Filter.builder()
+                                    .addCondition(
+                                        Feature.Data.Meter.Filter.Condition.builder()
+                                            .field("field")
+                                            .operation(
+                                                Feature.Data.Meter.Filter.Condition.Operation.EQUALS
+                                            )
+                                            .value("value")
+                                            .addValue("string")
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .build()
                     )
                     .meterType(Feature.Data.MeterType.NONE)
@@ -110,6 +159,31 @@ internal class FeatureTest {
                         .metadata(
                             Feature.Data.Metadata.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .meter(
+                            Feature.Data.Meter.builder()
+                                .aggregation(
+                                    Feature.Data.Meter.Aggregation.builder()
+                                        .function(Feature.Data.Meter.Aggregation.Function.SUM)
+                                        .field("field")
+                                        .build()
+                                )
+                                .addFilter(
+                                    Feature.Data.Meter.Filter.builder()
+                                        .addCondition(
+                                            Feature.Data.Meter.Filter.Condition.builder()
+                                                .field("field")
+                                                .operation(
+                                                    Feature.Data.Meter.Filter.Condition.Operation
+                                                        .EQUALS
+                                                )
+                                                .value("value")
+                                                .addValue("string")
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .build()
                         )
                         .meterType(Feature.Data.MeterType.NONE)

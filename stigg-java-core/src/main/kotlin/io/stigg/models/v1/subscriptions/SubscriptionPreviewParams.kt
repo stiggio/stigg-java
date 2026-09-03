@@ -82,7 +82,8 @@ private constructor(
     fun billableFeatures(): Optional<List<BillableFeature>> = body.billableFeatures()
 
     /**
-     * ISO 3166-1 country code for localization
+     * Country code selecting a localized price, or "eu" for the European Union group you map
+     * countries into; the default price applies when none matches
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -440,7 +441,10 @@ private constructor(
             body.addBillableFeature(billableFeature)
         }
 
-        /** ISO 3166-1 country code for localization */
+        /**
+         * Country code selecting a localized price, or "eu" for the European Union group you map
+         * countries into; the default price applies when none matches
+         */
         fun billingCountryCode(billingCountryCode: String) = apply {
             body.billingCountryCode(billingCountryCode)
         }
@@ -897,7 +901,8 @@ private constructor(
             billableFeatures.getOptional("billableFeatures")
 
         /**
-         * ISO 3166-1 country code for localization
+         * Country code selecting a localized price, or "eu" for the European Union group you map
+         * countries into; the default price applies when none matches
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1299,7 +1304,10 @@ private constructor(
                     }
             }
 
-            /** ISO 3166-1 country code for localization */
+            /**
+             * Country code selecting a localized price, or "eu" for the European Union group you
+             * map countries into; the default price applies when none matches
+             */
             fun billingCountryCode(billingCountryCode: String) =
                 billingCountryCode(JsonField.of(billingCountryCode))
 

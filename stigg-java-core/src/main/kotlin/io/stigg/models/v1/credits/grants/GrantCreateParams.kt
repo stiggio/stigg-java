@@ -81,7 +81,9 @@ private constructor(
     fun grantType(): GrantType = body.grantType()
 
     /**
-     * Whether to wait for payment confirmation before returning (default: true)
+     * Whether to wait for payment confirmation before returning (default: true). When false, the
+     * request returns immediately while payment (if any) is collected asynchronously; check the
+     * returned status to see whether the credits are already usable.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -89,7 +91,8 @@ private constructor(
     fun awaitPaymentConfirmation(): Optional<Boolean> = body.awaitPaymentConfirmation()
 
     /**
-     * Billing information for the credit grant
+     * Billing information for the credit grant, used when the grant has a payment collection method
+     * that requires collecting payment (e.g. invoice due date, billing address).
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -137,7 +140,10 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
-     * The payment collection method (CHARGE, INVOICE, NONE)
+     * The payment collection method (CHARGE, INVOICE, NONE). Optional if the grant has no `cost`,
+     * since there is nothing to collect payment for. With NONE or CHARGE, the grant is active and
+     * its credits are usable right away (or as soon as the charge succeeds). With INVOICE, the
+     * grant stays pending — its credits are not usable — until the generated invoice is paid.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -146,7 +152,12 @@ private constructor(
         body.paymentCollectionMethod()
 
     /**
-     * The priority of the credit grant (lower number = higher priority)
+     * Determines which grant is drawn down first when the customer has multiple active grants in
+     * the same currency (0-100). Lower numbers are consumed first. Defaults to 50 — the same
+     * default used for recurring credits granted by a plan or price — so without setting this
+     * explicitly, draw order against plan-included credits falls back to expiration date and grant
+     * type. To have this grant consumed before or after plan-included credits, set a lower or
+     * higher priority than the plan/price credit configuration.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -399,7 +410,11 @@ private constructor(
          */
         fun grantType(grantType: JsonField<GrantType>) = apply { body.grantType(grantType) }
 
-        /** Whether to wait for payment confirmation before returning (default: true) */
+        /**
+         * Whether to wait for payment confirmation before returning (default: true). When false,
+         * the request returns immediately while payment (if any) is collected asynchronously; check
+         * the returned status to see whether the credits are already usable.
+         */
         fun awaitPaymentConfirmation(awaitPaymentConfirmation: Boolean) = apply {
             body.awaitPaymentConfirmation(awaitPaymentConfirmation)
         }
@@ -415,7 +430,10 @@ private constructor(
             body.awaitPaymentConfirmation(awaitPaymentConfirmation)
         }
 
-        /** Billing information for the credit grant */
+        /**
+         * Billing information for the credit grant, used when the grant has a payment collection
+         * method that requires collecting payment (e.g. invoice due date, billing address).
+         */
         fun billingInformation(billingInformation: BillingInformation) = apply {
             body.billingInformation(billingInformation)
         }
@@ -491,7 +509,13 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
-        /** The payment collection method (CHARGE, INVOICE, NONE) */
+        /**
+         * The payment collection method (CHARGE, INVOICE, NONE). Optional if the grant has no
+         * `cost`, since there is nothing to collect payment for. With NONE or CHARGE, the grant is
+         * active and its credits are usable right away (or as soon as the charge succeeds). With
+         * INVOICE, the grant stays pending — its credits are not usable — until the generated
+         * invoice is paid.
+         */
         fun paymentCollectionMethod(paymentCollectionMethod: PaymentCollectionMethod) = apply {
             body.paymentCollectionMethod(paymentCollectionMethod)
         }
@@ -508,7 +532,14 @@ private constructor(
                 body.paymentCollectionMethod(paymentCollectionMethod)
             }
 
-        /** The priority of the credit grant (lower number = higher priority) */
+        /**
+         * Determines which grant is drawn down first when the customer has multiple active grants
+         * in the same currency (0-100). Lower numbers are consumed first. Defaults to 50 — the same
+         * default used for recurring credits granted by a plan or price — so without setting this
+         * explicitly, draw order against plan-included credits falls back to expiration date and
+         * grant type. To have this grant consumed before or after plan-included credits, set a
+         * lower or higher priority than the plan/price credit configuration.
+         */
         fun priority(priority: Long) = apply { body.priority(priority) }
 
         /**
@@ -687,7 +718,10 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Request body for creating a credit grant */
+    /**
+     * Request body for creating a credit grant. Grants cannot be edited after creation — void and
+     * re-grant if the amount, priority, or expiration needs to change.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -808,7 +842,9 @@ private constructor(
         fun grantType(): GrantType = grantType.getRequired("grantType")
 
         /**
-         * Whether to wait for payment confirmation before returning (default: true)
+         * Whether to wait for payment confirmation before returning (default: true). When false,
+         * the request returns immediately while payment (if any) is collected asynchronously; check
+         * the returned status to see whether the credits are already usable.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -817,7 +853,8 @@ private constructor(
             awaitPaymentConfirmation.getOptional("awaitPaymentConfirmation")
 
         /**
-         * Billing information for the credit grant
+         * Billing information for the credit grant, used when the grant has a payment collection
+         * method that requires collecting payment (e.g. invoice due date, billing address).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -866,7 +903,11 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
-         * The payment collection method (CHARGE, INVOICE, NONE)
+         * The payment collection method (CHARGE, INVOICE, NONE). Optional if the grant has no
+         * `cost`, since there is nothing to collect payment for. With NONE or CHARGE, the grant is
+         * active and its credits are usable right away (or as soon as the charge succeeds). With
+         * INVOICE, the grant stays pending — its credits are not usable — until the generated
+         * invoice is paid.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -875,7 +916,12 @@ private constructor(
             paymentCollectionMethod.getOptional("paymentCollectionMethod")
 
         /**
-         * The priority of the credit grant (lower number = higher priority)
+         * Determines which grant is drawn down first when the customer has multiple active grants
+         * in the same currency (0-100). Lower numbers are consumed first. Defaults to 50 — the same
+         * default used for recurring credits granted by a plan or price — so without setting this
+         * explicitly, draw order against plan-included credits falls back to expiration date and
+         * grant type. To have this grant consumed before or after plan-included credits, set a
+         * lower or higher priority than the plan/price credit configuration.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1150,7 +1196,12 @@ private constructor(
              */
             fun grantType(grantType: JsonField<GrantType>) = apply { this.grantType = grantType }
 
-            /** Whether to wait for payment confirmation before returning (default: true) */
+            /**
+             * Whether to wait for payment confirmation before returning (default: true). When
+             * false, the request returns immediately while payment (if any) is collected
+             * asynchronously; check the returned status to see whether the credits are already
+             * usable.
+             */
             fun awaitPaymentConfirmation(awaitPaymentConfirmation: Boolean) =
                 awaitPaymentConfirmation(JsonField.of(awaitPaymentConfirmation))
 
@@ -1165,7 +1216,11 @@ private constructor(
                 this.awaitPaymentConfirmation = awaitPaymentConfirmation
             }
 
-            /** Billing information for the credit grant */
+            /**
+             * Billing information for the credit grant, used when the grant has a payment
+             * collection method that requires collecting payment (e.g. invoice due date, billing
+             * address).
+             */
             fun billingInformation(billingInformation: BillingInformation) =
                 billingInformation(JsonField.of(billingInformation))
 
@@ -1242,7 +1297,13 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
-            /** The payment collection method (CHARGE, INVOICE, NONE) */
+            /**
+             * The payment collection method (CHARGE, INVOICE, NONE). Optional if the grant has no
+             * `cost`, since there is nothing to collect payment for. With NONE or CHARGE, the grant
+             * is active and its credits are usable right away (or as soon as the charge succeeds).
+             * With INVOICE, the grant stays pending — its credits are not usable — until the
+             * generated invoice is paid.
+             */
             fun paymentCollectionMethod(paymentCollectionMethod: PaymentCollectionMethod) =
                 paymentCollectionMethod(JsonField.of(paymentCollectionMethod))
 
@@ -1257,7 +1318,15 @@ private constructor(
                 paymentCollectionMethod: JsonField<PaymentCollectionMethod>
             ) = apply { this.paymentCollectionMethod = paymentCollectionMethod }
 
-            /** The priority of the credit grant (lower number = higher priority) */
+            /**
+             * Determines which grant is drawn down first when the customer has multiple active
+             * grants in the same currency (0-100). Lower numbers are consumed first. Defaults to 50
+             * — the same default used for recurring credits granted by a plan or price — so without
+             * setting this explicitly, draw order against plan-included credits falls back to
+             * expiration date and grant type. To have this grant consumed before or after
+             * plan-included credits, set a lower or higher priority than the plan/price credit
+             * configuration.
+             */
             fun priority(priority: Long) = priority(JsonField.of(priority))
 
             /**
@@ -1590,7 +1659,10 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /** Billing information for the credit grant */
+    /**
+     * Billing information for the credit grant, used when the grant has a payment collection method
+     * that requires collecting payment (e.g. invoice due date, billing address).
+     */
     class BillingInformation
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -3335,7 +3407,12 @@ private constructor(
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
     }
 
-    /** The payment collection method (CHARGE, INVOICE, NONE) */
+    /**
+     * The payment collection method (CHARGE, INVOICE, NONE). Optional if the grant has no `cost`,
+     * since there is nothing to collect payment for. With NONE or CHARGE, the grant is active and
+     * its credits are usable right away (or as soon as the charge succeeds). With INVOICE, the
+     * grant stays pending — its credits are not usable — until the generated invoice is paid.
+     */
     class PaymentCollectionMethod
     @JsonCreator
     private constructor(private val value: JsonField<String>) : Enum {

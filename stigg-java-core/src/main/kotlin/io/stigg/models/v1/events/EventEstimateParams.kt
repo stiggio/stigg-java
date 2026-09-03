@@ -63,7 +63,9 @@ private constructor(
     fun dimensions(): Optional<Dimensions> = body.dimensions()
 
     /**
-     * Resource id
+     * The customer resource this usage applies to. Optional — only required if the customer has
+     * multiple resources (for example, one subscription per workspace or site) and usage needs to
+     * be tracked separately per resource; omit it to report usage at the customer level.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -199,7 +201,11 @@ private constructor(
          */
         fun dimensions(dimensions: JsonField<Dimensions>) = apply { body.dimensions(dimensions) }
 
-        /** Resource id */
+        /**
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
+         */
         fun resourceId(resourceId: String?) = apply { body.resourceId(resourceId) }
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
@@ -419,7 +425,9 @@ private constructor(
         fun dimensions(): Optional<Dimensions> = dimensions.getOptional("dimensions")
 
         /**
-         * Resource id
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -542,7 +550,12 @@ private constructor(
                 this.dimensions = dimensions
             }
 
-            /** Resource id */
+            /**
+             * The customer resource this usage applies to. Optional — only required if the customer
+             * has multiple resources (for example, one subscription per workspace or site) and
+             * usage needs to be tracked separately per resource; omit it to report usage at the
+             * customer level.
+             */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
             /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */

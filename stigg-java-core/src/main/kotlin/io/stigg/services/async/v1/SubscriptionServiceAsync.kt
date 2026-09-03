@@ -85,7 +85,12 @@ interface SubscriptionServiceAsync {
 
     /**
      * Updates an active subscription's properties including billing period, add-ons, unit
-     * quantities, and discounts.
+     * quantities, and discounts. This is a partial update — only the fields present in the request
+     * body change. Object fields such as `metadata` are replaced wholesale rather than merged, and
+     * list fields such as `addons` and `priceOverrides` must be sent in full: any existing item
+     * that isn't included in the array is removed from the subscription. Changes classified as a
+     * downgrade may be scheduled for the end of the current billing period instead of applying
+     * immediately, depending on your update scheduling configuration.
      */
     fun update(id: String): CompletableFuture<Subscription> =
         update(id, SubscriptionUpdateParams.none())
@@ -173,8 +178,10 @@ interface SubscriptionServiceAsync {
         cancel(id, SubscriptionCancelParams.none(), requestOptions)
 
     /**
-     * Delegates the payment responsibility of a subscription to a different customer. The delegated
-     * customer will be billed for this subscription.
+     * Delegates a subscription to a different customer, who becomes responsible for managing it.
+     * The original customer remains the paying customer for this subscription, unless payment was
+     * already delegated to the target customer, in which case the target customer becomes the
+     * paying customer as well.
      */
     fun delegate(id: String, params: SubscriptionDelegateParams): CompletableFuture<Subscription> =
         delegate(id, params, RequestOptions.none())

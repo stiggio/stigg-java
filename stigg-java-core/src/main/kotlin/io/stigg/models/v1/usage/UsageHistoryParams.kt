@@ -40,7 +40,11 @@ private constructor(
     /** Criteria by which to group the usage history */
     fun groupBy(): Optional<String> = Optional.ofNullable(groupBy)
 
-    /** Resource id */
+    /**
+     * The customer resource this usage applies to. Optional — only required if the customer has
+     * multiple resources (for example, one subscription per workspace or site) and usage needs to
+     * be tracked separately per resource; omit it to report usage at the customer level.
+     */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
 
     fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
@@ -119,7 +123,11 @@ private constructor(
         /** Alias for calling [Builder.groupBy] with `groupBy.orElse(null)`. */
         fun groupBy(groupBy: Optional<String>) = groupBy(groupBy.getOrNull())
 
-        /** Resource id */
+        /**
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
+         */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */

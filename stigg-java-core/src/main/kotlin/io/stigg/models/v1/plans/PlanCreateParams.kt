@@ -69,7 +69,9 @@ private constructor(
     fun billingId(): Optional<String> = body.billingId()
 
     /**
-     * Default trial configuration for the plan
+     * Default trial configuration for the plan. When set, subscriptions provisioned on this plan
+     * without explicit trial settings automatically start in trial for the configured duration;
+     * leave unset for no automatic trial.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -93,7 +95,8 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
-     * The ID of the parent plan, if applicable
+     * The ID of the parent plan, if this plan should inherit entitlements from another plan.
+     * Optional — omit to create a standalone plan with no inherited entitlements.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -305,7 +308,11 @@ private constructor(
          */
         fun billingId(billingId: JsonField<String>) = apply { body.billingId(billingId) }
 
-        /** Default trial configuration for the plan */
+        /**
+         * Default trial configuration for the plan. When set, subscriptions provisioned on this
+         * plan without explicit trial settings automatically start in trial for the configured
+         * duration; leave unset for no automatic trial.
+         */
         fun defaultTrialConfig(defaultTrialConfig: DefaultTrialConfig?) = apply {
             body.defaultTrialConfig(defaultTrialConfig)
         }
@@ -354,7 +361,10 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
-        /** The ID of the parent plan, if applicable */
+        /**
+         * The ID of the parent plan, if this plan should inherit entitlements from another plan.
+         * Optional — omit to create a standalone plan with no inherited entitlements.
+         */
         fun parentPlanId(parentPlanId: String?) = apply { body.parentPlanId(parentPlanId) }
 
         /** Alias for calling [Builder.parentPlanId] with `parentPlanId.orElse(null)`. */
@@ -645,7 +655,9 @@ private constructor(
         fun billingId(): Optional<String> = billingId.getOptional("billingId")
 
         /**
-         * Default trial configuration for the plan
+         * Default trial configuration for the plan. When set, subscriptions provisioned on this
+         * plan without explicit trial settings automatically start in trial for the configured
+         * duration; leave unset for no automatic trial.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -670,7 +682,8 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
-         * The ID of the parent plan, if applicable
+         * The ID of the parent plan, if this plan should inherit entitlements from another plan.
+         * Optional — omit to create a standalone plan with no inherited entitlements.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -885,7 +898,11 @@ private constructor(
              */
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
-            /** Default trial configuration for the plan */
+            /**
+             * Default trial configuration for the plan. When set, subscriptions provisioned on this
+             * plan without explicit trial settings automatically start in trial for the configured
+             * duration; leave unset for no automatic trial.
+             */
             fun defaultTrialConfig(defaultTrialConfig: DefaultTrialConfig?) =
                 defaultTrialConfig(JsonField.ofNullable(defaultTrialConfig))
 
@@ -936,7 +953,10 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
-            /** The ID of the parent plan, if applicable */
+            /**
+             * The ID of the parent plan, if this plan should inherit entitlements from another
+             * plan. Optional — omit to create a standalone plan with no inherited entitlements.
+             */
             fun parentPlanId(parentPlanId: String?) =
                 parentPlanId(JsonField.ofNullable(parentPlanId))
 
@@ -1132,7 +1152,11 @@ private constructor(
             "Body{id=$id, displayName=$displayName, productId=$productId, billingId=$billingId, defaultTrialConfig=$defaultTrialConfig, description=$description, metadata=$metadata, parentPlanId=$parentPlanId, pricingType=$pricingType, status=$status, additionalProperties=$additionalProperties}"
     }
 
-    /** Default trial configuration for the plan */
+    /**
+     * Default trial configuration for the plan. When set, subscriptions provisioned on this plan
+     * without explicit trial settings automatically start in trial for the configured duration;
+     * leave unset for no automatic trial.
+     */
     class DefaultTrialConfig
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

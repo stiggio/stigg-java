@@ -337,7 +337,10 @@ private constructor(
         fun language(): Optional<String> = language.getOptional("language")
 
         /**
-         * Additional metadata
+         * Custom key-value metadata to attach to the customer. When creating a customer, this sets
+         * the initial metadata. When updating a customer, this replaces the customer's existing
+         * metadata object entirely — it is not merged key by key. Omit this field on update to
+         * leave the customer's existing metadata untouched; pass an empty object to clear it.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -755,7 +758,13 @@ private constructor(
              */
             fun language(language: JsonField<String>) = apply { this.language = language }
 
-            /** Additional metadata */
+            /**
+             * Custom key-value metadata to attach to the customer. When creating a customer, this
+             * sets the initial metadata. When updating a customer, this replaces the customer's
+             * existing metadata object entirely — it is not merged key by key. Omit this field on
+             * update to leave the customer's existing metadata untouched; pass an empty object to
+             * clear it.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -2447,7 +2456,11 @@ private constructor(
                 "DefaultPaymentMethod{billingId=$billingId, cardExpiryMonth=$cardExpiryMonth, cardExpiryYear=$cardExpiryYear, cardLast4Digits=$cardLast4Digits, type=$type, additionalProperties=$additionalProperties}"
         }
 
-        /** External billing or CRM integration link */
+        /**
+         * Links this customer to their record in a specific configured integration (e.g. their
+         * Stripe customer ID under your Stripe integration). A customer has at most one link per
+         * integration.
+         */
         class Integration
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -2469,7 +2482,7 @@ private constructor(
             ) : this(id, syncedEntityId, vendorIdentifier, mutableMapOf())
 
             /**
-             * Integration details
+             * The internal ID of the integration this record is linked to
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2478,7 +2491,8 @@ private constructor(
             fun id(): String = id.getRequired("id")
 
             /**
-             * Synced entity id
+             * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+             * customer ID). Null until the link has synced; required when creating the link.
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -2486,7 +2500,7 @@ private constructor(
             fun syncedEntityId(): Optional<String> = syncedEntityId.getOptional("syncedEntityId")
 
             /**
-             * The vendor identifier of integration
+             * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2565,7 +2579,7 @@ private constructor(
                     additionalProperties = integration.additionalProperties.toMutableMap()
                 }
 
-                /** Integration details */
+                /** The internal ID of the integration this record is linked to */
                 fun id(id: String) = id(JsonField.of(id))
 
                 /**
@@ -2577,7 +2591,11 @@ private constructor(
                  */
                 fun id(id: JsonField<String>) = apply { this.id = id }
 
-                /** Synced entity id */
+                /**
+                 * The external entity ID this record is linked to in the vendor system (e.g. the
+                 * Stripe customer ID). Null until the link has synced; required when creating the
+                 * link.
+                 */
                 fun syncedEntityId(syncedEntityId: String?) =
                     syncedEntityId(JsonField.ofNullable(syncedEntityId))
 
@@ -2598,7 +2616,7 @@ private constructor(
                     this.syncedEntityId = syncedEntityId
                 }
 
-                /** The vendor identifier of integration */
+                /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
                 fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
                     vendorIdentifier(JsonField.of(vendorIdentifier))
 
@@ -2701,7 +2719,7 @@ private constructor(
                     (if (syncedEntityId.asKnown().isPresent) 1 else 0) +
                     (vendorIdentifier.asKnown().getOrNull()?.validity() ?: 0)
 
-            /** The vendor identifier of integration */
+            /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
             class VendorIdentifier
             @JsonCreator
             private constructor(private val value: JsonField<String>) : Enum {
@@ -2940,7 +2958,12 @@ private constructor(
                 "Integration{id=$id, syncedEntityId=$syncedEntityId, vendorIdentifier=$vendorIdentifier, additionalProperties=$additionalProperties}"
         }
 
-        /** Additional metadata */
+        /**
+         * Custom key-value metadata to attach to the customer. When creating a customer, this sets
+         * the initial metadata. When updating a customer, this replaces the customer's existing
+         * metadata object entirely — it is not merged key by key. Omit this field on update to
+         * leave the customer's existing metadata untouched; pass an empty object to clear it.
+         */
         class Metadata
         @JsonCreator
         private constructor(
@@ -3303,7 +3326,9 @@ private constructor(
                     invoiceCustomFields.getOptional("invoiceCustomFields")
 
                 /**
-                 * Additional metadata
+                 * Additional metadata to pass through to the billing provider on the customer's
+                 * record there. This is separate from the customer's own metadata field — it's
+                 * stored only on the billing-provider side, not on the Stigg customer object.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -3495,7 +3520,11 @@ private constructor(
                             this.invoiceCustomFields = invoiceCustomFields
                         }
 
-                    /** Additional metadata */
+                    /**
+                     * Additional metadata to pass through to the billing provider on the customer's
+                     * record there. This is separate from the customer's own metadata field — it's
+                     * stored only on the billing-provider side, not on the Stigg customer object.
+                     */
                     fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
                     /**
@@ -4152,7 +4181,11 @@ private constructor(
                         "InvoiceCustomFields{additionalProperties=$additionalProperties}"
                 }
 
-                /** Additional metadata */
+                /**
+                 * Additional metadata to pass through to the billing provider on the customer's
+                 * record there. This is separate from the customer's own metadata field — it's
+                 * stored only on the billing-provider side, not on the Stigg customer object.
+                 */
                 class Metadata
                 @JsonCreator
                 private constructor(
@@ -4947,7 +4980,9 @@ private constructor(
                 fun currency(): Optional<Currency> = currency.getOptional("currency")
 
                 /**
-                 * Additional metadata
+                 * Additional metadata to pass through to the billing provider on the customer's
+                 * record there. This is separate from the customer's own metadata field — it's
+                 * stored only on the billing-provider side, not on the Stigg customer object.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -5066,7 +5101,11 @@ private constructor(
                      */
                     fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
 
-                    /** Additional metadata */
+                    /**
+                     * Additional metadata to pass through to the billing provider on the customer's
+                     * record there. This is separate from the customer's own metadata field — it's
+                     * stored only on the billing-provider side, not on the Stigg customer object.
+                     */
                     fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
                     /**
@@ -6380,7 +6419,11 @@ private constructor(
                     override fun toString() = value.toString()
                 }
 
-                /** Additional metadata */
+                /**
+                 * Additional metadata to pass through to the billing provider on the customer's
+                 * record there. This is separate from the customer's own metadata field — it's
+                 * stored only on the billing-provider side, not on the Stigg customer object.
+                 */
                 class Metadata
                 @JsonCreator
                 private constructor(

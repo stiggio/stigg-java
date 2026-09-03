@@ -1873,6 +1873,7 @@ private constructor(
     private constructor(
         private val amount: JsonField<Amount>,
         private val dueDate: JsonField<OffsetDateTime>,
+        private val invoiceId: JsonField<String>,
         private val periodEnd: JsonField<OffsetDateTime>,
         private val periodStart: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1884,13 +1885,16 @@ private constructor(
             @JsonProperty("dueDate")
             @ExcludeMissing
             dueDate: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("invoiceId")
+            @ExcludeMissing
+            invoiceId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("periodEnd")
             @ExcludeMissing
             periodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("periodStart")
             @ExcludeMissing
             periodStart: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(amount, dueDate, periodEnd, periodStart, mutableMapOf())
+        ) : this(amount, dueDate, invoiceId, periodEnd, periodStart, mutableMapOf())
 
         /**
          * The total amount of the upcoming invoice
@@ -1907,6 +1911,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun dueDate(): Optional<OffsetDateTime> = dueDate.getOptional("dueDate")
+
+        /**
+         * The billing provider ID of the draft invoice this preview describes
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun invoiceId(): Optional<String> = invoiceId.getOptional("invoiceId")
 
         /**
          * The end of the billing period the upcoming invoice covers
@@ -1937,6 +1949,13 @@ private constructor(
          * Unlike [dueDate], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("dueDate") @ExcludeMissing fun _dueDate(): JsonField<OffsetDateTime> = dueDate
+
+        /**
+         * Returns the raw JSON value of [invoiceId].
+         *
+         * Unlike [invoiceId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("invoiceId") @ExcludeMissing fun _invoiceId(): JsonField<String> = invoiceId
 
         /**
          * Returns the raw JSON value of [periodEnd].
@@ -1977,6 +1996,7 @@ private constructor(
              * ```java
              * .amount()
              * .dueDate()
+             * .invoiceId()
              * .periodEnd()
              * .periodStart()
              * ```
@@ -1989,6 +2009,7 @@ private constructor(
 
             private var amount: JsonField<Amount>? = null
             private var dueDate: JsonField<OffsetDateTime>? = null
+            private var invoiceId: JsonField<String>? = null
             private var periodEnd: JsonField<OffsetDateTime>? = null
             private var periodStart: JsonField<OffsetDateTime>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1997,6 +2018,7 @@ private constructor(
             internal fun from(nextInvoice: NextInvoice) = apply {
                 amount = nextInvoice.amount
                 dueDate = nextInvoice.dueDate
+                invoiceId = nextInvoice.invoiceId
                 periodEnd = nextInvoice.periodEnd
                 periodStart = nextInvoice.periodStart
                 additionalProperties = nextInvoice.additionalProperties.toMutableMap()
@@ -2028,6 +2050,21 @@ private constructor(
              * supported value.
              */
             fun dueDate(dueDate: JsonField<OffsetDateTime>) = apply { this.dueDate = dueDate }
+
+            /** The billing provider ID of the draft invoice this preview describes */
+            fun invoiceId(invoiceId: String?) = invoiceId(JsonField.ofNullable(invoiceId))
+
+            /** Alias for calling [Builder.invoiceId] with `invoiceId.orElse(null)`. */
+            fun invoiceId(invoiceId: Optional<String>) = invoiceId(invoiceId.getOrNull())
+
+            /**
+             * Sets [Builder.invoiceId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.invoiceId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun invoiceId(invoiceId: JsonField<String>) = apply { this.invoiceId = invoiceId }
 
             /** The end of the billing period the upcoming invoice covers */
             fun periodEnd(periodEnd: OffsetDateTime?) = periodEnd(JsonField.ofNullable(periodEnd))
@@ -2093,6 +2130,7 @@ private constructor(
              * ```java
              * .amount()
              * .dueDate()
+             * .invoiceId()
              * .periodEnd()
              * .periodStart()
              * ```
@@ -2103,6 +2141,7 @@ private constructor(
                 NextInvoice(
                     checkRequired("amount", amount),
                     checkRequired("dueDate", dueDate),
+                    checkRequired("invoiceId", invoiceId),
                     checkRequired("periodEnd", periodEnd),
                     checkRequired("periodStart", periodStart),
                     additionalProperties.toMutableMap(),
@@ -2127,6 +2166,7 @@ private constructor(
 
             amount().validate()
             dueDate()
+            invoiceId()
             periodEnd()
             periodStart()
             validated = true
@@ -2150,6 +2190,7 @@ private constructor(
         internal fun validity(): Int =
             (amount.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (dueDate.asKnown().isPresent) 1 else 0) +
+                (if (invoiceId.asKnown().isPresent) 1 else 0) +
                 (if (periodEnd.asKnown().isPresent) 1 else 0) +
                 (if (periodStart.asKnown().isPresent) 1 else 0)
 
@@ -3210,19 +3251,20 @@ private constructor(
             return other is NextInvoice &&
                 amount == other.amount &&
                 dueDate == other.dueDate &&
+                invoiceId == other.invoiceId &&
                 periodEnd == other.periodEnd &&
                 periodStart == other.periodStart &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(amount, dueDate, periodEnd, periodStart, additionalProperties)
+            Objects.hash(amount, dueDate, invoiceId, periodEnd, periodStart, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "NextInvoice{amount=$amount, dueDate=$dueDate, periodEnd=$periodEnd, periodStart=$periodStart, additionalProperties=$additionalProperties}"
+            "NextInvoice{amount=$amount, dueDate=$dueDate, invoiceId=$invoiceId, periodEnd=$periodEnd, periodStart=$periodStart, additionalProperties=$additionalProperties}"
     }
 
     /** The current state of the contract */

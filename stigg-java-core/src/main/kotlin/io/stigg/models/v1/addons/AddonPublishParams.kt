@@ -21,7 +21,12 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Publishes a draft addon, making it available for use in subscriptions. */
+/**
+ * Publishes a draft addon, making it available for use in subscriptions. The required
+ * `migrationType` field controls whether subscriptions already using this addon are moved onto the
+ * new version immediately (`ALL_CUSTOMERS`) or stay on the version they were using — grandfathered
+ * — until you explicitly migrate them (`NEW_CUSTOMERS`).
+ */
 class AddonPublishParams
 private constructor(
     private val id: String?,
@@ -39,7 +44,8 @@ private constructor(
     fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
-     * The migration type of the package
+     * Who the published version applies to: NEW_CUSTOMERS (default) leaves existing subscribers on
+     * their current version, ALL_CUSTOMERS moves them onto the new version immediately.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -121,7 +127,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** The migration type of the package */
+        /**
+         * Who the published version applies to: NEW_CUSTOMERS (default) leaves existing subscribers
+         * on their current version, ALL_CUSTOMERS moves them onto the new version immediately.
+         */
         fun migrationType(migrationType: MigrationType) = apply {
             body.migrationType(migrationType)
         }
@@ -312,7 +321,8 @@ private constructor(
         ) : this(migrationType, mutableMapOf())
 
         /**
-         * The migration type of the package
+         * Who the published version applies to: NEW_CUSTOMERS (default) leaves existing subscribers
+         * on their current version, ALL_CUSTOMERS moves them onto the new version immediately.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -366,7 +376,11 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** The migration type of the package */
+            /**
+             * Who the published version applies to: NEW_CUSTOMERS (default) leaves existing
+             * subscribers on their current version, ALL_CUSTOMERS moves them onto the new version
+             * immediately.
+             */
             fun migrationType(migrationType: MigrationType) =
                 migrationType(JsonField.of(migrationType))
 
@@ -474,7 +488,10 @@ private constructor(
             "Body{migrationType=$migrationType, additionalProperties=$additionalProperties}"
     }
 
-    /** The migration type of the package */
+    /**
+     * Who the published version applies to: NEW_CUSTOMERS (default) leaves existing subscribers on
+     * their current version, ALL_CUSTOMERS moves them onto the new version immediately.
+     */
     class MigrationType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 

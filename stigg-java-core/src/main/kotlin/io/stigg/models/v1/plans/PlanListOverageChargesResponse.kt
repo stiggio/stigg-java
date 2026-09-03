@@ -165,7 +165,8 @@ private constructor(
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
-     * ISO country code for localized pricing, if any
+     * ISO country code for localized pricing, or "eu" for the European Union group you map
+     * countries into, if any
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -601,7 +602,10 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** ISO country code for localized pricing, if any */
+        /**
+         * ISO country code for localized pricing, or "eu" for the European Union group you map
+         * countries into, if any
+         */
         fun billingCountryCode(billingCountryCode: String?) =
             billingCountryCode(JsonField.ofNullable(billingCountryCode))
 

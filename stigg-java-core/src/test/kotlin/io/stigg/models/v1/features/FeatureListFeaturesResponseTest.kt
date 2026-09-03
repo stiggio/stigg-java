@@ -35,6 +35,34 @@ internal class FeatureListFeaturesResponseTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .meter(
+                    FeatureListFeaturesResponse.Meter.builder()
+                        .aggregation(
+                            FeatureListFeaturesResponse.Meter.Aggregation.builder()
+                                .function(
+                                    FeatureListFeaturesResponse.Meter.Aggregation.Function.SUM
+                                )
+                                .field("field")
+                                .build()
+                        )
+                        .addFilter(
+                            FeatureListFeaturesResponse.Meter.Filter.builder()
+                                .addCondition(
+                                    FeatureListFeaturesResponse.Meter.Filter.Condition.builder()
+                                        .field("field")
+                                        .operation(
+                                            FeatureListFeaturesResponse.Meter.Filter.Condition
+                                                .Operation
+                                                .EQUALS
+                                        )
+                                        .value("value")
+                                        .addValue("string")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .meterType(FeatureListFeaturesResponse.MeterType.NONE)
                 .unitTransformation(
                     FeatureListFeaturesResponse.UnitTransformation.builder()
@@ -69,6 +97,32 @@ internal class FeatureListFeaturesResponseTest {
             .isEqualTo(
                 FeatureListFeaturesResponse.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
+        assertThat(featureListFeaturesResponse.meter())
+            .contains(
+                FeatureListFeaturesResponse.Meter.builder()
+                    .aggregation(
+                        FeatureListFeaturesResponse.Meter.Aggregation.builder()
+                            .function(FeatureListFeaturesResponse.Meter.Aggregation.Function.SUM)
+                            .field("field")
+                            .build()
+                    )
+                    .addFilter(
+                        FeatureListFeaturesResponse.Meter.Filter.builder()
+                            .addCondition(
+                                FeatureListFeaturesResponse.Meter.Filter.Condition.builder()
+                                    .field("field")
+                                    .operation(
+                                        FeatureListFeaturesResponse.Meter.Filter.Condition.Operation
+                                            .EQUALS
+                                    )
+                                    .value("value")
+                                    .addValue("string")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .build()
             )
         assertThat(featureListFeaturesResponse.meterType())
@@ -108,6 +162,34 @@ internal class FeatureListFeaturesResponseTest {
                 .metadata(
                     FeatureListFeaturesResponse.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .meter(
+                    FeatureListFeaturesResponse.Meter.builder()
+                        .aggregation(
+                            FeatureListFeaturesResponse.Meter.Aggregation.builder()
+                                .function(
+                                    FeatureListFeaturesResponse.Meter.Aggregation.Function.SUM
+                                )
+                                .field("field")
+                                .build()
+                        )
+                        .addFilter(
+                            FeatureListFeaturesResponse.Meter.Filter.builder()
+                                .addCondition(
+                                    FeatureListFeaturesResponse.Meter.Filter.Condition.builder()
+                                        .field("field")
+                                        .operation(
+                                            FeatureListFeaturesResponse.Meter.Filter.Condition
+                                                .Operation
+                                                .EQUALS
+                                        )
+                                        .value("value")
+                                        .addValue("string")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
                 .meterType(FeatureListFeaturesResponse.MeterType.NONE)

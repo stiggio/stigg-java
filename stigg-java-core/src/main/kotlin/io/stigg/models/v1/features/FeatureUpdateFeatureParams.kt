@@ -91,6 +91,8 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
+     * Event meter that turns reported events into usage for a metered feature
+     *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -324,6 +326,7 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
+        /** Event meter that turns reported events into usage for a metered feature */
         fun meter(meter: Meter) = apply { body.meter(meter) }
 
         /**
@@ -610,6 +613,8 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
+         * Event meter that turns reported events into usage for a metered feature
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -836,6 +841,7 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
+            /** Event meter that turns reported events into usage for a metered feature */
             fun meter(meter: Meter) = meter(JsonField.of(meter))
 
             /**
@@ -1318,6 +1324,7 @@ private constructor(
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
     }
 
+    /** Event meter that turns reported events into usage for a metered feature */
     class Meter
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1337,12 +1344,16 @@ private constructor(
         ) : this(aggregation, filters, mutableMapOf())
 
         /**
+         * How the matching events are aggregated into a usage value
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun aggregation(): Aggregation = aggregation.getRequired("aggregation")
 
         /**
+         * Event filters. Conditions within a filter are ANDed, and filters are ORed
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -1404,6 +1415,7 @@ private constructor(
                 additionalProperties = meter.additionalProperties.toMutableMap()
             }
 
+            /** How the matching events are aggregated into a usage value */
             fun aggregation(aggregation: Aggregation) = aggregation(JsonField.of(aggregation))
 
             /**
@@ -1417,6 +1429,7 @@ private constructor(
                 this.aggregation = aggregation
             }
 
+            /** Event filters. Conditions within a filter are ANDed, and filters are ORed */
             fun filters(filters: List<Filter>) = filters(JsonField.of(filters))
 
             /**
@@ -1522,6 +1535,7 @@ private constructor(
             (aggregation.asKnown().getOrNull()?.validity() ?: 0) +
                 (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
+        /** How the matching events are aggregated into a usage value */
         class Aggregation
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -1539,6 +1553,8 @@ private constructor(
             ) : this(function, field, mutableMapOf())
 
             /**
+             * Aggregation function applied to the matching events
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
@@ -1609,6 +1625,7 @@ private constructor(
                     additionalProperties = aggregation.additionalProperties.toMutableMap()
                 }
 
+                /** Aggregation function applied to the matching events */
                 fun function(function: Function) = function(JsonField.of(function))
 
                 /**
@@ -1715,6 +1732,7 @@ private constructor(
                 (function.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (field.asKnown().isPresent) 1 else 0)
 
+            /** Aggregation function applied to the matching events */
             class Function @JsonCreator private constructor(private val value: JsonField<String>) :
                 Enum {
 
@@ -1916,6 +1934,8 @@ private constructor(
             ) : this(conditions, mutableMapOf())
 
             /**
+             * Conditions the event must match
+             *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
@@ -1969,6 +1989,7 @@ private constructor(
                     additionalProperties = filter.additionalProperties.toMutableMap()
                 }
 
+                /** Conditions the event must match */
                 fun conditions(conditions: List<Condition>) = conditions(JsonField.of(conditions))
 
                 /**
@@ -2110,6 +2131,8 @@ private constructor(
                 fun field(): String = field.getRequired("field")
 
                 /**
+                 * Comparison applied to the condition field
+                 *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
                  *   unexpectedly missing or null (e.g. if the server responded with an unexpected
                  *   value).
@@ -2222,6 +2245,7 @@ private constructor(
                      */
                     fun field(field: JsonField<String>) = apply { this.field = field }
 
+                    /** Comparison applied to the condition field */
                     fun operation(operation: Operation) = operation(JsonField.of(operation))
 
                     /**
@@ -2362,6 +2386,7 @@ private constructor(
                         (if (value.asKnown().isPresent) 1 else 0) +
                         (values.asKnown().getOrNull()?.size ?: 0)
 
+                /** Comparison applied to the condition field */
                 class Operation
                 @JsonCreator
                 private constructor(private val value: JsonField<String>) : Enum {

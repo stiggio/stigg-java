@@ -162,7 +162,8 @@ private constructor(
     fun isLatest(): Optional<Boolean> = isLatest.getOptional("isLatest")
 
     /**
-     * The maximum quantity of this addon that can be added to a subscription
+     * The maximum quantity of this addon that can be added to a subscription. Leave unset for no
+     * upper bound.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -557,7 +558,10 @@ private constructor(
          */
         fun isLatest(isLatest: JsonField<Boolean>) = apply { this.isLatest = isLatest }
 
-        /** The maximum quantity of this addon that can be added to a subscription */
+        /**
+         * The maximum quantity of this addon that can be added to a subscription. Leave unset for
+         * no upper bound.
+         */
         fun maxQuantity(maxQuantity: Long?) = maxQuantity(JsonField.ofNullable(maxQuantity))
 
         /**

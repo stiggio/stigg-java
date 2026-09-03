@@ -62,6 +62,34 @@ internal class FeatureServiceAsyncTest {
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
                     )
+                    .meter(
+                        FeatureCreateFeatureParams.Meter.builder()
+                            .aggregation(
+                                FeatureCreateFeatureParams.Meter.Aggregation.builder()
+                                    .function(
+                                        FeatureCreateFeatureParams.Meter.Aggregation.Function.SUM
+                                    )
+                                    .field("x")
+                                    .build()
+                            )
+                            .addFilter(
+                                FeatureCreateFeatureParams.Meter.Filter.builder()
+                                    .addCondition(
+                                        FeatureCreateFeatureParams.Meter.Filter.Condition.builder()
+                                            .field("x")
+                                            .operation(
+                                                FeatureCreateFeatureParams.Meter.Filter.Condition
+                                                    .Operation
+                                                    .EQUALS
+                                            )
+                                            .value("value")
+                                            .addValue("string")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .meterType(FeatureCreateFeatureParams.MeterType.NONE)
                     .unitTransformation(
                         FeatureCreateFeatureParams.UnitTransformation.builder()
@@ -162,14 +190,14 @@ internal class FeatureServiceAsyncTest {
                                     .function(
                                         FeatureUpdateFeatureParams.Meter.Aggregation.Function.SUM
                                     )
-                                    .field("field")
+                                    .field("x")
                                     .build()
                             )
                             .addFilter(
                                 FeatureUpdateFeatureParams.Meter.Filter.builder()
                                     .addCondition(
                                         FeatureUpdateFeatureParams.Meter.Filter.Condition.builder()
-                                            .field("field")
+                                            .field("x")
                                             .operation(
                                                 FeatureUpdateFeatureParams.Meter.Filter.Condition
                                                     .Operation

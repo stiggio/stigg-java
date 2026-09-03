@@ -41,7 +41,8 @@ private constructor(
     fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
-     * Synced entity id
+     * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+     * customer ID). Null until the link has synced; required when creating the link.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -129,7 +130,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Synced entity id */
+        /**
+         * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+         * customer ID). Null until the link has synced; required when creating the link.
+         */
         fun syncedEntityId(syncedEntityId: String?) = apply { body.syncedEntityId(syncedEntityId) }
 
         /** Alias for calling [Builder.syncedEntityId] with `syncedEntityId.orElse(null)`. */
@@ -309,7 +313,11 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Updates a customer integration link. */
+    /**
+     * Updates a customer integration link. The only field that can be changed is `syncedEntityId` —
+     * to link a customer to a different integration entirely, delete this link and create a new
+     * one.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -325,7 +333,8 @@ private constructor(
         ) : this(syncedEntityId, mutableMapOf())
 
         /**
-         * Synced entity id
+         * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+         * customer ID). Null until the link has synced; required when creating the link.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -379,7 +388,10 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Synced entity id */
+            /**
+             * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+             * customer ID). Null until the link has synced; required when creating the link.
+             */
             fun syncedEntityId(syncedEntityId: String?) =
                 syncedEntityId(JsonField.ofNullable(syncedEntityId))
 

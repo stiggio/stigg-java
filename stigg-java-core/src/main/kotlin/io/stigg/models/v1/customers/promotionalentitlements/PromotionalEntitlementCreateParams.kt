@@ -516,7 +516,10 @@ private constructor(
             "Body{promotionalEntitlements=$promotionalEntitlements, additionalProperties=$additionalProperties}"
     }
 
-    /** Single entitlement grant config */
+    /**
+     * Single entitlement grant config. Granting again for the same customer and feature replaces
+     * the existing promotional entitlement for that feature rather than stacking a second one.
+     */
     class PromotionalEntitlement
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

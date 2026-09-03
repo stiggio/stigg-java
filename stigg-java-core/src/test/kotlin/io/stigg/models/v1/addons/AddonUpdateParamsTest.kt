@@ -126,7 +126,7 @@ internal class AddonUpdateParamsTest {
                             .creditEntitlement(
                                 AddonUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                     .builder()
-                                    .amount(1.0)
+                                    .amount(0.0)
                                     .cadence(
                                         AddonUpdateParams.Charges.OveragePricingModel
                                             .CreditEntitlement
@@ -467,7 +467,7 @@ internal class AddonUpdateParamsTest {
                                 .creditEntitlement(
                                     AddonUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                         .builder()
-                                        .amount(1.0)
+                                        .amount(0.0)
                                         .cadence(
                                             AddonUpdateParams.Charges.OveragePricingModel
                                                 .CreditEntitlement
@@ -828,7 +828,7 @@ internal class AddonUpdateParamsTest {
                                 .creditEntitlement(
                                     AddonUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                         .builder()
-                                        .amount(1.0)
+                                        .amount(0.0)
                                         .cadence(
                                             AddonUpdateParams.Charges.OveragePricingModel
                                                 .CreditEntitlement
@@ -1158,7 +1158,7 @@ internal class AddonUpdateParamsTest {
                             .creditEntitlement(
                                 AddonUpdateParams.Charges.OveragePricingModel.CreditEntitlement
                                     .builder()
-                                    .amount(1.0)
+                                    .amount(0.0)
                                     .cadence(
                                         AddonUpdateParams.Charges.OveragePricingModel
                                             .CreditEntitlement

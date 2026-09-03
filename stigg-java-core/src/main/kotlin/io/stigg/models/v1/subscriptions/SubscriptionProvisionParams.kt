@@ -98,7 +98,8 @@ private constructor(
     fun awaitPaymentConfirmation(): Optional<Boolean> = body.awaitPaymentConfirmation()
 
     /**
-     * The ISO 3166-1 alpha-2 country code for billing
+     * The country code used to select a localized price, or "eu" for the European Union group you
+     * map countries into, falling back to the default price when none matches
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -170,7 +171,7 @@ private constructor(
     fun entitlements(): Optional<List<Entitlement>> = body.entitlements()
 
     /**
-     * Additional metadata for the subscription
+     * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -608,7 +609,10 @@ private constructor(
             body.awaitPaymentConfirmation(awaitPaymentConfirmation)
         }
 
-        /** The ISO 3166-1 alpha-2 country code for billing */
+        /**
+         * The country code used to select a localized price, or "eu" for the European Union group
+         * you map countries into, falling back to the default price when none matches
+         */
         fun billingCountryCode(billingCountryCode: String?) = apply {
             body.billingCountryCode(billingCountryCode)
         }
@@ -793,7 +797,9 @@ private constructor(
         /** Alias for calling [addEntitlement] with `Entitlement.ofCredit(credit)`. */
         fun addEntitlement(credit: Entitlement.Credit) = apply { body.addEntitlement(credit) }
 
-        /** Additional metadata for the subscription */
+        /**
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
+         */
         fun metadata(metadata: Metadata) = apply { body.metadata(metadata) }
 
         /**
@@ -1316,7 +1322,8 @@ private constructor(
             awaitPaymentConfirmation.getOptional("awaitPaymentConfirmation")
 
         /**
-         * The ISO 3166-1 alpha-2 country code for billing
+         * The country code used to select a localized price, or "eu" for the European Union group
+         * you map countries into, falling back to the default price when none matches
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1393,7 +1400,7 @@ private constructor(
         fun entitlements(): Optional<List<Entitlement>> = entitlements.getOptional("entitlements")
 
         /**
-         * Additional metadata for the subscription
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1912,7 +1919,10 @@ private constructor(
                 this.awaitPaymentConfirmation = awaitPaymentConfirmation
             }
 
-            /** The ISO 3166-1 alpha-2 country code for billing */
+            /**
+             * The country code used to select a localized price, or "eu" for the European Union
+             * group you map countries into, falling back to the default price when none matches
+             */
             fun billingCountryCode(billingCountryCode: String?) =
                 billingCountryCode(JsonField.ofNullable(billingCountryCode))
 
@@ -2107,7 +2117,10 @@ private constructor(
             fun addEntitlement(credit: Entitlement.Credit) =
                 addEntitlement(Entitlement.ofCredit(credit))
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -4894,7 +4907,7 @@ private constructor(
         fun isInvoicePaid(): Optional<Boolean> = isInvoicePaid.getOptional("isInvoicePaid")
 
         /**
-         * Additional metadata for the subscription
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -5185,7 +5198,10 @@ private constructor(
                 this.isInvoicePaid = isInvoicePaid
             }
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
             /**
@@ -5706,7 +5722,9 @@ private constructor(
                 "BillingAddress{city=$city, country=$country, line1=$line1, line2=$line2, postalCode=$postalCode, state=$state, additionalProperties=$additionalProperties}"
         }
 
-        /** Additional metadata for the subscription */
+        /**
+         * Additional metadata for the subscription, stored as an arbitrary flat key-value object.
+         */
         class Metadata
         @JsonCreator
         private constructor(
@@ -9424,6 +9442,7 @@ private constructor(
             private val amount: JsonField<Double>,
             private val cadence: JsonField<Cadence>,
             private val type: JsonValue,
+            private val hasSoftLimit: JsonField<Boolean>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -9437,7 +9456,10 @@ private constructor(
                 @ExcludeMissing
                 cadence: JsonField<Cadence> = JsonMissing.of(),
                 @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
-            ) : this(id, amount, cadence, type, mutableMapOf())
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
+            ) : this(id, amount, cadence, type, hasSoftLimit, mutableMapOf())
 
             /**
              * The custom currency ID for the credit entitlement
@@ -9480,6 +9502,14 @@ private constructor(
             @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
             /**
+             * Whether the credit balance is a soft limit
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun hasSoftLimit(): Optional<Boolean> = hasSoftLimit.getOptional("hasSoftLimit")
+
+            /**
              * Returns the raw JSON value of [id].
              *
              * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -9499,6 +9529,16 @@ private constructor(
              * Unlike [cadence], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("cadence") @ExcludeMissing fun _cadence(): JsonField<Cadence> = cadence
+
+            /**
+             * Returns the raw JSON value of [hasSoftLimit].
+             *
+             * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("hasSoftLimit")
+            @ExcludeMissing
+            fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -9534,6 +9574,7 @@ private constructor(
                 private var amount: JsonField<Double>? = null
                 private var cadence: JsonField<Cadence>? = null
                 private var type: JsonValue = JsonValue.from("CREDIT")
+                private var hasSoftLimit: JsonField<Boolean> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
@@ -9542,6 +9583,7 @@ private constructor(
                     amount = credit.amount
                     cadence = credit.cadence
                     type = credit.type
+                    hasSoftLimit = credit.hasSoftLimit
                     additionalProperties = credit.additionalProperties.toMutableMap()
                 }
 
@@ -9595,6 +9637,20 @@ private constructor(
                  */
                 fun type(type: JsonValue) = apply { this.type = type }
 
+                /** Whether the credit balance is a soft limit */
+                fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(JsonField.of(hasSoftLimit))
+
+                /**
+                 * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                    this.hasSoftLimit = hasSoftLimit
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -9637,6 +9693,7 @@ private constructor(
                         checkRequired("amount", amount),
                         checkRequired("cadence", cadence),
                         type,
+                        hasSoftLimit,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -9666,6 +9723,7 @@ private constructor(
                         throw StiggInvalidDataException("'type' is invalid, received $it")
                     }
                 }
+                hasSoftLimit()
                 validated = true
             }
 
@@ -9688,7 +9746,8 @@ private constructor(
                 (if (id.asKnown().isPresent) 1 else 0) +
                     (if (amount.asKnown().isPresent) 1 else 0) +
                     (cadence.asKnown().getOrNull()?.validity() ?: 0) +
-                    type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 }
+                    type.let { if (it == JsonValue.from("CREDIT")) 1 else 0 } +
+                    (if (hasSoftLimit.asKnown().isPresent) 1 else 0)
 
             /** Credit grant cadence (MONTH or YEAR) */
             class Cadence @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -9842,21 +9901,22 @@ private constructor(
                     amount == other.amount &&
                     cadence == other.cadence &&
                     type == other.type &&
+                    hasSoftLimit == other.hasSoftLimit &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(id, amount, cadence, type, additionalProperties)
+                Objects.hash(id, amount, cadence, type, hasSoftLimit, additionalProperties)
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, additionalProperties=$additionalProperties}"
+                "Credit{id=$id, amount=$amount, cadence=$cadence, type=$type, hasSoftLimit=$hasSoftLimit, additionalProperties=$additionalProperties}"
         }
     }
 
-    /** Additional metadata for the subscription */
+    /** Additional metadata for the subscription, stored as an arbitrary flat key-value object. */
     class Metadata
     @JsonCreator
     private constructor(
@@ -11208,7 +11268,10 @@ private constructor(
         fun baseCharge(): Optional<Boolean> = baseCharge.getOptional("baseCharge")
 
         /**
-         * The billing country code of the price
+         * ISO 3166-1 alpha-2 country code this price applies to, or "eu" for the European Union
+         * group you map countries into. Omit for the default price shown to all countries; set one
+         * or more country-specific price periods on the same currency to localize the amount by
+         * billing country.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -11428,7 +11491,12 @@ private constructor(
              */
             fun baseCharge(baseCharge: JsonField<Boolean>) = apply { this.baseCharge = baseCharge }
 
-            /** The billing country code of the price */
+            /**
+             * ISO 3166-1 alpha-2 country code this price applies to, or "eu" for the European Union
+             * group you map countries into. Omit for the default price shown to all countries; set
+             * one or more country-specific price periods on the same currency to localize the
+             * amount by billing country.
+             */
             fun billingCountryCode(billingCountryCode: String) =
                 billingCountryCode(JsonField.of(billingCountryCode))
 

@@ -39,7 +39,7 @@ private constructor(
     fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
-     * Integration details
+     * The internal ID of the integration this record is linked to
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -47,7 +47,8 @@ private constructor(
     fun bodyId(): String = body.bodyId()
 
     /**
-     * Synced entity id
+     * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+     * customer ID). Null until the link has synced; required when creating the link.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -55,7 +56,7 @@ private constructor(
     fun syncedEntityId(): String = body.syncedEntityId()
 
     /**
-     * The vendor identifier of integration
+     * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -156,7 +157,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Integration details */
+        /** The internal ID of the integration this record is linked to */
         fun bodyId(bodyId: String) = apply { body.bodyId(bodyId) }
 
         /**
@@ -167,7 +168,10 @@ private constructor(
          */
         fun bodyId(bodyId: JsonField<String>) = apply { body.bodyId(bodyId) }
 
-        /** Synced entity id */
+        /**
+         * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+         * customer ID). Null until the link has synced; required when creating the link.
+         */
         fun syncedEntityId(syncedEntityId: String) = apply { body.syncedEntityId(syncedEntityId) }
 
         /**
@@ -181,7 +185,7 @@ private constructor(
             body.syncedEntityId(syncedEntityId)
         }
 
-        /** The vendor identifier of integration */
+        /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
         fun vendorIdentifier(vendorIdentifier: VendorIdentifier) = apply {
             body.vendorIdentifier(vendorIdentifier)
         }
@@ -358,7 +362,11 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Links a customer to an external integration. */
+    /**
+     * Links a customer to an integration, specifying which external entity (e.g. Stripe customer
+     * ID) the customer maps to. `syncedEntityId` is required on creation, though the same field can
+     * read back as null on other integration links that have not yet synced.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -380,7 +388,7 @@ private constructor(
         ) : this(bodyId, syncedEntityId, vendorIdentifier, mutableMapOf())
 
         /**
-         * Integration details
+         * The internal ID of the integration this record is linked to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -388,7 +396,8 @@ private constructor(
         fun bodyId(): String = bodyId.getRequired("id")
 
         /**
-         * Synced entity id
+         * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+         * customer ID). Null until the link has synced; required when creating the link.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -396,7 +405,7 @@ private constructor(
         fun syncedEntityId(): String = syncedEntityId.getRequired("syncedEntityId")
 
         /**
-         * The vendor identifier of integration
+         * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -473,7 +482,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Integration details */
+            /** The internal ID of the integration this record is linked to */
             fun bodyId(bodyId: String) = bodyId(JsonField.of(bodyId))
 
             /**
@@ -485,7 +494,10 @@ private constructor(
              */
             fun bodyId(bodyId: JsonField<String>) = apply { this.bodyId = bodyId }
 
-            /** Synced entity id */
+            /**
+             * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+             * customer ID). Null until the link has synced; required when creating the link.
+             */
             fun syncedEntityId(syncedEntityId: String) =
                 syncedEntityId(JsonField.of(syncedEntityId))
 
@@ -500,7 +512,7 @@ private constructor(
                 this.syncedEntityId = syncedEntityId
             }
 
-            /** The vendor identifier of integration */
+            /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
             fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
                 vendorIdentifier(JsonField.of(vendorIdentifier))
 
@@ -621,7 +633,7 @@ private constructor(
             "Body{bodyId=$bodyId, syncedEntityId=$syncedEntityId, vendorIdentifier=$vendorIdentifier, additionalProperties=$additionalProperties}"
     }
 
-    /** The vendor identifier of integration */
+    /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
     class VendorIdentifier @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 

@@ -4785,7 +4785,8 @@ private constructor(
                 latestInvoice.getOptional("latestInvoice")
 
             /**
-             * Additional metadata for the subscription
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -5651,7 +5652,10 @@ private constructor(
                     this.latestInvoice = latestInvoice
                 }
 
-                /** Additional metadata for the subscription */
+                /**
+                 * Additional metadata for the subscription, stored as an arbitrary flat key-value
+                 * object.
+                 */
                 fun metadata(metadata: Metadata) = metadata(JsonField.of(metadata))
 
                 /**
@@ -10488,7 +10492,10 @@ private constructor(
                     "LatestInvoice{billingId=$billingId, createdAt=$createdAt, requiresAction=$requiresAction, status=$status, amountDue=$amountDue, billingReason=$billingReason, currency=$currency, pdfUrl=$pdfUrl, total=$total, additionalProperties=$additionalProperties}"
             }
 
-            /** Additional metadata for the subscription */
+            /**
+             * Additional metadata for the subscription, stored as an arbitrary flat key-value
+             * object.
+             */
             class Metadata
             @JsonCreator
             private constructor(
@@ -11866,7 +11873,10 @@ private constructor(
                 fun baseCharge(): Optional<Boolean> = baseCharge.getOptional("baseCharge")
 
                 /**
-                 * The billing country code of the price
+                 * ISO 3166-1 alpha-2 country code this price applies to, or "eu" for the European
+                 * Union group you map countries into. Omit for the default price shown to all
+                 * countries; set one or more country-specific price periods on the same currency to
+                 * localize the amount by billing country.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -12065,7 +12075,12 @@ private constructor(
                         this.baseCharge = baseCharge
                     }
 
-                    /** The billing country code of the price */
+                    /**
+                     * ISO 3166-1 alpha-2 country code this price applies to, or "eu" for the
+                     * European Union group you map countries into. Omit for the default price shown
+                     * to all countries; set one or more country-specific price periods on the same
+                     * currency to localize the amount by billing country.
+                     */
                     fun billingCountryCode(billingCountryCode: String) =
                         billingCountryCode(JsonField.of(billingCountryCode))
 

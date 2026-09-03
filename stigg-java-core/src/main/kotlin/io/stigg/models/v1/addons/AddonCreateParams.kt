@@ -77,7 +77,8 @@ private constructor(
     fun description(): Optional<String> = body.description()
 
     /**
-     * The maximum quantity of this addon that can be added to a subscription
+     * The maximum quantity of this addon that can be added to a subscription. Leave unset for no
+     * upper bound.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -304,7 +305,10 @@ private constructor(
          */
         fun description(description: JsonField<String>) = apply { body.description(description) }
 
-        /** The maximum quantity of this addon that can be added to a subscription */
+        /**
+         * The maximum quantity of this addon that can be added to a subscription. Leave unset for
+         * no upper bound.
+         */
         fun maxQuantity(maxQuantity: Long?) = apply { body.maxQuantity(maxQuantity) }
 
         /**
@@ -615,7 +619,8 @@ private constructor(
         fun description(): Optional<String> = description.getOptional("description")
 
         /**
-         * The maximum quantity of this addon that can be added to a subscription
+         * The maximum quantity of this addon that can be added to a subscription. Leave unset for
+         * no upper bound.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -842,7 +847,10 @@ private constructor(
                 this.description = description
             }
 
-            /** The maximum quantity of this addon that can be added to a subscription */
+            /**
+             * The maximum quantity of this addon that can be added to a subscription. Leave unset
+             * for no upper bound.
+             */
             fun maxQuantity(maxQuantity: Long?) = maxQuantity(JsonField.ofNullable(maxQuantity))
 
             /**

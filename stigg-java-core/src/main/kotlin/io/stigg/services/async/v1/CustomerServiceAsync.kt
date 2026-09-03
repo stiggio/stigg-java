@@ -174,12 +174,12 @@ interface CustomerServiceAsync {
 
     /**
      * Checks a single entitlement (feature or credit) for a customer or resource. Supports
-     * `requestedUsage` and `requestedValues` to evaluate against limits or enum values.
-     *
-     * **Warning:** This REST API endpoint lacks built-in client-side caching, fallback mechanisms,
-     * and low-latency guarantees. It is not recommended for hot-path entitlement checks. For
-     * production use, consider using the Stigg Node Server SDK with caching or the Sidecar for
-     * low-latency cached responses.
+     * `requestedUsage` and `requestedValues` to evaluate against limits or enum values. Each call
+     * reaches the Stigg API directly, so latency reflects a network round trip. For entitlement
+     * checks on a hot path (e.g. gating a request in real time), the Stigg Node Server SDK (with
+     * its built-in cache) or the Sidecar will typically respond faster and keep working through
+     * brief Stigg outages; reach for this endpoint when a live HTTP call is the natural fit, such
+     * as from a non-Node backend or a server-side job.
      */
     fun checkEntitlement(id: String): CompletableFuture<CustomerCheckEntitlementResponse> =
         checkEntitlement(id, CustomerCheckEntitlementParams.none())
@@ -366,12 +366,11 @@ interface CustomerServiceAsync {
 
     /**
      * Retrieves the effective entitlements for a customer or resource, including feature and credit
-     * entitlements.
-     *
-     * **Warning:** This REST API endpoint lacks built-in client-side caching, fallback mechanisms,
-     * and low-latency guarantees. It is not recommended for hot-path entitlement checks. For
-     * production use, consider using the Stigg Node Server SDK with caching or the Sidecar for
-     * low-latency cached responses.
+     * entitlements. Each call reaches the Stigg API directly, so latency reflects a network round
+     * trip. For entitlement checks on a hot path (e.g. gating a request in real time), the Stigg
+     * Node Server SDK (with its built-in cache) or the Sidecar will typically respond faster and
+     * keep working through brief Stigg outages; reach for this endpoint when a live HTTP call is
+     * the natural fit, such as from a non-Node backend or a server-side job.
      */
     fun retrieveEntitlements(id: String): CompletableFuture<CustomerRetrieveEntitlementsResponse> =
         retrieveEntitlements(id, CustomerRetrieveEntitlementsParams.none())

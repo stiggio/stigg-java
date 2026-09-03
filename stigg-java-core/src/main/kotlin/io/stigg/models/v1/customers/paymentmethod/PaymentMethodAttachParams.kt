@@ -42,7 +42,7 @@ private constructor(
     fun xEnvironmentId(): Optional<String> = Optional.ofNullable(xEnvironmentId)
 
     /**
-     * Integration details
+     * The internal ID of the integration this record is linked to
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -50,7 +50,9 @@ private constructor(
     fun integrationId(): String = body.integrationId()
 
     /**
-     * Billing provider payment method id
+     * Billing provider payment method id. Attaching it makes it the customer's new default payment
+     * method for future charges; any previously attached payment method is no longer used as the
+     * default, though it is not removed from the billing provider.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -58,7 +60,7 @@ private constructor(
     fun paymentMethodId(): String = body.paymentMethodId()
 
     /**
-     * The vendor identifier of integration
+     * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -175,7 +177,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Integration details */
+        /** The internal ID of the integration this record is linked to */
         fun integrationId(integrationId: String) = apply { body.integrationId(integrationId) }
 
         /**
@@ -189,7 +191,11 @@ private constructor(
             body.integrationId(integrationId)
         }
 
-        /** Billing provider payment method id */
+        /**
+         * Billing provider payment method id. Attaching it makes it the customer's new default
+         * payment method for future charges; any previously attached payment method is no longer
+         * used as the default, though it is not removed from the billing provider.
+         */
         fun paymentMethodId(paymentMethodId: String) = apply {
             body.paymentMethodId(paymentMethodId)
         }
@@ -205,7 +211,7 @@ private constructor(
             body.paymentMethodId(paymentMethodId)
         }
 
-        /** The vendor identifier of integration */
+        /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
         fun vendorIdentifier(vendorIdentifier: VendorIdentifier) = apply {
             body.vendorIdentifier(vendorIdentifier)
         }
@@ -430,7 +436,7 @@ private constructor(
         ) : this(integrationId, paymentMethodId, vendorIdentifier, billingCurrency, mutableMapOf())
 
         /**
-         * Integration details
+         * The internal ID of the integration this record is linked to
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -438,7 +444,9 @@ private constructor(
         fun integrationId(): String = integrationId.getRequired("integrationId")
 
         /**
-         * Billing provider payment method id
+         * Billing provider payment method id. Attaching it makes it the customer's new default
+         * payment method for future charges; any previously attached payment method is no longer
+         * used as the default, though it is not removed from the billing provider.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -446,7 +454,7 @@ private constructor(
         fun paymentMethodId(): String = paymentMethodId.getRequired("paymentMethodId")
 
         /**
-         * The vendor identifier of integration
+         * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -547,7 +555,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Integration details */
+            /** The internal ID of the integration this record is linked to */
             fun integrationId(integrationId: String) = integrationId(JsonField.of(integrationId))
 
             /**
@@ -561,7 +569,11 @@ private constructor(
                 this.integrationId = integrationId
             }
 
-            /** Billing provider payment method id */
+            /**
+             * Billing provider payment method id. Attaching it makes it the customer's new default
+             * payment method for future charges; any previously attached payment method is no
+             * longer used as the default, though it is not removed from the billing provider.
+             */
             fun paymentMethodId(paymentMethodId: String) =
                 paymentMethodId(JsonField.of(paymentMethodId))
 
@@ -576,7 +588,7 @@ private constructor(
                 this.paymentMethodId = paymentMethodId
             }
 
-            /** The vendor identifier of integration */
+            /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
             fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
                 vendorIdentifier(JsonField.of(vendorIdentifier))
 
@@ -726,7 +738,7 @@ private constructor(
             "Body{integrationId=$integrationId, paymentMethodId=$paymentMethodId, vendorIdentifier=$vendorIdentifier, billingCurrency=$billingCurrency, additionalProperties=$additionalProperties}"
     }
 
-    /** The vendor identifier of integration */
+    /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
     class VendorIdentifier @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 

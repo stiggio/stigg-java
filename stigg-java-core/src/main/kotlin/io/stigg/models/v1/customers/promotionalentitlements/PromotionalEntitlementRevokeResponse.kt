@@ -46,7 +46,10 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
-     * Granted feature entitlement
+     * A feature entitlement granted to a customer outside of their subscription plan. Promotional
+     * entitlements are applied on top of whatever the subscription already grants and are not
+     * removed when a plan or subscription changes; once past their end date they keep appearing in
+     * the customer's entitlement list with an Expired status rather than disappearing.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -101,7 +104,13 @@ private constructor(
                 promotionalEntitlementRevokeResponse.additionalProperties.toMutableMap()
         }
 
-        /** Granted feature entitlement */
+        /**
+         * A feature entitlement granted to a customer outside of their subscription plan.
+         * Promotional entitlements are applied on top of whatever the subscription already grants
+         * and are not removed when a plan or subscription changes; once past their end date they
+         * keep appearing in the customer's entitlement list with an Expired status rather than
+         * disappearing.
+         */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -184,7 +193,12 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
-    /** Granted feature entitlement */
+    /**
+     * A feature entitlement granted to a customer outside of their subscription plan. Promotional
+     * entitlements are applied on top of whatever the subscription already grants and are not
+     * removed when a plan or subscription changes; once past their end date they keep appearing in
+     * the customer's entitlement list with an Expired status rather than disappearing.
+     */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

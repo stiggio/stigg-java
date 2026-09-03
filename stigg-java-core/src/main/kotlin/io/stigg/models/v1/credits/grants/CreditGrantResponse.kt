@@ -35,7 +35,9 @@ private constructor(
     ) : this(data, mutableMapOf())
 
     /**
-     * Credit grant object representing allocated credits for a customer
+     * Credit grant object representing allocated credits for a customer. Credit grants cannot be
+     * edited after creation via this API — void the grant to stop further consumption from it, then
+     * create a new grant with the corrected amount, priority, or expiration.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -86,7 +88,11 @@ private constructor(
             additionalProperties = creditGrantResponse.additionalProperties.toMutableMap()
         }
 
-        /** Credit grant object representing allocated credits for a customer */
+        /**
+         * Credit grant object representing allocated credits for a customer. Credit grants cannot
+         * be edited after creation via this API — void the grant to stop further consumption from
+         * it, then create a new grant with the corrected amount, priority, or expiration.
+         */
         fun data(data: Data) = data(JsonField.of(data))
 
         /**
@@ -166,7 +172,11 @@ private constructor(
      */
     @JvmSynthetic internal fun validity(): Int = (data.asKnown().getOrNull()?.validity() ?: 0)
 
-    /** Credit grant object representing allocated credits for a customer */
+    /**
+     * Credit grant object representing allocated credits for a customer. Credit grants cannot be
+     * edited after creation via this API — void the grant to stop further consumption from it, then
+     * create a new grant with the corrected amount, priority, or expiration.
+     */
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -438,7 +448,10 @@ private constructor(
         fun sourceType(): Optional<SourceType> = sourceType.getOptional("sourceType")
 
         /**
-         * The effective status of the credit grant
+         * The effective status of the credit grant. A grant with paymentCollectionMethod NONE or
+         * CHARGE becomes ACTIVE (and its credits become usable) as soon as it's created (or as soon
+         * as the charge succeeds). A grant with paymentCollectionMethod INVOICE stays
+         * PAYMENT_PENDING — its credits are not usable — until the invoice is paid.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -1030,7 +1043,12 @@ private constructor(
                 this.sourceType = sourceType
             }
 
-            /** The effective status of the credit grant */
+            /**
+             * The effective status of the credit grant. A grant with paymentCollectionMethod NONE
+             * or CHARGE becomes ACTIVE (and its credits become usable) as soon as it's created (or
+             * as soon as the charge succeeds). A grant with paymentCollectionMethod INVOICE stays
+             * PAYMENT_PENDING — its credits are not usable — until the invoice is paid.
+             */
             fun status(status: Status) = status(JsonField.of(status))
 
             /**
@@ -3160,7 +3178,12 @@ private constructor(
             override fun toString() = value.toString()
         }
 
-        /** The effective status of the credit grant */
+        /**
+         * The effective status of the credit grant. A grant with paymentCollectionMethod NONE or
+         * CHARGE becomes ACTIVE (and its credits become usable) as soon as it's created (or as soon
+         * as the charge succeeds). A grant with paymentCollectionMethod INVOICE stays
+         * PAYMENT_PENDING — its credits are not usable — until the invoice is paid.
+         */
         class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
             /**
@@ -3350,7 +3373,8 @@ private constructor(
             fun status(): Status = status.getRequired("status")
 
             /**
-             * Synced entity id
+             * The external entity ID this record is linked to in the vendor system (e.g. the Stripe
+             * customer ID). Null until the link has synced; required when creating the link.
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -3358,7 +3382,7 @@ private constructor(
             fun syncedEntityId(): Optional<String> = syncedEntityId.getOptional("syncedEntityId")
 
             /**
-             * The vendor identifier of integration
+             * The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE)
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -3449,7 +3473,11 @@ private constructor(
                  */
                 fun status(status: JsonField<Status>) = apply { this.status = status }
 
-                /** Synced entity id */
+                /**
+                 * The external entity ID this record is linked to in the vendor system (e.g. the
+                 * Stripe customer ID). Null until the link has synced; required when creating the
+                 * link.
+                 */
                 fun syncedEntityId(syncedEntityId: String?) =
                     syncedEntityId(JsonField.ofNullable(syncedEntityId))
 
@@ -3470,7 +3498,7 @@ private constructor(
                     this.syncedEntityId = syncedEntityId
                 }
 
-                /** The vendor identifier of integration */
+                /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
                 fun vendorIdentifier(vendorIdentifier: VendorIdentifier) =
                     vendorIdentifier(JsonField.of(vendorIdentifier))
 
@@ -3727,7 +3755,7 @@ private constructor(
                 override fun toString() = value.toString()
             }
 
-            /** The vendor identifier of integration */
+            /** The vendor identifier of the integration (e.g. STRIPE, SALESFORCE, SNOWFLAKE) */
             class VendorIdentifier
             @JsonCreator
             private constructor(private val value: JsonField<String>) : Enum {

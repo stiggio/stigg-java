@@ -32,7 +32,12 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Granted feature entitlement */
+/**
+ * A feature entitlement granted to a customer outside of their subscription plan. Promotional
+ * entitlements are applied on top of whatever the subscription already grants and are not removed
+ * when a plan or subscription changes; once past their end date they keep appearing in the
+ * customer's entitlement list with an Expired status rather than disappearing.
+ */
 class PromotionalEntitlementListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

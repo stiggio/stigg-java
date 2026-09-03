@@ -54,7 +54,8 @@ private constructor(
     fun displayName(): String = body.displayName()
 
     /**
-     * The type of the feature
+     * The type of the feature: BOOLEAN (on/off access), NUMBER (a numeric limit or quantity), or
+     * ENUM (one of a fixed set of values).
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
@@ -110,7 +111,18 @@ private constructor(
     fun metadata(): Optional<Metadata> = body.metadata()
 
     /**
-     * The meter type for the feature
+     * Event meter that turns reported events into usage for a metered feature
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun meter(): Optional<Meter> = body.meter()
+
+    /**
+     * How usage accumulates for this feature. `Incremental` and `Fluctuating` features track usage
+     * from reported events; `None` means the feature's value isn't usage-tracked — it's just a
+     * numeric or enum value carried by the plan (for example, a seat count or a tier setting)
+     * rather than something customers consume.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -189,6 +201,13 @@ private constructor(
      * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _metadata(): JsonField<Metadata> = body._metadata()
+
+    /**
+     * Returns the raw JSON value of [meter].
+     *
+     * Unlike [meter], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _meter(): JsonField<Meter> = body._meter()
 
     /**
      * Returns the raw JSON value of [meterType].
@@ -296,7 +315,10 @@ private constructor(
          */
         fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
-        /** The type of the feature */
+        /**
+         * The type of the feature: BOOLEAN (on/off access), NUMBER (a numeric limit or quantity),
+         * or ENUM (one of a fixed set of values).
+         */
         fun featureType(featureType: FeatureType) = apply { body.featureType(featureType) }
 
         /**
@@ -405,7 +427,23 @@ private constructor(
          */
         fun metadata(metadata: JsonField<Metadata>) = apply { body.metadata(metadata) }
 
-        /** The meter type for the feature */
+        /** Event meter that turns reported events into usage for a metered feature */
+        fun meter(meter: Meter) = apply { body.meter(meter) }
+
+        /**
+         * Sets [Builder.meter] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.meter] with a well-typed [Meter] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun meter(meter: JsonField<Meter>) = apply { body.meter(meter) }
+
+        /**
+         * How usage accumulates for this feature. `Incremental` and `Fluctuating` features track
+         * usage from reported events; `None` means the feature's value isn't usage-tracked — it's
+         * just a numeric or enum value carried by the plan (for example, a seat count or a tier
+         * setting) rather than something customers consume.
+         */
         fun meterType(meterType: MeterType) = apply { body.meterType(meterType) }
 
         /**
@@ -606,6 +644,7 @@ private constructor(
         private val featureUnits: JsonField<String>,
         private val featureUnitsPlural: JsonField<String>,
         private val metadata: JsonField<Metadata>,
+        private val meter: JsonField<Meter>,
         private val meterType: JsonField<MeterType>,
         private val unitTransformation: JsonField<UnitTransformation>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -638,6 +677,7 @@ private constructor(
             @JsonProperty("metadata")
             @ExcludeMissing
             metadata: JsonField<Metadata> = JsonMissing.of(),
+            @JsonProperty("meter") @ExcludeMissing meter: JsonField<Meter> = JsonMissing.of(),
             @JsonProperty("meterType")
             @ExcludeMissing
             meterType: JsonField<MeterType> = JsonMissing.of(),
@@ -654,6 +694,7 @@ private constructor(
             featureUnits,
             featureUnitsPlural,
             metadata,
+            meter,
             meterType,
             unitTransformation,
             mutableMapOf(),
@@ -676,7 +717,8 @@ private constructor(
         fun displayName(): String = displayName.getRequired("displayName")
 
         /**
-         * The type of the feature
+         * The type of the feature: BOOLEAN (on/off access), NUMBER (a numeric limit or quantity),
+         * or ENUM (one of a fixed set of values).
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -734,7 +776,18 @@ private constructor(
         fun metadata(): Optional<Metadata> = metadata.getOptional("metadata")
 
         /**
-         * The meter type for the feature
+         * Event meter that turns reported events into usage for a metered feature
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun meter(): Optional<Meter> = meter.getOptional("meter")
+
+        /**
+         * How usage accumulates for this feature. `Incremental` and `Fluctuating` features track
+         * usage from reported events; `None` means the feature's value isn't usage-tracked — it's
+         * just a numeric or enum value carried by the plan (for example, a seat count or a tier
+         * setting) rather than something customers consume.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -832,6 +885,13 @@ private constructor(
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonField<Metadata> = metadata
 
         /**
+         * Returns the raw JSON value of [meter].
+         *
+         * Unlike [meter], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("meter") @ExcludeMissing fun _meter(): JsonField<Meter> = meter
+
+        /**
          * Returns the raw JSON value of [meterType].
          *
          * Unlike [meterType], this method doesn't throw if the JSON field has an unexpected type.
@@ -889,6 +949,7 @@ private constructor(
             private var featureUnits: JsonField<String> = JsonMissing.of()
             private var featureUnitsPlural: JsonField<String> = JsonMissing.of()
             private var metadata: JsonField<Metadata> = JsonMissing.of()
+            private var meter: JsonField<Meter> = JsonMissing.of()
             private var meterType: JsonField<MeterType> = JsonMissing.of()
             private var unitTransformation: JsonField<UnitTransformation> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -904,6 +965,7 @@ private constructor(
                 featureUnits = body.featureUnits
                 featureUnitsPlural = body.featureUnitsPlural
                 metadata = body.metadata
+                meter = body.meter
                 meterType = body.meterType
                 unitTransformation = body.unitTransformation
                 additionalProperties = body.additionalProperties.toMutableMap()
@@ -935,7 +997,10 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** The type of the feature */
+            /**
+             * The type of the feature: BOOLEAN (on/off access), NUMBER (a numeric limit or
+             * quantity), or ENUM (one of a fixed set of values).
+             */
             fun featureType(featureType: FeatureType) = featureType(JsonField.of(featureType))
 
             /**
@@ -1046,7 +1111,24 @@ private constructor(
              */
             fun metadata(metadata: JsonField<Metadata>) = apply { this.metadata = metadata }
 
-            /** The meter type for the feature */
+            /** Event meter that turns reported events into usage for a metered feature */
+            fun meter(meter: Meter) = meter(JsonField.of(meter))
+
+            /**
+             * Sets [Builder.meter] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.meter] with a well-typed [Meter] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun meter(meter: JsonField<Meter>) = apply { this.meter = meter }
+
+            /**
+             * How usage accumulates for this feature. `Incremental` and `Fluctuating` features
+             * track usage from reported events; `None` means the feature's value isn't
+             * usage-tracked — it's just a numeric or enum value carried by the plan (for example, a
+             * seat count or a tier setting) rather than something customers consume.
+             */
             fun meterType(meterType: MeterType) = meterType(JsonField.of(meterType))
 
             /**
@@ -1124,6 +1206,7 @@ private constructor(
                     featureUnits,
                     featureUnitsPlural,
                     metadata,
+                    meter,
                     meterType,
                     unitTransformation,
                     additionalProperties.toMutableMap(),
@@ -1155,6 +1238,7 @@ private constructor(
             featureUnits()
             featureUnitsPlural()
             metadata().ifPresent { it.validate() }
+            meter().ifPresent { it.validate() }
             meterType().ifPresent { it.validate() }
             unitTransformation().ifPresent { it.validate() }
             validated = true
@@ -1185,6 +1269,7 @@ private constructor(
                 (if (featureUnits.asKnown().isPresent) 1 else 0) +
                 (if (featureUnitsPlural.asKnown().isPresent) 1 else 0) +
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+                (meter.asKnown().getOrNull()?.validity() ?: 0) +
                 (meterType.asKnown().getOrNull()?.validity() ?: 0) +
                 (unitTransformation.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -1203,6 +1288,7 @@ private constructor(
                 featureUnits == other.featureUnits &&
                 featureUnitsPlural == other.featureUnitsPlural &&
                 metadata == other.metadata &&
+                meter == other.meter &&
                 meterType == other.meterType &&
                 unitTransformation == other.unitTransformation &&
                 additionalProperties == other.additionalProperties
@@ -1219,6 +1305,7 @@ private constructor(
                 featureUnits,
                 featureUnitsPlural,
                 metadata,
+                meter,
                 meterType,
                 unitTransformation,
                 additionalProperties,
@@ -1228,10 +1315,13 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{id=$id, displayName=$displayName, featureType=$featureType, description=$description, enumConfiguration=$enumConfiguration, featureStatus=$featureStatus, featureUnits=$featureUnits, featureUnitsPlural=$featureUnitsPlural, metadata=$metadata, meterType=$meterType, unitTransformation=$unitTransformation, additionalProperties=$additionalProperties}"
+            "Body{id=$id, displayName=$displayName, featureType=$featureType, description=$description, enumConfiguration=$enumConfiguration, featureStatus=$featureStatus, featureUnits=$featureUnits, featureUnitsPlural=$featureUnitsPlural, metadata=$metadata, meter=$meter, meterType=$meterType, unitTransformation=$unitTransformation, additionalProperties=$additionalProperties}"
     }
 
-    /** The type of the feature */
+    /**
+     * The type of the feature: BOOLEAN (on/off access), NUMBER (a numeric limit or quantity), or
+     * ENUM (one of a fixed set of values).
+     */
     class FeatureType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -1840,7 +1930,1342 @@ private constructor(
         override fun toString() = "Metadata{additionalProperties=$additionalProperties}"
     }
 
-    /** The meter type for the feature */
+    /** Event meter that turns reported events into usage for a metered feature */
+    class Meter
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val aggregation: JsonField<Aggregation>,
+        private val filters: JsonField<List<Filter>>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("aggregation")
+            @ExcludeMissing
+            aggregation: JsonField<Aggregation> = JsonMissing.of(),
+            @JsonProperty("filters")
+            @ExcludeMissing
+            filters: JsonField<List<Filter>> = JsonMissing.of(),
+        ) : this(aggregation, filters, mutableMapOf())
+
+        /**
+         * How the matching events are aggregated into a usage value
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun aggregation(): Aggregation = aggregation.getRequired("aggregation")
+
+        /**
+         * Event filters. Conditions within a filter are ANDed, and filters are ORed
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun filters(): List<Filter> = filters.getRequired("filters")
+
+        /**
+         * Returns the raw JSON value of [aggregation].
+         *
+         * Unlike [aggregation], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("aggregation")
+        @ExcludeMissing
+        fun _aggregation(): JsonField<Aggregation> = aggregation
+
+        /**
+         * Returns the raw JSON value of [filters].
+         *
+         * Unlike [filters], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("filters") @ExcludeMissing fun _filters(): JsonField<List<Filter>> = filters
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Meter].
+             *
+             * The following fields are required:
+             * ```java
+             * .aggregation()
+             * .filters()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Meter]. */
+        class Builder internal constructor() {
+
+            private var aggregation: JsonField<Aggregation>? = null
+            private var filters: JsonField<MutableList<Filter>>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(meter: Meter) = apply {
+                aggregation = meter.aggregation
+                filters = meter.filters.map { it.toMutableList() }
+                additionalProperties = meter.additionalProperties.toMutableMap()
+            }
+
+            /** How the matching events are aggregated into a usage value */
+            fun aggregation(aggregation: Aggregation) = aggregation(JsonField.of(aggregation))
+
+            /**
+             * Sets [Builder.aggregation] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.aggregation] with a well-typed [Aggregation] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun aggregation(aggregation: JsonField<Aggregation>) = apply {
+                this.aggregation = aggregation
+            }
+
+            /** Event filters. Conditions within a filter are ANDed, and filters are ORed */
+            fun filters(filters: List<Filter>) = filters(JsonField.of(filters))
+
+            /**
+             * Sets [Builder.filters] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.filters] with a well-typed `List<Filter>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun filters(filters: JsonField<List<Filter>>) = apply {
+                this.filters = filters.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Filter] to [filters].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addFilter(filter: Filter) = apply {
+                filters =
+                    (filters ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("filters", it).add(filter)
+                    }
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Meter].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .aggregation()
+             * .filters()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Meter =
+                Meter(
+                    checkRequired("aggregation", aggregation),
+                    checkRequired("filters", filters).map { it.toImmutable() },
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StiggInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): Meter = apply {
+            if (validated) {
+                return@apply
+            }
+
+            aggregation().validate()
+            filters().forEach { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (aggregation.asKnown().getOrNull()?.validity() ?: 0) +
+                (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+
+        /** How the matching events are aggregated into a usage value */
+        class Aggregation
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val function: JsonField<Function>,
+            private val field: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("function")
+                @ExcludeMissing
+                function: JsonField<Function> = JsonMissing.of(),
+                @JsonProperty("field") @ExcludeMissing field: JsonField<String> = JsonMissing.of(),
+            ) : this(function, field, mutableMapOf())
+
+            /**
+             * Aggregation function applied to the matching events
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun function(): Function = function.getRequired("function")
+
+            /**
+             * Aggregation field name
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun field(): Optional<String> = field.getOptional("field")
+
+            /**
+             * Returns the raw JSON value of [function].
+             *
+             * Unlike [function], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("function")
+            @ExcludeMissing
+            fun _function(): JsonField<Function> = function
+
+            /**
+             * Returns the raw JSON value of [field].
+             *
+             * Unlike [field], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("field") @ExcludeMissing fun _field(): JsonField<String> = field
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Aggregation].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .function()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Aggregation]. */
+            class Builder internal constructor() {
+
+                private var function: JsonField<Function>? = null
+                private var field: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(aggregation: Aggregation) = apply {
+                    function = aggregation.function
+                    field = aggregation.field
+                    additionalProperties = aggregation.additionalProperties.toMutableMap()
+                }
+
+                /** Aggregation function applied to the matching events */
+                fun function(function: Function) = function(JsonField.of(function))
+
+                /**
+                 * Sets [Builder.function] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.function] with a well-typed [Function] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun function(function: JsonField<Function>) = apply { this.function = function }
+
+                /** Aggregation field name */
+                fun field(field: String) = field(JsonField.of(field))
+
+                /**
+                 * Sets [Builder.field] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.field] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun field(field: JsonField<String>) = apply { this.field = field }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Aggregation].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .function()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Aggregation =
+                    Aggregation(
+                        checkRequired("function", function),
+                        field,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Aggregation = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                function().validate()
+                field()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (function.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (field.asKnown().isPresent) 1 else 0)
+
+            /** Aggregation function applied to the matching events */
+            class Function @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    @JvmField val SUM = of("SUM")
+
+                    @JvmField val MAX = of("MAX")
+
+                    @JvmField val MIN = of("MIN")
+
+                    @JvmField val AVG = of("AVG")
+
+                    @JvmField val COUNT = of("COUNT")
+
+                    @JvmField val UNIQUE = of("UNIQUE")
+
+                    @JvmStatic fun of(value: String) = Function(JsonField.of(value))
+                }
+
+                /** An enum containing [Function]'s known values. */
+                enum class Known {
+                    SUM,
+                    MAX,
+                    MIN,
+                    AVG,
+                    COUNT,
+                    UNIQUE,
+                }
+
+                /**
+                 * An enum containing [Function]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Function] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    SUM,
+                    MAX,
+                    MIN,
+                    AVG,
+                    COUNT,
+                    UNIQUE,
+                    /**
+                     * An enum member indicating that [Function] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        SUM -> Value.SUM
+                        MAX -> Value.MAX
+                        MIN -> Value.MIN
+                        AVG -> Value.AVG
+                        COUNT -> Value.COUNT
+                        UNIQUE -> Value.UNIQUE
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value is a not a known
+                 *   member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        SUM -> Known.SUM
+                        MAX -> Known.MAX
+                        MIN -> Known.MIN
+                        AVG -> Known.AVG
+                        COUNT -> Known.COUNT
+                        UNIQUE -> Known.UNIQUE
+                        else -> throw StiggInvalidDataException("Unknown Function: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws StiggInvalidDataException if this class instance's value does not have
+                 *   the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString().orElseThrow {
+                        StiggInvalidDataException("Value is not a String")
+                    }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StiggInvalidDataException if any value type in this object doesn't match
+                 *   its expected type.
+                 */
+                fun validate(): Function = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Function && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Aggregation &&
+                    function == other.function &&
+                    field == other.field &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(function, field, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Aggregation{function=$function, field=$field, additionalProperties=$additionalProperties}"
+        }
+
+        class Filter
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val conditions: JsonField<List<Condition>>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("conditions")
+                @ExcludeMissing
+                conditions: JsonField<List<Condition>> = JsonMissing.of()
+            ) : this(conditions, mutableMapOf())
+
+            /**
+             * Conditions the event must match
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun conditions(): List<Condition> = conditions.getRequired("conditions")
+
+            /**
+             * Returns the raw JSON value of [conditions].
+             *
+             * Unlike [conditions], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("conditions")
+            @ExcludeMissing
+            fun _conditions(): JsonField<List<Condition>> = conditions
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Filter].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .conditions()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Filter]. */
+            class Builder internal constructor() {
+
+                private var conditions: JsonField<MutableList<Condition>>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(filter: Filter) = apply {
+                    conditions = filter.conditions.map { it.toMutableList() }
+                    additionalProperties = filter.additionalProperties.toMutableMap()
+                }
+
+                /** Conditions the event must match */
+                fun conditions(conditions: List<Condition>) = conditions(JsonField.of(conditions))
+
+                /**
+                 * Sets [Builder.conditions] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.conditions] with a well-typed `List<Condition>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun conditions(conditions: JsonField<List<Condition>>) = apply {
+                    this.conditions = conditions.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [Condition] to [conditions].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCondition(condition: Condition) = apply {
+                    conditions =
+                        (conditions ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("conditions", it).add(condition)
+                        }
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Filter].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .conditions()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Filter =
+                    Filter(
+                        checkRequired("conditions", conditions).map { it.toImmutable() },
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Filter = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                conditions().forEach { it.validate() }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (conditions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+
+            class Condition
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val field: JsonField<String>,
+                private val operation: JsonField<Operation>,
+                private val value: JsonField<String>,
+                private val values: JsonField<List<String>>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("field")
+                    @ExcludeMissing
+                    field: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("operation")
+                    @ExcludeMissing
+                    operation: JsonField<Operation> = JsonMissing.of(),
+                    @JsonProperty("value")
+                    @ExcludeMissing
+                    value: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("values")
+                    @ExcludeMissing
+                    values: JsonField<List<String>> = JsonMissing.of(),
+                ) : this(field, operation, value, values, mutableMapOf())
+
+                /**
+                 * Condition field name
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun field(): String = field.getRequired("field")
+
+                /**
+                 * Comparison applied to the condition field
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun operation(): Operation = operation.getRequired("operation")
+
+                /**
+                 * Condition value
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun value(): Optional<String> = value.getOptional("value")
+
+                /**
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun values(): Optional<List<String>> = values.getOptional("values")
+
+                /**
+                 * Returns the raw JSON value of [field].
+                 *
+                 * Unlike [field], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("field") @ExcludeMissing fun _field(): JsonField<String> = field
+
+                /**
+                 * Returns the raw JSON value of [operation].
+                 *
+                 * Unlike [operation], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("operation")
+                @ExcludeMissing
+                fun _operation(): JsonField<Operation> = operation
+
+                /**
+                 * Returns the raw JSON value of [value].
+                 *
+                 * Unlike [value], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<String> = value
+
+                /**
+                 * Returns the raw JSON value of [values].
+                 *
+                 * Unlike [values], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("values")
+                @ExcludeMissing
+                fun _values(): JsonField<List<String>> = values
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [Condition].
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .field()
+                     * .operation()
+                     * ```
+                     */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Condition]. */
+                class Builder internal constructor() {
+
+                    private var field: JsonField<String>? = null
+                    private var operation: JsonField<Operation>? = null
+                    private var value: JsonField<String> = JsonMissing.of()
+                    private var values: JsonField<MutableList<String>>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(condition: Condition) = apply {
+                        field = condition.field
+                        operation = condition.operation
+                        value = condition.value
+                        values = condition.values.map { it.toMutableList() }
+                        additionalProperties = condition.additionalProperties.toMutableMap()
+                    }
+
+                    /** Condition field name */
+                    fun field(field: String) = field(JsonField.of(field))
+
+                    /**
+                     * Sets [Builder.field] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.field] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun field(field: JsonField<String>) = apply { this.field = field }
+
+                    /** Comparison applied to the condition field */
+                    fun operation(operation: Operation) = operation(JsonField.of(operation))
+
+                    /**
+                     * Sets [Builder.operation] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.operation] with a well-typed [Operation]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun operation(operation: JsonField<Operation>) = apply {
+                        this.operation = operation
+                    }
+
+                    /** Condition value */
+                    fun value(value: String) = value(JsonField.of(value))
+
+                    /**
+                     * Sets [Builder.value] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.value] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun value(value: JsonField<String>) = apply { this.value = value }
+
+                    fun values(values: List<String>) = values(JsonField.of(values))
+
+                    /**
+                     * Sets [Builder.values] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.values] with a well-typed `List<String>`
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun values(values: JsonField<List<String>>) = apply {
+                        this.values = values.map { it.toMutableList() }
+                    }
+
+                    /**
+                     * Adds a single [String] to [values].
+                     *
+                     * @throws IllegalStateException if the field was previously set to a non-list.
+                     */
+                    fun addValue(value: String) = apply {
+                        values =
+                            (values ?: JsonField.of(mutableListOf())).also {
+                                checkKnown("values", it).add(value)
+                            }
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Condition].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```java
+                     * .field()
+                     * .operation()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): Condition =
+                        Condition(
+                            checkRequired("field", field),
+                            checkRequired("operation", operation),
+                            value,
+                            (values ?: JsonMissing.of()).map { it.toImmutable() },
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StiggInvalidDataException if any value type in this object doesn't match
+                 *   its expected type.
+                 */
+                fun validate(): Condition = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    field()
+                    operation().validate()
+                    value()
+                    values()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StiggInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (field.asKnown().isPresent) 1 else 0) +
+                        (operation.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (value.asKnown().isPresent) 1 else 0) +
+                        (values.asKnown().getOrNull()?.size ?: 0)
+
+                /** Comparison applied to the condition field */
+                class Operation
+                @JsonCreator
+                private constructor(private val value: JsonField<String>) : Enum {
+
+                    /**
+                     * Returns this class instance's raw value.
+                     *
+                     * This is usually only useful if this instance was deserialized from data that
+                     * doesn't match any known member, and you want to know that value. For example,
+                     * if the SDK is on an older version than the API, then the API may respond with
+                     * new members that the SDK is unaware of.
+                     */
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    fun _value(): JsonField<String> = value
+
+                    companion object {
+
+                        @JvmField val EQUALS = of("EQUALS")
+
+                        @JvmField val NOT_EQUALS = of("NOT_EQUALS")
+
+                        @JvmField val GREATER_THAN = of("GREATER_THAN")
+
+                        @JvmField val GREATER_THAN_OR_EQUAL = of("GREATER_THAN_OR_EQUAL")
+
+                        @JvmField val LESS_THAN = of("LESS_THAN")
+
+                        @JvmField val LESS_THAN_OR_EQUAL = of("LESS_THAN_OR_EQUAL")
+
+                        @JvmField val IS_NULL = of("IS_NULL")
+
+                        @JvmField val IS_NOT_NULL = of("IS_NOT_NULL")
+
+                        @JvmField val CONTAINS = of("CONTAINS")
+
+                        @JvmField val STARTS_WITH = of("STARTS_WITH")
+
+                        @JvmField val ENDS_WITH = of("ENDS_WITH")
+
+                        @JvmField val IN = of("IN")
+
+                        @JvmStatic fun of(value: String) = Operation(JsonField.of(value))
+                    }
+
+                    /** An enum containing [Operation]'s known values. */
+                    enum class Known {
+                        EQUALS,
+                        NOT_EQUALS,
+                        GREATER_THAN,
+                        GREATER_THAN_OR_EQUAL,
+                        LESS_THAN,
+                        LESS_THAN_OR_EQUAL,
+                        IS_NULL,
+                        IS_NOT_NULL,
+                        CONTAINS,
+                        STARTS_WITH,
+                        ENDS_WITH,
+                        IN,
+                    }
+
+                    /**
+                     * An enum containing [Operation]'s known values, as well as an [_UNKNOWN]
+                     * member.
+                     *
+                     * An instance of [Operation] can contain an unknown value in a couple of cases:
+                     * - It was deserialized from data that doesn't match any known member. For
+                     *   example, if the SDK is on an older version than the API, then the API may
+                     *   respond with new members that the SDK is unaware of.
+                     * - It was constructed with an arbitrary value using the [of] method.
+                     */
+                    enum class Value {
+                        EQUALS,
+                        NOT_EQUALS,
+                        GREATER_THAN,
+                        GREATER_THAN_OR_EQUAL,
+                        LESS_THAN,
+                        LESS_THAN_OR_EQUAL,
+                        IS_NULL,
+                        IS_NOT_NULL,
+                        CONTAINS,
+                        STARTS_WITH,
+                        ENDS_WITH,
+                        IN,
+                        /**
+                         * An enum member indicating that [Operation] was instantiated with an
+                         * unknown value.
+                         */
+                        _UNKNOWN,
+                    }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value, or
+                     * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                     *
+                     * Use the [known] method instead if you're certain the value is always known or
+                     * if you want to throw for the unknown case.
+                     */
+                    fun value(): Value =
+                        when (this) {
+                            EQUALS -> Value.EQUALS
+                            NOT_EQUALS -> Value.NOT_EQUALS
+                            GREATER_THAN -> Value.GREATER_THAN
+                            GREATER_THAN_OR_EQUAL -> Value.GREATER_THAN_OR_EQUAL
+                            LESS_THAN -> Value.LESS_THAN
+                            LESS_THAN_OR_EQUAL -> Value.LESS_THAN_OR_EQUAL
+                            IS_NULL -> Value.IS_NULL
+                            IS_NOT_NULL -> Value.IS_NOT_NULL
+                            CONTAINS -> Value.CONTAINS
+                            STARTS_WITH -> Value.STARTS_WITH
+                            ENDS_WITH -> Value.ENDS_WITH
+                            IN -> Value.IN
+                            else -> Value._UNKNOWN
+                        }
+
+                    /**
+                     * Returns an enum member corresponding to this class instance's value.
+                     *
+                     * Use the [value] method instead if you're uncertain the value is always known
+                     * and don't want to throw for the unknown case.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value is a not a
+                     *   known member.
+                     */
+                    fun known(): Known =
+                        when (this) {
+                            EQUALS -> Known.EQUALS
+                            NOT_EQUALS -> Known.NOT_EQUALS
+                            GREATER_THAN -> Known.GREATER_THAN
+                            GREATER_THAN_OR_EQUAL -> Known.GREATER_THAN_OR_EQUAL
+                            LESS_THAN -> Known.LESS_THAN
+                            LESS_THAN_OR_EQUAL -> Known.LESS_THAN_OR_EQUAL
+                            IS_NULL -> Known.IS_NULL
+                            IS_NOT_NULL -> Known.IS_NOT_NULL
+                            CONTAINS -> Known.CONTAINS
+                            STARTS_WITH -> Known.STARTS_WITH
+                            ENDS_WITH -> Known.ENDS_WITH
+                            IN -> Known.IN
+                            else -> throw StiggInvalidDataException("Unknown Operation: $value")
+                        }
+
+                    /**
+                     * Returns this class instance's primitive wire representation.
+                     *
+                     * This differs from the [toString] method because that method is primarily for
+                     * debugging and generally doesn't throw.
+                     *
+                     * @throws StiggInvalidDataException if this class instance's value does not
+                     *   have the expected primitive type.
+                     */
+                    fun asString(): String =
+                        _value().asString().orElseThrow {
+                            StiggInvalidDataException("Value is not a String")
+                        }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StiggInvalidDataException if any value type in this object doesn't
+                     *   match its expected type.
+                     */
+                    fun validate(): Operation = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        known()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Operation && value == other.value
+                    }
+
+                    override fun hashCode() = value.hashCode()
+
+                    override fun toString() = value.toString()
+                }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Condition &&
+                        field == other.field &&
+                        operation == other.operation &&
+                        value == other.value &&
+                        values == other.values &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(field, operation, value, values, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Condition{field=$field, operation=$operation, value=$value, values=$values, additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Filter &&
+                    conditions == other.conditions &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(conditions, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Filter{conditions=$conditions, additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Meter &&
+                aggregation == other.aggregation &&
+                filters == other.filters &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(aggregation, filters, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Meter{aggregation=$aggregation, filters=$filters, additionalProperties=$additionalProperties}"
+    }
+
+    /**
+     * How usage accumulates for this feature. `Incremental` and `Fluctuating` features track usage
+     * from reported events; `None` means the feature's value isn't usage-tracked — it's just a
+     * numeric or enum value carried by the plan (for example, a seat count or a tier setting)
+     * rather than something customers consume.
+     */
     class MeterType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**

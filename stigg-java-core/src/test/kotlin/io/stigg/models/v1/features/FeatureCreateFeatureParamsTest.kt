@@ -33,6 +33,31 @@ internal class FeatureCreateFeatureParamsTest {
                     .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
+            .meter(
+                FeatureCreateFeatureParams.Meter.builder()
+                    .aggregation(
+                        FeatureCreateFeatureParams.Meter.Aggregation.builder()
+                            .function(FeatureCreateFeatureParams.Meter.Aggregation.Function.SUM)
+                            .field("x")
+                            .build()
+                    )
+                    .addFilter(
+                        FeatureCreateFeatureParams.Meter.Filter.builder()
+                            .addCondition(
+                                FeatureCreateFeatureParams.Meter.Filter.Condition.builder()
+                                    .field("x")
+                                    .operation(
+                                        FeatureCreateFeatureParams.Meter.Filter.Condition.Operation
+                                            .EQUALS
+                                    )
+                                    .value("value")
+                                    .addValue("string")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
             .meterType(FeatureCreateFeatureParams.MeterType.NONE)
             .unitTransformation(
                 FeatureCreateFeatureParams.UnitTransformation.builder()
@@ -67,6 +92,32 @@ internal class FeatureCreateFeatureParamsTest {
                 .metadata(
                     FeatureCreateFeatureParams.Metadata.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .meter(
+                    FeatureCreateFeatureParams.Meter.builder()
+                        .aggregation(
+                            FeatureCreateFeatureParams.Meter.Aggregation.builder()
+                                .function(FeatureCreateFeatureParams.Meter.Aggregation.Function.SUM)
+                                .field("x")
+                                .build()
+                        )
+                        .addFilter(
+                            FeatureCreateFeatureParams.Meter.Filter.builder()
+                                .addCondition(
+                                    FeatureCreateFeatureParams.Meter.Filter.Condition.builder()
+                                        .field("x")
+                                        .operation(
+                                            FeatureCreateFeatureParams.Meter.Filter.Condition
+                                                .Operation
+                                                .EQUALS
+                                        )
+                                        .value("value")
+                                        .addValue("string")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
                 .meterType(FeatureCreateFeatureParams.MeterType.NONE)
@@ -129,6 +180,32 @@ internal class FeatureCreateFeatureParamsTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .meter(
+                    FeatureCreateFeatureParams.Meter.builder()
+                        .aggregation(
+                            FeatureCreateFeatureParams.Meter.Aggregation.builder()
+                                .function(FeatureCreateFeatureParams.Meter.Aggregation.Function.SUM)
+                                .field("x")
+                                .build()
+                        )
+                        .addFilter(
+                            FeatureCreateFeatureParams.Meter.Filter.builder()
+                                .addCondition(
+                                    FeatureCreateFeatureParams.Meter.Filter.Condition.builder()
+                                        .field("x")
+                                        .operation(
+                                            FeatureCreateFeatureParams.Meter.Filter.Condition
+                                                .Operation
+                                                .EQUALS
+                                        )
+                                        .value("value")
+                                        .addValue("string")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .meterType(FeatureCreateFeatureParams.MeterType.NONE)
                 .unitTransformation(
                     FeatureCreateFeatureParams.UnitTransformation.builder()
@@ -160,6 +237,32 @@ internal class FeatureCreateFeatureParamsTest {
             .contains(
                 FeatureCreateFeatureParams.Metadata.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
+        assertThat(body.meter())
+            .contains(
+                FeatureCreateFeatureParams.Meter.builder()
+                    .aggregation(
+                        FeatureCreateFeatureParams.Meter.Aggregation.builder()
+                            .function(FeatureCreateFeatureParams.Meter.Aggregation.Function.SUM)
+                            .field("x")
+                            .build()
+                    )
+                    .addFilter(
+                        FeatureCreateFeatureParams.Meter.Filter.builder()
+                            .addCondition(
+                                FeatureCreateFeatureParams.Meter.Filter.Condition.builder()
+                                    .field("x")
+                                    .operation(
+                                        FeatureCreateFeatureParams.Meter.Filter.Condition.Operation
+                                            .EQUALS
+                                    )
+                                    .value("value")
+                                    .addValue("string")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .build()
             )
         assertThat(body.meterType()).contains(FeatureCreateFeatureParams.MeterType.NONE)

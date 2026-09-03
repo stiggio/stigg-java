@@ -49,7 +49,8 @@ private constructor(
     fun billingId(): Optional<String> = body.billingId()
 
     /**
-     * Pricing configuration to set on the addon draft
+     * Pricing configuration to set on the addon draft. Unlike the rest of this request, this is a
+     * full replace of the pricing configuration, not a merge — see SetPackagePricingRequest.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -81,7 +82,8 @@ private constructor(
     fun displayName(): Optional<String> = body.displayName()
 
     /**
-     * The maximum quantity of this addon that can be added to a subscription
+     * The maximum quantity of this addon that can be added to a subscription. Leave unset for no
+     * upper bound.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -243,7 +245,10 @@ private constructor(
          */
         fun billingId(billingId: JsonField<String>) = apply { body.billingId(billingId) }
 
-        /** Pricing configuration to set on the addon draft */
+        /**
+         * Pricing configuration to set on the addon draft. Unlike the rest of this request, this is
+         * a full replace of the pricing configuration, not a merge — see SetPackagePricingRequest.
+         */
         fun charges(charges: Charges) = apply { body.charges(charges) }
 
         /**
@@ -306,7 +311,10 @@ private constructor(
          */
         fun displayName(displayName: JsonField<String>) = apply { body.displayName(displayName) }
 
-        /** The maximum quantity of this addon that can be added to a subscription */
+        /**
+         * The maximum quantity of this addon that can be added to a subscription. Leave unset for
+         * no upper bound.
+         */
         fun maxQuantity(maxQuantity: Long?) = apply { body.maxQuantity(maxQuantity) }
 
         /**
@@ -503,7 +511,10 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Partially update an existing addon. Only provided fields are updated. */
+    /**
+     * Partially update an existing addon. Only provided fields are updated; omitted fields keep
+     * their current value.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -561,7 +572,8 @@ private constructor(
         fun billingId(): Optional<String> = billingId.getOptional("billingId")
 
         /**
-         * Pricing configuration to set on the addon draft
+         * Pricing configuration to set on the addon draft. Unlike the rest of this request, this is
+         * a full replace of the pricing configuration, not a merge — see SetPackagePricingRequest.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -593,7 +605,8 @@ private constructor(
         fun displayName(): Optional<String> = displayName.getOptional("displayName")
 
         /**
-         * The maximum quantity of this addon that can be added to a subscription
+         * The maximum quantity of this addon that can be added to a subscription. Leave unset for
+         * no upper bound.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -740,7 +753,11 @@ private constructor(
              */
             fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
 
-            /** Pricing configuration to set on the addon draft */
+            /**
+             * Pricing configuration to set on the addon draft. Unlike the rest of this request,
+             * this is a full replace of the pricing configuration, not a merge — see
+             * SetPackagePricingRequest.
+             */
             fun charges(charges: Charges) = charges(JsonField.of(charges))
 
             /**
@@ -814,7 +831,10 @@ private constructor(
                 this.displayName = displayName
             }
 
-            /** The maximum quantity of this addon that can be added to a subscription */
+            /**
+             * The maximum quantity of this addon that can be added to a subscription. Leave unset
+             * for no upper bound.
+             */
             fun maxQuantity(maxQuantity: Long?) = maxQuantity(JsonField.ofNullable(maxQuantity))
 
             /**
@@ -987,7 +1007,10 @@ private constructor(
             "Body{billingId=$billingId, charges=$charges, dependencies=$dependencies, description=$description, displayName=$displayName, maxQuantity=$maxQuantity, metadata=$metadata, status=$status, additionalProperties=$additionalProperties}"
     }
 
-    /** Pricing configuration to set on the addon draft */
+    /**
+     * Pricing configuration to set on the addon draft. Unlike the rest of this request, this is a
+     * full replace of the pricing configuration, not a merge — see SetPackagePricingRequest.
+     */
     class Charges
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1064,7 +1087,8 @@ private constructor(
             overageBillingPeriod.getOptional("overageBillingPeriod")
 
         /**
-         * Array of overage pricing model configurations
+         * Array of overage pricing model configurations. Replaces all existing overage pricing
+         * models on the draft — omit this to end up with no overage pricing.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1073,7 +1097,8 @@ private constructor(
             overagePricingModels.getOptional("overagePricingModels")
 
         /**
-         * Array of pricing model configurations
+         * Array of pricing model configurations. Replaces all existing base pricing models on the
+         * draft — omit this to end up with no base pricing.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -1257,7 +1282,10 @@ private constructor(
                     this.overageBillingPeriod = overageBillingPeriod
                 }
 
-            /** Array of overage pricing model configurations */
+            /**
+             * Array of overage pricing model configurations. Replaces all existing overage pricing
+             * models on the draft — omit this to end up with no overage pricing.
+             */
             fun overagePricingModels(overagePricingModels: List<OveragePricingModel>) =
                 overagePricingModels(JsonField.of(overagePricingModels))
 
@@ -1285,7 +1313,10 @@ private constructor(
                     }
             }
 
-            /** Array of pricing model configurations */
+            /**
+             * Array of pricing model configurations. Replaces all existing base pricing models on
+             * the draft — omit this to end up with no base pricing.
+             */
             fun pricingModels(pricingModels: List<PricingModel>) =
                 pricingModels(JsonField.of(pricingModels))
 
@@ -3528,7 +3559,8 @@ private constructor(
                 fun billingPeriod(): BillingPeriod = billingPeriod.getRequired("billingPeriod")
 
                 /**
-                 * ISO country code for localized pricing
+                 * ISO country code for localized pricing, or "eu" for the European Union group you
+                 * map countries into
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -3707,7 +3739,10 @@ private constructor(
                         this.billingPeriod = billingPeriod
                     }
 
-                    /** ISO country code for localized pricing */
+                    /**
+                     * ISO country code for localized pricing, or "eu" for the European Union group
+                     * you map countries into
+                     */
                     fun billingCountryCode(billingCountryCode: String) =
                         billingCountryCode(JsonField.of(billingCountryCode))
 
@@ -11026,7 +11061,8 @@ private constructor(
                 fun billingPeriod(): BillingPeriod = billingPeriod.getRequired("billingPeriod")
 
                 /**
-                 * ISO country code for localized pricing
+                 * ISO country code for localized pricing, or "eu" for the European Union group you
+                 * map countries into
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -11205,7 +11241,10 @@ private constructor(
                         this.billingPeriod = billingPeriod
                     }
 
-                    /** ISO country code for localized pricing */
+                    /**
+                     * ISO country code for localized pricing, or "eu" for the European Union group
+                     * you map countries into
+                     */
                     fun billingCountryCode(billingCountryCode: String) =
                         billingCountryCode(JsonField.of(billingCountryCode))
 

@@ -24,8 +24,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Reports raw usage events for event-based metering. Events are ingested asynchronously and
- * aggregated into usage totals.
+ * Reports raw usage events for event-based metering. Events are validated and stored synchronously,
+ * then aggregated into usage totals asynchronously.
  */
 class EventReportParams
 private constructor(
@@ -533,7 +533,9 @@ private constructor(
         fun eventName(): String = eventName.getRequired("eventName")
 
         /**
-         * Idempotency key
+         * A key you provide to safely retry the same usage report without double-counting it.
+         * Reports with a previously-seen idempotency key are deduplicated for 7 days; after that
+         * window a retry is treated as new usage.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -549,7 +551,9 @@ private constructor(
         fun dimensions(): Optional<Dimensions> = dimensions.getOptional("dimensions")
 
         /**
-         * Resource id
+         * The customer resource this usage applies to. Optional — only required if the customer has
+         * multiple resources (for example, one subscription per workspace or site) and usage needs
+         * to be tracked separately per resource; omit it to report usage at the customer level.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -690,7 +694,11 @@ private constructor(
              */
             fun eventName(eventName: JsonField<String>) = apply { this.eventName = eventName }
 
-            /** Idempotency key */
+            /**
+             * A key you provide to safely retry the same usage report without double-counting it.
+             * Reports with a previously-seen idempotency key are deduplicated for 7 days; after
+             * that window a retry is treated as new usage.
+             */
             fun idempotencyKey(idempotencyKey: String) =
                 idempotencyKey(JsonField.of(idempotencyKey))
 
@@ -719,7 +727,12 @@ private constructor(
                 this.dimensions = dimensions
             }
 
-            /** Resource id */
+            /**
+             * The customer resource this usage applies to. Optional — only required if the customer
+             * has multiple resources (for example, one subscription per workspace or site) and
+             * usage needs to be tracked separately per resource; omit it to report usage at the
+             * customer level.
+             */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
             /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
