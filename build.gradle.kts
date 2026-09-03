@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "io.stigg"
-    version = "0.1.0-beta.47" // x-release-please-version
+    version = "0.1.0-beta.48" // x-release-please-version
 }
 
 subprojects {
