@@ -5,6 +5,7 @@ package io.stigg.models.v1.contracts
 import io.stigg.core.JsonValue
 import io.stigg.core.http.Headers
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -16,6 +17,12 @@ internal class ContractCreateParamsTest {
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .customerId("customerId")
+            .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+            .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+            .contractId("contractId")
+            .name("name")
+            .poNumber("poNumber")
+            .setupBilling(true)
             .addSubscription(
                 ContractCreateParams.Subscription.builder()
                     .existingSubscriptionId("existingSubscriptionId")
@@ -357,11 +364,6 @@ internal class ContractCreateParamsTest {
                     )
                     .build()
             )
-            .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-            .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-            .name("name")
-            .poNumber("poNumber")
-            .setupBilling(true)
             .build()
     }
 
@@ -372,6 +374,12 @@ internal class ContractCreateParamsTest {
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
+                .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .contractId("contractId")
+                .name("name")
+                .poNumber("poNumber")
+                .setupBilling(true)
                 .addSubscription(
                     ContractCreateParams.Subscription.builder()
                         .existingSubscriptionId("existingSubscriptionId")
@@ -732,11 +740,6 @@ internal class ContractCreateParamsTest {
                         )
                         .build()
                 )
-                .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .name("name")
-                .poNumber("poNumber")
-                .setupBilling(true)
                 .build()
 
         val headers = params._headers()
@@ -752,11 +755,7 @@ internal class ContractCreateParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params =
-            ContractCreateParams.builder()
-                .customerId("customerId")
-                .addSubscription(ContractCreateParams.Subscription.builder().build())
-                .build()
+        val params = ContractCreateParams.builder().customerId("customerId").build()
 
         val headers = params._headers()
 
@@ -770,6 +769,12 @@ internal class ContractCreateParamsTest {
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
+                .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .contractId("contractId")
+                .name("name")
+                .poNumber("poNumber")
+                .setupBilling(true)
                 .addSubscription(
                     ContractCreateParams.Subscription.builder()
                         .existingSubscriptionId("existingSubscriptionId")
@@ -1130,17 +1135,20 @@ internal class ContractCreateParamsTest {
                         )
                         .build()
                 )
-                .activationEndDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .activationStartDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .name("name")
-                .poNumber("poNumber")
-                .setupBilling(true)
                 .build()
 
         val body = params._body()
 
         assertThat(body.customerId()).isEqualTo("customerId")
-        assertThat(body.subscriptions())
+        assertThat(body.activationEndDate())
+            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(body.activationStartDate())
+            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+        assertThat(body.contractId()).contains("contractId")
+        assertThat(body.name()).contains("name")
+        assertThat(body.poNumber()).contains("poNumber")
+        assertThat(body.setupBilling()).contains(true)
+        assertThat(body.subscriptions().getOrNull())
             .containsExactly(
                 ContractCreateParams.Subscription.builder()
                     .existingSubscriptionId("existingSubscriptionId")
@@ -1482,27 +1490,14 @@ internal class ContractCreateParamsTest {
                     )
                     .build()
             )
-        assertThat(body.activationEndDate())
-            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-        assertThat(body.activationStartDate())
-            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-        assertThat(body.name()).contains("name")
-        assertThat(body.poNumber()).contains("poNumber")
-        assertThat(body.setupBilling()).contains(true)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            ContractCreateParams.builder()
-                .customerId("customerId")
-                .addSubscription(ContractCreateParams.Subscription.builder().build())
-                .build()
+        val params = ContractCreateParams.builder().customerId("customerId").build()
 
         val body = params._body()
 
         assertThat(body.customerId()).isEqualTo("customerId")
-        assertThat(body.subscriptions())
-            .containsExactly(ContractCreateParams.Subscription.builder().build())
     }
 }

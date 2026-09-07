@@ -63,15 +63,6 @@ private constructor(
     fun customerId(): String = body.customerId()
 
     /**
-     * The subscriptions to attach to the contract (must be non-empty). Each entry is either a new
-     * subscription to create or a reference to an existing custom subscription.
-     *
-     * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
-     *   missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun subscriptions(): List<Subscription> = body.subscriptions()
-
-    /**
      * Optional contract activation end date
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -86,6 +77,18 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun activationStartDate(): Optional<OffsetDateTime> = body.activationStartDate()
+
+    /**
+     * Your own ID for the contract, which makes this call idempotent: sending the same one again
+     * returns the existing contract instead of creating a second. Omit it and one is generated for
+     * you, but then a retry cannot be told apart from a new contract — and contracts cannot be
+     * deleted. Recommended whenever a retry is possible, e.g. building a contract from an order
+     * form.
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun contractId(): Optional<String> = body.contractId()
 
     /**
      * Optional contract name
@@ -114,18 +117,21 @@ private constructor(
     fun setupBilling(): Optional<Boolean> = body.setupBilling()
 
     /**
+     * The subscriptions to attach to the contract. Each entry is either a new subscription to
+     * create or a reference to an existing custom subscription. Optional — omit it (or pass an
+     * empty list) to create a contract with no subscriptions and attach them later.
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun subscriptions(): Optional<List<Subscription>> = body.subscriptions()
+
+    /**
      * Returns the raw JSON value of [customerId].
      *
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _customerId(): JsonField<String> = body._customerId()
-
-    /**
-     * Returns the raw JSON value of [subscriptions].
-     *
-     * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _subscriptions(): JsonField<List<Subscription>> = body._subscriptions()
 
     /**
      * Returns the raw JSON value of [activationEndDate].
@@ -142,6 +148,13 @@ private constructor(
      * type.
      */
     fun _activationStartDate(): JsonField<OffsetDateTime> = body._activationStartDate()
+
+    /**
+     * Returns the raw JSON value of [contractId].
+     *
+     * Unlike [contractId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _contractId(): JsonField<String> = body._contractId()
 
     /**
      * Returns the raw JSON value of [name].
@@ -164,6 +177,13 @@ private constructor(
      */
     fun _setupBilling(): JsonField<Boolean> = body._setupBilling()
 
+    /**
+     * Returns the raw JSON value of [subscriptions].
+     *
+     * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _subscriptions(): JsonField<List<Subscription>> = body._subscriptions()
+
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
@@ -182,7 +202,6 @@ private constructor(
          * The following fields are required:
          * ```java
          * .customerId()
-         * .subscriptions()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -223,9 +242,9 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [customerId]
-         * - [subscriptions]
          * - [activationEndDate]
          * - [activationStartDate]
+         * - [contractId]
          * - [name]
          * - etc.
          */
@@ -242,34 +261,6 @@ private constructor(
          * value.
          */
         fun customerId(customerId: JsonField<String>) = apply { body.customerId(customerId) }
-
-        /**
-         * The subscriptions to attach to the contract (must be non-empty). Each entry is either a
-         * new subscription to create or a reference to an existing custom subscription.
-         */
-        fun subscriptions(subscriptions: List<Subscription>) = apply {
-            body.subscriptions(subscriptions)
-        }
-
-        /**
-         * Sets [Builder.subscriptions] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.subscriptions] with a well-typed `List<Subscription>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun subscriptions(subscriptions: JsonField<List<Subscription>>) = apply {
-            body.subscriptions(subscriptions)
-        }
-
-        /**
-         * Adds a single [Subscription] to [subscriptions].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addSubscription(subscription: Subscription) = apply {
-            body.addSubscription(subscription)
-        }
 
         /** Optional contract activation end date */
         fun activationEndDate(activationEndDate: OffsetDateTime) = apply {
@@ -302,6 +293,24 @@ private constructor(
         fun activationStartDate(activationStartDate: JsonField<OffsetDateTime>) = apply {
             body.activationStartDate(activationStartDate)
         }
+
+        /**
+         * Your own ID for the contract, which makes this call idempotent: sending the same one
+         * again returns the existing contract instead of creating a second. Omit it and one is
+         * generated for you, but then a retry cannot be told apart from a new contract — and
+         * contracts cannot be deleted. Recommended whenever a retry is possible, e.g. building a
+         * contract from an order form.
+         */
+        fun contractId(contractId: String) = apply { body.contractId(contractId) }
+
+        /**
+         * Sets [Builder.contractId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.contractId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun contractId(contractId: JsonField<String>) = apply { body.contractId(contractId) }
 
         /** Optional contract name */
         fun name(name: String?) = apply { body.name(name) }
@@ -347,6 +356,35 @@ private constructor(
          */
         fun setupBilling(setupBilling: JsonField<Boolean>) = apply {
             body.setupBilling(setupBilling)
+        }
+
+        /**
+         * The subscriptions to attach to the contract. Each entry is either a new subscription to
+         * create or a reference to an existing custom subscription. Optional — omit it (or pass an
+         * empty list) to create a contract with no subscriptions and attach them later.
+         */
+        fun subscriptions(subscriptions: List<Subscription>) = apply {
+            body.subscriptions(subscriptions)
+        }
+
+        /**
+         * Sets [Builder.subscriptions] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.subscriptions] with a well-typed `List<Subscription>`
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun subscriptions(subscriptions: JsonField<List<Subscription>>) = apply {
+            body.subscriptions(subscriptions)
+        }
+
+        /**
+         * Adds a single [Subscription] to [subscriptions].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addSubscription(subscription: Subscription) = apply {
+            body.addSubscription(subscription)
         }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
@@ -474,7 +512,6 @@ private constructor(
          * The following fields are required:
          * ```java
          * .customerId()
-         * .subscriptions()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -507,12 +544,13 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val customerId: JsonField<String>,
-        private val subscriptions: JsonField<List<Subscription>>,
         private val activationEndDate: JsonField<OffsetDateTime>,
         private val activationStartDate: JsonField<OffsetDateTime>,
+        private val contractId: JsonField<String>,
         private val name: JsonField<String>,
         private val poNumber: JsonField<String>,
         private val setupBilling: JsonField<Boolean>,
+        private val subscriptions: JsonField<List<Subscription>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -521,15 +559,15 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("subscriptions")
-            @ExcludeMissing
-            subscriptions: JsonField<List<Subscription>> = JsonMissing.of(),
             @JsonProperty("activationEndDate")
             @ExcludeMissing
             activationEndDate: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("activationStartDate")
             @ExcludeMissing
             activationStartDate: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("contractId")
+            @ExcludeMissing
+            contractId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
             @JsonProperty("poNumber")
             @ExcludeMissing
@@ -537,14 +575,18 @@ private constructor(
             @JsonProperty("setupBilling")
             @ExcludeMissing
             setupBilling: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("subscriptions")
+            @ExcludeMissing
+            subscriptions: JsonField<List<Subscription>> = JsonMissing.of(),
         ) : this(
             customerId,
-            subscriptions,
             activationEndDate,
             activationStartDate,
+            contractId,
             name,
             poNumber,
             setupBilling,
+            subscriptions,
             mutableMapOf(),
         )
 
@@ -555,15 +597,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun customerId(): String = customerId.getRequired("customerId")
-
-        /**
-         * The subscriptions to attach to the contract (must be non-empty). Each entry is either a
-         * new subscription to create or a reference to an existing custom subscription.
-         *
-         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun subscriptions(): List<Subscription> = subscriptions.getRequired("subscriptions")
 
         /**
          * Optional contract activation end date
@@ -582,6 +615,18 @@ private constructor(
          */
         fun activationStartDate(): Optional<OffsetDateTime> =
             activationStartDate.getOptional("activationStartDate")
+
+        /**
+         * Your own ID for the contract, which makes this call idempotent: sending the same one
+         * again returns the existing contract instead of creating a second. Omit it and one is
+         * generated for you, but then a retry cannot be told apart from a new contract — and
+         * contracts cannot be deleted. Recommended whenever a retry is possible, e.g. building a
+         * contract from an order form.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun contractId(): Optional<String> = contractId.getOptional("contractId")
 
         /**
          * Optional contract name
@@ -610,6 +655,17 @@ private constructor(
         fun setupBilling(): Optional<Boolean> = setupBilling.getOptional("setupBilling")
 
         /**
+         * The subscriptions to attach to the contract. Each entry is either a new subscription to
+         * create or a reference to an existing custom subscription. Optional — omit it (or pass an
+         * empty list) to create a contract with no subscriptions and attach them later.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun subscriptions(): Optional<List<Subscription>> =
+            subscriptions.getOptional("subscriptions")
+
+        /**
          * Returns the raw JSON value of [customerId].
          *
          * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -617,16 +673,6 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         fun _customerId(): JsonField<String> = customerId
-
-        /**
-         * Returns the raw JSON value of [subscriptions].
-         *
-         * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("subscriptions")
-        @ExcludeMissing
-        fun _subscriptions(): JsonField<List<Subscription>> = subscriptions
 
         /**
          * Returns the raw JSON value of [activationEndDate].
@@ -647,6 +693,15 @@ private constructor(
         @JsonProperty("activationStartDate")
         @ExcludeMissing
         fun _activationStartDate(): JsonField<OffsetDateTime> = activationStartDate
+
+        /**
+         * Returns the raw JSON value of [contractId].
+         *
+         * Unlike [contractId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("contractId")
+        @ExcludeMissing
+        fun _contractId(): JsonField<String> = contractId
 
         /**
          * Returns the raw JSON value of [name].
@@ -672,6 +727,16 @@ private constructor(
         @ExcludeMissing
         fun _setupBilling(): JsonField<Boolean> = setupBilling
 
+        /**
+         * Returns the raw JSON value of [subscriptions].
+         *
+         * Unlike [subscriptions], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("subscriptions")
+        @ExcludeMissing
+        fun _subscriptions(): JsonField<List<Subscription>> = subscriptions
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -692,7 +757,6 @@ private constructor(
              * The following fields are required:
              * ```java
              * .customerId()
-             * .subscriptions()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -702,23 +766,25 @@ private constructor(
         class Builder internal constructor() {
 
             private var customerId: JsonField<String>? = null
-            private var subscriptions: JsonField<MutableList<Subscription>>? = null
             private var activationEndDate: JsonField<OffsetDateTime> = JsonMissing.of()
             private var activationStartDate: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var contractId: JsonField<String> = JsonMissing.of()
             private var name: JsonField<String> = JsonMissing.of()
             private var poNumber: JsonField<String> = JsonMissing.of()
             private var setupBilling: JsonField<Boolean> = JsonMissing.of()
+            private var subscriptions: JsonField<MutableList<Subscription>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 customerId = body.customerId
-                subscriptions = body.subscriptions.map { it.toMutableList() }
                 activationEndDate = body.activationEndDate
                 activationStartDate = body.activationStartDate
+                contractId = body.contractId
                 name = body.name
                 poNumber = body.poNumber
                 setupBilling = body.setupBilling
+                subscriptions = body.subscriptions.map { it.toMutableList() }
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -733,36 +799,6 @@ private constructor(
              * supported value.
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
-
-            /**
-             * The subscriptions to attach to the contract (must be non-empty). Each entry is either
-             * a new subscription to create or a reference to an existing custom subscription.
-             */
-            fun subscriptions(subscriptions: List<Subscription>) =
-                subscriptions(JsonField.of(subscriptions))
-
-            /**
-             * Sets [Builder.subscriptions] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.subscriptions] with a well-typed
-             * `List<Subscription>` value instead. This method is primarily for setting the field to
-             * an undocumented or not yet supported value.
-             */
-            fun subscriptions(subscriptions: JsonField<List<Subscription>>) = apply {
-                this.subscriptions = subscriptions.map { it.toMutableList() }
-            }
-
-            /**
-             * Adds a single [Subscription] to [subscriptions].
-             *
-             * @throws IllegalStateException if the field was previously set to a non-list.
-             */
-            fun addSubscription(subscription: Subscription) = apply {
-                subscriptions =
-                    (subscriptions ?: JsonField.of(mutableListOf())).also {
-                        checkKnown("subscriptions", it).add(subscription)
-                    }
-            }
 
             /** Optional contract activation end date */
             fun activationEndDate(activationEndDate: OffsetDateTime) =
@@ -793,6 +829,24 @@ private constructor(
             fun activationStartDate(activationStartDate: JsonField<OffsetDateTime>) = apply {
                 this.activationStartDate = activationStartDate
             }
+
+            /**
+             * Your own ID for the contract, which makes this call idempotent: sending the same one
+             * again returns the existing contract instead of creating a second. Omit it and one is
+             * generated for you, but then a retry cannot be told apart from a new contract — and
+             * contracts cannot be deleted. Recommended whenever a retry is possible, e.g. building
+             * a contract from an order form.
+             */
+            fun contractId(contractId: String) = contractId(JsonField.of(contractId))
+
+            /**
+             * Sets [Builder.contractId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.contractId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun contractId(contractId: JsonField<String>) = apply { this.contractId = contractId }
 
             /** Optional contract name */
             fun name(name: String?) = name(JsonField.ofNullable(name))
@@ -842,6 +896,37 @@ private constructor(
                 this.setupBilling = setupBilling
             }
 
+            /**
+             * The subscriptions to attach to the contract. Each entry is either a new subscription
+             * to create or a reference to an existing custom subscription. Optional — omit it (or
+             * pass an empty list) to create a contract with no subscriptions and attach them later.
+             */
+            fun subscriptions(subscriptions: List<Subscription>) =
+                subscriptions(JsonField.of(subscriptions))
+
+            /**
+             * Sets [Builder.subscriptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.subscriptions] with a well-typed
+             * `List<Subscription>` value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun subscriptions(subscriptions: JsonField<List<Subscription>>) = apply {
+                this.subscriptions = subscriptions.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Subscription] to [subscriptions].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addSubscription(subscription: Subscription) = apply {
+                subscriptions =
+                    (subscriptions ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("subscriptions", it).add(subscription)
+                    }
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -869,7 +954,6 @@ private constructor(
              * The following fields are required:
              * ```java
              * .customerId()
-             * .subscriptions()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -877,12 +961,13 @@ private constructor(
             fun build(): Body =
                 Body(
                     checkRequired("customerId", customerId),
-                    checkRequired("subscriptions", subscriptions).map { it.toImmutable() },
                     activationEndDate,
                     activationStartDate,
+                    contractId,
                     name,
                     poNumber,
                     setupBilling,
+                    (subscriptions ?: JsonMissing.of()).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -904,12 +989,13 @@ private constructor(
             }
 
             customerId()
-            subscriptions().forEach { it.validate() }
             activationEndDate()
             activationStartDate()
+            contractId()
             name()
             poNumber()
             setupBilling()
+            subscriptions().ifPresent { it.forEach { it.validate() } }
             validated = true
         }
 
@@ -930,12 +1016,13 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (customerId.asKnown().isPresent) 1 else 0) +
-                (subscriptions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (activationEndDate.asKnown().isPresent) 1 else 0) +
                 (if (activationStartDate.asKnown().isPresent) 1 else 0) +
+                (if (contractId.asKnown().isPresent) 1 else 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
                 (if (poNumber.asKnown().isPresent) 1 else 0) +
-                (if (setupBilling.asKnown().isPresent) 1 else 0)
+                (if (setupBilling.asKnown().isPresent) 1 else 0) +
+                (subscriptions.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -944,24 +1031,26 @@ private constructor(
 
             return other is Body &&
                 customerId == other.customerId &&
-                subscriptions == other.subscriptions &&
                 activationEndDate == other.activationEndDate &&
                 activationStartDate == other.activationStartDate &&
+                contractId == other.contractId &&
                 name == other.name &&
                 poNumber == other.poNumber &&
                 setupBilling == other.setupBilling &&
+                subscriptions == other.subscriptions &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
             Objects.hash(
                 customerId,
-                subscriptions,
                 activationEndDate,
                 activationStartDate,
+                contractId,
                 name,
                 poNumber,
                 setupBilling,
+                subscriptions,
                 additionalProperties,
             )
         }
@@ -969,7 +1058,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{customerId=$customerId, subscriptions=$subscriptions, activationEndDate=$activationEndDate, activationStartDate=$activationStartDate, name=$name, poNumber=$poNumber, setupBilling=$setupBilling, additionalProperties=$additionalProperties}"
+            "Body{customerId=$customerId, activationEndDate=$activationEndDate, activationStartDate=$activationStartDate, contractId=$contractId, name=$name, poNumber=$poNumber, setupBilling=$setupBilling, subscriptions=$subscriptions, additionalProperties=$additionalProperties}"
     }
 
     /**
