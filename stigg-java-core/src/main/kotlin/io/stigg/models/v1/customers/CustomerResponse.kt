@@ -1974,11 +1974,10 @@ private constructor(
             /**
              * The default payment method type
              *
-             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
-             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
              */
-            fun type(): Type = type.getRequired("type")
+            fun type(): Optional<Type> = type.getOptional("type")
 
             /**
              * Returns the raw JSON value of [billingId].
@@ -2171,7 +2170,10 @@ private constructor(
                 }
 
                 /** The default payment method type */
-                fun type(type: Type) = type(JsonField.of(type))
+                fun type(type: Type?) = type(JsonField.ofNullable(type))
+
+                /** Alias for calling [Builder.type] with `type.orElse(null)`. */
+                fun type(type: Optional<Type>) = type(type.getOrNull())
 
                 /**
                  * Sets [Builder.type] to an arbitrary JSON value.
@@ -2252,7 +2254,7 @@ private constructor(
                 cardExpiryMonth()
                 cardExpiryYear()
                 cardLast4Digits()
-                type().validate()
+                type().ifPresent { it.validate() }
                 validated = true
             }
 
@@ -2300,6 +2302,8 @@ private constructor(
 
                     @JvmField val CASH_APP = of("CASH_APP")
 
+                    @JvmField val PAYPAL = of("PAYPAL")
+
                     @JvmStatic fun of(value: String) = Type(JsonField.of(value))
                 }
 
@@ -2308,6 +2312,7 @@ private constructor(
                     CARD,
                     BANK,
                     CASH_APP,
+                    PAYPAL,
                 }
 
                 /**
@@ -2323,6 +2328,7 @@ private constructor(
                     CARD,
                     BANK,
                     CASH_APP,
+                    PAYPAL,
                     /**
                      * An enum member indicating that [Type] was instantiated with an unknown value.
                      */
@@ -2341,6 +2347,7 @@ private constructor(
                         CARD -> Value.CARD
                         BANK -> Value.BANK
                         CASH_APP -> Value.CASH_APP
+                        PAYPAL -> Value.PAYPAL
                         else -> Value._UNKNOWN
                     }
 
@@ -2358,6 +2365,7 @@ private constructor(
                         CARD -> Known.CARD
                         BANK -> Known.BANK
                         CASH_APP -> Known.CASH_APP
+                        PAYPAL -> Known.PAYPAL
                         else -> throw StiggInvalidDataException("Unknown Type: $value")
                     }
 
