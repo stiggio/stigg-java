@@ -7,8 +7,6 @@ import io.stigg.core.RequestOptions
 import io.stigg.core.http.HttpResponseFor
 import io.stigg.models.v1.events.dataexport.DataExportListModelsParams
 import io.stigg.models.v1.events.dataexport.DataExportListModelsResponse
-import io.stigg.models.v1.events.dataexport.DataExportMintScopedTokenParams
-import io.stigg.models.v1.events.dataexport.DataExportMintScopedTokenResponse
 import io.stigg.models.v1.events.dataexport.DataExportTriggerSyncParams
 import io.stigg.models.v1.events.dataexport.DataExportTriggerSyncResponse
 import io.stigg.services.async.v1.events.dataexport.DestinationServiceAsync
@@ -54,21 +52,6 @@ interface DataExportServiceAsync {
         requestOptions: RequestOptions
     ): CompletableFuture<DataExportListModelsResponse> =
         listModels(DataExportListModelsParams.none(), requestOptions)
-
-    /**
-     * Mint a scoped JWT for the FE embedded SDK. Lazy-creates the DATA_EXPORT integration if
-     * needed.
-     */
-    fun mintScopedToken(
-        params: DataExportMintScopedTokenParams
-    ): CompletableFuture<DataExportMintScopedTokenResponse> =
-        mintScopedToken(params, RequestOptions.none())
-
-    /** @see mintScopedToken */
-    fun mintScopedToken(
-        params: DataExportMintScopedTokenParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<DataExportMintScopedTokenResponse>
 
     /** Trigger a sync for one destination or all destinations under the provider entity. */
     fun triggerSync(): CompletableFuture<DataExportTriggerSyncResponse> =
@@ -132,21 +115,6 @@ interface DataExportServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<DataExportListModelsResponse>> =
             listModels(DataExportListModelsParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `post /api/v1/data-export/scoped-token`, but is otherwise
-         * the same as [DataExportServiceAsync.mintScopedToken].
-         */
-        fun mintScopedToken(
-            params: DataExportMintScopedTokenParams
-        ): CompletableFuture<HttpResponseFor<DataExportMintScopedTokenResponse>> =
-            mintScopedToken(params, RequestOptions.none())
-
-        /** @see mintScopedToken */
-        fun mintScopedToken(
-            params: DataExportMintScopedTokenParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<DataExportMintScopedTokenResponse>>
 
         /**
          * Returns a raw HTTP response for `post /api/v1/data-export/sync`, but is otherwise the
