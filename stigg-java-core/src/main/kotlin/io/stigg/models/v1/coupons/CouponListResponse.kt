@@ -138,8 +138,9 @@ private constructor(
     fun description(): Optional<String> = description.getOptional("description")
 
     /**
-     * How many billing cycles the discount applies for once redeemed. Leave unset for a discount
-     * that lasts for the lifetime of the subscription.
+     * How many calendar months the discount applies for once redeemed, counted from when the coupon
+     * is applied (not tied to the subscription's billing period). Leave unset for a discount that
+     * lasts for the lifetime of the subscription.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -493,7 +494,8 @@ private constructor(
         fun description(description: JsonField<String>) = apply { this.description = description }
 
         /**
-         * How many billing cycles the discount applies for once redeemed. Leave unset for a
+         * How many calendar months the discount applies for once redeemed, counted from when the
+         * coupon is applied (not tied to the subscription's billing period). Leave unset for a
          * discount that lasts for the lifetime of the subscription.
          */
         fun durationInMonths(durationInMonths: Long?) =

@@ -66,8 +66,9 @@ private constructor(
     fun description(): Optional<String> = body.description()
 
     /**
-     * How many billing cycles the discount applies for once redeemed. Leave unset for a discount
-     * that lasts for the lifetime of the subscription.
+     * How many calendar months the discount applies for once redeemed, counted from when the coupon
+     * is applied (not tied to the subscription's billing period). Leave unset for a discount that
+     * lasts for the lifetime of the subscription.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -275,7 +276,8 @@ private constructor(
         fun description(description: JsonField<String>) = apply { body.description(description) }
 
         /**
-         * How many billing cycles the discount applies for once redeemed. Leave unset for a
+         * How many calendar months the discount applies for once redeemed, counted from when the
+         * coupon is applied (not tied to the subscription's billing period). Leave unset for a
          * discount that lasts for the lifetime of the subscription.
          */
         fun durationInMonths(durationInMonths: Long?) = apply {
@@ -517,7 +519,7 @@ private constructor(
      * Create a coupon with a percentage or fixed-amount discount. Set `percentOff` for a percentage
      * coupon or `amountsOff` for a fixed-amount coupon — which one is required depends on `type`.
      * Leave `durationInMonths` unset for a coupon that applies for the lifetime of the
-     * subscription; set it for a coupon that expires after N billing cycles.
+     * subscription; set it for a coupon that expires N calendar months after it is applied.
      */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -588,7 +590,8 @@ private constructor(
         fun description(): Optional<String> = description.getOptional("description")
 
         /**
-         * How many billing cycles the discount applies for once redeemed. Leave unset for a
+         * How many calendar months the discount applies for once redeemed, counted from when the
+         * coupon is applied (not tied to the subscription's billing period). Leave unset for a
          * discount that lasts for the lifetime of the subscription.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -798,8 +801,9 @@ private constructor(
             }
 
             /**
-             * How many billing cycles the discount applies for once redeemed. Leave unset for a
-             * discount that lasts for the lifetime of the subscription.
+             * How many calendar months the discount applies for once redeemed, counted from when
+             * the coupon is applied (not tied to the subscription's billing period). Leave unset
+             * for a discount that lasts for the lifetime of the subscription.
              */
             fun durationInMonths(durationInMonths: Long?) =
                 durationInMonths(JsonField.ofNullable(durationInMonths))

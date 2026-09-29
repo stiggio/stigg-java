@@ -76,7 +76,7 @@ internal class IntegrationServiceTest {
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .bodyId("id")
                     .syncedEntityId("syncedEntityId")
-                    .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                    .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                     .build()
             )
 

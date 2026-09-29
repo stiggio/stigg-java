@@ -17,7 +17,7 @@ internal class CustomerIntegrationResponseTest {
                     CustomerIntegrationResponse.Data.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.STRIPE)
                         .syncData(
                             CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                                 .builder()
@@ -35,7 +35,7 @@ internal class CustomerIntegrationResponseTest {
                 CustomerIntegrationResponse.Data.builder()
                     .id("id")
                     .syncedEntityId("syncedEntityId")
-                    .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
+                    .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.STRIPE)
                     .syncData(
                         CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                             .builder()
@@ -57,7 +57,7 @@ internal class CustomerIntegrationResponseTest {
                     CustomerIntegrationResponse.Data.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(CustomerIntegrationResponse.Data.VendorIdentifier.STRIPE)
                         .syncData(
                             CustomerIntegrationResponse.Data.SyncData.SyncRevisionPriceBillingData
                                 .builder()

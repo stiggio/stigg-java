@@ -314,53 +314,23 @@ private constructor(
 
         companion object {
 
-            @JvmField val AUTH0 = of("AUTH0")
+            @JvmField val STRIPE = of("STRIPE")
 
             @JvmField val ZUORA = of("ZUORA")
-
-            @JvmField val STRIPE = of("STRIPE")
 
             @JvmField val HUBSPOT = of("HUBSPOT")
 
             @JvmField val AWS_MARKETPLACE = of("AWS_MARKETPLACE")
-
-            @JvmField val SNOWFLAKE = of("SNOWFLAKE")
-
-            @JvmField val SALESFORCE = of("SALESFORCE")
-
-            @JvmField val BIG_QUERY = of("BIG_QUERY")
-
-            @JvmField val OPEN_FGA = of("OPEN_FGA")
-
-            @JvmField val APP_STORE = of("APP_STORE")
-
-            @JvmField val RECEIVED = of("RECEIVED")
-
-            @JvmField val PREQUEL = of("PREQUEL")
-
-            @JvmField val AIRWALLEX = of("AIRWALLEX")
-
-            @JvmField val STRIPE_INVOICING = of("STRIPE_INVOICING")
 
             @JvmStatic fun of(value: String) = VendorIdentifier(JsonField.of(value))
         }
 
         /** An enum containing [VendorIdentifier]'s known values. */
         enum class Known {
-            AUTH0,
-            ZUORA,
             STRIPE,
+            ZUORA,
             HUBSPOT,
             AWS_MARKETPLACE,
-            SNOWFLAKE,
-            SALESFORCE,
-            BIG_QUERY,
-            OPEN_FGA,
-            APP_STORE,
-            RECEIVED,
-            PREQUEL,
-            AIRWALLEX,
-            STRIPE_INVOICING,
         }
 
         /**
@@ -373,20 +343,10 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            AUTH0,
-            ZUORA,
             STRIPE,
+            ZUORA,
             HUBSPOT,
             AWS_MARKETPLACE,
-            SNOWFLAKE,
-            SALESFORCE,
-            BIG_QUERY,
-            OPEN_FGA,
-            APP_STORE,
-            RECEIVED,
-            PREQUEL,
-            AIRWALLEX,
-            STRIPE_INVOICING,
             /**
              * An enum member indicating that [VendorIdentifier] was instantiated with an unknown
              * value.
@@ -403,20 +363,10 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                AUTH0 -> Value.AUTH0
-                ZUORA -> Value.ZUORA
                 STRIPE -> Value.STRIPE
+                ZUORA -> Value.ZUORA
                 HUBSPOT -> Value.HUBSPOT
                 AWS_MARKETPLACE -> Value.AWS_MARKETPLACE
-                SNOWFLAKE -> Value.SNOWFLAKE
-                SALESFORCE -> Value.SALESFORCE
-                BIG_QUERY -> Value.BIG_QUERY
-                OPEN_FGA -> Value.OPEN_FGA
-                APP_STORE -> Value.APP_STORE
-                RECEIVED -> Value.RECEIVED
-                PREQUEL -> Value.PREQUEL
-                AIRWALLEX -> Value.AIRWALLEX
-                STRIPE_INVOICING -> Value.STRIPE_INVOICING
                 else -> Value._UNKNOWN
             }
 
@@ -430,20 +380,10 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                AUTH0 -> Known.AUTH0
-                ZUORA -> Known.ZUORA
                 STRIPE -> Known.STRIPE
+                ZUORA -> Known.ZUORA
                 HUBSPOT -> Known.HUBSPOT
                 AWS_MARKETPLACE -> Known.AWS_MARKETPLACE
-                SNOWFLAKE -> Known.SNOWFLAKE
-                SALESFORCE -> Known.SALESFORCE
-                BIG_QUERY -> Known.BIG_QUERY
-                OPEN_FGA -> Known.OPEN_FGA
-                APP_STORE -> Known.APP_STORE
-                RECEIVED -> Known.RECEIVED
-                PREQUEL -> Known.PREQUEL
-                AIRWALLEX -> Known.AIRWALLEX
-                STRIPE_INVOICING -> Known.STRIPE_INVOICING
                 else -> throw StiggInvalidDataException("Unknown VendorIdentifier: $value")
             }
 

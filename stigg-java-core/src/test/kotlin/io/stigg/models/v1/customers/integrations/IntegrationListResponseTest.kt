@@ -15,7 +15,7 @@ internal class IntegrationListResponseTest {
             IntegrationListResponse.builder()
                 .id("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationListResponse.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationListResponse.VendorIdentifier.STRIPE)
                 .syncData(
                     IntegrationListResponse.SyncData.SyncRevisionPriceBillingData.builder()
                         .billingId("billingId")
@@ -28,7 +28,7 @@ internal class IntegrationListResponseTest {
         assertThat(integrationListResponse.id()).isEqualTo("id")
         assertThat(integrationListResponse.syncedEntityId()).contains("syncedEntityId")
         assertThat(integrationListResponse.vendorIdentifier())
-            .isEqualTo(IntegrationListResponse.VendorIdentifier.AUTH0)
+            .isEqualTo(IntegrationListResponse.VendorIdentifier.STRIPE)
         assertThat(integrationListResponse.syncData())
             .contains(
                 IntegrationListResponse.SyncData.ofRevisionPriceBilling(
@@ -48,7 +48,7 @@ internal class IntegrationListResponseTest {
             IntegrationListResponse.builder()
                 .id("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationListResponse.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationListResponse.VendorIdentifier.STRIPE)
                 .syncData(
                     IntegrationListResponse.SyncData.SyncRevisionPriceBillingData.builder()
                         .billingId("billingId")

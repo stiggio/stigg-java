@@ -17,7 +17,7 @@ internal class IntegrationListPageResponseTest {
                     IntegrationListResponse.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(IntegrationListResponse.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(IntegrationListResponse.VendorIdentifier.STRIPE)
                         .syncData(
                             IntegrationListResponse.SyncData.SyncRevisionPriceBillingData.builder()
                                 .billingId("billingId")
@@ -40,7 +40,7 @@ internal class IntegrationListPageResponseTest {
                 IntegrationListResponse.builder()
                     .id("id")
                     .syncedEntityId("syncedEntityId")
-                    .vendorIdentifier(IntegrationListResponse.VendorIdentifier.AUTH0)
+                    .vendorIdentifier(IntegrationListResponse.VendorIdentifier.STRIPE)
                     .syncData(
                         IntegrationListResponse.SyncData.SyncRevisionPriceBillingData.builder()
                             .billingId("billingId")
@@ -68,7 +68,7 @@ internal class IntegrationListPageResponseTest {
                     IntegrationListResponse.builder()
                         .id("id")
                         .syncedEntityId("syncedEntityId")
-                        .vendorIdentifier(IntegrationListResponse.VendorIdentifier.AUTH0)
+                        .vendorIdentifier(IntegrationListResponse.VendorIdentifier.STRIPE)
                         .syncData(
                             IntegrationListResponse.SyncData.SyncRevisionPriceBillingData.builder()
                                 .billingId("billingId")

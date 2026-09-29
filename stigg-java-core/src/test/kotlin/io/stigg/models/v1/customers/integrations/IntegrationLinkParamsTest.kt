@@ -16,7 +16,7 @@ internal class IntegrationLinkParamsTest {
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .bodyId("id")
             .syncedEntityId("syncedEntityId")
-            .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+            .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
             .build()
     }
 
@@ -27,7 +27,7 @@ internal class IntegrationLinkParamsTest {
                 .pathId("x")
                 .bodyId("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("x")
@@ -44,7 +44,7 @@ internal class IntegrationLinkParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .bodyId("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                 .build()
 
         val headers = params._headers()
@@ -65,7 +65,7 @@ internal class IntegrationLinkParamsTest {
                 .pathId("x")
                 .bodyId("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                 .build()
 
         val headers = params._headers()
@@ -82,14 +82,14 @@ internal class IntegrationLinkParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .bodyId("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                 .build()
 
         val body = params._body()
 
         assertThat(body.bodyId()).isEqualTo("id")
         assertThat(body.syncedEntityId()).isEqualTo("syncedEntityId")
-        assertThat(body.vendorIdentifier()).isEqualTo(IntegrationLinkParams.VendorIdentifier.AUTH0)
+        assertThat(body.vendorIdentifier()).isEqualTo(IntegrationLinkParams.VendorIdentifier.STRIPE)
     }
 
     @Test
@@ -99,13 +99,13 @@ internal class IntegrationLinkParamsTest {
                 .pathId("x")
                 .bodyId("id")
                 .syncedEntityId("syncedEntityId")
-                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.AUTH0)
+                .vendorIdentifier(IntegrationLinkParams.VendorIdentifier.STRIPE)
                 .build()
 
         val body = params._body()
 
         assertThat(body.bodyId()).isEqualTo("id")
         assertThat(body.syncedEntityId()).isEqualTo("syncedEntityId")
-        assertThat(body.vendorIdentifier()).isEqualTo(IntegrationLinkParams.VendorIdentifier.AUTH0)
+        assertThat(body.vendorIdentifier()).isEqualTo(IntegrationLinkParams.VendorIdentifier.STRIPE)
     }
 }
