@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.0-beta.49](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.48...v0.1.0-beta.49) (2026-09-29)
+
+
+### Bug Fixes
+
+* **STIGG-9768:** stop exporting skipped workflow runs as failures ([d361066](https://github.com/stiggio/stigg-java/commit/d36106635b01e6878141d2cc00ee1e3a968ba03d))
+* **STIGG-9768:** stop exporting skipped workflow runs as failures ([39dc1d9](https://github.com/stiggio/stigg-java/commit/39dc1d9d531809332bf6c9a8187106afd10269c1))
+* sync OpenAPI spec from stigg-api ([a04dc91](https://github.com/stiggio/stigg-java/commit/a04dc91017d0edfa0e32e6d6c68b06025f75fc3d))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([e35c872](https://github.com/stiggio/stigg-java/commit/e35c8723f852144e9a45fa3828cad77be0083144))
+
 ## [0.1.0-beta.48](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.47...v0.1.0-beta.48) (2026-09-03)
 
 
