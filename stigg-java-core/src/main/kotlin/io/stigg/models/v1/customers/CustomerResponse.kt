@@ -1908,10 +1908,12 @@ private constructor(
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val billingId: JsonField<String>,
+            private val cardBrand: JsonField<String>,
             private val cardExpiryMonth: JsonField<Double>,
             private val cardExpiryYear: JsonField<Double>,
             private val cardLast4Digits: JsonField<String>,
             private val type: JsonField<Type>,
+            private val walletType: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -1920,6 +1922,9 @@ private constructor(
                 @JsonProperty("billingId")
                 @ExcludeMissing
                 billingId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("cardBrand")
+                @ExcludeMissing
+                cardBrand: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("cardExpiryMonth")
                 @ExcludeMissing
                 cardExpiryMonth: JsonField<Double> = JsonMissing.of(),
@@ -1930,12 +1935,17 @@ private constructor(
                 @ExcludeMissing
                 cardLast4Digits: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+                @JsonProperty("walletType")
+                @ExcludeMissing
+                walletType: JsonField<String> = JsonMissing.of(),
             ) : this(
                 billingId,
+                cardBrand,
                 cardExpiryMonth,
                 cardExpiryYear,
                 cardLast4Digits,
                 type,
+                walletType,
                 mutableMapOf(),
             )
 
@@ -1946,6 +1956,15 @@ private constructor(
              *   the server responded with an unexpected value).
              */
             fun billingId(): Optional<String> = billingId.getOptional("billingId")
+
+            /**
+             * The card brand of the default payment method, as reported by the billing provider
+             * (e.g. visa, mastercard, amex)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun cardBrand(): Optional<String> = cardBrand.getOptional("cardBrand")
 
             /**
              * The expiration month of the default payment method
@@ -1980,6 +1999,15 @@ private constructor(
             fun type(): Optional<Type> = type.getOptional("type")
 
             /**
+             * The digital wallet used to add the default card payment method, as reported by the
+             * billing provider (e.g. apple_pay, google_pay)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun walletType(): Optional<String> = walletType.getOptional("walletType")
+
+            /**
              * Returns the raw JSON value of [billingId].
              *
              * Unlike [billingId], this method doesn't throw if the JSON field has an unexpected
@@ -1988,6 +2016,16 @@ private constructor(
             @JsonProperty("billingId")
             @ExcludeMissing
             fun _billingId(): JsonField<String> = billingId
+
+            /**
+             * Returns the raw JSON value of [cardBrand].
+             *
+             * Unlike [cardBrand], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("cardBrand")
+            @ExcludeMissing
+            fun _cardBrand(): JsonField<String> = cardBrand
 
             /**
              * Returns the raw JSON value of [cardExpiryMonth].
@@ -2026,6 +2064,16 @@ private constructor(
              */
             @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
+            /**
+             * Returns the raw JSON value of [walletType].
+             *
+             * Unlike [walletType], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("walletType")
+            @ExcludeMissing
+            fun _walletType(): JsonField<String> = walletType
+
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
                 additionalProperties.put(key, value)
@@ -2046,10 +2094,12 @@ private constructor(
                  * The following fields are required:
                  * ```java
                  * .billingId()
+                 * .cardBrand()
                  * .cardExpiryMonth()
                  * .cardExpiryYear()
                  * .cardLast4Digits()
                  * .type()
+                 * .walletType()
                  * ```
                  */
                 @JvmStatic fun builder() = Builder()
@@ -2059,19 +2109,23 @@ private constructor(
             class Builder internal constructor() {
 
                 private var billingId: JsonField<String>? = null
+                private var cardBrand: JsonField<String>? = null
                 private var cardExpiryMonth: JsonField<Double>? = null
                 private var cardExpiryYear: JsonField<Double>? = null
                 private var cardLast4Digits: JsonField<String>? = null
                 private var type: JsonField<Type>? = null
+                private var walletType: JsonField<String>? = null
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 @JvmSynthetic
                 internal fun from(defaultPaymentMethod: DefaultPaymentMethod) = apply {
                     billingId = defaultPaymentMethod.billingId
+                    cardBrand = defaultPaymentMethod.cardBrand
                     cardExpiryMonth = defaultPaymentMethod.cardExpiryMonth
                     cardExpiryYear = defaultPaymentMethod.cardExpiryYear
                     cardLast4Digits = defaultPaymentMethod.cardLast4Digits
                     type = defaultPaymentMethod.type
+                    walletType = defaultPaymentMethod.walletType
                     additionalProperties = defaultPaymentMethod.additionalProperties.toMutableMap()
                 }
 
@@ -2089,6 +2143,24 @@ private constructor(
                  * yet supported value.
                  */
                 fun billingId(billingId: JsonField<String>) = apply { this.billingId = billingId }
+
+                /**
+                 * The card brand of the default payment method, as reported by the billing provider
+                 * (e.g. visa, mastercard, amex)
+                 */
+                fun cardBrand(cardBrand: String?) = cardBrand(JsonField.ofNullable(cardBrand))
+
+                /** Alias for calling [Builder.cardBrand] with `cardBrand.orElse(null)`. */
+                fun cardBrand(cardBrand: Optional<String>) = cardBrand(cardBrand.getOrNull())
+
+                /**
+                 * Sets [Builder.cardBrand] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.cardBrand] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun cardBrand(cardBrand: JsonField<String>) = apply { this.cardBrand = cardBrand }
 
                 /** The expiration month of the default payment method */
                 fun cardExpiryMonth(cardExpiryMonth: Double?) =
@@ -2184,6 +2256,26 @@ private constructor(
                  */
                 fun type(type: JsonField<Type>) = apply { this.type = type }
 
+                /**
+                 * The digital wallet used to add the default card payment method, as reported by
+                 * the billing provider (e.g. apple_pay, google_pay)
+                 */
+                fun walletType(walletType: String?) = walletType(JsonField.ofNullable(walletType))
+
+                /** Alias for calling [Builder.walletType] with `walletType.orElse(null)`. */
+                fun walletType(walletType: Optional<String>) = walletType(walletType.getOrNull())
+
+                /**
+                 * Sets [Builder.walletType] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.walletType] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun walletType(walletType: JsonField<String>) = apply {
+                    this.walletType = walletType
+                }
+
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
                     putAllAdditionalProperties(additionalProperties)
@@ -2214,10 +2306,12 @@ private constructor(
                  * The following fields are required:
                  * ```java
                  * .billingId()
+                 * .cardBrand()
                  * .cardExpiryMonth()
                  * .cardExpiryYear()
                  * .cardLast4Digits()
                  * .type()
+                 * .walletType()
                  * ```
                  *
                  * @throws IllegalStateException if any required field is unset.
@@ -2225,10 +2319,12 @@ private constructor(
                 fun build(): DefaultPaymentMethod =
                     DefaultPaymentMethod(
                         checkRequired("billingId", billingId),
+                        checkRequired("cardBrand", cardBrand),
                         checkRequired("cardExpiryMonth", cardExpiryMonth),
                         checkRequired("cardExpiryYear", cardExpiryYear),
                         checkRequired("cardLast4Digits", cardLast4Digits),
                         checkRequired("type", type),
+                        checkRequired("walletType", walletType),
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -2251,10 +2347,12 @@ private constructor(
                 }
 
                 billingId()
+                cardBrand()
                 cardExpiryMonth()
                 cardExpiryYear()
                 cardLast4Digits()
                 type().ifPresent { it.validate() }
+                walletType()
                 validated = true
             }
 
@@ -2275,10 +2373,12 @@ private constructor(
             @JvmSynthetic
             internal fun validity(): Int =
                 (if (billingId.asKnown().isPresent) 1 else 0) +
+                    (if (cardBrand.asKnown().isPresent) 1 else 0) +
                     (if (cardExpiryMonth.asKnown().isPresent) 1 else 0) +
                     (if (cardExpiryYear.asKnown().isPresent) 1 else 0) +
                     (if (cardLast4Digits.asKnown().isPresent) 1 else 0) +
-                    (type.asKnown().getOrNull()?.validity() ?: 0)
+                    (type.asKnown().getOrNull()?.validity() ?: 0) +
+                    (if (walletType.asKnown().isPresent) 1 else 0)
 
             /** The default payment method type */
             class Type @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -2440,20 +2540,24 @@ private constructor(
 
                 return other is DefaultPaymentMethod &&
                     billingId == other.billingId &&
+                    cardBrand == other.cardBrand &&
                     cardExpiryMonth == other.cardExpiryMonth &&
                     cardExpiryYear == other.cardExpiryYear &&
                     cardLast4Digits == other.cardLast4Digits &&
                     type == other.type &&
+                    walletType == other.walletType &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
                 Objects.hash(
                     billingId,
+                    cardBrand,
                     cardExpiryMonth,
                     cardExpiryYear,
                     cardLast4Digits,
                     type,
+                    walletType,
                     additionalProperties,
                 )
             }
@@ -2461,7 +2565,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "DefaultPaymentMethod{billingId=$billingId, cardExpiryMonth=$cardExpiryMonth, cardExpiryYear=$cardExpiryYear, cardLast4Digits=$cardLast4Digits, type=$type, additionalProperties=$additionalProperties}"
+                "DefaultPaymentMethod{billingId=$billingId, cardBrand=$cardBrand, cardExpiryMonth=$cardExpiryMonth, cardExpiryYear=$cardExpiryYear, cardLast4Digits=$cardLast4Digits, type=$type, walletType=$walletType, additionalProperties=$additionalProperties}"
         }
 
         /**
