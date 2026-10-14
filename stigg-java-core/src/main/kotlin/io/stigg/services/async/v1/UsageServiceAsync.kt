@@ -68,12 +68,14 @@ interface UsageServiceAsync {
 
     /**
      * Reports usage measurements for metered features. The reported usage is used to track, limit,
-     * and bill customer consumption.
+     * and bill customer consumption. Deprecated: use `POST /api/v2/usage`.
      */
+    @Deprecated("deprecated")
     fun report(params: UsageReportParams): CompletableFuture<UsageReportResponse> =
         report(params, RequestOptions.none())
 
     /** @see report */
+    @Deprecated("deprecated")
     fun report(
         params: UsageReportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -140,12 +142,14 @@ interface UsageServiceAsync {
          * Returns a raw HTTP response for `post /api/v1/usage`, but is otherwise the same as
          * [UsageServiceAsync.report].
          */
+        @Deprecated("deprecated")
         fun report(
             params: UsageReportParams
         ): CompletableFuture<HttpResponseFor<UsageReportResponse>> =
             report(params, RequestOptions.none())
 
         /** @see report */
+        @Deprecated("deprecated")
         fun report(
             params: UsageReportParams,
             requestOptions: RequestOptions = RequestOptions.none(),

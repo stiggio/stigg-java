@@ -66,12 +66,14 @@ interface UsageService {
 
     /**
      * Reports usage measurements for metered features. The reported usage is used to track, limit,
-     * and bill customer consumption.
+     * and bill customer consumption. Deprecated: use `POST /api/v2/usage`.
      */
+    @Deprecated("deprecated")
     fun report(params: UsageReportParams): UsageReportResponse =
         report(params, RequestOptions.none())
 
     /** @see report */
+    @Deprecated("deprecated")
     fun report(
         params: UsageReportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -137,11 +139,13 @@ interface UsageService {
          * Returns a raw HTTP response for `post /api/v1/usage`, but is otherwise the same as
          * [UsageService.report].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun report(params: UsageReportParams): HttpResponseFor<UsageReportResponse> =
             report(params, RequestOptions.none())
 
         /** @see report */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun report(
             params: UsageReportParams,

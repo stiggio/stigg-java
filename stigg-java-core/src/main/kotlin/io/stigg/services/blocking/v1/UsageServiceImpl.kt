@@ -52,6 +52,7 @@ class UsageServiceImpl internal constructor(private val clientOptions: ClientOpt
         // get /api/v1/usage/{customerId}/history/{featureId}
         withRawResponse().history(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun report(
         params: UsageReportParams,
         requestOptions: RequestOptions,
@@ -140,6 +141,7 @@ class UsageServiceImpl internal constructor(private val clientOptions: ClientOpt
         private val reportHandler: Handler<UsageReportResponse> =
             jsonHandler<UsageReportResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun report(
             params: UsageReportParams,
             requestOptions: RequestOptions,

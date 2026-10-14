@@ -10,7 +10,9 @@ import io.stigg.core.ExcludeMissing
 import io.stigg.core.JsonField
 import io.stigg.core.JsonMissing
 import io.stigg.core.JsonValue
+import io.stigg.core.checkKnown
 import io.stigg.core.checkRequired
+import io.stigg.core.toImmutable
 import io.stigg.errors.StiggInvalidDataException
 import java.time.OffsetDateTime
 import java.util.Collections
@@ -175,6 +177,7 @@ private constructor(
         private val customerId: JsonField<String>,
         private val timestamp: JsonField<OffsetDateTime>,
         private val credit: JsonField<Credit>,
+        private val entities: JsonField<List<Entity>>,
         private val resourceId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -192,10 +195,22 @@ private constructor(
             @ExcludeMissing
             timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("credit") @ExcludeMissing credit: JsonField<Credit> = JsonMissing.of(),
+            @JsonProperty("entities")
+            @ExcludeMissing
+            entities: JsonField<List<Entity>> = JsonMissing.of(),
             @JsonProperty("resourceId")
             @ExcludeMissing
             resourceId: JsonField<String> = JsonMissing.of(),
-        ) : this(amount, currencyId, customerId, timestamp, credit, resourceId, mutableMapOf())
+        ) : this(
+            amount,
+            currencyId,
+            customerId,
+            timestamp,
+            credit,
+            entities,
+            resourceId,
+            mutableMapOf(),
+        )
 
         /**
          * The amount of credits consumed
@@ -236,6 +251,16 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun credit(): Optional<Credit> = credit.getOptional("credit")
+
+        /**
+         * The current usage of each governance entitlement this request counted towards. Absent
+         * when governance is not enabled or the usage is unknown. Entitlements whose usage could
+         * not be read, and those of repeated idempotent requests, are left out
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun entities(): Optional<List<Entity>> = entities.getOptional("entities")
 
         /**
          * The resource the consumption was attributed to
@@ -287,6 +312,15 @@ private constructor(
         @JsonProperty("credit") @ExcludeMissing fun _credit(): JsonField<Credit> = credit
 
         /**
+         * Returns the raw JSON value of [entities].
+         *
+         * Unlike [entities], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("entities")
+        @ExcludeMissing
+        fun _entities(): JsonField<List<Entity>> = entities
+
+        /**
          * Returns the raw JSON value of [resourceId].
          *
          * Unlike [resourceId], this method doesn't throw if the JSON field has an unexpected type.
@@ -331,6 +365,7 @@ private constructor(
             private var customerId: JsonField<String>? = null
             private var timestamp: JsonField<OffsetDateTime>? = null
             private var credit: JsonField<Credit> = JsonMissing.of()
+            private var entities: JsonField<MutableList<Entity>>? = null
             private var resourceId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -341,6 +376,7 @@ private constructor(
                 customerId = data.customerId
                 timestamp = data.timestamp
                 credit = data.credit
+                entities = data.entities.map { it.toMutableList() }
                 resourceId = data.resourceId
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
@@ -413,6 +449,36 @@ private constructor(
              */
             fun credit(credit: JsonField<Credit>) = apply { this.credit = credit }
 
+            /**
+             * The current usage of each governance entitlement this request counted towards. Absent
+             * when governance is not enabled or the usage is unknown. Entitlements whose usage
+             * could not be read, and those of repeated idempotent requests, are left out
+             */
+            fun entities(entities: List<Entity>) = entities(JsonField.of(entities))
+
+            /**
+             * Sets [Builder.entities] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.entities] with a well-typed `List<Entity>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun entities(entities: JsonField<List<Entity>>) = apply {
+                this.entities = entities.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Entity] to [entities].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addEntity(entity: Entity) = apply {
+                entities =
+                    (entities ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("entities", it).add(entity)
+                    }
+            }
+
             /** The resource the consumption was attributed to */
             fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
 
@@ -469,6 +535,7 @@ private constructor(
                     checkRequired("customerId", customerId),
                     checkRequired("timestamp", timestamp),
                     credit,
+                    (entities ?: JsonMissing.of()).map { it.toImmutable() },
                     resourceId,
                     additionalProperties.toMutableMap(),
                 )
@@ -495,6 +562,7 @@ private constructor(
             customerId()
             timestamp()
             credit().ifPresent { it.validate() }
+            entities().ifPresent { it.forEach { it.validate() } }
             resourceId()
             validated = true
         }
@@ -520,6 +588,7 @@ private constructor(
                 (if (customerId.asKnown().isPresent) 1 else 0) +
                 (if (timestamp.asKnown().isPresent) 1 else 0) +
                 (credit.asKnown().getOrNull()?.validity() ?: 0) +
+                (entities.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (resourceId.asKnown().isPresent) 1 else 0)
 
         /**
@@ -922,6 +991,585 @@ private constructor(
                 "Credit{currencyId=$currencyId, currentUsage=$currentUsage, timestamp=$timestamp, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, additionalProperties=$additionalProperties}"
         }
 
+        /** The usage counted against one governance entitlement */
+        class Entity
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val currentUsage: JsonField<Double>,
+            private val customerId: JsonField<String>,
+            private val entitlementId: JsonField<String>,
+            private val entityId: JsonField<String>,
+            private val resourceId: JsonField<String>,
+            private val scopeEntityIds: JsonField<List<String>>,
+            private val usageUpdatedAt: JsonField<OffsetDateTime>,
+            private val currencyId: JsonField<String>,
+            private val featureId: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("currentUsage")
+                @ExcludeMissing
+                currentUsage: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("customerId")
+                @ExcludeMissing
+                customerId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("entitlementId")
+                @ExcludeMissing
+                entitlementId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("entityId")
+                @ExcludeMissing
+                entityId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("resourceId")
+                @ExcludeMissing
+                resourceId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("scopeEntityIds")
+                @ExcludeMissing
+                scopeEntityIds: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("usageUpdatedAt")
+                @ExcludeMissing
+                usageUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                @JsonProperty("currencyId")
+                @ExcludeMissing
+                currencyId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("featureId")
+                @ExcludeMissing
+                featureId: JsonField<String> = JsonMissing.of(),
+            ) : this(
+                currentUsage,
+                customerId,
+                entitlementId,
+                entityId,
+                resourceId,
+                scopeEntityIds,
+                usageUpdatedAt,
+                currencyId,
+                featureId,
+                mutableMapOf(),
+            )
+
+            /**
+             * The absolute usage counted against the entitlement
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currentUsage(): Double = currentUsage.getRequired("currentUsage")
+
+            /**
+             * The customer whose usage counted towards the entitlement
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun customerId(): String = customerId.getRequired("customerId")
+
+            /**
+             * The governance entitlement the usage counts towards
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun entitlementId(): String = entitlementId.getRequired("entitlementId")
+
+            /**
+             * The governance entity the entitlement belongs to
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun entityId(): String = entityId.getRequired("entityId")
+
+            /**
+             * The customer resource the usage counted from; `null` for customer-level usage
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun resourceId(): Optional<String> = resourceId.getOptional("resourceId")
+
+            /**
+             * The entities the entitlement is scoped to (empty when it is not scoped)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
+
+            /**
+             * When the entitlement usage was last updated
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun usageUpdatedAt(): OffsetDateTime = usageUpdatedAt.getRequired("usageUpdatedAt")
+
+            /**
+             * The credit currency the entitlement governs (exactly one of featureId and currencyId
+             * is set)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun currencyId(): Optional<String> = currencyId.getOptional("currencyId")
+
+            /**
+             * The feature the entitlement governs (exactly one of featureId and currencyId is set)
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
+             *   the server responded with an unexpected value).
+             */
+            fun featureId(): Optional<String> = featureId.getOptional("featureId")
+
+            /**
+             * Returns the raw JSON value of [currentUsage].
+             *
+             * Unlike [currentUsage], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currentUsage")
+            @ExcludeMissing
+            fun _currentUsage(): JsonField<Double> = currentUsage
+
+            /**
+             * Returns the raw JSON value of [customerId].
+             *
+             * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("customerId")
+            @ExcludeMissing
+            fun _customerId(): JsonField<String> = customerId
+
+            /**
+             * Returns the raw JSON value of [entitlementId].
+             *
+             * Unlike [entitlementId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("entitlementId")
+            @ExcludeMissing
+            fun _entitlementId(): JsonField<String> = entitlementId
+
+            /**
+             * Returns the raw JSON value of [entityId].
+             *
+             * Unlike [entityId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("entityId") @ExcludeMissing fun _entityId(): JsonField<String> = entityId
+
+            /**
+             * Returns the raw JSON value of [resourceId].
+             *
+             * Unlike [resourceId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("resourceId")
+            @ExcludeMissing
+            fun _resourceId(): JsonField<String> = resourceId
+
+            /**
+             * Returns the raw JSON value of [scopeEntityIds].
+             *
+             * Unlike [scopeEntityIds], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("scopeEntityIds")
+            @ExcludeMissing
+            fun _scopeEntityIds(): JsonField<List<String>> = scopeEntityIds
+
+            /**
+             * Returns the raw JSON value of [usageUpdatedAt].
+             *
+             * Unlike [usageUpdatedAt], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("usageUpdatedAt")
+            @ExcludeMissing
+            fun _usageUpdatedAt(): JsonField<OffsetDateTime> = usageUpdatedAt
+
+            /**
+             * Returns the raw JSON value of [currencyId].
+             *
+             * Unlike [currencyId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencyId")
+            @ExcludeMissing
+            fun _currencyId(): JsonField<String> = currencyId
+
+            /**
+             * Returns the raw JSON value of [featureId].
+             *
+             * Unlike [featureId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("featureId")
+            @ExcludeMissing
+            fun _featureId(): JsonField<String> = featureId
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Entity].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .currentUsage()
+                 * .customerId()
+                 * .entitlementId()
+                 * .entityId()
+                 * .resourceId()
+                 * .scopeEntityIds()
+                 * .usageUpdatedAt()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Entity]. */
+            class Builder internal constructor() {
+
+                private var currentUsage: JsonField<Double>? = null
+                private var customerId: JsonField<String>? = null
+                private var entitlementId: JsonField<String>? = null
+                private var entityId: JsonField<String>? = null
+                private var resourceId: JsonField<String>? = null
+                private var scopeEntityIds: JsonField<MutableList<String>>? = null
+                private var usageUpdatedAt: JsonField<OffsetDateTime>? = null
+                private var currencyId: JsonField<String> = JsonMissing.of()
+                private var featureId: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(entity: Entity) = apply {
+                    currentUsage = entity.currentUsage
+                    customerId = entity.customerId
+                    entitlementId = entity.entitlementId
+                    entityId = entity.entityId
+                    resourceId = entity.resourceId
+                    scopeEntityIds = entity.scopeEntityIds.map { it.toMutableList() }
+                    usageUpdatedAt = entity.usageUpdatedAt
+                    currencyId = entity.currencyId
+                    featureId = entity.featureId
+                    additionalProperties = entity.additionalProperties.toMutableMap()
+                }
+
+                /** The absolute usage counted against the entitlement */
+                fun currentUsage(currentUsage: Double) = currentUsage(JsonField.of(currentUsage))
+
+                /**
+                 * Sets [Builder.currentUsage] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currentUsage] with a well-typed [Double] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currentUsage(currentUsage: JsonField<Double>) = apply {
+                    this.currentUsage = currentUsage
+                }
+
+                /** The customer whose usage counted towards the entitlement */
+                fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+                /**
+                 * Sets [Builder.customerId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.customerId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun customerId(customerId: JsonField<String>) = apply {
+                    this.customerId = customerId
+                }
+
+                /** The governance entitlement the usage counts towards */
+                fun entitlementId(entitlementId: String) =
+                    entitlementId(JsonField.of(entitlementId))
+
+                /**
+                 * Sets [Builder.entitlementId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.entitlementId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun entitlementId(entitlementId: JsonField<String>) = apply {
+                    this.entitlementId = entitlementId
+                }
+
+                /** The governance entity the entitlement belongs to */
+                fun entityId(entityId: String) = entityId(JsonField.of(entityId))
+
+                /**
+                 * Sets [Builder.entityId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.entityId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
+
+                /** The customer resource the usage counted from; `null` for customer-level usage */
+                fun resourceId(resourceId: String?) = resourceId(JsonField.ofNullable(resourceId))
+
+                /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
+                fun resourceId(resourceId: Optional<String>) = resourceId(resourceId.getOrNull())
+
+                /**
+                 * Sets [Builder.resourceId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.resourceId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun resourceId(resourceId: JsonField<String>) = apply {
+                    this.resourceId = resourceId
+                }
+
+                /** The entities the entitlement is scoped to (empty when it is not scoped) */
+                fun scopeEntityIds(scopeEntityIds: List<String>) =
+                    scopeEntityIds(JsonField.of(scopeEntityIds))
+
+                /**
+                 * Sets [Builder.scopeEntityIds] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.scopeEntityIds] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun scopeEntityIds(scopeEntityIds: JsonField<List<String>>) = apply {
+                    this.scopeEntityIds = scopeEntityIds.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [scopeEntityIds].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addScopeEntityId(scopeEntityId: String) = apply {
+                    scopeEntityIds =
+                        (scopeEntityIds ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("scopeEntityIds", it).add(scopeEntityId)
+                        }
+                }
+
+                /** When the entitlement usage was last updated */
+                fun usageUpdatedAt(usageUpdatedAt: OffsetDateTime) =
+                    usageUpdatedAt(JsonField.of(usageUpdatedAt))
+
+                /**
+                 * Sets [Builder.usageUpdatedAt] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.usageUpdatedAt] with a well-typed
+                 * [OffsetDateTime] value instead. This method is primarily for setting the field to
+                 * an undocumented or not yet supported value.
+                 */
+                fun usageUpdatedAt(usageUpdatedAt: JsonField<OffsetDateTime>) = apply {
+                    this.usageUpdatedAt = usageUpdatedAt
+                }
+
+                /**
+                 * The credit currency the entitlement governs (exactly one of featureId and
+                 * currencyId is set)
+                 */
+                fun currencyId(currencyId: String) = currencyId(JsonField.of(currencyId))
+
+                /**
+                 * Sets [Builder.currencyId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencyId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currencyId(currencyId: JsonField<String>) = apply {
+                    this.currencyId = currencyId
+                }
+
+                /**
+                 * The feature the entitlement governs (exactly one of featureId and currencyId is
+                 * set)
+                 */
+                fun featureId(featureId: String) = featureId(JsonField.of(featureId))
+
+                /**
+                 * Sets [Builder.featureId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.featureId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Entity].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .currentUsage()
+                 * .customerId()
+                 * .entitlementId()
+                 * .entityId()
+                 * .resourceId()
+                 * .scopeEntityIds()
+                 * .usageUpdatedAt()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Entity =
+                    Entity(
+                        checkRequired("currentUsage", currentUsage),
+                        checkRequired("customerId", customerId),
+                        checkRequired("entitlementId", entitlementId),
+                        checkRequired("entityId", entityId),
+                        checkRequired("resourceId", resourceId),
+                        checkRequired("scopeEntityIds", scopeEntityIds).map { it.toImmutable() },
+                        checkRequired("usageUpdatedAt", usageUpdatedAt),
+                        currencyId,
+                        featureId,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StiggInvalidDataException if any value type in this object doesn't match its
+             *   expected type.
+             */
+            fun validate(): Entity = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                currentUsage()
+                customerId()
+                entitlementId()
+                entityId()
+                resourceId()
+                scopeEntityIds()
+                usageUpdatedAt()
+                currencyId()
+                featureId()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StiggInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                    (if (customerId.asKnown().isPresent) 1 else 0) +
+                    (if (entitlementId.asKnown().isPresent) 1 else 0) +
+                    (if (entityId.asKnown().isPresent) 1 else 0) +
+                    (if (resourceId.asKnown().isPresent) 1 else 0) +
+                    (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
+                    (if (usageUpdatedAt.asKnown().isPresent) 1 else 0) +
+                    (if (currencyId.asKnown().isPresent) 1 else 0) +
+                    (if (featureId.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Entity &&
+                    currentUsage == other.currentUsage &&
+                    customerId == other.customerId &&
+                    entitlementId == other.entitlementId &&
+                    entityId == other.entityId &&
+                    resourceId == other.resourceId &&
+                    scopeEntityIds == other.scopeEntityIds &&
+                    usageUpdatedAt == other.usageUpdatedAt &&
+                    currencyId == other.currencyId &&
+                    featureId == other.featureId &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    currentUsage,
+                    customerId,
+                    entitlementId,
+                    entityId,
+                    resourceId,
+                    scopeEntityIds,
+                    usageUpdatedAt,
+                    currencyId,
+                    featureId,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Entity{currentUsage=$currentUsage, customerId=$customerId, entitlementId=$entitlementId, entityId=$entityId, resourceId=$resourceId, scopeEntityIds=$scopeEntityIds, usageUpdatedAt=$usageUpdatedAt, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -933,6 +1581,7 @@ private constructor(
                 customerId == other.customerId &&
                 timestamp == other.timestamp &&
                 credit == other.credit &&
+                entities == other.entities &&
                 resourceId == other.resourceId &&
                 additionalProperties == other.additionalProperties
         }
@@ -944,6 +1593,7 @@ private constructor(
                 customerId,
                 timestamp,
                 credit,
+                entities,
                 resourceId,
                 additionalProperties,
             )
@@ -952,7 +1602,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{amount=$amount, currencyId=$currencyId, customerId=$customerId, timestamp=$timestamp, credit=$credit, resourceId=$resourceId, additionalProperties=$additionalProperties}"
+            "Data{amount=$amount, currencyId=$currencyId, customerId=$customerId, timestamp=$timestamp, credit=$credit, entities=$entities, resourceId=$resourceId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

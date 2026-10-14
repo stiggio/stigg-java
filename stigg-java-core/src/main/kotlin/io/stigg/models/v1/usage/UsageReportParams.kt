@@ -26,8 +26,9 @@ import kotlin.jvm.optionals.getOrNull
 
 /**
  * Reports usage measurements for metered features. The reported usage is used to track, limit, and
- * bill customer consumption.
+ * bill customer consumption. Deprecated: use `POST /api/v2/usage`.
  */
+@Deprecated("deprecated")
 class UsageReportParams
 private constructor(
     private val xAccountId: String?,
