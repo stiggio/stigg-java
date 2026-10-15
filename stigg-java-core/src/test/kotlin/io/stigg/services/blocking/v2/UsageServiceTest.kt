@@ -1,0 +1,46 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package io.stigg.services.blocking.v2
+
+import io.stigg.client.okhttp.StiggOkHttpClient
+import io.stigg.core.JsonValue
+import io.stigg.models.v2.usage.UsageReportParams
+import java.time.OffsetDateTime
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+
+internal class UsageServiceTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun report() {
+        val client = StiggOkHttpClient.builder().apiKey("My API Key").build()
+        val usageService = client.v2().usage()
+
+        val response =
+            usageService.report(
+                UsageReportParams.builder()
+                    .xAccountId("X-ACCOUNT-ID")
+                    .xEnvironmentId("X-ENVIRONMENT-ID")
+                    .addUsage(
+                        UsageReportParams.Usage.builder()
+                            .customerId("customerId")
+                            .featureId("featureId")
+                            .value(-9007199254740991L)
+                            .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .dimensions(
+                                UsageReportParams.Usage.Dimensions.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
+                            .idempotencyKey("x")
+                            .resourceId("resourceId")
+                            .updateBehavior(UsageReportParams.Usage.UpdateBehavior.DELTA)
+                            .build()
+                    )
+                    .build()
+            )
+
+        response.validate()
+    }
+}
