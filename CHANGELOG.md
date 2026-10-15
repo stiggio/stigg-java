@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-beta.51](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.50...v0.1.0-beta.51) (2026-10-15)
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([c835854](https://github.com/stiggio/stigg-java/commit/c8358542b680ab4c6d3d0667c13973f7be42a706))
+
 ## [0.1.0-beta.50](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.49...v0.1.0-beta.50) (2026-10-15)
 
 
