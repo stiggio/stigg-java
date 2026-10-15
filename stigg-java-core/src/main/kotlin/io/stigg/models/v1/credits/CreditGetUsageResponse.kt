@@ -1054,7 +1054,7 @@ private constructor(
             fun eventCount(): Double = eventCount.getRequired("eventCount")
 
             /**
-             * The feature ID; null when grouping by dimensions only
+             * The feature ID; null when grouping by dimensions without `featureId`
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -1062,7 +1062,7 @@ private constructor(
             fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
             /**
-             * The display name of the feature; null when grouping by dimensions only
+             * The display name of the feature; null when grouping by dimensions without `featureId`
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -1088,7 +1088,8 @@ private constructor(
             fun totalCredits(): Double = totalCredits.getRequired("totalCredits")
 
             /**
-             * Dimension key/value pairs identifying this series when groupBy is applied
+             * Dimension key/value pairs identifying this series when groupBy includes dimension
+             * keys (`featureId` is returned in its own field, not as a tag)
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -1218,7 +1219,7 @@ private constructor(
                     this.eventCount = eventCount
                 }
 
-                /** The feature ID; null when grouping by dimensions only */
+                /** The feature ID; null when grouping by dimensions without `featureId` */
                 fun featureId(featureId: String?) = featureId(JsonField.ofNullable(featureId))
 
                 /** Alias for calling [Builder.featureId] with `featureId.orElse(null)`. */
@@ -1233,7 +1234,10 @@ private constructor(
                  */
                 fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
-                /** The display name of the feature; null when grouping by dimensions only */
+                /**
+                 * The display name of the feature; null when grouping by dimensions without
+                 * `featureId`
+                 */
                 fun featureName(featureName: String?) =
                     featureName(JsonField.ofNullable(featureName))
 
@@ -1292,7 +1296,10 @@ private constructor(
                     this.totalCredits = totalCredits
                 }
 
-                /** Dimension key/value pairs identifying this series when groupBy is applied */
+                /**
+                 * Dimension key/value pairs identifying this series when groupBy includes dimension
+                 * keys (`featureId` is returned in its own field, not as a tag)
+                 */
                 fun tags(tags: List<Tag>) = tags(JsonField.of(tags))
 
                 /**
