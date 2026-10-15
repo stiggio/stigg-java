@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.0-beta.50](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.49...v0.1.0-beta.50) (2026-10-15)
+
+
+### Features
+
+* **STIGG-10154:** generate the v2 usage report ([e797989](https://github.com/stiggio/stigg-java/commit/e797989dcec5171f43ef32e4c75757a0afe459b6))
+
+
+### Bug Fixes
+
+* sync OpenAPI spec from stigg-api ([96d2488](https://github.com/stiggio/stigg-java/commit/96d2488523c9c949233c3f4e06a0d24da3413d5e))
+* sync OpenAPI spec from stigg-api ([75edc72](https://github.com/stiggio/stigg-java/commit/75edc72a26d4ef826f1830c52df5dc6f2eb646c6))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([710b069](https://github.com/stiggio/stigg-java/commit/710b069f88c739742cb322fc30f5b7fe7433c5fd))
+
 ## [0.1.0-beta.49](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.48...v0.1.0-beta.49) (2026-09-29)
 
 
