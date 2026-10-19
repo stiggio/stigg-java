@@ -2774,6 +2774,9 @@ private constructor(
                 private val usageLimit: JsonField<Double>,
                 private val usageUpdatedAt: JsonField<OffsetDateTime>,
                 private val entitlementUpdatedAt: JsonField<OffsetDateTime>,
+                private val reservation: JsonField<Reservation>,
+                private val reserved: JsonField<Double>,
+                private val reservedOnExpiredGrants: JsonField<Double>,
                 private val usagePeriodEnd: JsonField<OffsetDateTime>,
                 private val validUntil: JsonField<OffsetDateTime>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
@@ -2803,6 +2806,15 @@ private constructor(
                     @JsonProperty("entitlementUpdatedAt")
                     @ExcludeMissing
                     entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                    @JsonProperty("reservation")
+                    @ExcludeMissing
+                    reservation: JsonField<Reservation> = JsonMissing.of(),
+                    @JsonProperty("reserved")
+                    @ExcludeMissing
+                    reserved: JsonField<Double> = JsonMissing.of(),
+                    @JsonProperty("reservedOnExpiredGrants")
+                    @ExcludeMissing
+                    reservedOnExpiredGrants: JsonField<Double> = JsonMissing.of(),
                     @JsonProperty("usagePeriodEnd")
                     @ExcludeMissing
                     usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -2818,6 +2830,9 @@ private constructor(
                     usageLimit,
                     usageUpdatedAt,
                     entitlementUpdatedAt,
+                    reservation,
+                    reserved,
+                    reservedOnExpiredGrants,
                     usagePeriodEnd,
                     validUntil,
                     mutableMapOf(),
@@ -2884,6 +2899,35 @@ private constructor(
                  */
                 fun entitlementUpdatedAt(): Optional<OffsetDateTime> =
                     entitlementUpdatedAt.getOptional("entitlementUpdatedAt")
+
+                /**
+                 * The reservation created by this request, when it asked to reserve credits and was
+                 * granted.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun reservation(): Optional<Reservation> = reservation.getOptional("reservation")
+
+                /**
+                 * Credits held by open reservations on active grants. Already included in
+                 * currentUsage, so usageLimit - currentUsage is the available balance.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun reserved(): Optional<Double> = reserved.getOptional("reserved")
+
+                /**
+                 * Credits still held by open reservations on grants that expired during the hold.
+                 * They can still be released, but are not part of currentUsage or the balance and
+                 * must not be subtracted from it.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
+                 *   if the server responded with an unexpected value).
+                 */
+                fun reservedOnExpiredGrants(): Optional<Double> =
+                    reservedOnExpiredGrants.getOptional("reservedOnExpiredGrants")
 
                 /**
                  * The end date of the current billing period for recurring credit grants.
@@ -2981,6 +3025,36 @@ private constructor(
                 fun _entitlementUpdatedAt(): JsonField<OffsetDateTime> = entitlementUpdatedAt
 
                 /**
+                 * Returns the raw JSON value of [reservation].
+                 *
+                 * Unlike [reservation], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("reservation")
+                @ExcludeMissing
+                fun _reservation(): JsonField<Reservation> = reservation
+
+                /**
+                 * Returns the raw JSON value of [reserved].
+                 *
+                 * Unlike [reserved], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("reserved")
+                @ExcludeMissing
+                fun _reserved(): JsonField<Double> = reserved
+
+                /**
+                 * Returns the raw JSON value of [reservedOnExpiredGrants].
+                 *
+                 * Unlike [reservedOnExpiredGrants], this method doesn't throw if the JSON field has
+                 * an unexpected type.
+                 */
+                @JsonProperty("reservedOnExpiredGrants")
+                @ExcludeMissing
+                fun _reservedOnExpiredGrants(): JsonField<Double> = reservedOnExpiredGrants
+
+                /**
                  * Returns the raw JSON value of [usagePeriodEnd].
                  *
                  * Unlike [usagePeriodEnd], this method doesn't throw if the JSON field has an
@@ -3043,6 +3117,9 @@ private constructor(
                     private var usageLimit: JsonField<Double>? = null
                     private var usageUpdatedAt: JsonField<OffsetDateTime>? = null
                     private var entitlementUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+                    private var reservation: JsonField<Reservation> = JsonMissing.of()
+                    private var reserved: JsonField<Double> = JsonMissing.of()
+                    private var reservedOnExpiredGrants: JsonField<Double> = JsonMissing.of()
                     private var usagePeriodEnd: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var validUntil: JsonField<OffsetDateTime> = JsonMissing.of()
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -3057,6 +3134,9 @@ private constructor(
                         usageLimit = unionObjectVariant1.usageLimit
                         usageUpdatedAt = unionObjectVariant1.usageUpdatedAt
                         entitlementUpdatedAt = unionObjectVariant1.entitlementUpdatedAt
+                        reservation = unionObjectVariant1.reservation
+                        reserved = unionObjectVariant1.reserved
+                        reservedOnExpiredGrants = unionObjectVariant1.reservedOnExpiredGrants
                         usagePeriodEnd = unionObjectVariant1.usagePeriodEnd
                         validUntil = unionObjectVariant1.validUntil
                         additionalProperties =
@@ -3179,6 +3259,63 @@ private constructor(
                             this.entitlementUpdatedAt = entitlementUpdatedAt
                         }
 
+                    /**
+                     * The reservation created by this request, when it asked to reserve credits and
+                     * was granted.
+                     */
+                    fun reservation(reservation: Reservation?) =
+                        reservation(JsonField.ofNullable(reservation))
+
+                    /** Alias for calling [Builder.reservation] with `reservation.orElse(null)`. */
+                    fun reservation(reservation: Optional<Reservation>) =
+                        reservation(reservation.getOrNull())
+
+                    /**
+                     * Sets [Builder.reservation] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.reservation] with a well-typed [Reservation]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun reservation(reservation: JsonField<Reservation>) = apply {
+                        this.reservation = reservation
+                    }
+
+                    /**
+                     * Credits held by open reservations on active grants. Already included in
+                     * currentUsage, so usageLimit - currentUsage is the available balance.
+                     */
+                    fun reserved(reserved: Double) = reserved(JsonField.of(reserved))
+
+                    /**
+                     * Sets [Builder.reserved] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.reserved] with a well-typed [Double] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun reserved(reserved: JsonField<Double>) = apply { this.reserved = reserved }
+
+                    /**
+                     * Credits still held by open reservations on grants that expired during the
+                     * hold. They can still be released, but are not part of currentUsage or the
+                     * balance and must not be subtracted from it.
+                     */
+                    fun reservedOnExpiredGrants(reservedOnExpiredGrants: Double) =
+                        reservedOnExpiredGrants(JsonField.of(reservedOnExpiredGrants))
+
+                    /**
+                     * Sets [Builder.reservedOnExpiredGrants] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.reservedOnExpiredGrants] with a well-typed
+                     * [Double] value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun reservedOnExpiredGrants(reservedOnExpiredGrants: JsonField<Double>) =
+                        apply {
+                            this.reservedOnExpiredGrants = reservedOnExpiredGrants
+                        }
+
                     /** The end date of the current billing period for recurring credit grants. */
                     fun usagePeriodEnd(usagePeriodEnd: OffsetDateTime) =
                         usagePeriodEnd(JsonField.of(usagePeriodEnd))
@@ -3259,6 +3396,9 @@ private constructor(
                             checkRequired("usageLimit", usageLimit),
                             checkRequired("usageUpdatedAt", usageUpdatedAt),
                             entitlementUpdatedAt,
+                            reservation,
+                            reserved,
+                            reservedOnExpiredGrants,
                             usagePeriodEnd,
                             validUntil,
                             additionalProperties.toMutableMap(),
@@ -3290,6 +3430,9 @@ private constructor(
                     usageLimit()
                     usageUpdatedAt()
                     entitlementUpdatedAt()
+                    reservation().ifPresent { it.validate() }
+                    reserved()
+                    reservedOnExpiredGrants()
                     usagePeriodEnd()
                     validUntil()
                     validated = true
@@ -3319,6 +3462,9 @@ private constructor(
                         (if (usageLimit.asKnown().isPresent) 1 else 0) +
                         (if (usageUpdatedAt.asKnown().isPresent) 1 else 0) +
                         (if (entitlementUpdatedAt.asKnown().isPresent) 1 else 0) +
+                        (reservation.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (reserved.asKnown().isPresent) 1 else 0) +
+                        (if (reservedOnExpiredGrants.asKnown().isPresent) 1 else 0) +
                         (if (usagePeriodEnd.asKnown().isPresent) 1 else 0) +
                         (if (validUntil.asKnown().isPresent) 1 else 0)
 
@@ -4247,6 +4393,474 @@ private constructor(
                     override fun toString() = value.toString()
                 }
 
+                /**
+                 * The reservation created by this request, when it asked to reserve credits and was
+                 * granted.
+                 */
+                class Reservation
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val id: JsonField<String>,
+                    private val amount: JsonField<Double>,
+                    private val expiresAt: JsonField<OffsetDateTime>,
+                    private val status: JsonField<Status>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("id")
+                        @ExcludeMissing
+                        id: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("amount")
+                        @ExcludeMissing
+                        amount: JsonField<Double> = JsonMissing.of(),
+                        @JsonProperty("expiresAt")
+                        @ExcludeMissing
+                        expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+                        @JsonProperty("status")
+                        @ExcludeMissing
+                        status: JsonField<Status> = JsonMissing.of(),
+                    ) : this(id, amount, expiresAt, status, mutableMapOf())
+
+                    /**
+                     * The client-provided reservation ID.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun id(): String = id.getRequired("id")
+
+                    /**
+                     * The amount of credits held.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun amount(): Double = amount.getRequired("amount")
+
+                    /**
+                     * When the reservation expires. Unreleased credits return to the balance at
+                     * this time.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
+
+                    /**
+                     * The status of the reservation.
+                     *
+                     * @throws StiggInvalidDataException if the JSON field has an unexpected type or
+                     *   is unexpectedly missing or null (e.g. if the server responded with an
+                     *   unexpected value).
+                     */
+                    fun status(): Status = status.getRequired("status")
+
+                    /**
+                     * Returns the raw JSON value of [id].
+                     *
+                     * Unlike [id], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+                    /**
+                     * Returns the raw JSON value of [amount].
+                     *
+                     * Unlike [amount], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("amount")
+                    @ExcludeMissing
+                    fun _amount(): JsonField<Double> = amount
+
+                    /**
+                     * Returns the raw JSON value of [expiresAt].
+                     *
+                     * Unlike [expiresAt], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("expiresAt")
+                    @ExcludeMissing
+                    fun _expiresAt(): JsonField<OffsetDateTime> = expiresAt
+
+                    /**
+                     * Returns the raw JSON value of [status].
+                     *
+                     * Unlike [status], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("status")
+                    @ExcludeMissing
+                    fun _status(): JsonField<Status> = status
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Reservation].
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .id()
+                         * .amount()
+                         * .expiresAt()
+                         * .status()
+                         * ```
+                         */
+                        @JvmStatic fun builder() = Builder()
+                    }
+
+                    /** A builder for [Reservation]. */
+                    class Builder internal constructor() {
+
+                        private var id: JsonField<String>? = null
+                        private var amount: JsonField<Double>? = null
+                        private var expiresAt: JsonField<OffsetDateTime>? = null
+                        private var status: JsonField<Status>? = null
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        @JvmSynthetic
+                        internal fun from(reservation: Reservation) = apply {
+                            id = reservation.id
+                            amount = reservation.amount
+                            expiresAt = reservation.expiresAt
+                            status = reservation.status
+                            additionalProperties = reservation.additionalProperties.toMutableMap()
+                        }
+
+                        /** The client-provided reservation ID. */
+                        fun id(id: String) = id(JsonField.of(id))
+
+                        /**
+                         * Sets [Builder.id] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.id] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun id(id: JsonField<String>) = apply { this.id = id }
+
+                        /** The amount of credits held. */
+                        fun amount(amount: Double) = amount(JsonField.of(amount))
+
+                        /**
+                         * Sets [Builder.amount] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.amount] with a well-typed [Double] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun amount(amount: JsonField<Double>) = apply { this.amount = amount }
+
+                        /**
+                         * When the reservation expires. Unreleased credits return to the balance at
+                         * this time.
+                         */
+                        fun expiresAt(expiresAt: OffsetDateTime) =
+                            expiresAt(JsonField.of(expiresAt))
+
+                        /**
+                         * Sets [Builder.expiresAt] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.expiresAt] with a well-typed
+                         * [OffsetDateTime] value instead. This method is primarily for setting the
+                         * field to an undocumented or not yet supported value.
+                         */
+                        fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply {
+                            this.expiresAt = expiresAt
+                        }
+
+                        /** The status of the reservation. */
+                        fun status(status: Status) = status(JsonField.of(status))
+
+                        /**
+                         * Sets [Builder.status] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.status] with a well-typed [Status] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun status(status: JsonField<Status>) = apply { this.status = status }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Reservation].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```java
+                         * .id()
+                         * .amount()
+                         * .expiresAt()
+                         * .status()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Reservation =
+                            Reservation(
+                                checkRequired("id", id),
+                                checkRequired("amount", amount),
+                                checkRequired("expiresAt", expiresAt),
+                                checkRequired("status", status),
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StiggInvalidDataException if any value type in this object doesn't
+                     *   match its expected type.
+                     */
+                    fun validate(): Reservation = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        id()
+                        amount()
+                        expiresAt()
+                        status().validate()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StiggInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int =
+                        (if (id.asKnown().isPresent) 1 else 0) +
+                            (if (amount.asKnown().isPresent) 1 else 0) +
+                            (if (expiresAt.asKnown().isPresent) 1 else 0) +
+                            (status.asKnown().getOrNull()?.validity() ?: 0)
+
+                    /** The status of the reservation. */
+                    class Status
+                    @JsonCreator
+                    private constructor(private val value: JsonField<String>) : Enum {
+
+                        /**
+                         * Returns this class instance's raw value.
+                         *
+                         * This is usually only useful if this instance was deserialized from data
+                         * that doesn't match any known member, and you want to know that value. For
+                         * example, if the SDK is on an older version than the API, then the API may
+                         * respond with new members that the SDK is unaware of.
+                         */
+                        @com.fasterxml.jackson.annotation.JsonValue
+                        fun _value(): JsonField<String> = value
+
+                        companion object {
+
+                            @JvmField val ACTIVE = of("ACTIVE")
+
+                            @JvmField val RELEASED = of("RELEASED")
+
+                            @JvmStatic fun of(value: String) = Status(JsonField.of(value))
+                        }
+
+                        /** An enum containing [Status]'s known values. */
+                        enum class Known {
+                            ACTIVE,
+                            RELEASED,
+                        }
+
+                        /**
+                         * An enum containing [Status]'s known values, as well as an [_UNKNOWN]
+                         * member.
+                         *
+                         * An instance of [Status] can contain an unknown value in a couple of
+                         * cases:
+                         * - It was deserialized from data that doesn't match any known member. For
+                         *   example, if the SDK is on an older version than the API, then the API
+                         *   may respond with new members that the SDK is unaware of.
+                         * - It was constructed with an arbitrary value using the [of] method.
+                         */
+                        enum class Value {
+                            ACTIVE,
+                            RELEASED,
+                            /**
+                             * An enum member indicating that [Status] was instantiated with an
+                             * unknown value.
+                             */
+                            _UNKNOWN,
+                        }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value, or
+                         * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                         *
+                         * Use the [known] method instead if you're certain the value is always
+                         * known or if you want to throw for the unknown case.
+                         */
+                        fun value(): Value =
+                            when (this) {
+                                ACTIVE -> Value.ACTIVE
+                                RELEASED -> Value.RELEASED
+                                else -> Value._UNKNOWN
+                            }
+
+                        /**
+                         * Returns an enum member corresponding to this class instance's value.
+                         *
+                         * Use the [value] method instead if you're uncertain the value is always
+                         * known and don't want to throw for the unknown case.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value is a not
+                         *   a known member.
+                         */
+                        fun known(): Known =
+                            when (this) {
+                                ACTIVE -> Known.ACTIVE
+                                RELEASED -> Known.RELEASED
+                                else -> throw StiggInvalidDataException("Unknown Status: $value")
+                            }
+
+                        /**
+                         * Returns this class instance's primitive wire representation.
+                         *
+                         * This differs from the [toString] method because that method is primarily
+                         * for debugging and generally doesn't throw.
+                         *
+                         * @throws StiggInvalidDataException if this class instance's value does not
+                         *   have the expected primitive type.
+                         */
+                        fun asString(): String =
+                            _value().asString().orElseThrow {
+                                StiggInvalidDataException("Value is not a String")
+                            }
+
+                        private var validated: Boolean = false
+
+                        /**
+                         * Validates that the types of all values in this object match their
+                         * expected types recursively.
+                         *
+                         * This method is _not_ forwards compatible with new types from the API for
+                         * existing fields.
+                         *
+                         * @throws StiggInvalidDataException if any value type in this object
+                         *   doesn't match its expected type.
+                         */
+                        fun validate(): Status = apply {
+                            if (validated) {
+                                return@apply
+                            }
+
+                            known()
+                            validated = true
+                        }
+
+                        fun isValid(): Boolean =
+                            try {
+                                validate()
+                                true
+                            } catch (e: StiggInvalidDataException) {
+                                false
+                            }
+
+                        /**
+                         * Returns a score indicating how many valid values are contained in this
+                         * object recursively.
+                         *
+                         * Used for best match union deserialization.
+                         */
+                        @JvmSynthetic
+                        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                        override fun equals(other: Any?): Boolean {
+                            if (this === other) {
+                                return true
+                            }
+
+                            return other is Status && value == other.value
+                        }
+
+                        override fun hashCode() = value.hashCode()
+
+                        override fun toString() = value.toString()
+                    }
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Reservation &&
+                            id == other.id &&
+                            amount == other.amount &&
+                            expiresAt == other.expiresAt &&
+                            status == other.status &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(id, amount, expiresAt, status, additionalProperties)
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Reservation{id=$id, amount=$amount, expiresAt=$expiresAt, status=$status, additionalProperties=$additionalProperties}"
+                }
+
                 override fun equals(other: Any?): Boolean {
                     if (this === other) {
                         return true
@@ -4261,6 +4875,9 @@ private constructor(
                         usageLimit == other.usageLimit &&
                         usageUpdatedAt == other.usageUpdatedAt &&
                         entitlementUpdatedAt == other.entitlementUpdatedAt &&
+                        reservation == other.reservation &&
+                        reserved == other.reserved &&
+                        reservedOnExpiredGrants == other.reservedOnExpiredGrants &&
                         usagePeriodEnd == other.usagePeriodEnd &&
                         validUntil == other.validUntil &&
                         additionalProperties == other.additionalProperties
@@ -4276,6 +4893,9 @@ private constructor(
                         usageLimit,
                         usageUpdatedAt,
                         entitlementUpdatedAt,
+                        reservation,
+                        reserved,
+                        reservedOnExpiredGrants,
                         usagePeriodEnd,
                         validUntil,
                         additionalProperties,
@@ -4285,7 +4905,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "UnionObjectVariant1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, usagePeriodEnd=$usagePeriodEnd, validUntil=$validUntil, additionalProperties=$additionalProperties}"
+                    "UnionObjectVariant1{accessDeniedReason=$accessDeniedReason, currency=$currency, currentUsage=$currentUsage, isGranted=$isGranted, type=$type, usageLimit=$usageLimit, usageUpdatedAt=$usageUpdatedAt, entitlementUpdatedAt=$entitlementUpdatedAt, reservation=$reservation, reserved=$reserved, reservedOnExpiredGrants=$reservedOnExpiredGrants, usagePeriodEnd=$usagePeriodEnd, validUntil=$validUntil, additionalProperties=$additionalProperties}"
             }
         }
 
