@@ -26,7 +26,7 @@ internal class UsageServiceTest {
                     .xEnvironmentId("X-ENVIRONMENT-ID")
                     .customerId("customerId")
                     .featureId("featureId")
-                    .value(-9007199254740991L)
+                    .value(-9007199254740991.0)
                     .dimensions(
                         UsageEstimateParams.Dimensions.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -78,7 +78,7 @@ internal class UsageServiceTest {
                         UsageReportParams.Usage.builder()
                             .customerId("customerId")
                             .featureId("featureId")
-                            .value(-9007199254740991L)
+                            .value(-9007199254740991.0)
                             .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .dimensions(
                                 UsageReportParams.Usage.Dimensions.builder()

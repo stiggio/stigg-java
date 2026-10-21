@@ -56,14 +56,14 @@ private constructor(
     fun featureId(): String = body.featureId()
 
     /**
-     * The value to report for usage. Must be a whole number — the REST API does not accept
-     * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
-     * milliseconds instead of seconds) if you need sub-unit precision.
+     * The value to report for usage. Fractional values are accepted and rounded half away from zero
+     * to 5 decimal places. A value with a fractional part must have an absolute value below
+     * 34,359,738,368 (2^35); whole numbers are accepted up to ±9,007,199,254,740,991.
      *
      * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun value(): Long = body.value()
+    fun value(): Double = body.value()
 
     /**
      * Additional dimensions for the usage report
@@ -111,7 +111,7 @@ private constructor(
      *
      * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _value(): JsonField<Long> = body._value()
+    fun _value(): JsonField<Double> = body._value()
 
     /**
      * Returns the raw JSON value of [dimensions].
@@ -227,19 +227,19 @@ private constructor(
         fun featureId(featureId: JsonField<String>) = apply { body.featureId(featureId) }
 
         /**
-         * The value to report for usage. Must be a whole number — the REST API does not accept
-         * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
-         * milliseconds instead of seconds) if you need sub-unit precision.
+         * The value to report for usage. Fractional values are accepted and rounded half away from
+         * zero to 5 decimal places. A value with a fractional part must have an absolute value
+         * below 34,359,738,368 (2^35); whole numbers are accepted up to ±9,007,199,254,740,991.
          */
-        fun value(value: Long) = apply { body.value(value) }
+        fun value(value: Double) = apply { body.value(value) }
 
         /**
          * Sets [Builder.value] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.value] with a well-typed [Long] value instead. This
+         * You should usually call [Builder.value] with a well-typed [Double] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun value(value: JsonField<Long>) = apply { body.value(value) }
+        fun value(value: JsonField<Double>) = apply { body.value(value) }
 
         /** Additional dimensions for the usage report */
         fun dimensions(dimensions: Dimensions) = apply { body.dimensions(dimensions) }
@@ -452,7 +452,7 @@ private constructor(
     private constructor(
         private val customerId: JsonField<String>,
         private val featureId: JsonField<String>,
-        private val value: JsonField<Long>,
+        private val value: JsonField<Double>,
         private val dimensions: JsonField<Dimensions>,
         private val resourceId: JsonField<String>,
         private val updateBehavior: JsonField<UpdateBehavior>,
@@ -467,7 +467,7 @@ private constructor(
             @JsonProperty("featureId")
             @ExcludeMissing
             featureId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("value") @ExcludeMissing value: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("value") @ExcludeMissing value: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("dimensions")
             @ExcludeMissing
             dimensions: JsonField<Dimensions> = JsonMissing.of(),
@@ -504,14 +504,14 @@ private constructor(
         fun featureId(): String = featureId.getRequired("featureId")
 
         /**
-         * The value to report for usage. Must be a whole number — the REST API does not accept
-         * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
-         * milliseconds instead of seconds) if you need sub-unit precision.
+         * The value to report for usage. Fractional values are accepted and rounded half away from
+         * zero to 5 decimal places. A value with a fractional part must have an absolute value
+         * below 34,359,738,368 (2^35); whole numbers are accepted up to ±9,007,199,254,740,991.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun value(): Long = value.getRequired("value")
+        fun value(): Double = value.getRequired("value")
 
         /**
          * Additional dimensions for the usage report
@@ -563,7 +563,7 @@ private constructor(
          *
          * Unlike [value], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Long> = value
+        @JsonProperty("value") @ExcludeMissing fun _value(): JsonField<Double> = value
 
         /**
          * Returns the raw JSON value of [dimensions].
@@ -625,7 +625,7 @@ private constructor(
 
             private var customerId: JsonField<String>? = null
             private var featureId: JsonField<String>? = null
-            private var value: JsonField<Long>? = null
+            private var value: JsonField<Double>? = null
             private var dimensions: JsonField<Dimensions> = JsonMissing.of()
             private var resourceId: JsonField<String> = JsonMissing.of()
             private var updateBehavior: JsonField<UpdateBehavior> = JsonMissing.of()
@@ -667,20 +667,21 @@ private constructor(
             fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
             /**
-             * The value to report for usage. Must be a whole number — the REST API does not accept
-             * fractional (float) usage values; scale up (e.g. report cents instead of dollars, or
-             * milliseconds instead of seconds) if you need sub-unit precision.
+             * The value to report for usage. Fractional values are accepted and rounded half away
+             * from zero to 5 decimal places. A value with a fractional part must have an absolute
+             * value below 34,359,738,368 (2^35); whole numbers are accepted up to
+             * ±9,007,199,254,740,991.
              */
-            fun value(value: Long) = value(JsonField.of(value))
+            fun value(value: Double) = value(JsonField.of(value))
 
             /**
              * Sets [Builder.value] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.value] with a well-typed [Long] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
+             * You should usually call [Builder.value] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
              */
-            fun value(value: JsonField<Long>) = apply { this.value = value }
+            fun value(value: JsonField<Double>) = apply { this.value = value }
 
             /** Additional dimensions for the usage report */
             fun dimensions(dimensions: Dimensions) = dimensions(JsonField.of(dimensions))

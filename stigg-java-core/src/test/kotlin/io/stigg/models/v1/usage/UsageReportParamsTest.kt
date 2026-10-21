@@ -19,7 +19,7 @@ internal class UsageReportParamsTest {
                 UsageReportParams.Usage.builder()
                     .customerId("customerId")
                     .featureId("featureId")
-                    .value(-9007199254740991L)
+                    .value(-9007199254740991.0)
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .dimensions(
                         UsageReportParams.Usage.Dimensions.builder()
@@ -44,7 +44,7 @@ internal class UsageReportParamsTest {
                     UsageReportParams.Usage.builder()
                         .customerId("customerId")
                         .featureId("featureId")
-                        .value(-9007199254740991L)
+                        .value(-9007199254740991.0)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .dimensions(
                             UsageReportParams.Usage.Dimensions.builder()
@@ -77,7 +77,7 @@ internal class UsageReportParamsTest {
                     UsageReportParams.Usage.builder()
                         .customerId("customerId")
                         .featureId("featureId")
-                        .value(-9007199254740991L)
+                        .value(-9007199254740991.0)
                         .build()
                 )
                 .build()
@@ -97,7 +97,7 @@ internal class UsageReportParamsTest {
                     UsageReportParams.Usage.builder()
                         .customerId("customerId")
                         .featureId("featureId")
-                        .value(-9007199254740991L)
+                        .value(-9007199254740991.0)
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .dimensions(
                             UsageReportParams.Usage.Dimensions.builder()
@@ -118,7 +118,7 @@ internal class UsageReportParamsTest {
                 UsageReportParams.Usage.builder()
                     .customerId("customerId")
                     .featureId("featureId")
-                    .value(-9007199254740991L)
+                    .value(-9007199254740991.0)
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .dimensions(
                         UsageReportParams.Usage.Dimensions.builder()
@@ -140,7 +140,7 @@ internal class UsageReportParamsTest {
                     UsageReportParams.Usage.builder()
                         .customerId("customerId")
                         .featureId("featureId")
-                        .value(-9007199254740991L)
+                        .value(-9007199254740991.0)
                         .build()
                 )
                 .build()
@@ -152,7 +152,7 @@ internal class UsageReportParamsTest {
                 UsageReportParams.Usage.builder()
                     .customerId("customerId")
                     .featureId("featureId")
-                    .value(-9007199254740991L)
+                    .value(-9007199254740991.0)
                     .build()
             )
     }

@@ -21,7 +21,7 @@ internal class UsageReportResponseTest {
                         .customerId("customerId")
                         .featureId("featureId")
                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .value(-9007199254740991L)
+                        .value(0.0)
                         .credit(
                             UsageReportResponse.Data.Credit.builder()
                                 .consumed(0.0)
@@ -49,7 +49,7 @@ internal class UsageReportResponseTest {
                     .customerId("customerId")
                     .featureId("featureId")
                     .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .value(-9007199254740991L)
+                    .value(0.0)
                     .credit(
                         UsageReportResponse.Data.Credit.builder()
                             .consumed(0.0)
@@ -81,7 +81,7 @@ internal class UsageReportResponseTest {
                         .customerId("customerId")
                         .featureId("featureId")
                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                        .value(-9007199254740991L)
+                        .value(0.0)
                         .credit(
                             UsageReportResponse.Data.Credit.builder()
                                 .consumed(0.0)

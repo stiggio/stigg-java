@@ -16,7 +16,7 @@ internal class UsageEstimateParamsTest {
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .customerId("customerId")
             .featureId("featureId")
-            .value(-9007199254740991L)
+            .value(-9007199254740991.0)
             .dimensions(
                 UsageEstimateParams.Dimensions.builder()
                     .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -35,7 +35,7 @@ internal class UsageEstimateParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .featureId("featureId")
-                .value(-9007199254740991L)
+                .value(-9007199254740991.0)
                 .dimensions(
                     UsageEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -62,7 +62,7 @@ internal class UsageEstimateParamsTest {
             UsageEstimateParams.builder()
                 .customerId("customerId")
                 .featureId("featureId")
-                .value(-9007199254740991L)
+                .value(-9007199254740991.0)
                 .build()
 
         val headers = params._headers()
@@ -78,7 +78,7 @@ internal class UsageEstimateParamsTest {
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .customerId("customerId")
                 .featureId("featureId")
-                .value(-9007199254740991L)
+                .value(-9007199254740991.0)
                 .dimensions(
                     UsageEstimateParams.Dimensions.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -92,7 +92,7 @@ internal class UsageEstimateParamsTest {
 
         assertThat(body.customerId()).isEqualTo("customerId")
         assertThat(body.featureId()).isEqualTo("featureId")
-        assertThat(body.value()).isEqualTo(-9007199254740991L)
+        assertThat(body.value()).isEqualTo(-9007199254740991.0)
         assertThat(body.dimensions())
             .contains(
                 UsageEstimateParams.Dimensions.builder()
@@ -109,13 +109,13 @@ internal class UsageEstimateParamsTest {
             UsageEstimateParams.builder()
                 .customerId("customerId")
                 .featureId("featureId")
-                .value(-9007199254740991L)
+                .value(-9007199254740991.0)
                 .build()
 
         val body = params._body()
 
         assertThat(body.customerId()).isEqualTo("customerId")
         assertThat(body.featureId()).isEqualTo("featureId")
-        assertThat(body.value()).isEqualTo(-9007199254740991L)
+        assertThat(body.value()).isEqualTo(-9007199254740991.0)
     }
 }
