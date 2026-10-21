@@ -19,6 +19,7 @@ private constructor(
     private val currencyId: String?,
     private val eventType: String?,
     private val limit: Long?,
+    private val reservationId: String?,
     private val resourceId: String?,
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
@@ -43,6 +44,9 @@ private constructor(
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
+
+    /** Filter by credit reservation ID */
+    fun reservationId(): Optional<String> = Optional.ofNullable(reservationId)
 
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
@@ -81,6 +85,7 @@ private constructor(
         private var currencyId: String? = null
         private var eventType: String? = null
         private var limit: Long? = null
+        private var reservationId: String? = null
         private var resourceId: String? = null
         private var xAccountId: String? = null
         private var xEnvironmentId: String? = null
@@ -95,6 +100,7 @@ private constructor(
             currencyId = creditListLedgerParams.currencyId
             eventType = creditListLedgerParams.eventType
             limit = creditListLedgerParams.limit
+            reservationId = creditListLedgerParams.reservationId
             resourceId = creditListLedgerParams.resourceId
             xAccountId = creditListLedgerParams.xAccountId
             xEnvironmentId = creditListLedgerParams.xEnvironmentId
@@ -141,6 +147,13 @@ private constructor(
 
         /** Alias for calling [Builder.limit] with `limit.orElse(null)`. */
         fun limit(limit: Optional<Long>) = limit(limit.getOrNull())
+
+        /** Filter by credit reservation ID */
+        fun reservationId(reservationId: String?) = apply { this.reservationId = reservationId }
+
+        /** Alias for calling [Builder.reservationId] with `reservationId.orElse(null)`. */
+        fun reservationId(reservationId: Optional<String>) =
+            reservationId(reservationId.getOrNull())
 
         /** Filter by resource ID */
         fun resourceId(resourceId: String?) = apply { this.resourceId = resourceId }
@@ -277,6 +290,7 @@ private constructor(
                 currencyId,
                 eventType,
                 limit,
+                reservationId,
                 resourceId,
                 xAccountId,
                 xEnvironmentId,
@@ -303,6 +317,7 @@ private constructor(
                 currencyId?.let { put("currencyId", it) }
                 eventType?.let { put("eventType", it) }
                 limit?.let { put("limit", it.toString()) }
+                reservationId?.let { put("reservationId", it) }
                 resourceId?.let { put("resourceId", it) }
                 putAll(additionalQueryParams)
             }
@@ -320,6 +335,7 @@ private constructor(
             currencyId == other.currencyId &&
             eventType == other.eventType &&
             limit == other.limit &&
+            reservationId == other.reservationId &&
             resourceId == other.resourceId &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
@@ -335,6 +351,7 @@ private constructor(
             currencyId,
             eventType,
             limit,
+            reservationId,
             resourceId,
             xAccountId,
             xEnvironmentId,
@@ -343,5 +360,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, eventType=$eventType, limit=$limit, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, eventType=$eventType, limit=$limit, reservationId=$reservationId, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -3,6 +3,7 @@
 package io.stigg.models.v1.credits
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import io.stigg.core.JsonValue
 import io.stigg.core.jsonMapper
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -17,12 +18,35 @@ internal class CreditListLedgerPageResponseTest {
                 .addData(
                     CreditListLedgerResponse.builder()
                         .amount(0.0)
+                        .addBreakdown(
+                            CreditListLedgerResponse.Breakdown.builder()
+                                .amount(0.0)
+                                .creditCurrencyId("creditCurrencyId")
+                                .creditGrantId("creditGrantId")
+                                .customerId("customerId")
+                                .eventId("eventId")
+                                .eventType(
+                                    CreditListLedgerResponse.Breakdown.EventType.CREDITS_GRANTED
+                                )
+                                .featureId("featureId")
+                                .reservationId("reservationId")
+                                .resourceId("resourceId")
+                                .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
                         .creditCurrencyId("creditCurrencyId")
                         .creditGrantId("creditGrantId")
                         .customerId("customerId")
                         .eventId("eventId")
                         .eventType(CreditListLedgerResponse.EventType.CREDITS_GRANTED)
                         .featureId("featureId")
+                        .holdReturnedAmount(0.0)
+                        .metadata(
+                            CreditListLedgerResponse.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .reservationId("reservationId")
                         .resourceId("resourceId")
                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
@@ -39,12 +63,33 @@ internal class CreditListLedgerPageResponseTest {
             .containsExactly(
                 CreditListLedgerResponse.builder()
                     .amount(0.0)
+                    .addBreakdown(
+                        CreditListLedgerResponse.Breakdown.builder()
+                            .amount(0.0)
+                            .creditCurrencyId("creditCurrencyId")
+                            .creditGrantId("creditGrantId")
+                            .customerId("customerId")
+                            .eventId("eventId")
+                            .eventType(CreditListLedgerResponse.Breakdown.EventType.CREDITS_GRANTED)
+                            .featureId("featureId")
+                            .reservationId("reservationId")
+                            .resourceId("resourceId")
+                            .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
                     .creditCurrencyId("creditCurrencyId")
                     .creditGrantId("creditGrantId")
                     .customerId("customerId")
                     .eventId("eventId")
                     .eventType(CreditListLedgerResponse.EventType.CREDITS_GRANTED)
                     .featureId("featureId")
+                    .holdReturnedAmount(0.0)
+                    .metadata(
+                        CreditListLedgerResponse.Metadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .reservationId("reservationId")
                     .resourceId("resourceId")
                     .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
@@ -63,12 +108,35 @@ internal class CreditListLedgerPageResponseTest {
                 .addData(
                     CreditListLedgerResponse.builder()
                         .amount(0.0)
+                        .addBreakdown(
+                            CreditListLedgerResponse.Breakdown.builder()
+                                .amount(0.0)
+                                .creditCurrencyId("creditCurrencyId")
+                                .creditGrantId("creditGrantId")
+                                .customerId("customerId")
+                                .eventId("eventId")
+                                .eventType(
+                                    CreditListLedgerResponse.Breakdown.EventType.CREDITS_GRANTED
+                                )
+                                .featureId("featureId")
+                                .reservationId("reservationId")
+                                .resourceId("resourceId")
+                                .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
                         .creditCurrencyId("creditCurrencyId")
                         .creditGrantId("creditGrantId")
                         .customerId("customerId")
                         .eventId("eventId")
                         .eventType(CreditListLedgerResponse.EventType.CREDITS_GRANTED)
                         .featureId("featureId")
+                        .holdReturnedAmount(0.0)
+                        .metadata(
+                            CreditListLedgerResponse.Metadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .build()
+                        )
+                        .reservationId("reservationId")
                         .resourceId("resourceId")
                         .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
