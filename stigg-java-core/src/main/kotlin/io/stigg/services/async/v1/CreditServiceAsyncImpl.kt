@@ -27,6 +27,8 @@ import io.stigg.services.async.v1.credits.CustomCurrencyServiceAsync
 import io.stigg.services.async.v1.credits.CustomCurrencyServiceAsyncImpl
 import io.stigg.services.async.v1.credits.GrantServiceAsync
 import io.stigg.services.async.v1.credits.GrantServiceAsyncImpl
+import io.stigg.services.async.v1.credits.ReservationServiceAsync
+import io.stigg.services.async.v1.credits.ReservationServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -47,6 +49,10 @@ class CreditServiceAsyncImpl internal constructor(private val clientOptions: Cli
         ConsumptionServiceAsyncImpl(clientOptions)
     }
 
+    private val reservations: ReservationServiceAsync by lazy {
+        ReservationServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CreditServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CreditServiceAsync =
@@ -59,6 +65,8 @@ class CreditServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override fun customCurrencies(): CustomCurrencyServiceAsync = customCurrencies
 
     override fun consumption(): ConsumptionServiceAsync = consumption
+
+    override fun reservations(): ReservationServiceAsync = reservations
 
     override fun getAutoRecharge(
         params: CreditGetAutoRechargeParams,
@@ -99,6 +107,10 @@ class CreditServiceAsyncImpl internal constructor(private val clientOptions: Cli
             ConsumptionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val reservations: ReservationServiceAsync.WithRawResponse by lazy {
+            ReservationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CreditServiceAsync.WithRawResponse =
@@ -114,6 +126,8 @@ class CreditServiceAsyncImpl internal constructor(private val clientOptions: Cli
             customCurrencies
 
         override fun consumption(): ConsumptionServiceAsync.WithRawResponse = consumption
+
+        override fun reservations(): ReservationServiceAsync.WithRawResponse = reservations
 
         private val getAutoRechargeHandler: Handler<CreditGetAutoRechargeResponse> =
             jsonHandler<CreditGetAutoRechargeResponse>(clientOptions.jsonMapper)

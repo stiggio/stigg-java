@@ -14,6 +14,7 @@ import io.stigg.models.v1.credits.CreditListLedgerParams
 import io.stigg.services.async.v1.credits.ConsumptionServiceAsync
 import io.stigg.services.async.v1.credits.CustomCurrencyServiceAsync
 import io.stigg.services.async.v1.credits.GrantServiceAsync
+import io.stigg.services.async.v1.credits.ReservationServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -38,6 +39,8 @@ interface CreditServiceAsync {
     fun customCurrencies(): CustomCurrencyServiceAsync
 
     fun consumption(): ConsumptionServiceAsync
+
+    fun reservations(): ReservationServiceAsync
 
     /**
      * Retrieves the automatic recharge configuration for a customer and currency. Returns default
@@ -98,6 +101,8 @@ interface CreditServiceAsync {
         fun customCurrencies(): CustomCurrencyServiceAsync.WithRawResponse
 
         fun consumption(): ConsumptionServiceAsync.WithRawResponse
+
+        fun reservations(): ReservationServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/credits/auto-recharge`, but is otherwise the

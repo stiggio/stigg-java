@@ -15,6 +15,7 @@ import io.stigg.models.v1.credits.CreditListLedgerParams
 import io.stigg.services.blocking.v1.credits.ConsumptionService
 import io.stigg.services.blocking.v1.credits.CustomCurrencyService
 import io.stigg.services.blocking.v1.credits.GrantService
+import io.stigg.services.blocking.v1.credits.ReservationService
 import java.util.function.Consumer
 
 interface CreditService {
@@ -38,6 +39,8 @@ interface CreditService {
     fun customCurrencies(): CustomCurrencyService
 
     fun consumption(): ConsumptionService
+
+    fun reservations(): ReservationService
 
     /**
      * Retrieves the automatic recharge configuration for a customer and currency. Returns default
@@ -92,6 +95,8 @@ interface CreditService {
         fun customCurrencies(): CustomCurrencyService.WithRawResponse
 
         fun consumption(): ConsumptionService.WithRawResponse
+
+        fun reservations(): ReservationService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/credits/auto-recharge`, but is otherwise the
