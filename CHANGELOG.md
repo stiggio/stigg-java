@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.0-beta.54](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.53...v0.1.0-beta.54) (2026-10-22)
+
+
+### Features
+
+* **STIGG-10078:** credit reservation release in the sdks ([0481109](https://github.com/stiggio/stigg-java/commit/0481109b6818652813647213ac5873177c89d318))
+
+
+### Bug Fixes
+
+* sync OpenAPI spec from stigg-api ([24d3ed1](https://github.com/stiggio/stigg-java/commit/24d3ed1c4ecf78c39d9eee4a478ea94f54bc4a84))
+* sync OpenAPI spec from stigg-api ([192915e](https://github.com/stiggio/stigg-java/commit/192915e2d3049751084cde5ef7a15ba6d363d08a))
+* sync OpenAPI spec from stigg-api ([0f7088b](https://github.com/stiggio/stigg-java/commit/0f7088b4bad7648580ee7e0c174512afc68cb328))
+* sync OpenAPI spec from stigg-api ([54b6901](https://github.com/stiggio/stigg-java/commit/54b6901cfdc41b0f3a90606649e43d7efa861a1f))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([95d6b4f](https://github.com/stiggio/stigg-java/commit/95d6b4f79c12119d6781f506fa22cb62bcc5e030))
+
 ## [0.1.0-beta.53](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.52...v0.1.0-beta.53) (2026-10-20)
 
 
