@@ -10281,7 +10281,7 @@ private constructor(
             fun featureId(): Optional<String> = featureId.getOptional("featureId")
 
             /**
-             * Maximum number of units (max 999999)
+             * Maximum number of units
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if
              *   the server responded with an unexpected value).
@@ -10606,7 +10606,7 @@ private constructor(
                  */
                 fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
 
-                /** Maximum number of units (max 999999) */
+                /** Maximum number of units */
                 fun maxUnitQuantity(maxUnitQuantity: Long) =
                     maxUnitQuantity(JsonField.of(maxUnitQuantity))
 
