@@ -4713,6 +4713,8 @@ private constructor(
 
                             @JvmField val RELEASED = of("RELEASED")
 
+                            @JvmField val EXPIRED = of("EXPIRED")
+
                             @JvmStatic fun of(value: String) = Status(JsonField.of(value))
                         }
 
@@ -4720,6 +4722,7 @@ private constructor(
                         enum class Known {
                             ACTIVE,
                             RELEASED,
+                            EXPIRED,
                         }
 
                         /**
@@ -4736,6 +4739,7 @@ private constructor(
                         enum class Value {
                             ACTIVE,
                             RELEASED,
+                            EXPIRED,
                             /**
                              * An enum member indicating that [Status] was instantiated with an
                              * unknown value.
@@ -4754,6 +4758,7 @@ private constructor(
                             when (this) {
                                 ACTIVE -> Value.ACTIVE
                                 RELEASED -> Value.RELEASED
+                                EXPIRED -> Value.EXPIRED
                                 else -> Value._UNKNOWN
                             }
 
@@ -4770,6 +4775,7 @@ private constructor(
                             when (this) {
                                 ACTIVE -> Known.ACTIVE
                                 RELEASED -> Known.RELEASED
+                                EXPIRED -> Known.EXPIRED
                                 else -> throw StiggInvalidDataException("Unknown Status: $value")
                             }
 
