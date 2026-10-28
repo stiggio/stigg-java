@@ -6,6 +6,7 @@ import io.stigg.core.ClientOptions
 import io.stigg.services.async.v1beta.customers.AssignmentServiceAsync
 import io.stigg.services.async.v1beta.customers.EntitlementServiceAsync
 import io.stigg.services.async.v1beta.customers.EntityServiceAsync
+import io.stigg.services.async.v1beta.customers.GovernanceServiceAsync
 import java.util.function.Consumer
 
 interface CustomerServiceAsync {
@@ -28,6 +29,8 @@ interface CustomerServiceAsync {
 
     fun assignments(): AssignmentServiceAsync
 
+    fun governance(): GovernanceServiceAsync
+
     /**
      * A view of [CustomerServiceAsync] that provides access to raw HTTP responses for each method.
      */
@@ -47,5 +50,7 @@ interface CustomerServiceAsync {
         fun entities(): EntityServiceAsync.WithRawResponse
 
         fun assignments(): AssignmentServiceAsync.WithRawResponse
+
+        fun governance(): GovernanceServiceAsync.WithRawResponse
     }
 }

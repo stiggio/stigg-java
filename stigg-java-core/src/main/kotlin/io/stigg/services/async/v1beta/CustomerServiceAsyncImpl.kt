@@ -9,6 +9,8 @@ import io.stigg.services.async.v1beta.customers.EntitlementServiceAsync
 import io.stigg.services.async.v1beta.customers.EntitlementServiceAsyncImpl
 import io.stigg.services.async.v1beta.customers.EntityServiceAsync
 import io.stigg.services.async.v1beta.customers.EntityServiceAsyncImpl
+import io.stigg.services.async.v1beta.customers.GovernanceServiceAsync
+import io.stigg.services.async.v1beta.customers.GovernanceServiceAsyncImpl
 import java.util.function.Consumer
 
 class CustomerServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -28,6 +30,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         AssignmentServiceAsyncImpl(clientOptions)
     }
 
+    private val governance: GovernanceServiceAsync by lazy {
+        GovernanceServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
@@ -38,6 +44,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun entities(): EntityServiceAsync = entities
 
     override fun assignments(): AssignmentServiceAsync = assignments
+
+    override fun governance(): GovernanceServiceAsync = governance
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerServiceAsync.WithRawResponse {
@@ -54,6 +62,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             AssignmentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val governance: GovernanceServiceAsync.WithRawResponse by lazy {
+            GovernanceServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -66,5 +78,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         override fun entities(): EntityServiceAsync.WithRawResponse = entities
 
         override fun assignments(): AssignmentServiceAsync.WithRawResponse = assignments
+
+        override fun governance(): GovernanceServiceAsync.WithRawResponse = governance
     }
 }

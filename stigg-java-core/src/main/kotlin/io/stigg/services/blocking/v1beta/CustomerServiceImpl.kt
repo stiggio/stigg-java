@@ -9,6 +9,8 @@ import io.stigg.services.blocking.v1beta.customers.EntitlementService
 import io.stigg.services.blocking.v1beta.customers.EntitlementServiceImpl
 import io.stigg.services.blocking.v1beta.customers.EntityService
 import io.stigg.services.blocking.v1beta.customers.EntityServiceImpl
+import io.stigg.services.blocking.v1beta.customers.GovernanceService
+import io.stigg.services.blocking.v1beta.customers.GovernanceServiceImpl
 import java.util.function.Consumer
 
 class CustomerServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -24,6 +26,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
 
     private val assignments: AssignmentService by lazy { AssignmentServiceImpl(clientOptions) }
 
+    private val governance: GovernanceService by lazy { GovernanceServiceImpl(clientOptions) }
+
     override fun withRawResponse(): CustomerService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerService =
@@ -34,6 +38,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun entities(): EntityService = entities
 
     override fun assignments(): AssignmentService = assignments
+
+    override fun governance(): GovernanceService = governance
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerService.WithRawResponse {
@@ -50,6 +56,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             AssignmentServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val governance: GovernanceService.WithRawResponse by lazy {
+            GovernanceServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerService.WithRawResponse =
@@ -62,5 +72,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         override fun entities(): EntityService.WithRawResponse = entities
 
         override fun assignments(): AssignmentService.WithRawResponse = assignments
+
+        override fun governance(): GovernanceService.WithRawResponse = governance
     }
 }

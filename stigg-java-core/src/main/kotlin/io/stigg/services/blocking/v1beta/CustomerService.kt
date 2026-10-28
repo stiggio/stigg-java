@@ -6,6 +6,7 @@ import io.stigg.core.ClientOptions
 import io.stigg.services.blocking.v1beta.customers.AssignmentService
 import io.stigg.services.blocking.v1beta.customers.EntitlementService
 import io.stigg.services.blocking.v1beta.customers.EntityService
+import io.stigg.services.blocking.v1beta.customers.GovernanceService
 import java.util.function.Consumer
 
 interface CustomerService {
@@ -28,6 +29,8 @@ interface CustomerService {
 
     fun assignments(): AssignmentService
 
+    fun governance(): GovernanceService
+
     /** A view of [CustomerService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -43,5 +46,7 @@ interface CustomerService {
         fun entities(): EntityService.WithRawResponse
 
         fun assignments(): AssignmentService.WithRawResponse
+
+        fun governance(): GovernanceService.WithRawResponse
     }
 }
