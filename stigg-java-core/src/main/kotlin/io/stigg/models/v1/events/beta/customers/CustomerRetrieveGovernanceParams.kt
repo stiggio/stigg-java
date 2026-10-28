@@ -24,6 +24,7 @@ class CustomerRetrieveGovernanceParams
 private constructor(
     private val id: String?,
     private val after: String?,
+    private val before: String?,
     private val currencyIds: List<String>?,
     private val entityIdSearch: String?,
     private val entityTypeIds: List<String>?,
@@ -41,11 +42,20 @@ private constructor(
 
     fun id(): Optional<String> = Optional.ofNullable(id)
 
-    /** Return items that come after this cursor */
+    /**
+     * Opaque cursor from a page’s `next`; returns the page after it. Mutually exclusive with
+     * `before`.
+     */
     fun after(): Optional<String> = Optional.ofNullable(after)
 
     /**
-     * Currency ids to include, repeated per value (e.g. `?currencyIds=credits`). Omit both
+     * Opaque cursor from a page’s `prev`; returns the page before it. Mutually exclusive with
+     * `after`.
+     */
+    fun before(): Optional<String> = Optional.ofNullable(before)
+
+    /**
+     * Currency ids to include, comma-separated (e.g. `?currencyIds=credits`), up to 100. Omit both
      * featureIds and currencyIds for tree mode.
      */
     fun currencyIds(): Optional<List<String>> = Optional.ofNullable(currencyIds)
@@ -57,15 +67,15 @@ private constructor(
     fun entityIdSearch(): Optional<String> = Optional.ofNullable(entityIdSearch)
 
     /**
-     * Filter to one or more entity types, repeated per value (e.g.
-     * `?entityTypeIds=team&entityTypeIds=user`).
+     * Filter to one or more entity types, comma-separated (e.g. `?entityTypeIds=team,user`), up
+     * to 100.
      */
     fun entityTypeIds(): Optional<List<String>> = Optional.ofNullable(entityTypeIds)
 
     /**
-     * Feature ids to include, repeated per value (e.g. `?featureIds=ai-tokens&featureIds=seats`).
-     * Omit both featureIds and currencyIds for tree mode — every node in the hierarchy with no
-     * usage configuration attached.
+     * Feature ids to include, comma-separated (e.g. `?featureIds=ai-tokens,seats`), up to 100. Omit
+     * both featureIds and currencyIds for tree mode — every node in the hierarchy with no usage
+     * configuration attached.
      */
     fun featureIds(): Optional<List<String>> = Optional.ofNullable(featureIds)
 
@@ -118,6 +128,7 @@ private constructor(
 
         private var id: String? = null
         private var after: String? = null
+        private var before: String? = null
         private var currencyIds: MutableList<String>? = null
         private var entityIdSearch: String? = null
         private var entityTypeIds: MutableList<String>? = null
@@ -137,6 +148,7 @@ private constructor(
             apply {
                 id = customerRetrieveGovernanceParams.id
                 after = customerRetrieveGovernanceParams.after
+                before = customerRetrieveGovernanceParams.before
                 currencyIds = customerRetrieveGovernanceParams.currencyIds?.toMutableList()
                 entityIdSearch = customerRetrieveGovernanceParams.entityIdSearch
                 entityTypeIds = customerRetrieveGovernanceParams.entityTypeIds?.toMutableList()
@@ -158,15 +170,27 @@ private constructor(
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
 
-        /** Return items that come after this cursor */
+        /**
+         * Opaque cursor from a page’s `next`; returns the page after it. Mutually exclusive with
+         * `before`.
+         */
         fun after(after: String?) = apply { this.after = after }
 
         /** Alias for calling [Builder.after] with `after.orElse(null)`. */
         fun after(after: Optional<String>) = after(after.getOrNull())
 
         /**
-         * Currency ids to include, repeated per value (e.g. `?currencyIds=credits`). Omit both
-         * featureIds and currencyIds for tree mode.
+         * Opaque cursor from a page’s `prev`; returns the page before it. Mutually exclusive with
+         * `after`.
+         */
+        fun before(before: String?) = apply { this.before = before }
+
+        /** Alias for calling [Builder.before] with `before.orElse(null)`. */
+        fun before(before: Optional<String>) = before(before.getOrNull())
+
+        /**
+         * Currency ids to include, comma-separated (e.g. `?currencyIds=credits`), up to 100. Omit
+         * both featureIds and currencyIds for tree mode.
          */
         fun currencyIds(currencyIds: List<String>?) = apply {
             this.currencyIds = currencyIds?.toMutableList()
@@ -195,8 +219,8 @@ private constructor(
             entityIdSearch(entityIdSearch.getOrNull())
 
         /**
-         * Filter to one or more entity types, repeated per value (e.g.
-         * `?entityTypeIds=team&entityTypeIds=user`).
+         * Filter to one or more entity types, comma-separated (e.g. `?entityTypeIds=team,user`), up
+         * to 100.
          */
         fun entityTypeIds(entityTypeIds: List<String>?) = apply {
             this.entityTypeIds = entityTypeIds?.toMutableList()
@@ -216,9 +240,9 @@ private constructor(
         }
 
         /**
-         * Feature ids to include, repeated per value (e.g.
-         * `?featureIds=ai-tokens&featureIds=seats`). Omit both featureIds and currencyIds for tree
-         * mode — every node in the hierarchy with no usage configuration attached.
+         * Feature ids to include, comma-separated (e.g. `?featureIds=ai-tokens,seats`), up to 100.
+         * Omit both featureIds and currencyIds for tree mode — every node in the hierarchy with no
+         * usage configuration attached.
          */
         fun featureIds(featureIds: List<String>?) = apply {
             this.featureIds = featureIds?.toMutableList()
@@ -405,6 +429,7 @@ private constructor(
             CustomerRetrieveGovernanceParams(
                 id,
                 after,
+                before,
                 currencyIds?.toImmutable(),
                 entityIdSearch,
                 entityTypeIds?.toImmutable(),
@@ -440,6 +465,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 after?.let { put("after", it) }
+                before?.let { put("before", it) }
                 currencyIds?.let { put("currencyIds", it.joinToString(",")) }
                 entityIdSearch?.let { put("entityIdSearch", it) }
                 entityTypeIds?.let { put("entityTypeIds", it.joinToString(",")) }
@@ -899,6 +925,7 @@ private constructor(
         return other is CustomerRetrieveGovernanceParams &&
             id == other.id &&
             after == other.after &&
+            before == other.before &&
             currencyIds == other.currencyIds &&
             entityIdSearch == other.entityIdSearch &&
             entityTypeIds == other.entityTypeIds &&
@@ -918,6 +945,7 @@ private constructor(
         Objects.hash(
             id,
             after,
+            before,
             currencyIds,
             entityIdSearch,
             entityTypeIds,
@@ -934,5 +962,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CustomerRetrieveGovernanceParams{id=$id, after=$after, currencyIds=$currencyIds, entityIdSearch=$entityIdSearch, entityTypeIds=$entityTypeIds, featureIds=$featureIds, limit=$limit, minUtilization=$minUtilization, order=$order, scope=$scope, sortBy=$sortBy, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerRetrieveGovernanceParams{id=$id, after=$after, before=$before, currencyIds=$currencyIds, entityIdSearch=$entityIdSearch, entityTypeIds=$entityTypeIds, featureIds=$featureIds, limit=$limit, minUtilization=$minUtilization, order=$order, scope=$scope, sortBy=$sortBy, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

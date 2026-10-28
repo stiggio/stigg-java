@@ -32,7 +32,10 @@ internal class CustomerRetrieveGovernanceResponseTest {
                         .build()
                 )
                 .pagination(
-                    CustomerRetrieveGovernanceResponse.Pagination.builder().next("next").build()
+                    CustomerRetrieveGovernanceResponse.Pagination.builder()
+                        .next("next")
+                        .prev("prev")
+                        .build()
                 )
                 .build()
 
@@ -55,7 +58,12 @@ internal class CustomerRetrieveGovernanceResponseTest {
                     .build()
             )
         assertThat(customerRetrieveGovernanceResponse.pagination())
-            .isEqualTo(CustomerRetrieveGovernanceResponse.Pagination.builder().next("next").build())
+            .isEqualTo(
+                CustomerRetrieveGovernanceResponse.Pagination.builder()
+                    .next("next")
+                    .prev("prev")
+                    .build()
+            )
     }
 
     @Test
@@ -81,7 +89,10 @@ internal class CustomerRetrieveGovernanceResponseTest {
                         .build()
                 )
                 .pagination(
-                    CustomerRetrieveGovernanceResponse.Pagination.builder().next("next").build()
+                    CustomerRetrieveGovernanceResponse.Pagination.builder()
+                        .next("next")
+                        .prev("prev")
+                        .build()
                 )
                 .build()
 

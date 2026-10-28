@@ -20,6 +20,7 @@ internal class CustomerServiceAsyncTest {
                 CustomerRetrieveGovernanceParams.builder()
                     .id("id")
                     .after("after")
+                    .before("before")
                     .addCurrencyId("string")
                     .entityIdSearch("x")
                     .addEntityTypeId("string")

@@ -1041,13 +1041,15 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val next: JsonField<String>,
+        private val prev: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("next") @ExcludeMissing next: JsonField<String> = JsonMissing.of()
-        ) : this(next, mutableMapOf())
+            @JsonProperty("next") @ExcludeMissing next: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("prev") @ExcludeMissing prev: JsonField<String> = JsonMissing.of(),
+        ) : this(next, prev, mutableMapOf())
 
         /**
          * Cursor for fetching the next page of results, or null if no additional pages exist
@@ -1058,11 +1060,26 @@ private constructor(
         fun next(): Optional<String> = next.getOptional("next")
 
         /**
+         * Cursor for fetching the previous page of results, or null if at the beginning
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun prev(): Optional<String> = prev.getOptional("prev")
+
+        /**
          * Returns the raw JSON value of [next].
          *
          * Unlike [next], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("next") @ExcludeMissing fun _next(): JsonField<String> = next
+
+        /**
+         * Returns the raw JSON value of [prev].
+         *
+         * Unlike [prev], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("prev") @ExcludeMissing fun _prev(): JsonField<String> = prev
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1084,6 +1101,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .next()
+             * .prev()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -1093,11 +1111,13 @@ private constructor(
         class Builder internal constructor() {
 
             private var next: JsonField<String>? = null
+            private var prev: JsonField<String>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(pagination: Pagination) = apply {
                 next = pagination.next
+                prev = pagination.prev
                 additionalProperties = pagination.additionalProperties.toMutableMap()
             }
 
@@ -1117,6 +1137,21 @@ private constructor(
              * value.
              */
             fun next(next: JsonField<String>) = apply { this.next = next }
+
+            /** Cursor for fetching the previous page of results, or null if at the beginning */
+            fun prev(prev: String?) = prev(JsonField.ofNullable(prev))
+
+            /** Alias for calling [Builder.prev] with `prev.orElse(null)`. */
+            fun prev(prev: Optional<String>) = prev(prev.getOrNull())
+
+            /**
+             * Sets [Builder.prev] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.prev] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun prev(prev: JsonField<String>) = apply { this.prev = prev }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1145,12 +1180,17 @@ private constructor(
              * The following fields are required:
              * ```java
              * .next()
+             * .prev()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Pagination =
-                Pagination(checkRequired("next", next), additionalProperties.toMutableMap())
+                Pagination(
+                    checkRequired("next", next),
+                    checkRequired("prev", prev),
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -1170,6 +1210,7 @@ private constructor(
             }
 
             next()
+            prev()
             validated = true
         }
 
@@ -1187,7 +1228,9 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        @JvmSynthetic internal fun validity(): Int = (if (next.asKnown().isPresent) 1 else 0)
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (next.asKnown().isPresent) 1 else 0) + (if (prev.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1196,15 +1239,16 @@ private constructor(
 
             return other is Pagination &&
                 next == other.next &&
+                prev == other.prev &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(next, additionalProperties) }
+        private val hashCode: Int by lazy { Objects.hash(next, prev, additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Pagination{next=$next, additionalProperties=$additionalProperties}"
+            "Pagination{next=$next, prev=$prev, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -20,6 +20,7 @@ internal class CustomerServiceTest {
                 CustomerRetrieveGovernanceParams.builder()
                     .id("id")
                     .after("after")
+                    .before("before")
                     .addCurrencyId("string")
                     .entityIdSearch("x")
                     .addEntityTypeId("string")
