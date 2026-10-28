@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.0-beta.55](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.54...v0.1.0-beta.55) (2026-10-28)
+
+
+### Features
+
+* **STIGG-10529:** governance query as paginated v1Beta.customers.governance.list ([96b987a](https://github.com/stiggio/stigg-java/commit/96b987a9d30d16dcbc294f5f2f13e4503de63709))
+
+
+### Bug Fixes
+
+* sync OpenAPI spec from stigg-api ([ab75cd8](https://github.com/stiggio/stigg-java/commit/ab75cd85cbb06780edc59236828d70b6e57c1800))
+* sync OpenAPI spec from stigg-api ([778c415](https://github.com/stiggio/stigg-java/commit/778c415aaae8b7ad7ede597c7445711b79a02fcb))
+* sync OpenAPI spec from stigg-api ([12498ee](https://github.com/stiggio/stigg-java/commit/12498ee7512316c988ffc4d24b40134d7a8bc505))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([bf06ae6](https://github.com/stiggio/stigg-java/commit/bf06ae6ca82f9854daec6c017096aaadfb1e3758))
+
 ## [0.1.0-beta.54](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.53...v0.1.0-beta.54) (2026-10-22)
 
 
