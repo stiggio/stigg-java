@@ -584,7 +584,8 @@ private constructor(
         /**
          * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new node
          * defaults to a root); `null` detaches to a root; an ID sets or changes the parent.
-         * Reparenting an existing node is leaf-only.
+         * Reparenting or detaching an existing node is leaf-only; place a parent before its
+         * children, or in the same batch.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -767,7 +768,8 @@ private constructor(
             /**
              * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new
              * node defaults to a root); `null` detaches to a root; an ID sets or changes the
-             * parent. Reparenting an existing node is leaf-only.
+             * parent. Reparenting or detaching an existing node is leaf-only; place a parent before
+             * its children, or in the same batch.
              */
             fun parentId(parentId: String?) = parentId(JsonField.ofNullable(parentId))
 
