@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0-beta.56](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.55...v0.1.0-beta.56) (2026-10-28)
+
+
+### Bug Fixes
+
+* **stainless:** restore edge.api.stigg.io as the production server ([558747c](https://github.com/stiggio/stigg-java/commit/558747c192f83c1883fee6d661e9de5e4c4b1d00))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([4a6cc36](https://github.com/stiggio/stigg-java/commit/4a6cc364b703bc4e4b45fe9070ef84bcf1ff5bca))
+
 ## [0.1.0-beta.55](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.54...v0.1.0-beta.55) (2026-10-28)
 
 
