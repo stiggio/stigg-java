@@ -131,7 +131,7 @@ private constructor(
     /**
      * The base URL to use for every request.
      *
-     * Defaults to the production environment: `https://api.stigg.io`.
+     * Defaults to the production environment: `https://edge.api.stigg.io`.
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
@@ -139,7 +139,7 @@ private constructor(
 
     companion object {
 
-        const val PRODUCTION_URL = "https://api.stigg.io"
+        const val PRODUCTION_URL = "https://edge.api.stigg.io"
 
         /**
          * Returns a mutable builder for constructing an instance of [ClientOptions].
@@ -263,7 +263,7 @@ private constructor(
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api.stigg.io`.
+         * Defaults to the production environment: `https://edge.api.stigg.io`.
          */
         fun baseUrl(baseUrl: String?) = apply { this.baseUrl = baseUrl }
 
@@ -415,10 +415,10 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * | Setter    | System property | Environment variable | Required | Default value            |
-         * |-----------|-----------------|----------------------|----------|--------------------------|
-         * | `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | true     | -                        |
-         * | `baseUrl` | `stigg.baseUrl` | `STIGG_BASE_URL`     | true     | `"https://api.stigg.io"` |
+         * |Setter   |System property|Environment variable|Required|Default value                |
+         * |---------|---------------|--------------------|--------|-----------------------------|
+         * |`apiKey` |`stigg.apiKey` |`STIGG_API_KEY`     |true    |-                            |
+         * |`baseUrl`|`stigg.baseUrl`|`STIGG_BASE_URL`    |true    |`"https://edge.api.stigg.io"`|
          *
          * System properties take precedence over environment variables.
          */

@@ -107,10 +107,10 @@ StiggClient client = StiggOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | System property | Environment variable | Required | Default value            |
-| --------- | --------------- | -------------------- | -------- | ------------------------ |
-| `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | true     | -                        |
-| `baseUrl` | `stigg.baseUrl` | `STIGG_BASE_URL`     | true     | `"https://api.stigg.io"` |
+| Setter    | System property | Environment variable | Required | Default value                 |
+| --------- | --------------- | -------------------- | -------- | ----------------------------- |
+| `apiKey`  | `stigg.apiKey`  | `STIGG_API_KEY`      | true     | -                             |
+| `baseUrl` | `stigg.baseUrl` | `STIGG_BASE_URL`     | true     | `"https://edge.api.stigg.io"` |
 
 System properties take precedence over environment variables.
 
