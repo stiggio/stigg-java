@@ -595,6 +595,9 @@ private constructor(
         fun parentId(): Optional<String> = parentId.getOptional("parentId")
 
         /**
+         * Dimension-scoped sub-budget: the set of entity IDs this budget applies to
+         * (order-insensitive, unique, at most 5). Omit or leave empty for the node-wide budget.
+         *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
          */
@@ -787,6 +790,10 @@ private constructor(
              */
             fun parentId(parentId: JsonField<String>) = apply { this.parentId = parentId }
 
+            /**
+             * Dimension-scoped sub-budget: the set of entity IDs this budget applies to
+             * (order-insensitive, unique, at most 5). Omit or leave empty for the node-wide budget.
+             */
             fun scopeEntityIds(scopeEntityIds: List<String>) =
                 scopeEntityIds(JsonField.of(scopeEntityIds))
 
