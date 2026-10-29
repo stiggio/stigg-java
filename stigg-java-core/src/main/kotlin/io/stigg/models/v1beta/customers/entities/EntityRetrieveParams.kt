@@ -10,7 +10,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves a single entity for the given customer by its identifier. */
+/**
+ * Retrieves a single entity for the given customer by its identifier. Deprecated: use `GET
+ * /api/v1/customers/{id}/entities/{entityId}`.
+ */
+@Deprecated("deprecated")
 class EntityRetrieveParams
 private constructor(
     private val id: String,

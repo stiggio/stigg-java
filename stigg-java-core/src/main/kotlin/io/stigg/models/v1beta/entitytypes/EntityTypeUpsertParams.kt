@@ -25,8 +25,9 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Batched create-or-update of entity types. Existing types matched by id are updated; new ids are
  * created. Idempotent — re-submitting the same payload converges to the same state. An upsert of an
- * archived entity type restores it.
+ * archived entity type restores it. Deprecated: use `PUT /api/v1/entity-types`.
  */
+@Deprecated("deprecated")
 class EntityTypeUpsertParams
 private constructor(
     private val xAccountId: String?,

@@ -16,8 +16,10 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Returns a cursor-paginated list of entity types defined in the environment. Entity types are
  * vendor-defined categories of resource that can be governed (e.g. Org, Team, User). Archived
- * entity types are excluded unless includeArchived=true.
+ * entity types are excluded unless includeArchived=true. Deprecated: use `GET
+ * /api/v1/entity-types`.
  */
+@Deprecated("deprecated")
 class EntityTypeListParams
 private constructor(
     private val after: String?,

@@ -35,6 +35,7 @@ class EntityTypeServiceAsyncImpl internal constructor(private val clientOptions:
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntityTypeServiceAsync =
         EntityTypeServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    @Deprecated("deprecated")
     override fun list(
         params: EntityTypeListParams,
         requestOptions: RequestOptions,
@@ -42,6 +43,7 @@ class EntityTypeServiceAsyncImpl internal constructor(private val clientOptions:
         // get /api/v1-beta/entity-types
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
+    @Deprecated("deprecated")
     override fun upsert(
         params: EntityTypeUpsertParams,
         requestOptions: RequestOptions,
@@ -65,6 +67,7 @@ class EntityTypeServiceAsyncImpl internal constructor(private val clientOptions:
         private val listHandler: Handler<EntityTypeListPageResponse> =
             jsonHandler<EntityTypeListPageResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun list(
             params: EntityTypeListParams,
             requestOptions: RequestOptions,
@@ -103,6 +106,7 @@ class EntityTypeServiceAsyncImpl internal constructor(private val clientOptions:
         private val upsertHandler: Handler<EntityTypeUpsertResponse> =
             jsonHandler<EntityTypeUpsertResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun upsert(
             params: EntityTypeUpsertParams,
             requestOptions: RequestOptions,

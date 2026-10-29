@@ -29,33 +29,39 @@ interface EntityTypeService {
     /**
      * Returns a cursor-paginated list of entity types defined in the environment. Entity types are
      * vendor-defined categories of resource that can be governed (e.g. Org, Team, User). Archived
-     * entity types are excluded unless includeArchived=true.
+     * entity types are excluded unless includeArchived=true. Deprecated: use `GET
+     * /api/v1/entity-types`.
      */
-    fun list(): EntityTypeListPage = list(EntityTypeListParams.none())
+    @Deprecated("deprecated") fun list(): EntityTypeListPage = list(EntityTypeListParams.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         params: EntityTypeListParams = EntityTypeListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntityTypeListPage
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(params: EntityTypeListParams = EntityTypeListParams.none()): EntityTypeListPage =
         list(params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(requestOptions: RequestOptions): EntityTypeListPage =
         list(EntityTypeListParams.none(), requestOptions)
 
     /**
      * Batched create-or-update of entity types. Existing types matched by id are updated; new ids
      * are created. Idempotent — re-submitting the same payload converges to the same state. An
-     * upsert of an archived entity type restores it.
+     * upsert of an archived entity type restores it. Deprecated: use `PUT /api/v1/entity-types`.
      */
+    @Deprecated("deprecated")
     fun upsert(params: EntityTypeUpsertParams): EntityTypeUpsertResponse =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         params: EntityTypeUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -77,10 +83,12 @@ interface EntityTypeService {
          * Returns a raw HTTP response for `get /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeService.list].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(): HttpResponseFor<EntityTypeListPage> = list(EntityTypeListParams.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none(),
@@ -88,12 +96,14 @@ interface EntityTypeService {
         ): HttpResponseFor<EntityTypeListPage>
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none()
         ): HttpResponseFor<EntityTypeListPage> = list(params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(requestOptions: RequestOptions): HttpResponseFor<EntityTypeListPage> =
             list(EntityTypeListParams.none(), requestOptions)
@@ -102,11 +112,13 @@ interface EntityTypeService {
          * Returns a raw HTTP response for `put /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeService.upsert].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(params: EntityTypeUpsertParams): HttpResponseFor<EntityTypeUpsertResponse> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(
             params: EntityTypeUpsertParams,

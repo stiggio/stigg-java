@@ -32,11 +32,16 @@ interface EntityService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntityService
 
-    /** Retrieves a single entity for the given customer by its identifier. */
+    /**
+     * Retrieves a single entity for the given customer by its identifier. Deprecated: use `GET
+     * /api/v1/customers/{id}/entities/{entityId}`.
+     */
+    @Deprecated("deprecated")
     fun retrieve(entityId: String, params: EntityRetrieveParams): EntityRetrieveResponse =
         retrieve(entityId, params, RequestOptions.none())
 
     /** @see retrieve */
+    @Deprecated("deprecated")
     fun retrieve(
         entityId: String,
         params: EntityRetrieveParams,
@@ -45,19 +50,26 @@ interface EntityService {
         retrieve(params.toBuilder().entityId(entityId).build(), requestOptions)
 
     /** @see retrieve */
+    @Deprecated("deprecated")
     fun retrieve(params: EntityRetrieveParams): EntityRetrieveResponse =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
+    @Deprecated("deprecated")
     fun retrieve(
         params: EntityRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntityRetrieveResponse
 
-    /** Retrieves a paginated list of entities for the given customer. */
+    /**
+     * Retrieves a paginated list of entities for the given customer. Deprecated: use `GET
+     * /api/v1/customers/{id}/entities`.
+     */
+    @Deprecated("deprecated")
     fun list(id: String): EntityListPage = list(id, EntityListParams.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         id: String,
         params: EntityListParams = EntityListParams.none(),
@@ -65,27 +77,36 @@ interface EntityService {
     ): EntityListPage = list(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(id: String, params: EntityListParams = EntityListParams.none()): EntityListPage =
         list(id, params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         params: EntityListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntityListPage
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(params: EntityListParams): EntityListPage = list(params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(id: String, requestOptions: RequestOptions): EntityListPage =
         list(id, EntityListParams.none(), requestOptions)
 
-    /** Archives entities in bulk for the given customer by id. */
+    /**
+     * Archives entities in bulk for the given customer by id. Upsert an archived entity to restore
+     * it. Deprecated: use `POST /api/v1/customers/{id}/entities/archive`.
+     */
+    @Deprecated("deprecated")
     fun archive(id: String, params: EntityArchiveParams): EntityArchiveResponse =
         archive(id, params, RequestOptions.none())
 
     /** @see archive */
+    @Deprecated("deprecated")
     fun archive(
         id: String,
         params: EntityArchiveParams,
@@ -93,18 +114,20 @@ interface EntityService {
     ): EntityArchiveResponse = archive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archive */
+    @Deprecated("deprecated")
     fun archive(params: EntityArchiveParams): EntityArchiveResponse =
         archive(params, RequestOptions.none())
 
     /** @see archive */
+    @Deprecated("deprecated")
     fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntityArchiveResponse
 
     /**
-     * Deprecated: upsert an entity to restore it. Restores previously archived entities in bulk for
-     * the given customer by id.
+     * Deprecated: use `PUT /api/v1/customers/{id}/entities` with the entity id to restore it.
+     * Restores previously archived entities in bulk for the given customer by id.
      */
     @Deprecated("deprecated")
     fun unarchive(id: String, params: EntityUnarchiveParams): EntityUnarchiveResponse =
@@ -133,12 +156,15 @@ interface EntityService {
     /**
      * Creates or updates entities in bulk for the given customer. Existing entities matched by id
      * are updated; new ids are created. An upsert of an archived entity restores it. An entity on
-     * an archived entity type fails with 400.
+     * an archived entity type fails with 400. Deprecated: use `PUT
+     * /api/v1/customers/{id}/entities`.
      */
+    @Deprecated("deprecated")
     fun upsert(id: String, params: EntityUpsertParams): EntityUpsertResponse =
         upsert(id, params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         id: String,
         params: EntityUpsertParams,
@@ -146,10 +172,12 @@ interface EntityService {
     ): EntityUpsertResponse = upsert(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(params: EntityUpsertParams): EntityUpsertResponse =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         params: EntityUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -169,6 +197,7 @@ interface EntityService {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entities/{entityId}`,
          * but is otherwise the same as [EntityService.retrieve].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieve(
             entityId: String,
@@ -177,6 +206,7 @@ interface EntityService {
             retrieve(entityId, params, RequestOptions.none())
 
         /** @see retrieve */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieve(
             entityId: String,
@@ -186,11 +216,13 @@ interface EntityService {
             retrieve(params.toBuilder().entityId(entityId).build(), requestOptions)
 
         /** @see retrieve */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieve(params: EntityRetrieveParams): HttpResponseFor<EntityRetrieveResponse> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieve(
             params: EntityRetrieveParams,
@@ -201,10 +233,12 @@ interface EntityService {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entities`, but is
          * otherwise the same as [EntityService.list].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(id: String): HttpResponseFor<EntityListPage> = list(id, EntityListParams.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(
             id: String,
@@ -213,6 +247,7 @@ interface EntityService {
         ): HttpResponseFor<EntityListPage> = list(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(
             id: String,
@@ -220,6 +255,7 @@ interface EntityService {
         ): HttpResponseFor<EntityListPage> = list(id, params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(
             params: EntityListParams,
@@ -227,11 +263,13 @@ interface EntityService {
         ): HttpResponseFor<EntityListPage>
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(params: EntityListParams): HttpResponseFor<EntityListPage> =
             list(params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun list(id: String, requestOptions: RequestOptions): HttpResponseFor<EntityListPage> =
             list(id, EntityListParams.none(), requestOptions)
@@ -240,6 +278,7 @@ interface EntityService {
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/archive`, but
          * is otherwise the same as [EntityService.archive].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun archive(
             id: String,
@@ -247,6 +286,7 @@ interface EntityService {
         ): HttpResponseFor<EntityArchiveResponse> = archive(id, params, RequestOptions.none())
 
         /** @see archive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun archive(
             id: String,
@@ -256,11 +296,13 @@ interface EntityService {
             archive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun archive(params: EntityArchiveParams): HttpResponseFor<EntityArchiveResponse> =
             archive(params, RequestOptions.none())
 
         /** @see archive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun archive(
             params: EntityArchiveParams,
@@ -306,11 +348,13 @@ interface EntityService {
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/entities`, but is
          * otherwise the same as [EntityService.upsert].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(id: String, params: EntityUpsertParams): HttpResponseFor<EntityUpsertResponse> =
             upsert(id, params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(
             id: String,
@@ -320,11 +364,13 @@ interface EntityService {
             upsert(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see upsert */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(params: EntityUpsertParams): HttpResponseFor<EntityUpsertResponse> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun upsert(
             params: EntityUpsertParams,

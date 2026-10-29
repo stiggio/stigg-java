@@ -23,8 +23,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Deprecated: upsert an entity to restore it. Restores previously archived entities in bulk for the
- * given customer by id.
+ * Deprecated: use `PUT /api/v1/customers/{id}/entities` with the entity id to restore it. Restores
+ * previously archived entities in bulk for the given customer by id.
  */
 @Deprecated("deprecated")
 class EntityUnarchiveParams

@@ -13,6 +13,7 @@ import java.util.concurrent.Executor
 import kotlin.jvm.optionals.getOrNull
 
 /** @see AssignmentServiceAsync.list */
+@Deprecated("deprecated")
 class AssignmentListPageAsync
 private constructor(
     private val service: AssignmentServiceAsync,

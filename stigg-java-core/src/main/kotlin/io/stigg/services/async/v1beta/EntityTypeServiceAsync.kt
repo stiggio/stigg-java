@@ -29,34 +29,41 @@ interface EntityTypeServiceAsync {
     /**
      * Returns a cursor-paginated list of entity types defined in the environment. Entity types are
      * vendor-defined categories of resource that can be governed (e.g. Org, Team, User). Archived
-     * entity types are excluded unless includeArchived=true.
+     * entity types are excluded unless includeArchived=true. Deprecated: use `GET
+     * /api/v1/entity-types`.
      */
+    @Deprecated("deprecated")
     fun list(): CompletableFuture<EntityTypeListPageAsync> = list(EntityTypeListParams.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         params: EntityTypeListParams = EntityTypeListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<EntityTypeListPageAsync>
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         params: EntityTypeListParams = EntityTypeListParams.none()
     ): CompletableFuture<EntityTypeListPageAsync> = list(params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(requestOptions: RequestOptions): CompletableFuture<EntityTypeListPageAsync> =
         list(EntityTypeListParams.none(), requestOptions)
 
     /**
      * Batched create-or-update of entity types. Existing types matched by id are updated; new ids
      * are created. Idempotent — re-submitting the same payload converges to the same state. An
-     * upsert of an archived entity type restores it.
+     * upsert of an archived entity type restores it. Deprecated: use `PUT /api/v1/entity-types`.
      */
+    @Deprecated("deprecated")
     fun upsert(params: EntityTypeUpsertParams): CompletableFuture<EntityTypeUpsertResponse> =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         params: EntityTypeUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -81,22 +88,26 @@ interface EntityTypeServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeServiceAsync.list].
          */
+        @Deprecated("deprecated")
         fun list(): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
             list(EntityTypeListParams.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>>
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none()
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
@@ -106,12 +117,14 @@ interface EntityTypeServiceAsync {
          * Returns a raw HTTP response for `put /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeServiceAsync.upsert].
          */
+        @Deprecated("deprecated")
         fun upsert(
             params: EntityTypeUpsertParams
         ): CompletableFuture<HttpResponseFor<EntityTypeUpsertResponse>> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         fun upsert(
             params: EntityTypeUpsertParams,
             requestOptions: RequestOptions = RequestOptions.none(),

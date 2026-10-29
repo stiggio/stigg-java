@@ -11,6 +11,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** @see EntityTypeService.list */
+@Deprecated("deprecated")
 class EntityTypeListPage
 private constructor(
     private val service: EntityTypeService,

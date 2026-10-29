@@ -42,6 +42,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntityService =
         EntityServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    @Deprecated("deprecated")
     override fun retrieve(
         params: EntityRetrieveParams,
         requestOptions: RequestOptions,
@@ -49,10 +50,12 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         // get /api/v1-beta/customers/{id}/entities/{entityId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun list(params: EntityListParams, requestOptions: RequestOptions): EntityListPage =
         // get /api/v1-beta/customers/{id}/entities
         withRawResponse().list(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions,
@@ -68,6 +71,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         // post /api/v1-beta/customers/{id}/entities/unarchive
         withRawResponse().unarchive(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun upsert(
         params: EntityUpsertParams,
         requestOptions: RequestOptions,
@@ -91,6 +95,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         private val retrieveHandler: Handler<EntityRetrieveResponse> =
             jsonHandler<EntityRetrieveResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun retrieve(
             params: EntityRetrieveParams,
             requestOptions: RequestOptions,
@@ -128,6 +133,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         private val listHandler: Handler<EntityListPageResponse> =
             jsonHandler<EntityListPageResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun list(
             params: EntityListParams,
             requestOptions: RequestOptions,
@@ -171,6 +177,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         private val archiveHandler: Handler<EntityArchiveResponse> =
             jsonHandler<EntityArchiveResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions,
@@ -248,6 +255,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         private val upsertHandler: Handler<EntityUpsertResponse> =
             jsonHandler<EntityUpsertResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun upsert(
             params: EntityUpsertParams,
             requestOptions: RequestOptions,

@@ -28,12 +28,15 @@ interface AssignmentServiceAsync {
 
     /**
      * Returns a cursor-paginated list of capability assignments for the given customer. An
-     * assignment ties an entity to a capability with a usage limit and reset cadence.
+     * assignment ties an entity to a capability with a usage limit and reset cadence. Deprecated:
+     * use `GET /api/v1/customers/{id}/entities/entitlements`.
      */
+    @Deprecated("deprecated")
     fun list(id: String): CompletableFuture<AssignmentListPageAsync> =
         list(id, AssignmentListParams.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         id: String,
         params: AssignmentListParams = AssignmentListParams.none(),
@@ -42,22 +45,26 @@ interface AssignmentServiceAsync {
         list(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         id: String,
         params: AssignmentListParams = AssignmentListParams.none(),
     ): CompletableFuture<AssignmentListPageAsync> = list(id, params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         params: AssignmentListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<AssignmentListPageAsync>
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(params: AssignmentListParams): CompletableFuture<AssignmentListPageAsync> =
         list(params, RequestOptions.none())
 
     /** @see list */
+    @Deprecated("deprecated")
     fun list(
         id: String,
         requestOptions: RequestOptions,
@@ -68,13 +75,17 @@ interface AssignmentServiceAsync {
      * Batched create-or-update of capability assignments. Existing assignments matched by
      * (entityId, capabilityId) are updated; new pairs are created. On update, omitted fields
      * (usageLimit, cadence) are preserved; on create both are required by the governance service.
+     * Deprecated: use `PUT /api/v1/customers/{id}/entities/entitlements` with the body key
+     * `entityEntitlements`.
      */
+    @Deprecated("deprecated")
     fun upsert(
         id: String,
         params: AssignmentUpsertParams,
     ): CompletableFuture<AssignmentUpsertResponse> = upsert(id, params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         id: String,
         params: AssignmentUpsertParams,
@@ -83,10 +94,12 @@ interface AssignmentServiceAsync {
         upsert(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(params: AssignmentUpsertParams): CompletableFuture<AssignmentUpsertResponse> =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
+    @Deprecated("deprecated")
     fun upsert(
         params: AssignmentUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -111,10 +124,12 @@ interface AssignmentServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/assignments`, but is
          * otherwise the same as [AssignmentServiceAsync.list].
          */
+        @Deprecated("deprecated")
         fun list(id: String): CompletableFuture<HttpResponseFor<AssignmentListPageAsync>> =
             list(id, AssignmentListParams.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             id: String,
             params: AssignmentListParams = AssignmentListParams.none(),
@@ -123,6 +138,7 @@ interface AssignmentServiceAsync {
             list(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             id: String,
             params: AssignmentListParams = AssignmentListParams.none(),
@@ -130,18 +146,21 @@ interface AssignmentServiceAsync {
             list(id, params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             params: AssignmentListParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<AssignmentListPageAsync>>
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             params: AssignmentListParams
         ): CompletableFuture<HttpResponseFor<AssignmentListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
+        @Deprecated("deprecated")
         fun list(
             id: String,
             requestOptions: RequestOptions,
@@ -152,6 +171,7 @@ interface AssignmentServiceAsync {
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/assignments`, but is
          * otherwise the same as [AssignmentServiceAsync.upsert].
          */
+        @Deprecated("deprecated")
         fun upsert(
             id: String,
             params: AssignmentUpsertParams,
@@ -159,6 +179,7 @@ interface AssignmentServiceAsync {
             upsert(id, params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         fun upsert(
             id: String,
             params: AssignmentUpsertParams,
@@ -167,12 +188,14 @@ interface AssignmentServiceAsync {
             upsert(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see upsert */
+        @Deprecated("deprecated")
         fun upsert(
             params: AssignmentUpsertParams
         ): CompletableFuture<HttpResponseFor<AssignmentUpsertResponse>> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
+        @Deprecated("deprecated")
         fun upsert(
             params: AssignmentUpsertParams,
             requestOptions: RequestOptions = RequestOptions.none(),

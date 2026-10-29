@@ -25,8 +25,10 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Batched create-or-update of capability assignments. Existing assignments matched by (entityId,
  * capabilityId) are updated; new pairs are created. On update, omitted fields (usageLimit, cadence)
- * are preserved; on create both are required by the governance service.
+ * are preserved; on create both are required by the governance service. Deprecated: use `PUT
+ * /api/v1/customers/{id}/entities/entitlements` with the body key `entityEntitlements`.
  */
+@Deprecated("deprecated")
 class AssignmentUpsertParams
 private constructor(
     private val id: String?,
