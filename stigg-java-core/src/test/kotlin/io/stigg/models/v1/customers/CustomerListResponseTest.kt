@@ -118,6 +118,7 @@ internal class CustomerListResponseTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 
@@ -230,6 +231,7 @@ internal class CustomerListResponseTest {
                     )
                     .build()
             )
+        assertThat(customerListResponse.salesforceId()).contains("salesforceId")
         assertThat(customerListResponse.timezone()).contains("timezone")
     }
 
@@ -340,6 +342,7 @@ internal class CustomerListResponseTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 

@@ -184,6 +184,7 @@ private constructor(
         private val metadata: JsonField<Metadata>,
         private val name: JsonField<String>,
         private val passthrough: JsonField<Passthrough>,
+        private val salesforceId: JsonField<String>,
         private val timezone: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -226,6 +227,9 @@ private constructor(
             @JsonProperty("passthrough")
             @ExcludeMissing
             passthrough: JsonField<Passthrough> = JsonMissing.of(),
+            @JsonProperty("salesforceId")
+            @ExcludeMissing
+            salesforceId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("timezone") @ExcludeMissing timezone: JsonField<String> = JsonMissing.of(),
         ) : this(
             id,
@@ -242,6 +246,7 @@ private constructor(
             metadata,
             name,
             passthrough,
+            salesforceId,
             timezone,
             mutableMapOf(),
         )
@@ -362,6 +367,14 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun passthrough(): Optional<Passthrough> = passthrough.getOptional("passthrough")
+
+        /**
+         * The unique identifier for the customer in Salesforce integration
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun salesforceId(): Optional<String> = salesforceId.getOptional("salesforceId")
 
         /**
          * Timezone to use for this customer
@@ -487,6 +500,16 @@ private constructor(
         fun _passthrough(): JsonField<Passthrough> = passthrough
 
         /**
+         * Returns the raw JSON value of [salesforceId].
+         *
+         * Unlike [salesforceId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("salesforceId")
+        @ExcludeMissing
+        fun _salesforceId(): JsonField<String> = salesforceId
+
+        /**
          * Returns the raw JSON value of [timezone].
          *
          * Unlike [timezone], this method doesn't throw if the JSON field has an unexpected type.
@@ -538,6 +561,7 @@ private constructor(
             private var metadata: JsonField<Metadata> = JsonMissing.of()
             private var name: JsonField<String> = JsonMissing.of()
             private var passthrough: JsonField<Passthrough> = JsonMissing.of()
+            private var salesforceId: JsonField<String> = JsonMissing.of()
             private var timezone: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -557,6 +581,7 @@ private constructor(
                 metadata = data.metadata
                 name = data.name
                 passthrough = data.passthrough
+                salesforceId = data.salesforceId
                 timezone = data.timezone
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
@@ -805,6 +830,25 @@ private constructor(
                 this.passthrough = passthrough
             }
 
+            /** The unique identifier for the customer in Salesforce integration */
+            fun salesforceId(salesforceId: String?) =
+                salesforceId(JsonField.ofNullable(salesforceId))
+
+            /** Alias for calling [Builder.salesforceId] with `salesforceId.orElse(null)`. */
+            fun salesforceId(salesforceId: Optional<String>) =
+                salesforceId(salesforceId.getOrNull())
+
+            /**
+             * Sets [Builder.salesforceId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.salesforceId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun salesforceId(salesforceId: JsonField<String>) = apply {
+                this.salesforceId = salesforceId
+            }
+
             /** Timezone to use for this customer */
             fun timezone(timezone: String?) = timezone(JsonField.ofNullable(timezone))
 
@@ -870,6 +914,7 @@ private constructor(
                     metadata,
                     name,
                     passthrough,
+                    salesforceId,
                     timezone,
                     additionalProperties.toMutableMap(),
                 )
@@ -905,6 +950,7 @@ private constructor(
             metadata().ifPresent { it.validate() }
             name()
             passthrough().ifPresent { it.validate() }
+            salesforceId()
             timezone()
             validated = true
         }
@@ -939,6 +985,7 @@ private constructor(
                 (metadata.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
                 (passthrough.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (salesforceId.asKnown().isPresent) 1 else 0) +
                 (if (timezone.asKnown().isPresent) 1 else 0)
 
         /** The billing currency of the customer */
@@ -6720,6 +6767,7 @@ private constructor(
                 metadata == other.metadata &&
                 name == other.name &&
                 passthrough == other.passthrough &&
+                salesforceId == other.salesforceId &&
                 timezone == other.timezone &&
                 additionalProperties == other.additionalProperties
         }
@@ -6740,6 +6788,7 @@ private constructor(
                 metadata,
                 name,
                 passthrough,
+                salesforceId,
                 timezone,
                 additionalProperties,
             )
@@ -6748,7 +6797,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, billingCurrency=$billingCurrency, billingId=$billingId, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, language=$language, metadata=$metadata, name=$name, passthrough=$passthrough, timezone=$timezone, additionalProperties=$additionalProperties}"
+            "Data{id=$id, archivedAt=$archivedAt, createdAt=$createdAt, updatedAt=$updatedAt, billingCurrency=$billingCurrency, billingId=$billingId, couponId=$couponId, defaultPaymentMethod=$defaultPaymentMethod, email=$email, integrations=$integrations, language=$language, metadata=$metadata, name=$name, passthrough=$passthrough, salesforceId=$salesforceId, timezone=$timezone, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

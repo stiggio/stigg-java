@@ -102,6 +102,7 @@ internal class CustomerUpdateParamsTest {
                     )
                     .build()
             )
+            .salesforceId("salesforceId")
             .timezone("timezone")
             .build()
     }
@@ -209,6 +210,7 @@ internal class CustomerUpdateParamsTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 
@@ -326,6 +328,7 @@ internal class CustomerUpdateParamsTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 
@@ -420,6 +423,7 @@ internal class CustomerUpdateParamsTest {
                     )
                     .build()
             )
+        assertThat(body.salesforceId()).contains("salesforceId")
         assertThat(body.timezone()).contains("timezone")
     }
 

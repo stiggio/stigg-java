@@ -111,6 +111,7 @@ internal class CustomerProvisionParamsTest {
                     )
                     .build()
             )
+            .salesforceId("salesforceId")
             .timezone("timezone")
             .build()
     }
@@ -222,6 +223,7 @@ internal class CustomerProvisionParamsTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 
@@ -352,6 +354,7 @@ internal class CustomerProvisionParamsTest {
                         )
                         .build()
                 )
+                .salesforceId("salesforceId")
                 .timezone("timezone")
                 .build()
 
@@ -457,6 +460,7 @@ internal class CustomerProvisionParamsTest {
                     )
                     .build()
             )
+        assertThat(body.salesforceId()).contains("salesforceId")
         assertThat(body.timezone()).contains("timezone")
     }
 
