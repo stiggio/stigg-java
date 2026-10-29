@@ -2,21 +2,27 @@
 
 package io.stigg.models.v1beta.entitytypes
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import io.stigg.core.Enum
+import io.stigg.core.JsonField
 import io.stigg.core.Params
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import io.stigg.errors.StiggInvalidDataException
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
  * Returns a cursor-paginated list of entity types defined in the environment. Entity types are
- * vendor-defined categories of resource that can be governed (e.g. Org, Team, User).
+ * vendor-defined categories of resource that can be governed (e.g. Org, Team, User). Archived
+ * entity types are excluded unless includeArchived=true.
  */
 class EntityTypeListParams
 private constructor(
     private val after: String?,
     private val before: String?,
+    private val includeArchived: IncludeArchived?,
     private val limit: Long?,
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
@@ -29,6 +35,9 @@ private constructor(
 
     /** Return items that come before this cursor */
     fun before(): Optional<String> = Optional.ofNullable(before)
+
+    /** Whether to include archived entity types. One of: true, false */
+    fun includeArchived(): Optional<IncludeArchived> = Optional.ofNullable(includeArchived)
 
     /** Maximum number of items to return */
     fun limit(): Optional<Long> = Optional.ofNullable(limit)
@@ -58,6 +67,7 @@ private constructor(
 
         private var after: String? = null
         private var before: String? = null
+        private var includeArchived: IncludeArchived? = null
         private var limit: Long? = null
         private var xAccountId: String? = null
         private var xEnvironmentId: String? = null
@@ -68,6 +78,7 @@ private constructor(
         internal fun from(entityTypeListParams: EntityTypeListParams) = apply {
             after = entityTypeListParams.after
             before = entityTypeListParams.before
+            includeArchived = entityTypeListParams.includeArchived
             limit = entityTypeListParams.limit
             xAccountId = entityTypeListParams.xAccountId
             xEnvironmentId = entityTypeListParams.xEnvironmentId
@@ -86,6 +97,15 @@ private constructor(
 
         /** Alias for calling [Builder.before] with `before.orElse(null)`. */
         fun before(before: Optional<String>) = before(before.getOrNull())
+
+        /** Whether to include archived entity types. One of: true, false */
+        fun includeArchived(includeArchived: IncludeArchived?) = apply {
+            this.includeArchived = includeArchived
+        }
+
+        /** Alias for calling [Builder.includeArchived] with `includeArchived.orElse(null)`. */
+        fun includeArchived(includeArchived: Optional<IncludeArchived>) =
+            includeArchived(includeArchived.getOrNull())
 
         /** Maximum number of items to return */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -218,6 +238,7 @@ private constructor(
             EntityTypeListParams(
                 after,
                 before,
+                includeArchived,
                 limit,
                 xAccountId,
                 xEnvironmentId,
@@ -240,10 +261,149 @@ private constructor(
             .apply {
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
+                includeArchived?.let { put("includeArchived", it.toString()) }
                 limit?.let { put("limit", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
+
+    /** Whether to include archived entity types. One of: true, false */
+    class IncludeArchived @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val TRUE = of("true")
+
+            @JvmField val FALSE = of("false")
+
+            @JvmStatic fun of(value: String) = IncludeArchived(JsonField.of(value))
+        }
+
+        /** An enum containing [IncludeArchived]'s known values. */
+        enum class Known {
+            TRUE,
+            FALSE,
+        }
+
+        /**
+         * An enum containing [IncludeArchived]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [IncludeArchived] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TRUE,
+            FALSE,
+            /**
+             * An enum member indicating that [IncludeArchived] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TRUE -> Value.TRUE
+                FALSE -> Value.FALSE
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StiggInvalidDataException if this class instance's value is a not a known member.
+         */
+        fun known(): Known =
+            when (this) {
+                TRUE -> Known.TRUE
+                FALSE -> Known.FALSE
+                else -> throw StiggInvalidDataException("Unknown IncludeArchived: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StiggInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow { StiggInvalidDataException("Value is not a String") }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StiggInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): IncludeArchived = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StiggInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is IncludeArchived && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -253,6 +413,7 @@ private constructor(
         return other is EntityTypeListParams &&
             after == other.after &&
             before == other.before &&
+            includeArchived == other.includeArchived &&
             limit == other.limit &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
@@ -264,6 +425,7 @@ private constructor(
         Objects.hash(
             after,
             before,
+            includeArchived,
             limit,
             xAccountId,
             xEnvironmentId,
@@ -272,5 +434,5 @@ private constructor(
         )
 
     override fun toString() =
-        "EntityTypeListParams{after=$after, before=$before, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntityTypeListParams{after=$after, before=$before, includeArchived=$includeArchived, limit=$limit, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

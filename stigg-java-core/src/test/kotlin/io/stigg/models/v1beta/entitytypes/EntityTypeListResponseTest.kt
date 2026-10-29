@@ -15,6 +15,7 @@ internal class EntityTypeListResponseTest {
         val entityTypeListResponse =
             EntityTypeListResponse.builder()
                 .id("id")
+                .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addAttributionKey("NxI")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .description("description")
@@ -23,6 +24,8 @@ internal class EntityTypeListResponseTest {
                 .build()
 
         assertThat(entityTypeListResponse.id()).isEqualTo("id")
+        assertThat(entityTypeListResponse.archivedAt())
+            .contains(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(entityTypeListResponse.attributionKeys()).containsExactly("NxI")
         assertThat(entityTypeListResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -38,6 +41,7 @@ internal class EntityTypeListResponseTest {
         val entityTypeListResponse =
             EntityTypeListResponse.builder()
                 .id("id")
+                .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addAttributionKey("NxI")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .description("description")

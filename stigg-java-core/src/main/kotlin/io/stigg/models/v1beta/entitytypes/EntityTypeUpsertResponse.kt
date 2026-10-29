@@ -190,6 +190,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
+        private val archivedAt: JsonField<OffsetDateTime>,
         private val attributionKeys: JsonField<List<String>>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
@@ -201,6 +202,9 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("archivedAt")
+            @ExcludeMissing
+            archivedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("attributionKeys")
             @ExcludeMissing
             attributionKeys: JsonField<List<String>> = JsonMissing.of(),
@@ -218,6 +222,7 @@ private constructor(
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         ) : this(
             id,
+            archivedAt,
             attributionKeys,
             createdAt,
             description,
@@ -233,6 +238,14 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun id(): String = id.getRequired("id")
+
+        /**
+         * Timestamp of when the record was deleted
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun archivedAt(): Optional<OffsetDateTime> = archivedAt.getOptional("archivedAt")
 
         /**
          * Dimension keys used to attribute usage events to instances of this type (e.g. ["orgId"]).
@@ -281,6 +294,15 @@ private constructor(
          * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [archivedAt].
+         *
+         * Unlike [archivedAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("archivedAt")
+        @ExcludeMissing
+        fun _archivedAt(): JsonField<OffsetDateTime> = archivedAt
 
         /**
          * Returns the raw JSON value of [attributionKeys].
@@ -348,6 +370,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .id()
+             * .archivedAt()
              * .attributionKeys()
              * .createdAt()
              * .description()
@@ -362,6 +385,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
+            private var archivedAt: JsonField<OffsetDateTime>? = null
             private var attributionKeys: JsonField<MutableList<String>>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
             private var description: JsonField<String>? = null
@@ -372,6 +396,7 @@ private constructor(
             @JvmSynthetic
             internal fun from(data: Data) = apply {
                 id = data.id
+                archivedAt = data.archivedAt
                 attributionKeys = data.attributionKeys.map { it.toMutableList() }
                 createdAt = data.createdAt
                 description = data.description
@@ -391,6 +416,25 @@ private constructor(
              * value.
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
+
+            /** Timestamp of when the record was deleted */
+            fun archivedAt(archivedAt: OffsetDateTime?) =
+                archivedAt(JsonField.ofNullable(archivedAt))
+
+            /** Alias for calling [Builder.archivedAt] with `archivedAt.orElse(null)`. */
+            fun archivedAt(archivedAt: Optional<OffsetDateTime>) =
+                archivedAt(archivedAt.getOrNull())
+
+            /**
+             * Sets [Builder.archivedAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.archivedAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun archivedAt(archivedAt: JsonField<OffsetDateTime>) = apply {
+                this.archivedAt = archivedAt
+            }
 
             /**
              * Dimension keys used to attribute usage events to instances of this type (e.g.
@@ -511,6 +555,7 @@ private constructor(
              * The following fields are required:
              * ```java
              * .id()
+             * .archivedAt()
              * .attributionKeys()
              * .createdAt()
              * .description()
@@ -523,6 +568,7 @@ private constructor(
             fun build(): Data =
                 Data(
                     checkRequired("id", id),
+                    checkRequired("archivedAt", archivedAt),
                     checkRequired("attributionKeys", attributionKeys).map { it.toImmutable() },
                     checkRequired("createdAt", createdAt),
                     checkRequired("description", description),
@@ -549,6 +595,7 @@ private constructor(
             }
 
             id()
+            archivedAt()
             attributionKeys()
             createdAt()
             description()
@@ -574,6 +621,7 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (id.asKnown().isPresent) 1 else 0) +
+                (if (archivedAt.asKnown().isPresent) 1 else 0) +
                 (attributionKeys.asKnown().getOrNull()?.size ?: 0) +
                 (if (createdAt.asKnown().isPresent) 1 else 0) +
                 (if (description.asKnown().isPresent) 1 else 0) +
@@ -587,6 +635,7 @@ private constructor(
 
             return other is Data &&
                 id == other.id &&
+                archivedAt == other.archivedAt &&
                 attributionKeys == other.attributionKeys &&
                 createdAt == other.createdAt &&
                 description == other.description &&
@@ -598,6 +647,7 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 id,
+                archivedAt,
                 attributionKeys,
                 createdAt,
                 description,
@@ -610,7 +660,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, attributionKeys=$attributionKeys, createdAt=$createdAt, description=$description, displayName=$displayName, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+            "Data{id=$id, archivedAt=$archivedAt, attributionKeys=$attributionKeys, createdAt=$createdAt, description=$description, displayName=$displayName, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

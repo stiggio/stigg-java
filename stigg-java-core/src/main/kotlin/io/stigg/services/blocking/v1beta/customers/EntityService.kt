@@ -102,11 +102,16 @@ interface EntityService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntityArchiveResponse
 
-    /** Restores previously archived entities in bulk for the given customer by id. */
+    /**
+     * Deprecated: upsert an entity to restore it. Restores previously archived entities in bulk for
+     * the given customer by id.
+     */
+    @Deprecated("deprecated")
     fun unarchive(id: String, params: EntityUnarchiveParams): EntityUnarchiveResponse =
         unarchive(id, params, RequestOptions.none())
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
@@ -114,10 +119,12 @@ interface EntityService {
     ): EntityUnarchiveResponse = unarchive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(params: EntityUnarchiveParams): EntityUnarchiveResponse =
         unarchive(params, RequestOptions.none())
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -125,7 +132,8 @@ interface EntityService {
 
     /**
      * Creates or updates entities in bulk for the given customer. Existing entities matched by id
-     * are updated; new ids are created.
+     * are updated; new ids are created. An upsert of an archived entity restores it. An entity on
+     * an archived entity type fails with 400.
      */
     fun upsert(id: String, params: EntityUpsertParams): EntityUpsertResponse =
         upsert(id, params, RequestOptions.none())
@@ -263,6 +271,7 @@ interface EntityService {
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/unarchive`,
          * but is otherwise the same as [EntityService.unarchive].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun unarchive(
             id: String,
@@ -270,6 +279,7 @@ interface EntityService {
         ): HttpResponseFor<EntityUnarchiveResponse> = unarchive(id, params, RequestOptions.none())
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun unarchive(
             id: String,
@@ -279,11 +289,13 @@ interface EntityService {
             unarchive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun unarchive(params: EntityUnarchiveParams): HttpResponseFor<EntityUnarchiveResponse> =
             unarchive(params, RequestOptions.none())
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun unarchive(
             params: EntityUnarchiveParams,

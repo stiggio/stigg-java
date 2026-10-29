@@ -109,13 +109,18 @@ interface EntityServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<EntityArchiveResponse>
 
-    /** Restores previously archived entities in bulk for the given customer by id. */
+    /**
+     * Deprecated: upsert an entity to restore it. Restores previously archived entities in bulk for
+     * the given customer by id.
+     */
+    @Deprecated("deprecated")
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
     ): CompletableFuture<EntityUnarchiveResponse> = unarchive(id, params, RequestOptions.none())
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
@@ -124,10 +129,12 @@ interface EntityServiceAsync {
         unarchive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(params: EntityUnarchiveParams): CompletableFuture<EntityUnarchiveResponse> =
         unarchive(params, RequestOptions.none())
 
     /** @see unarchive */
+    @Deprecated("deprecated")
     fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -135,7 +142,8 @@ interface EntityServiceAsync {
 
     /**
      * Creates or updates entities in bulk for the given customer. Existing entities matched by id
-     * are updated; new ids are created.
+     * are updated; new ids are created. An upsert of an archived entity restores it. An entity on
+     * an archived entity type fails with 400.
      */
     fun upsert(id: String, params: EntityUpsertParams): CompletableFuture<EntityUpsertResponse> =
         upsert(id, params, RequestOptions.none())
@@ -277,6 +285,7 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/unarchive`,
          * but is otherwise the same as [EntityServiceAsync.unarchive].
          */
+        @Deprecated("deprecated")
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
@@ -284,6 +293,7 @@ interface EntityServiceAsync {
             unarchive(id, params, RequestOptions.none())
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
@@ -292,12 +302,14 @@ interface EntityServiceAsync {
             unarchive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         fun unarchive(
             params: EntityUnarchiveParams
         ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> =
             unarchive(params, RequestOptions.none())
 
         /** @see unarchive */
+        @Deprecated("deprecated")
         fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),

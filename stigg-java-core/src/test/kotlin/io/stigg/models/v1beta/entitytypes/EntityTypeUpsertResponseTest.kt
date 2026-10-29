@@ -17,6 +17,7 @@ internal class EntityTypeUpsertResponseTest {
                 .addData(
                     EntityTypeUpsertResponse.Data.builder()
                         .id("id")
+                        .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addAttributionKey("NxI")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .description("description")
@@ -30,6 +31,7 @@ internal class EntityTypeUpsertResponseTest {
             .containsExactly(
                 EntityTypeUpsertResponse.Data.builder()
                     .id("id")
+                    .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addAttributionKey("NxI")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .description("description")
@@ -47,6 +49,7 @@ internal class EntityTypeUpsertResponseTest {
                 .addData(
                     EntityTypeUpsertResponse.Data.builder()
                         .id("id")
+                        .archivedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addAttributionKey("NxI")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .description("description")

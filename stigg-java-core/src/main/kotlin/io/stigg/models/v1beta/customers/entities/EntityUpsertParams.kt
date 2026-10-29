@@ -24,7 +24,8 @@ import kotlin.jvm.optionals.getOrNull
 
 /**
  * Creates or updates entities in bulk for the given customer. Existing entities matched by id are
- * updated; new ids are created.
+ * updated; new ids are created. An upsert of an archived entity restores it. An entity on an
+ * archived entity type fails with 400.
  */
 class EntityUpsertParams
 private constructor(

@@ -22,7 +22,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Restores previously archived entities in bulk for the given customer by id. */
+/**
+ * Deprecated: upsert an entity to restore it. Restores previously archived entities in bulk for the
+ * given customer by id.
+ */
+@Deprecated("deprecated")
 class EntityUnarchiveParams
 private constructor(
     private val id: String?,

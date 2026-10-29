@@ -28,7 +28,8 @@ interface EntityTypeService {
 
     /**
      * Returns a cursor-paginated list of entity types defined in the environment. Entity types are
-     * vendor-defined categories of resource that can be governed (e.g. Org, Team, User).
+     * vendor-defined categories of resource that can be governed (e.g. Org, Team, User). Archived
+     * entity types are excluded unless includeArchived=true.
      */
     fun list(): EntityTypeListPage = list(EntityTypeListParams.none())
 
@@ -48,7 +49,8 @@ interface EntityTypeService {
 
     /**
      * Batched create-or-update of entity types. Existing types matched by id are updated; new ids
-     * are created. Idempotent — re-submitting the same payload converges to the same state.
+     * are created. Idempotent — re-submitting the same payload converges to the same state. An
+     * upsert of an archived entity type restores it.
      */
     fun upsert(params: EntityTypeUpsertParams): EntityTypeUpsertResponse =
         upsert(params, RequestOptions.none())

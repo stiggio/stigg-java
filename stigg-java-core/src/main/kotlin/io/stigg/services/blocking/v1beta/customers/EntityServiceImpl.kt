@@ -60,6 +60,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         // post /api/v1-beta/customers/{id}/entities/archive
         withRawResponse().archive(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions,
@@ -208,6 +209,7 @@ class EntityServiceImpl internal constructor(private val clientOptions: ClientOp
         private val unarchiveHandler: Handler<EntityUnarchiveResponse> =
             jsonHandler<EntityUnarchiveResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions,
