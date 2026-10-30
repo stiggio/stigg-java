@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.0-beta.58](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.57...v0.1.0-beta.58) (2026-10-30)
+
+
+### Features
+
+* **STIGG-9594:** add the v1 governance resources and v1-beta deprecation messages ([cc78932](https://github.com/stiggio/stigg-java/commit/cc789323c37cfc950ac1933b81234ea11416f870))
+
+
+### Bug Fixes
+
+* sync OpenAPI spec from stigg-api ([00df4e6](https://github.com/stiggio/stigg-java/commit/00df4e6f0a0d41283ecbc45a79cf3c690f31026f))
+* sync OpenAPI spec from stigg-api ([35f8136](https://github.com/stiggio/stigg-java/commit/35f81365c3c9e36f00f8a64faa6e34358cf9829f))
+* sync OpenAPI spec from stigg-api ([896cc14](https://github.com/stiggio/stigg-java/commit/896cc1493e69696a246adeac9f3b1b41fe6d7ad0))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([9977da2](https://github.com/stiggio/stigg-java/commit/9977da2a92eaad62aa26d3d81bbdb2442aca3d7f))
+
 ## [0.1.0-beta.57](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.56...v0.1.0-beta.57) (2026-10-29)
 
 
