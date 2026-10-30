@@ -15,6 +15,11 @@ internal class CustomerCheckEntitlementParamsTest {
         CustomerCheckEntitlementParams.builder()
             .id("x")
             .currencyId("x")
+            .dimensions(
+                CustomerCheckEntitlementParams.Dimensions.builder()
+                    .putAdditionalProperty("foo", "string")
+                    .build()
+            )
             .featureId("x")
             .requestedUsage(0L)
             .addRequestedValue("string")
@@ -44,6 +49,11 @@ internal class CustomerCheckEntitlementParamsTest {
             CustomerCheckEntitlementParams.builder()
                 .id("x")
                 .currencyId("x")
+                .dimensions(
+                    CustomerCheckEntitlementParams.Dimensions.builder()
+                        .putAdditionalProperty("foo", "string")
+                        .build()
+                )
                 .featureId("x")
                 .requestedUsage(0L)
                 .addRequestedValue("string")
@@ -83,6 +93,11 @@ internal class CustomerCheckEntitlementParamsTest {
             CustomerCheckEntitlementParams.builder()
                 .id("x")
                 .currencyId("x")
+                .dimensions(
+                    CustomerCheckEntitlementParams.Dimensions.builder()
+                        .putAdditionalProperty("foo", "string")
+                        .build()
+                )
                 .featureId("x")
                 .requestedUsage(0L)
                 .addRequestedValue("string")
@@ -102,6 +117,7 @@ internal class CustomerCheckEntitlementParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("currencyId", "x")
+                    .put("dimensions[foo]", "string")
                     .put("featureId", "x")
                     .put("requestedUsage", "0")
                     .put("requestedValues", listOf("string").joinToString(","))

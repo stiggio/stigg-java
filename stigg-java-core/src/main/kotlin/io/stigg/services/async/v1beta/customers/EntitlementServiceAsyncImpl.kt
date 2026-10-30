@@ -33,6 +33,7 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntitlementServiceAsync =
         EntitlementServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    @Deprecated("deprecated")
     override fun check(
         params: EntitlementCheckParams,
         requestOptions: RequestOptions,
@@ -56,6 +57,7 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
         private val checkHandler: Handler<EntitlementCheckResponse> =
             jsonHandler<EntitlementCheckResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun check(
             params: EntitlementCheckParams,
             requestOptions: RequestOptions,

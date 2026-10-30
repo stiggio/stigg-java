@@ -14,17 +14,19 @@ import kotlin.jvm.optionals.getOrNull
 
 /**
  * Checks a single entitlement (feature or credit) for a customer or resource. Supports
- * `requestedUsage` and `requestedValues` to evaluate against limits or enum values. Each call
- * reaches the Stigg API directly, so latency reflects a network round trip. For entitlement checks
- * on a hot path (e.g. gating a request in real time), the Stigg Node Server SDK (with its built-in
- * cache) or the Sidecar will typically respond faster and keep working through brief Stigg outages;
- * reach for this endpoint when a live HTTP call is the natural fit, such as from a non-Node backend
- * or a server-side job.
+ * `requestedUsage` and `requestedValues` to evaluate against limits or enum values. Pass
+ * `dimensions` to also check the governance budgets of the entities the usage is attributed to; the
+ * response then includes `chains`. Each call reaches the Stigg API directly, so latency reflects a
+ * network round trip. For entitlement checks on a hot path (e.g. gating a request in real time),
+ * the Stigg Node Server SDK (with its built-in cache) or the Sidecar will typically respond faster
+ * and keep working through brief Stigg outages; reach for this endpoint when a live HTTP call is
+ * the natural fit, such as from a non-Node backend or a server-side job.
  */
 class CustomerCheckEntitlementParams
 private constructor(
     private val id: String?,
     private val currencyId: String?,
+    private val dimensions: Dimensions?,
     private val featureId: String?,
     private val requestedUsage: Long?,
     private val requestedValues: List<String>?,
@@ -46,6 +48,12 @@ private constructor(
      * Currency ID (refId) to check for credit entitlements. Mutually exclusive with `featureId`.
      */
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
+
+    /**
+     * Attribution map of the entities the usage is attributed to (e.g. `dimensions[userId]=u1`).
+     * When provided, their governance budgets are checked too and the response includes `chains`.
+     */
+    fun dimensions(): Optional<Dimensions> = Optional.ofNullable(dimensions)
 
     /** Feature ID (refId) to check. Mutually exclusive with `currencyId`. */
     fun featureId(): Optional<String> = Optional.ofNullable(featureId)
@@ -79,7 +87,7 @@ private constructor(
 
     /**
      * Credits to reserve (credit entitlements only). The check is decided and the credits held
-     * atomically; `requestedUsage` is ignored.
+     * atomically; `requestedUsage` is ignored. Not supported with `dimensions`.
      */
     fun reserveAmount(): Optional<Double> = Optional.ofNullable(reserveAmount)
 
@@ -114,6 +122,7 @@ private constructor(
 
         private var id: String? = null
         private var currencyId: String? = null
+        private var dimensions: Dimensions? = null
         private var featureId: String? = null
         private var requestedUsage: Long? = null
         private var requestedValues: MutableList<String>? = null
@@ -132,6 +141,7 @@ private constructor(
         internal fun from(customerCheckEntitlementParams: CustomerCheckEntitlementParams) = apply {
             id = customerCheckEntitlementParams.id
             currencyId = customerCheckEntitlementParams.currencyId
+            dimensions = customerCheckEntitlementParams.dimensions
             featureId = customerCheckEntitlementParams.featureId
             requestedUsage = customerCheckEntitlementParams.requestedUsage
             requestedValues = customerCheckEntitlementParams.requestedValues?.toMutableList()
@@ -160,6 +170,16 @@ private constructor(
 
         /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
+
+        /**
+         * Attribution map of the entities the usage is attributed to (e.g.
+         * `dimensions[userId]=u1`). When provided, their governance budgets are checked too and the
+         * response includes `chains`.
+         */
+        fun dimensions(dimensions: Dimensions?) = apply { this.dimensions = dimensions }
+
+        /** Alias for calling [Builder.dimensions] with `dimensions.orElse(null)`. */
+        fun dimensions(dimensions: Optional<Dimensions>) = dimensions(dimensions.getOrNull())
 
         /** Feature ID (refId) to check. Mutually exclusive with `currencyId`. */
         fun featureId(featureId: String?) = apply { this.featureId = featureId }
@@ -262,7 +282,7 @@ private constructor(
 
         /**
          * Credits to reserve (credit entitlements only). The check is decided and the credits held
-         * atomically; `requestedUsage` is ignored.
+         * atomically; `requestedUsage` is ignored. Not supported with `dimensions`.
          */
         fun reserveAmount(reserveAmount: Double?) = apply { this.reserveAmount = reserveAmount }
 
@@ -401,6 +421,7 @@ private constructor(
             CustomerCheckEntitlementParams(
                 id,
                 currencyId,
+                dimensions,
                 featureId,
                 requestedUsage,
                 requestedValues?.toImmutable(),
@@ -436,6 +457,13 @@ private constructor(
         QueryParams.builder()
             .apply {
                 currencyId?.let { put("currencyId", it) }
+                dimensions?.let {
+                    it._additionalProperties().keys().forEach { key ->
+                        it._additionalProperties().values(key).forEach { value ->
+                            put("dimensions[$key]", value)
+                        }
+                    }
+                }
                 featureId?.let { put("featureId", it) }
                 requestedUsage?.let { put("requestedUsage", it.toString()) }
                 requestedValues?.let { put("requestedValues", it.joinToString(",")) }
@@ -451,6 +479,105 @@ private constructor(
             }
             .build()
 
+    /**
+     * Attribution map of the entities the usage is attributed to (e.g. `dimensions[userId]=u1`).
+     * When provided, their governance budgets are checked too and the response includes `chains`.
+     */
+    class Dimensions private constructor(private val additionalProperties: QueryParams) {
+
+        /** Query params to send with the request. */
+        fun _additionalProperties(): QueryParams = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Dimensions]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Dimensions]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: QueryParams.Builder = QueryParams.builder()
+
+            @JvmSynthetic
+            internal fun from(dimensions: Dimensions) = apply {
+                additionalProperties = dimensions.additionalProperties.toBuilder()
+            }
+
+            fun additionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, Iterable<String>>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: String) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAdditionalProperties(key: String, values: Iterable<String>) = apply {
+                additionalProperties.put(key, values)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, Iterable<String>>) =
+                apply {
+                    this.additionalProperties.putAll(additionalProperties)
+                }
+
+            fun replaceAdditionalProperties(key: String, value: String) = apply {
+                additionalProperties.replace(key, value)
+            }
+
+            fun replaceAdditionalProperties(key: String, values: Iterable<String>) = apply {
+                additionalProperties.replace(key, values)
+            }
+
+            fun replaceAllAdditionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.replaceAll(additionalProperties)
+            }
+
+            fun replaceAllAdditionalProperties(
+                additionalProperties: Map<String, Iterable<String>>
+            ) = apply { this.additionalProperties.replaceAll(additionalProperties) }
+
+            fun removeAdditionalProperties(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                additionalProperties.removeAll(keys)
+            }
+
+            /**
+             * Returns an immutable instance of [Dimensions].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Dimensions = Dimensions(additionalProperties.build())
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Dimensions && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Dimensions{additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -459,6 +586,7 @@ private constructor(
         return other is CustomerCheckEntitlementParams &&
             id == other.id &&
             currencyId == other.currencyId &&
+            dimensions == other.dimensions &&
             featureId == other.featureId &&
             requestedUsage == other.requestedUsage &&
             requestedValues == other.requestedValues &&
@@ -478,6 +606,7 @@ private constructor(
         Objects.hash(
             id,
             currencyId,
+            dimensions,
             featureId,
             requestedUsage,
             requestedValues,
@@ -494,5 +623,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CustomerCheckEntitlementParams{id=$id, currencyId=$currencyId, featureId=$featureId, requestedUsage=$requestedUsage, requestedValues=$requestedValues, reservationExpiresAt=$reservationExpiresAt, reservationId=$reservationId, reservationMetadata=$reservationMetadata, reservationTtlSeconds=$reservationTtlSeconds, reserveAmount=$reserveAmount, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerCheckEntitlementParams{id=$id, currencyId=$currencyId, dimensions=$dimensions, featureId=$featureId, requestedUsage=$requestedUsage, requestedValues=$requestedValues, reservationExpiresAt=$reservationExpiresAt, reservationId=$reservationId, reservationMetadata=$reservationMetadata, reservationTtlSeconds=$reservationTtlSeconds, reserveAmount=$reserveAmount, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

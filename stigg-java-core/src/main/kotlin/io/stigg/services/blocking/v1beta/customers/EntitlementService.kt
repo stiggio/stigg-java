@@ -27,11 +27,14 @@ interface EntitlementService {
     /**
      * Experimental — request and response shapes may change without notice. Same semantics as
      * `Check entitlement`, plus an optional `dimensions` query param that resolves to per-entity
-     * governance limits surfaced as `chains` on the response.
+     * governance limits surfaced as `chains` on the response. Deprecated: use `GET
+     * /api/v1/customers/{id}/entitlements/check`.
      */
+    @Deprecated("deprecated")
     fun check(id: String): EntitlementCheckResponse = check(id, EntitlementCheckParams.none())
 
     /** @see check */
+    @Deprecated("deprecated")
     fun check(
         id: String,
         params: EntitlementCheckParams = EntitlementCheckParams.none(),
@@ -39,22 +42,26 @@ interface EntitlementService {
     ): EntitlementCheckResponse = check(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see check */
+    @Deprecated("deprecated")
     fun check(
         id: String,
         params: EntitlementCheckParams = EntitlementCheckParams.none(),
     ): EntitlementCheckResponse = check(id, params, RequestOptions.none())
 
     /** @see check */
+    @Deprecated("deprecated")
     fun check(
         params: EntitlementCheckParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntitlementCheckResponse
 
     /** @see check */
+    @Deprecated("deprecated")
     fun check(params: EntitlementCheckParams): EntitlementCheckResponse =
         check(params, RequestOptions.none())
 
     /** @see check */
+    @Deprecated("deprecated")
     fun check(id: String, requestOptions: RequestOptions): EntitlementCheckResponse =
         check(id, EntitlementCheckParams.none(), requestOptions)
 
@@ -76,11 +83,13 @@ interface EntitlementService {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entitlements/check`, but
          * is otherwise the same as [EntitlementService.check].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(id: String): HttpResponseFor<EntitlementCheckResponse> =
             check(id, EntitlementCheckParams.none())
 
         /** @see check */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(
             id: String,
@@ -90,6 +99,7 @@ interface EntitlementService {
             check(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see check */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(
             id: String,
@@ -97,6 +107,7 @@ interface EntitlementService {
         ): HttpResponseFor<EntitlementCheckResponse> = check(id, params, RequestOptions.none())
 
         /** @see check */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(
             params: EntitlementCheckParams,
@@ -104,11 +115,13 @@ interface EntitlementService {
         ): HttpResponseFor<EntitlementCheckResponse>
 
         /** @see check */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(params: EntitlementCheckParams): HttpResponseFor<EntitlementCheckResponse> =
             check(params, RequestOptions.none())
 
         /** @see check */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun check(
             id: String,

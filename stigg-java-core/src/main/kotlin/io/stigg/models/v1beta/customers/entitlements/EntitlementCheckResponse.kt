@@ -1443,7 +1443,7 @@ private constructor(
                 fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
-                 * Hard usage limit for this node; null when no assignment is configured.
+                 * Hard usage limit for this node; null when the entity has no entity entitlement.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -1621,7 +1621,10 @@ private constructor(
                             }
                     }
 
-                    /** Hard usage limit for this node; null when no assignment is configured. */
+                    /**
+                     * Hard usage limit for this node; null when the entity has no entity
+                     * entitlement.
+                     */
                     fun usageLimit(usageLimit: Double?) =
                         usageLimit(JsonField.ofNullable(usageLimit))
 
@@ -4210,7 +4213,7 @@ private constructor(
                 fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
-                 * Hard usage limit for this node; null when no assignment is configured.
+                 * Hard usage limit for this node; null when the entity has no entity entitlement.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -4388,7 +4391,10 @@ private constructor(
                             }
                     }
 
-                    /** Hard usage limit for this node; null when no assignment is configured. */
+                    /**
+                     * Hard usage limit for this node; null when the entity has no entity
+                     * entitlement.
+                     */
                     fun usageLimit(usageLimit: Double?) =
                         usageLimit(JsonField.ofNullable(usageLimit))
 

@@ -13,8 +13,10 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Experimental — request and response shapes may change without notice. Same semantics as `Check
  * entitlement`, plus an optional `dimensions` query param that resolves to per-entity governance
- * limits surfaced as `chains` on the response.
+ * limits surfaced as `chains` on the response. Deprecated: use `GET
+ * /api/v1/customers/{id}/entitlements/check`.
  */
+@Deprecated("deprecated")
 class EntitlementCheckParams
 private constructor(
     private val id: String?,
@@ -38,8 +40,8 @@ private constructor(
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
 
     /**
-     * Optional attribution map (e.g. `dimensions[userId]=u1`). When provided, the response includes
-     * a `chains` array with per-entity governance limits.
+     * Attribution map of the entities the usage is attributed to (e.g. `dimensions[userId]=u1`).
+     * When provided, their governance budgets are checked too and the response includes `chains`.
      */
     fun dimensions(): Optional<Dimensions> = Optional.ofNullable(dimensions)
 
@@ -120,8 +122,9 @@ private constructor(
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
 
         /**
-         * Optional attribution map (e.g. `dimensions[userId]=u1`). When provided, the response
-         * includes a `chains` array with per-entity governance limits.
+         * Attribution map of the entities the usage is attributed to (e.g.
+         * `dimensions[userId]=u1`). When provided, their governance budgets are checked too and the
+         * response includes `chains`.
          */
         fun dimensions(dimensions: Dimensions?) = apply { this.dimensions = dimensions }
 
@@ -339,8 +342,8 @@ private constructor(
             .build()
 
     /**
-     * Optional attribution map (e.g. `dimensions[userId]=u1`). When provided, the response includes
-     * a `chains` array with per-entity governance limits.
+     * Attribution map of the entities the usage is attributed to (e.g. `dimensions[userId]=u1`).
+     * When provided, their governance budgets are checked too and the response includes `chains`.
      */
     class Dimensions private constructor(private val additionalProperties: QueryParams) {
 

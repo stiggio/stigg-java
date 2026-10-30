@@ -188,6 +188,11 @@ internal class CustomerServiceTest {
                 CustomerCheckEntitlementParams.builder()
                     .id("x")
                     .currencyId("x")
+                    .dimensions(
+                        CustomerCheckEntitlementParams.Dimensions.builder()
+                            .putAdditionalProperty("foo", "string")
+                            .build()
+                    )
                     .featureId("x")
                     .requestedUsage(0L)
                     .addRequestedValue("string")

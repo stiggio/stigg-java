@@ -21,6 +21,17 @@ internal class CustomerCheckEntitlementResponseTest {
                                 .FEATURE_NOT_FOUND
                         )
                         .isGranted(true)
+                        .addChain(
+                            listOf(
+                                CustomerCheckEntitlementResponse.Data.Feature.ChainNode.builder()
+                                    .currentUsage(0.0)
+                                    .entityId("entityId")
+                                    .isGranted(true)
+                                    .addScopeEntityId("string")
+                                    .usageLimit(0.0)
+                                    .build()
+                            )
+                        )
                         .currentUsage(0.0)
                         .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .feature(
@@ -59,6 +70,17 @@ internal class CustomerCheckEntitlementResponseTest {
                                 .FEATURE_NOT_FOUND
                         )
                         .isGranted(true)
+                        .addChain(
+                            listOf(
+                                CustomerCheckEntitlementResponse.Data.Feature.ChainNode.builder()
+                                    .currentUsage(0.0)
+                                    .entityId("entityId")
+                                    .isGranted(true)
+                                    .addScopeEntityId("string")
+                                    .usageLimit(0.0)
+                                    .build()
+                            )
+                        )
                         .currentUsage(0.0)
                         .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .feature(
@@ -101,6 +123,17 @@ internal class CustomerCheckEntitlementResponseTest {
                                 .FEATURE_NOT_FOUND
                         )
                         .isGranted(true)
+                        .addChain(
+                            listOf(
+                                CustomerCheckEntitlementResponse.Data.Feature.ChainNode.builder()
+                                    .currentUsage(0.0)
+                                    .entityId("entityId")
+                                    .isGranted(true)
+                                    .addScopeEntityId("string")
+                                    .usageLimit(0.0)
+                                    .build()
+                            )
+                        )
                         .currentUsage(0.0)
                         .entitlementUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .feature(
