@@ -27,7 +27,7 @@ import kotlin.jvm.optionals.getOrNull
  * created. Idempotent — re-submitting the same payload converges to the same state. An upsert of an
  * archived entity type restores it. Deprecated: use `PUT /api/v1/entity-types`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.entity_types.upsert` instead.")
 class EntityTypeUpsertParams
 private constructor(
     private val xAccountId: String?,

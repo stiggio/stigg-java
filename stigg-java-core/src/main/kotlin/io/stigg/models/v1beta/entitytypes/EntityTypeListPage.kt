@@ -11,7 +11,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** @see EntityTypeService.list */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.entity_types.list` instead.")
 class EntityTypeListPage
 private constructor(
     private val service: EntityTypeService,

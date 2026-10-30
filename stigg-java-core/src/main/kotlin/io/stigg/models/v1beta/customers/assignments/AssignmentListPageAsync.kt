@@ -13,7 +13,7 @@ import java.util.concurrent.Executor
 import kotlin.jvm.optionals.getOrNull
 
 /** @see AssignmentServiceAsync.list */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
 class AssignmentListPageAsync
 private constructor(
     private val service: AssignmentServiceAsync,

@@ -28,7 +28,9 @@ import kotlin.jvm.optionals.getOrNull
  * are preserved; on create both are required by the governance service. Deprecated: use `PUT
  * /api/v1/customers/{id}/entities/entitlements` with the body key `entityEntitlements`.
  */
-@Deprecated("deprecated")
+@Deprecated(
+    "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+)
 class AssignmentUpsertParams
 private constructor(
     private val id: String?,

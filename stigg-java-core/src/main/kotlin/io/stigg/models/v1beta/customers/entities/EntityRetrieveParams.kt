@@ -14,7 +14,7 @@ import kotlin.jvm.optionals.getOrNull
  * Retrieves a single entity for the given customer by its identifier. Deprecated: use `GET
  * /api/v1/customers/{id}/entities/{entityId}`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.retrieve` instead.")
 class EntityRetrieveParams
 private constructor(
     private val id: String,

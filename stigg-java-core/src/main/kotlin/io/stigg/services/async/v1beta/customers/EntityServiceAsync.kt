@@ -36,14 +36,14 @@ interface EntityServiceAsync {
      * Retrieves a single entity for the given customer by its identifier. Deprecated: use `GET
      * /api/v1/customers/{id}/entities/{entityId}`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.retrieve` instead.")
     fun retrieve(
         entityId: String,
         params: EntityRetrieveParams,
     ): CompletableFuture<EntityRetrieveResponse> = retrieve(entityId, params, RequestOptions.none())
 
     /** @see retrieve */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.retrieve` instead.")
     fun retrieve(
         entityId: String,
         params: EntityRetrieveParams,
@@ -52,12 +52,12 @@ interface EntityServiceAsync {
         retrieve(params.toBuilder().entityId(entityId).build(), requestOptions)
 
     /** @see retrieve */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.retrieve` instead.")
     fun retrieve(params: EntityRetrieveParams): CompletableFuture<EntityRetrieveResponse> =
         retrieve(params, RequestOptions.none())
 
     /** @see retrieve */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.retrieve` instead.")
     fun retrieve(
         params: EntityRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -67,11 +67,11 @@ interface EntityServiceAsync {
      * Retrieves a paginated list of entities for the given customer. Deprecated: use `GET
      * /api/v1/customers/{id}/entities`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(id: String): CompletableFuture<EntityListPageAsync> = list(id, EntityListParams.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(
         id: String,
         params: EntityListParams = EntityListParams.none(),
@@ -80,26 +80,26 @@ interface EntityServiceAsync {
         list(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(
         id: String,
         params: EntityListParams = EntityListParams.none(),
     ): CompletableFuture<EntityListPageAsync> = list(id, params, RequestOptions.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(
         params: EntityListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<EntityListPageAsync>
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(params: EntityListParams): CompletableFuture<EntityListPageAsync> =
         list(params, RequestOptions.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     fun list(id: String, requestOptions: RequestOptions): CompletableFuture<EntityListPageAsync> =
         list(id, EntityListParams.none(), requestOptions)
 
@@ -107,12 +107,12 @@ interface EntityServiceAsync {
      * Archives entities in bulk for the given customer by id. Upsert an archived entity to restore
      * it. Deprecated: use `POST /api/v1/customers/{id}/entities/archive`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.archive` instead.")
     fun archive(id: String, params: EntityArchiveParams): CompletableFuture<EntityArchiveResponse> =
         archive(id, params, RequestOptions.none())
 
     /** @see archive */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.archive` instead.")
     fun archive(
         id: String,
         params: EntityArchiveParams,
@@ -121,12 +121,12 @@ interface EntityServiceAsync {
         archive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see archive */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.archive` instead.")
     fun archive(params: EntityArchiveParams): CompletableFuture<EntityArchiveResponse> =
         archive(params, RequestOptions.none())
 
     /** @see archive */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.archive` instead.")
     fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -136,14 +136,18 @@ interface EntityServiceAsync {
      * Deprecated: use `PUT /api/v1/customers/{id}/entities` with the entity id to restore it.
      * Restores previously archived entities in bulk for the given customer by id.
      */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+    )
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
     ): CompletableFuture<EntityUnarchiveResponse> = unarchive(id, params, RequestOptions.none())
 
     /** @see unarchive */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+    )
     fun unarchive(
         id: String,
         params: EntityUnarchiveParams,
@@ -152,12 +156,16 @@ interface EntityServiceAsync {
         unarchive(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see unarchive */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+    )
     fun unarchive(params: EntityUnarchiveParams): CompletableFuture<EntityUnarchiveResponse> =
         unarchive(params, RequestOptions.none())
 
     /** @see unarchive */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+    )
     fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -169,12 +177,12 @@ interface EntityServiceAsync {
      * an archived entity type fails with 400. Deprecated: use `PUT
      * /api/v1/customers/{id}/entities`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.upsert` instead.")
     fun upsert(id: String, params: EntityUpsertParams): CompletableFuture<EntityUpsertResponse> =
         upsert(id, params, RequestOptions.none())
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.upsert` instead.")
     fun upsert(
         id: String,
         params: EntityUpsertParams,
@@ -183,12 +191,12 @@ interface EntityServiceAsync {
         upsert(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.upsert` instead.")
     fun upsert(params: EntityUpsertParams): CompletableFuture<EntityUpsertResponse> =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.upsert` instead.")
     fun upsert(
         params: EntityUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -212,7 +220,7 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entities/{entityId}`,
          * but is otherwise the same as [EntityServiceAsync.retrieve].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.retrieve` instead.")
         fun retrieve(
             entityId: String,
             params: EntityRetrieveParams,
@@ -220,7 +228,7 @@ interface EntityServiceAsync {
             retrieve(entityId, params, RequestOptions.none())
 
         /** @see retrieve */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.retrieve` instead.")
         fun retrieve(
             entityId: String,
             params: EntityRetrieveParams,
@@ -229,14 +237,14 @@ interface EntityServiceAsync {
             retrieve(params.toBuilder().entityId(entityId).build(), requestOptions)
 
         /** @see retrieve */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.retrieve` instead.")
         fun retrieve(
             params: EntityRetrieveParams
         ): CompletableFuture<HttpResponseFor<EntityRetrieveResponse>> =
             retrieve(params, RequestOptions.none())
 
         /** @see retrieve */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.retrieve` instead.")
         fun retrieve(
             params: EntityRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
@@ -246,12 +254,12 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entities`, but is
          * otherwise the same as [EntityServiceAsync.list].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(id: String): CompletableFuture<HttpResponseFor<EntityListPageAsync>> =
             list(id, EntityListParams.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(
             id: String,
             params: EntityListParams = EntityListParams.none(),
@@ -260,7 +268,7 @@ interface EntityServiceAsync {
             list(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(
             id: String,
             params: EntityListParams = EntityListParams.none(),
@@ -268,21 +276,21 @@ interface EntityServiceAsync {
             list(id, params, RequestOptions.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(
             params: EntityListParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<EntityListPageAsync>>
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(
             params: EntityListParams
         ): CompletableFuture<HttpResponseFor<EntityListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         fun list(
             id: String,
             requestOptions: RequestOptions,
@@ -293,7 +301,7 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/archive`, but
          * is otherwise the same as [EntityServiceAsync.archive].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.archive` instead.")
         fun archive(
             id: String,
             params: EntityArchiveParams,
@@ -301,7 +309,7 @@ interface EntityServiceAsync {
             archive(id, params, RequestOptions.none())
 
         /** @see archive */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.archive` instead.")
         fun archive(
             id: String,
             params: EntityArchiveParams,
@@ -310,14 +318,14 @@ interface EntityServiceAsync {
             archive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see archive */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.archive` instead.")
         fun archive(
             params: EntityArchiveParams
         ): CompletableFuture<HttpResponseFor<EntityArchiveResponse>> =
             archive(params, RequestOptions.none())
 
         /** @see archive */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.archive` instead.")
         fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
@@ -327,7 +335,9 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `post /api/v1-beta/customers/{id}/entities/unarchive`,
          * but is otherwise the same as [EntityServiceAsync.unarchive].
          */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+        )
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
@@ -335,7 +345,9 @@ interface EntityServiceAsync {
             unarchive(id, params, RequestOptions.none())
 
         /** @see unarchive */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+        )
         fun unarchive(
             id: String,
             params: EntityUnarchiveParams,
@@ -344,14 +356,18 @@ interface EntityServiceAsync {
             unarchive(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see unarchive */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+        )
         fun unarchive(
             params: EntityUnarchiveParams
         ): CompletableFuture<HttpResponseFor<EntityUnarchiveResponse>> =
             unarchive(params, RequestOptions.none())
 
         /** @see unarchive */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+        )
         fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
@@ -361,7 +377,7 @@ interface EntityServiceAsync {
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/entities`, but is
          * otherwise the same as [EntityServiceAsync.upsert].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.upsert` instead.")
         fun upsert(
             id: String,
             params: EntityUpsertParams,
@@ -369,7 +385,7 @@ interface EntityServiceAsync {
             upsert(id, params, RequestOptions.none())
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.upsert` instead.")
         fun upsert(
             id: String,
             params: EntityUpsertParams,
@@ -378,14 +394,14 @@ interface EntityServiceAsync {
             upsert(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.upsert` instead.")
         fun upsert(
             params: EntityUpsertParams
         ): CompletableFuture<HttpResponseFor<EntityUpsertResponse>> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.upsert` instead.")
         fun upsert(
             params: EntityUpsertParams,
             requestOptions: RequestOptions = RequestOptions.none(),

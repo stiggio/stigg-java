@@ -26,7 +26,7 @@ import kotlin.jvm.optionals.getOrNull
  * Deprecated: use `PUT /api/v1/customers/{id}/entities` with the entity id to restore it. Restores
  * previously archived entities in bulk for the given customer by id.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.upsert` with the entity id to restore an archived entity.")
 class EntityUnarchiveParams
 private constructor(
     private val id: String?,

@@ -11,7 +11,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** @see AssignmentService.list */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
 class AssignmentListPage
 private constructor(
     private val service: AssignmentService,

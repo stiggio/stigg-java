@@ -32,24 +32,24 @@ interface EntityTypeServiceAsync {
      * entity types are excluded unless includeArchived=true. Deprecated: use `GET
      * /api/v1/entity-types`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.list` instead.")
     fun list(): CompletableFuture<EntityTypeListPageAsync> = list(EntityTypeListParams.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.list` instead.")
     fun list(
         params: EntityTypeListParams = EntityTypeListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<EntityTypeListPageAsync>
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.list` instead.")
     fun list(
         params: EntityTypeListParams = EntityTypeListParams.none()
     ): CompletableFuture<EntityTypeListPageAsync> = list(params, RequestOptions.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.list` instead.")
     fun list(requestOptions: RequestOptions): CompletableFuture<EntityTypeListPageAsync> =
         list(EntityTypeListParams.none(), requestOptions)
 
@@ -58,12 +58,12 @@ interface EntityTypeServiceAsync {
      * are created. Idempotent — re-submitting the same payload converges to the same state. An
      * upsert of an archived entity type restores it. Deprecated: use `PUT /api/v1/entity-types`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.upsert` instead.")
     fun upsert(params: EntityTypeUpsertParams): CompletableFuture<EntityTypeUpsertResponse> =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.upsert` instead.")
     fun upsert(
         params: EntityTypeUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -88,26 +88,26 @@ interface EntityTypeServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeServiceAsync.list].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.list` instead.")
         fun list(): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
             list(EntityTypeListParams.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.list` instead.")
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>>
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.list` instead.")
         fun list(
             params: EntityTypeListParams = EntityTypeListParams.none()
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
             list(params, RequestOptions.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.list` instead.")
         fun list(
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<EntityTypeListPageAsync>> =
@@ -117,14 +117,14 @@ interface EntityTypeServiceAsync {
          * Returns a raw HTTP response for `put /api/v1-beta/entity-types`, but is otherwise the
          * same as [EntityTypeServiceAsync.upsert].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.upsert` instead.")
         fun upsert(
             params: EntityTypeUpsertParams
         ): CompletableFuture<HttpResponseFor<EntityTypeUpsertResponse>> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.upsert` instead.")
         fun upsert(
             params: EntityTypeUpsertParams,
             requestOptions: RequestOptions = RequestOptions.none(),

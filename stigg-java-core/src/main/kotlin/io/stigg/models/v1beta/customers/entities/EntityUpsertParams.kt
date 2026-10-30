@@ -27,7 +27,7 @@ import kotlin.jvm.optionals.getOrNull
  * updated; new ids are created. An upsert of an archived entity restores it. An entity on an
  * archived entity type fails with 400. Deprecated: use `PUT /api/v1/customers/{id}/entities`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.upsert` instead.")
 class EntityUpsertParams
 private constructor(
     private val id: String?,

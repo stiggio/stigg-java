@@ -13,6 +13,8 @@ import io.stigg.services.async.v1.CreditServiceAsync
 import io.stigg.services.async.v1.CreditServiceAsyncImpl
 import io.stigg.services.async.v1.CustomerServiceAsync
 import io.stigg.services.async.v1.CustomerServiceAsyncImpl
+import io.stigg.services.async.v1.EntityTypeServiceAsync
+import io.stigg.services.async.v1.EntityTypeServiceAsyncImpl
 import io.stigg.services.async.v1.EventServiceAsync
 import io.stigg.services.async.v1.EventServiceAsyncImpl
 import io.stigg.services.async.v1.FeatureServiceAsync
@@ -58,6 +60,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val contracts: ContractServiceAsync by lazy { ContractServiceAsyncImpl(clientOptions) }
 
+    private val entityTypes: EntityTypeServiceAsync by lazy {
+        EntityTypeServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): V1ServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync =
@@ -91,6 +97,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun products(): ProductServiceAsync = products
 
     override fun contracts(): ContractServiceAsync = contracts
+
+    override fun entityTypes(): EntityTypeServiceAsync = entityTypes
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
@@ -139,6 +147,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             ContractServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val entityTypes: EntityTypeServiceAsync.WithRawResponse by lazy {
+            EntityTypeServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1ServiceAsync.WithRawResponse =
@@ -174,5 +186,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         override fun products(): ProductServiceAsync.WithRawResponse = products
 
         override fun contracts(): ContractServiceAsync.WithRawResponse = contracts
+
+        override fun entityTypes(): EntityTypeServiceAsync.WithRawResponse = entityTypes
     }
 }

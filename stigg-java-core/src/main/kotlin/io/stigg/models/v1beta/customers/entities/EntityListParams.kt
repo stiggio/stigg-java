@@ -17,7 +17,7 @@ import kotlin.jvm.optionals.getOrNull
  * Retrieves a paginated list of entities for the given customer. Deprecated: use `GET
  * /api/v1/customers/{id}/entities`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.list` instead.")
 class EntityListParams
 private constructor(
     private val id: String?,

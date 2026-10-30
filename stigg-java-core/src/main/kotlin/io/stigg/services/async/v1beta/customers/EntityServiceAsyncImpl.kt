@@ -43,7 +43,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntityServiceAsync =
         EntityServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.retrieve` instead.")
     override fun retrieve(
         params: EntityRetrieveParams,
         requestOptions: RequestOptions,
@@ -51,7 +51,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         // get /api/v1-beta/customers/{id}/entities/{entityId}
         withRawResponse().retrieve(params, requestOptions).thenApply { it.parse() }
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.list` instead.")
     override fun list(
         params: EntityListParams,
         requestOptions: RequestOptions,
@@ -59,7 +59,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         // get /api/v1-beta/customers/{id}/entities
         withRawResponse().list(params, requestOptions).thenApply { it.parse() }
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.archive` instead.")
     override fun archive(
         params: EntityArchiveParams,
         requestOptions: RequestOptions,
@@ -67,7 +67,9 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         // post /api/v1-beta/customers/{id}/entities/archive
         withRawResponse().archive(params, requestOptions).thenApply { it.parse() }
 
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+    )
     override fun unarchive(
         params: EntityUnarchiveParams,
         requestOptions: RequestOptions,
@@ -75,7 +77,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         // post /api/v1-beta/customers/{id}/entities/unarchive
         withRawResponse().unarchive(params, requestOptions).thenApply { it.parse() }
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.upsert` instead.")
     override fun upsert(
         params: EntityUpsertParams,
         requestOptions: RequestOptions,
@@ -99,7 +101,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         private val retrieveHandler: Handler<EntityRetrieveResponse> =
             jsonHandler<EntityRetrieveResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.retrieve` instead.")
         override fun retrieve(
             params: EntityRetrieveParams,
             requestOptions: RequestOptions,
@@ -140,7 +142,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         private val listHandler: Handler<EntityListPageResponse> =
             jsonHandler<EntityListPageResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.list` instead.")
         override fun list(
             params: EntityListParams,
             requestOptions: RequestOptions,
@@ -188,7 +190,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         private val archiveHandler: Handler<EntityArchiveResponse> =
             jsonHandler<EntityArchiveResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.archive` instead.")
         override fun archive(
             params: EntityArchiveParams,
             requestOptions: RequestOptions,
@@ -230,7 +232,9 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         private val unarchiveHandler: Handler<EntityUnarchiveResponse> =
             jsonHandler<EntityUnarchiveResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.upsert` with the entity id to restore an archived entity."
+        )
         override fun unarchive(
             params: EntityUnarchiveParams,
             requestOptions: RequestOptions,
@@ -272,7 +276,7 @@ class EntityServiceAsyncImpl internal constructor(private val clientOptions: Cli
         private val upsertHandler: Handler<EntityUpsertResponse> =
             jsonHandler<EntityUpsertResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.upsert` instead.")
         override fun upsert(
             params: EntityUpsertParams,
             requestOptions: RequestOptions,

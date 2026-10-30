@@ -36,7 +36,7 @@ class AssignmentServiceImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AssignmentService =
         AssignmentServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     override fun list(
         params: AssignmentListParams,
         requestOptions: RequestOptions,
@@ -44,7 +44,9 @@ class AssignmentServiceImpl internal constructor(private val clientOptions: Clie
         // get /api/v1-beta/customers/{id}/assignments
         withRawResponse().list(params, requestOptions).parse()
 
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+    )
     override fun upsert(
         params: AssignmentUpsertParams,
         requestOptions: RequestOptions,
@@ -68,7 +70,7 @@ class AssignmentServiceImpl internal constructor(private val clientOptions: Clie
         private val listHandler: Handler<AssignmentListPageResponse> =
             jsonHandler<AssignmentListPageResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         override fun list(
             params: AssignmentListParams,
             requestOptions: RequestOptions,
@@ -112,7 +114,9 @@ class AssignmentServiceImpl internal constructor(private val clientOptions: Clie
         private val upsertHandler: Handler<AssignmentUpsertResponse> =
             jsonHandler<AssignmentUpsertResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+        )
         override fun upsert(
             params: AssignmentUpsertParams,
             requestOptions: RequestOptions,

@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
  * limits surfaced as `chains` on the response. Deprecated: use `GET
  * /api/v1/customers/{id}/entitlements/check`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.check_entitlement` instead.")
 class EntitlementCheckParams
 private constructor(
     private val id: String?,

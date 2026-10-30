@@ -39,6 +39,8 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
+import io.stigg.services.async.v1.customers.EntityServiceAsync
+import io.stigg.services.async.v1.customers.EntityServiceAsyncImpl
 import io.stigg.services.async.v1.customers.IntegrationServiceAsync
 import io.stigg.services.async.v1.customers.IntegrationServiceAsyncImpl
 import io.stigg.services.async.v1.customers.PaymentMethodServiceAsync
@@ -68,6 +70,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         IntegrationServiceAsyncImpl(clientOptions)
     }
 
+    private val entities: EntityServiceAsync by lazy { EntityServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): CustomerServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): CustomerServiceAsync =
@@ -81,6 +85,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         promotionalEntitlements
 
     override fun integrations(): IntegrationServiceAsync = integrations
+
+    override fun entities(): EntityServiceAsync = entities
 
     override fun retrieve(
         params: CustomerRetrieveParams,
@@ -185,6 +191,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             IntegrationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val entities: EntityServiceAsync.WithRawResponse by lazy {
+            EntityServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): CustomerServiceAsync.WithRawResponse =
@@ -200,6 +210,8 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             promotionalEntitlements
 
         override fun integrations(): IntegrationServiceAsync.WithRawResponse = integrations
+
+        override fun entities(): EntityServiceAsync.WithRawResponse = entities
 
         private val retrieveHandler: Handler<CustomerResponse> =
             jsonHandler<CustomerResponse>(clientOptions.jsonMapper)

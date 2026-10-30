@@ -13,7 +13,7 @@ import java.util.concurrent.Executor
 import kotlin.jvm.optionals.getOrNull
 
 /** @see EntityServiceAsync.list */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.list` instead.")
 class EntityListPageAsync
 private constructor(
     private val service: EntityServiceAsync,

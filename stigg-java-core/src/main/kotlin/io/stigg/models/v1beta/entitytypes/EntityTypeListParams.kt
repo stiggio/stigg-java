@@ -19,7 +19,7 @@ import kotlin.jvm.optionals.getOrNull
  * entity types are excluded unless includeArchived=true. Deprecated: use `GET
  * /api/v1/entity-types`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.entity_types.list` instead.")
 class EntityTypeListParams
 private constructor(
     private val after: String?,

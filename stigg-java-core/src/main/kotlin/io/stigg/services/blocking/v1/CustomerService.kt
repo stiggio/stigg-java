@@ -26,6 +26,7 @@ import io.stigg.models.v1.customers.CustomerRetrieveEntitlementsResponse
 import io.stigg.models.v1.customers.CustomerRetrieveParams
 import io.stigg.models.v1.customers.CustomerUnarchiveParams
 import io.stigg.models.v1.customers.CustomerUpdateParams
+import io.stigg.services.blocking.v1.customers.EntityService
 import io.stigg.services.blocking.v1.customers.IntegrationService
 import io.stigg.services.blocking.v1.customers.PaymentMethodService
 import io.stigg.services.blocking.v1.customers.PromotionalEntitlementService
@@ -52,6 +53,8 @@ interface CustomerService {
     fun promotionalEntitlements(): PromotionalEntitlementService
 
     fun integrations(): IntegrationService
+
+    fun entities(): EntityService
 
     /**
      * Retrieves a customer by their unique identifier, including billing information and
@@ -426,6 +429,8 @@ interface CustomerService {
         fun promotionalEntitlements(): PromotionalEntitlementService.WithRawResponse
 
         fun integrations(): IntegrationService.WithRawResponse
+
+        fun entities(): EntityService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /api/v1/customers/{id}`, but is otherwise the same

@@ -8,6 +8,7 @@ import io.stigg.services.blocking.v1.ContractService
 import io.stigg.services.blocking.v1.CouponService
 import io.stigg.services.blocking.v1.CreditService
 import io.stigg.services.blocking.v1.CustomerService
+import io.stigg.services.blocking.v1.EntityTypeService
 import io.stigg.services.blocking.v1.EventService
 import io.stigg.services.blocking.v1.FeatureService
 import io.stigg.services.blocking.v1.PlanService
@@ -59,6 +60,8 @@ interface V1Service {
 
     fun contracts(): ContractService
 
+    fun entityTypes(): EntityTypeService
+
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -97,5 +100,7 @@ interface V1Service {
         fun products(): ProductService.WithRawResponse
 
         fun contracts(): ContractService.WithRawResponse
+
+        fun entityTypes(): EntityTypeService.WithRawResponse
     }
 }

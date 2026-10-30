@@ -14,7 +14,7 @@ import kotlin.jvm.optionals.getOrNull
  * ties an entity to a capability with a usage limit and reset cadence. Deprecated: use `GET
  * /api/v1/customers/{id}/entities/entitlements`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
 class AssignmentListParams
 private constructor(
     private val id: String?,

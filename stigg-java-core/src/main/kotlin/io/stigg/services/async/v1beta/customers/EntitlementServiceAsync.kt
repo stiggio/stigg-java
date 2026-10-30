@@ -30,12 +30,12 @@ interface EntitlementServiceAsync {
      * governance limits surfaced as `chains` on the response. Deprecated: use `GET
      * /api/v1/customers/{id}/entitlements/check`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(id: String): CompletableFuture<EntitlementCheckResponse> =
         check(id, EntitlementCheckParams.none())
 
     /** @see check */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(
         id: String,
         params: EntitlementCheckParams = EntitlementCheckParams.none(),
@@ -44,26 +44,26 @@ interface EntitlementServiceAsync {
         check(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see check */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(
         id: String,
         params: EntitlementCheckParams = EntitlementCheckParams.none(),
     ): CompletableFuture<EntitlementCheckResponse> = check(id, params, RequestOptions.none())
 
     /** @see check */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(
         params: EntitlementCheckParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<EntitlementCheckResponse>
 
     /** @see check */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(params: EntitlementCheckParams): CompletableFuture<EntitlementCheckResponse> =
         check(params, RequestOptions.none())
 
     /** @see check */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.check_entitlement` instead.")
     fun check(
         id: String,
         requestOptions: RequestOptions,
@@ -89,12 +89,12 @@ interface EntitlementServiceAsync {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/entitlements/check`, but
          * is otherwise the same as [EntitlementServiceAsync.check].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(id: String): CompletableFuture<HttpResponseFor<EntitlementCheckResponse>> =
             check(id, EntitlementCheckParams.none())
 
         /** @see check */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(
             id: String,
             params: EntitlementCheckParams = EntitlementCheckParams.none(),
@@ -103,7 +103,7 @@ interface EntitlementServiceAsync {
             check(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see check */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(
             id: String,
             params: EntitlementCheckParams = EntitlementCheckParams.none(),
@@ -111,21 +111,21 @@ interface EntitlementServiceAsync {
             check(id, params, RequestOptions.none())
 
         /** @see check */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(
             params: EntitlementCheckParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<EntitlementCheckResponse>>
 
         /** @see check */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(
             params: EntitlementCheckParams
         ): CompletableFuture<HttpResponseFor<EntitlementCheckResponse>> =
             check(params, RequestOptions.none())
 
         /** @see check */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.check_entitlement` instead.")
         fun check(
             id: String,
             requestOptions: RequestOptions,

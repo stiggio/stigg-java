@@ -31,11 +31,11 @@ interface AssignmentService {
      * assignment ties an entity to a capability with a usage limit and reset cadence. Deprecated:
      * use `GET /api/v1/customers/{id}/entities/entitlements`.
      */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(id: String): AssignmentListPage = list(id, AssignmentListParams.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(
         id: String,
         params: AssignmentListParams = AssignmentListParams.none(),
@@ -43,25 +43,25 @@ interface AssignmentService {
     ): AssignmentListPage = list(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(
         id: String,
         params: AssignmentListParams = AssignmentListParams.none(),
     ): AssignmentListPage = list(id, params, RequestOptions.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(
         params: AssignmentListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AssignmentListPage
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(params: AssignmentListParams): AssignmentListPage = list(params, RequestOptions.none())
 
     /** @see list */
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
     fun list(id: String, requestOptions: RequestOptions): AssignmentListPage =
         list(id, AssignmentListParams.none(), requestOptions)
 
@@ -72,12 +72,16 @@ interface AssignmentService {
      * Deprecated: use `PUT /api/v1/customers/{id}/entities/entitlements` with the body key
      * `entityEntitlements`.
      */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+    )
     fun upsert(id: String, params: AssignmentUpsertParams): AssignmentUpsertResponse =
         upsert(id, params, RequestOptions.none())
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+    )
     fun upsert(
         id: String,
         params: AssignmentUpsertParams,
@@ -85,12 +89,16 @@ interface AssignmentService {
     ): AssignmentUpsertResponse = upsert(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+    )
     fun upsert(params: AssignmentUpsertParams): AssignmentUpsertResponse =
         upsert(params, RequestOptions.none())
 
     /** @see upsert */
-    @Deprecated("deprecated")
+    @Deprecated(
+        "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+    )
     fun upsert(
         params: AssignmentUpsertParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -112,13 +120,13 @@ interface AssignmentService {
          * Returns a raw HTTP response for `get /api/v1-beta/customers/{id}/assignments`, but is
          * otherwise the same as [AssignmentService.list].
          */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(id: String): HttpResponseFor<AssignmentListPage> =
             list(id, AssignmentListParams.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(
             id: String,
@@ -128,7 +136,7 @@ interface AssignmentService {
             list(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(
             id: String,
@@ -136,7 +144,7 @@ interface AssignmentService {
         ): HttpResponseFor<AssignmentListPage> = list(id, params, RequestOptions.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(
             params: AssignmentListParams,
@@ -144,13 +152,13 @@ interface AssignmentService {
         ): HttpResponseFor<AssignmentListPage>
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(params: AssignmentListParams): HttpResponseFor<AssignmentListPage> =
             list(params, RequestOptions.none())
 
         /** @see list */
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.customers.entities.entitlements.list` instead.")
         @MustBeClosed
         fun list(id: String, requestOptions: RequestOptions): HttpResponseFor<AssignmentListPage> =
             list(id, AssignmentListParams.none(), requestOptions)
@@ -159,7 +167,9 @@ interface AssignmentService {
          * Returns a raw HTTP response for `put /api/v1-beta/customers/{id}/assignments`, but is
          * otherwise the same as [AssignmentService.upsert].
          */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+        )
         @MustBeClosed
         fun upsert(
             id: String,
@@ -167,7 +177,9 @@ interface AssignmentService {
         ): HttpResponseFor<AssignmentUpsertResponse> = upsert(id, params, RequestOptions.none())
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+        )
         @MustBeClosed
         fun upsert(
             id: String,
@@ -177,13 +189,17 @@ interface AssignmentService {
             upsert(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+        )
         @MustBeClosed
         fun upsert(params: AssignmentUpsertParams): HttpResponseFor<AssignmentUpsertResponse> =
             upsert(params, RequestOptions.none())
 
         /** @see upsert */
-        @Deprecated("deprecated")
+        @Deprecated(
+            "Use `v1.customers.entities.entitlements.upsert` instead. Its body key is `entityEntitlements`."
+        )
         @MustBeClosed
         fun upsert(
             params: AssignmentUpsertParams,

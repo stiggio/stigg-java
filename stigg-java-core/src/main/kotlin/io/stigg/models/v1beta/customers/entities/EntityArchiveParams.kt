@@ -26,7 +26,7 @@ import kotlin.jvm.optionals.getOrNull
  * Archives entities in bulk for the given customer by id. Upsert an archived entity to restore it.
  * Deprecated: use `POST /api/v1/customers/{id}/entities/archive`.
  */
-@Deprecated("deprecated")
+@Deprecated("Use `v1.customers.entities.archive` instead.")
 class EntityArchiveParams
 private constructor(
     private val id: String?,

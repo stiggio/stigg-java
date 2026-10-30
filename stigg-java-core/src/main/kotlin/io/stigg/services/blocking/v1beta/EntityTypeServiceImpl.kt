@@ -34,7 +34,7 @@ class EntityTypeServiceImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntityTypeService =
         EntityTypeServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.list` instead.")
     override fun list(
         params: EntityTypeListParams,
         requestOptions: RequestOptions,
@@ -42,7 +42,7 @@ class EntityTypeServiceImpl internal constructor(private val clientOptions: Clie
         // get /api/v1-beta/entity-types
         withRawResponse().list(params, requestOptions).parse()
 
-    @Deprecated("deprecated")
+    @Deprecated("Use `v1.entity_types.upsert` instead.")
     override fun upsert(
         params: EntityTypeUpsertParams,
         requestOptions: RequestOptions,
@@ -66,7 +66,7 @@ class EntityTypeServiceImpl internal constructor(private val clientOptions: Clie
         private val listHandler: Handler<EntityTypeListPageResponse> =
             jsonHandler<EntityTypeListPageResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.list` instead.")
         override fun list(
             params: EntityTypeListParams,
             requestOptions: RequestOptions,
@@ -101,7 +101,7 @@ class EntityTypeServiceImpl internal constructor(private val clientOptions: Clie
         private val upsertHandler: Handler<EntityTypeUpsertResponse> =
             jsonHandler<EntityTypeUpsertResponse>(clientOptions.jsonMapper)
 
-        @Deprecated("deprecated")
+        @Deprecated("Use `v1.entity_types.upsert` instead.")
         override fun upsert(
             params: EntityTypeUpsertParams,
             requestOptions: RequestOptions,
