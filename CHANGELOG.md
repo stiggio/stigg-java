@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0-beta.59](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.58...v0.1.0-beta.59) (2026-11-04)
+
+
+### Bug Fixes
+
+* sync OpenAPI spec from stigg-api ([7971c7c](https://github.com/stiggio/stigg-java/commit/7971c7cd1bf014a86a62739534ab577e1a9710a8))
+
+
+### Chores
+
+* align README version references with the release manifest for stlc codegen ([309ffb6](https://github.com/stiggio/stigg-java/commit/309ffb60069b55cacb87f453dcf9b1aa94faee61))
+
 ## [0.1.0-beta.58](https://github.com/stiggio/stigg-java/compare/v0.1.0-beta.57...v0.1.0-beta.58) (2026-10-30)
 
 
