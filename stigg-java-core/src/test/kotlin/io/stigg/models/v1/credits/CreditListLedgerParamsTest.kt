@@ -4,6 +4,7 @@ package io.stigg.models.v1.credits
 
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -16,10 +17,12 @@ internal class CreditListLedgerParamsTest {
             .after("after")
             .before("before")
             .currencyId("currencyId")
+            .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .eventType("eventType")
             .limit(1L)
             .reservationId("x")
             .resourceId("resourceId")
+            .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
             .build()
@@ -33,10 +36,12 @@ internal class CreditListLedgerParamsTest {
                 .after("after")
                 .before("before")
                 .currencyId("currencyId")
+                .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .eventType("eventType")
                 .limit(1L)
                 .reservationId("x")
                 .resourceId("resourceId")
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .build()
@@ -69,10 +74,12 @@ internal class CreditListLedgerParamsTest {
                 .after("after")
                 .before("before")
                 .currencyId("currencyId")
+                .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .eventType("eventType")
                 .limit(1L)
                 .reservationId("x")
                 .resourceId("resourceId")
+                .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
                 .build()
@@ -86,10 +93,12 @@ internal class CreditListLedgerParamsTest {
                     .put("after", "after")
                     .put("before", "before")
                     .put("currencyId", "currencyId")
+                    .put("endDate", "2019-12-27T18:11:19.117Z")
                     .put("eventType", "eventType")
                     .put("limit", "1")
                     .put("reservationId", "x")
                     .put("resourceId", "resourceId")
+                    .put("startDate", "2019-12-27T18:11:19.117Z")
                     .build()
             )
     }

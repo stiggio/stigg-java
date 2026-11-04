@@ -6,6 +6,8 @@ import io.stigg.core.Params
 import io.stigg.core.checkRequired
 import io.stigg.core.http.Headers
 import io.stigg.core.http.QueryParams
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -17,10 +19,12 @@ private constructor(
     private val after: String?,
     private val before: String?,
     private val currencyId: String?,
+    private val endDate: OffsetDateTime?,
     private val eventType: String?,
     private val limit: Long?,
     private val reservationId: String?,
     private val resourceId: String?,
+    private val startDate: OffsetDateTime?,
     private val xAccountId: String?,
     private val xEnvironmentId: String?,
     private val additionalHeaders: Headers,
@@ -39,6 +43,9 @@ private constructor(
     /** Filter by currency ID */
     fun currencyId(): Optional<String> = Optional.ofNullable(currencyId)
 
+    /** Filter to events with a timestamp on or before this date, inclusive (ISO 8601) */
+    fun endDate(): Optional<OffsetDateTime> = Optional.ofNullable(endDate)
+
     /** Filter by event type(s), comma-separated */
     fun eventType(): Optional<String> = Optional.ofNullable(eventType)
 
@@ -50,6 +57,9 @@ private constructor(
 
     /** Filter by resource ID */
     fun resourceId(): Optional<String> = Optional.ofNullable(resourceId)
+
+    /** Filter to events with a timestamp on or after this date, inclusive (ISO 8601) */
+    fun startDate(): Optional<OffsetDateTime> = Optional.ofNullable(startDate)
 
     fun xAccountId(): Optional<String> = Optional.ofNullable(xAccountId)
 
@@ -83,10 +93,12 @@ private constructor(
         private var after: String? = null
         private var before: String? = null
         private var currencyId: String? = null
+        private var endDate: OffsetDateTime? = null
         private var eventType: String? = null
         private var limit: Long? = null
         private var reservationId: String? = null
         private var resourceId: String? = null
+        private var startDate: OffsetDateTime? = null
         private var xAccountId: String? = null
         private var xEnvironmentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -98,10 +110,12 @@ private constructor(
             after = creditListLedgerParams.after
             before = creditListLedgerParams.before
             currencyId = creditListLedgerParams.currencyId
+            endDate = creditListLedgerParams.endDate
             eventType = creditListLedgerParams.eventType
             limit = creditListLedgerParams.limit
             reservationId = creditListLedgerParams.reservationId
             resourceId = creditListLedgerParams.resourceId
+            startDate = creditListLedgerParams.startDate
             xAccountId = creditListLedgerParams.xAccountId
             xEnvironmentId = creditListLedgerParams.xEnvironmentId
             additionalHeaders = creditListLedgerParams.additionalHeaders.toBuilder()
@@ -128,6 +142,12 @@ private constructor(
 
         /** Alias for calling [Builder.currencyId] with `currencyId.orElse(null)`. */
         fun currencyId(currencyId: Optional<String>) = currencyId(currencyId.getOrNull())
+
+        /** Filter to events with a timestamp on or before this date, inclusive (ISO 8601) */
+        fun endDate(endDate: OffsetDateTime?) = apply { this.endDate = endDate }
+
+        /** Alias for calling [Builder.endDate] with `endDate.orElse(null)`. */
+        fun endDate(endDate: Optional<OffsetDateTime>) = endDate(endDate.getOrNull())
 
         /** Filter by event type(s), comma-separated */
         fun eventType(eventType: String?) = apply { this.eventType = eventType }
@@ -160,6 +180,12 @@ private constructor(
 
         /** Alias for calling [Builder.resourceId] with `resourceId.orElse(null)`. */
         fun resourceId(resourceId: Optional<String>) = resourceId(resourceId.getOrNull())
+
+        /** Filter to events with a timestamp on or after this date, inclusive (ISO 8601) */
+        fun startDate(startDate: OffsetDateTime?) = apply { this.startDate = startDate }
+
+        /** Alias for calling [Builder.startDate] with `startDate.orElse(null)`. */
+        fun startDate(startDate: Optional<OffsetDateTime>) = startDate(startDate.getOrNull())
 
         fun xAccountId(xAccountId: String?) = apply { this.xAccountId = xAccountId }
 
@@ -288,10 +314,12 @@ private constructor(
                 after,
                 before,
                 currencyId,
+                endDate,
                 eventType,
                 limit,
                 reservationId,
                 resourceId,
+                startDate,
                 xAccountId,
                 xEnvironmentId,
                 additionalHeaders.build(),
@@ -315,10 +343,14 @@ private constructor(
                 after?.let { put("after", it) }
                 before?.let { put("before", it) }
                 currencyId?.let { put("currencyId", it) }
+                endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 eventType?.let { put("eventType", it) }
                 limit?.let { put("limit", it.toString()) }
                 reservationId?.let { put("reservationId", it) }
                 resourceId?.let { put("resourceId", it) }
+                startDate?.let {
+                    put("startDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -333,10 +365,12 @@ private constructor(
             after == other.after &&
             before == other.before &&
             currencyId == other.currencyId &&
+            endDate == other.endDate &&
             eventType == other.eventType &&
             limit == other.limit &&
             reservationId == other.reservationId &&
             resourceId == other.resourceId &&
+            startDate == other.startDate &&
             xAccountId == other.xAccountId &&
             xEnvironmentId == other.xEnvironmentId &&
             additionalHeaders == other.additionalHeaders &&
@@ -349,10 +383,12 @@ private constructor(
             after,
             before,
             currencyId,
+            endDate,
             eventType,
             limit,
             reservationId,
             resourceId,
+            startDate,
             xAccountId,
             xEnvironmentId,
             additionalHeaders,
@@ -360,5 +396,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, eventType=$eventType, limit=$limit, reservationId=$reservationId, resourceId=$resourceId, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CreditListLedgerParams{customerId=$customerId, after=$after, before=$before, currencyId=$currencyId, endDate=$endDate, eventType=$eventType, limit=$limit, reservationId=$reservationId, resourceId=$resourceId, startDate=$startDate, xAccountId=$xAccountId, xEnvironmentId=$xEnvironmentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
