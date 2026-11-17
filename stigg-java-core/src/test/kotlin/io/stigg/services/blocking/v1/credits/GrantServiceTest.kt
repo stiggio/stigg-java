@@ -24,7 +24,7 @@ internal class GrantServiceTest {
                 GrantCreateParams.builder()
                     .xAccountId("X-ACCOUNT-ID")
                     .xEnvironmentId("X-ENVIRONMENT-ID")
-                    .amount(0.0)
+                    .amount(9007199254.0)
                     .currencyId("currencyId")
                     .customerId("customerId")
                     .displayName("displayName")

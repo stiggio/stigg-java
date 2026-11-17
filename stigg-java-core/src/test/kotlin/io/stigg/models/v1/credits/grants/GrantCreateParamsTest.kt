@@ -15,7 +15,7 @@ internal class GrantCreateParamsTest {
         GrantCreateParams.builder()
             .xAccountId("X-ACCOUNT-ID")
             .xEnvironmentId("X-ENVIRONMENT-ID")
-            .amount(0.0)
+            .amount(9007199254.0)
             .currencyId("currencyId")
             .customerId("customerId")
             .displayName("displayName")
@@ -63,7 +63,7 @@ internal class GrantCreateParamsTest {
             GrantCreateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
-                .amount(0.0)
+                .amount(9007199254.0)
                 .currencyId("currencyId")
                 .customerId("customerId")
                 .displayName("displayName")
@@ -119,7 +119,7 @@ internal class GrantCreateParamsTest {
     fun headersWithoutOptionalFields() {
         val params =
             GrantCreateParams.builder()
-                .amount(0.0)
+                .amount(9007199254.0)
                 .currencyId("currencyId")
                 .customerId("customerId")
                 .displayName("displayName")
@@ -137,7 +137,7 @@ internal class GrantCreateParamsTest {
             GrantCreateParams.builder()
                 .xAccountId("X-ACCOUNT-ID")
                 .xEnvironmentId("X-ENVIRONMENT-ID")
-                .amount(0.0)
+                .amount(9007199254.0)
                 .currencyId("currencyId")
                 .customerId("customerId")
                 .displayName("displayName")
@@ -180,7 +180,7 @@ internal class GrantCreateParamsTest {
 
         val body = params._body()
 
-        assertThat(body.amount()).isEqualTo(0.0)
+        assertThat(body.amount()).isEqualTo(9007199254.0)
         assertThat(body.currencyId()).isEqualTo("currencyId")
         assertThat(body.customerId()).isEqualTo("customerId")
         assertThat(body.displayName()).isEqualTo("displayName")
@@ -229,7 +229,7 @@ internal class GrantCreateParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             GrantCreateParams.builder()
-                .amount(0.0)
+                .amount(9007199254.0)
                 .currencyId("currencyId")
                 .customerId("customerId")
                 .displayName("displayName")
@@ -238,7 +238,7 @@ internal class GrantCreateParamsTest {
 
         val body = params._body()
 
-        assertThat(body.amount()).isEqualTo(0.0)
+        assertThat(body.amount()).isEqualTo(9007199254.0)
         assertThat(body.currencyId()).isEqualTo("currencyId")
         assertThat(body.customerId()).isEqualTo("customerId")
         assertThat(body.displayName()).isEqualTo("displayName")
