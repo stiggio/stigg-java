@@ -31,6 +31,7 @@ private constructor(
     private val cadence: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val entityId: JsonField<String>,
+    private val hasSoftLimit: JsonField<Boolean>,
     private val parentId: JsonField<String>,
     private val scopeEntityIds: JsonField<List<String>>,
     private val updatedAt: JsonField<OffsetDateTime>,
@@ -48,6 +49,9 @@ private constructor(
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("entityId") @ExcludeMissing entityId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("hasSoftLimit")
+        @ExcludeMissing
+        hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("parentId") @ExcludeMissing parentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("scopeEntityIds")
         @ExcludeMissing
@@ -67,6 +71,7 @@ private constructor(
         cadence,
         createdAt,
         entityId,
+        hasSoftLimit,
         parentId,
         scopeEntityIds,
         updatedAt,
@@ -107,6 +112,14 @@ private constructor(
      *   missing or null (e.g. if the server responded with an unexpected value).
      */
     fun entityId(): String = entityId.getRequired("entityId")
+
+    /**
+     * Whether usage past `usageLimit` is allowed and still counted, instead of blocked.
+     *
+     * @throws StiggInvalidDataException if the JSON field has an unexpected type or is unexpectedly
+     *   missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun hasSoftLimit(): Boolean = hasSoftLimit.getRequired("hasSoftLimit")
 
     /**
      * Parent entity ID in the hierarchy, or `null` for a root.
@@ -189,6 +202,15 @@ private constructor(
     @JsonProperty("entityId") @ExcludeMissing fun _entityId(): JsonField<String> = entityId
 
     /**
+     * Returns the raw JSON value of [hasSoftLimit].
+     *
+     * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("hasSoftLimit")
+    @ExcludeMissing
+    fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
+
+    /**
      * Returns the raw JSON value of [parentId].
      *
      * Unlike [parentId], this method doesn't throw if the JSON field has an unexpected type.
@@ -257,6 +279,7 @@ private constructor(
          * .cadence()
          * .createdAt()
          * .entityId()
+         * .hasSoftLimit()
          * .parentId()
          * .scopeEntityIds()
          * .updatedAt()
@@ -273,6 +296,7 @@ private constructor(
         private var cadence: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var entityId: JsonField<String>? = null
+        private var hasSoftLimit: JsonField<Boolean>? = null
         private var parentId: JsonField<String>? = null
         private var scopeEntityIds: JsonField<MutableList<String>>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
@@ -287,6 +311,7 @@ private constructor(
             cadence = entitlementListResponse.cadence
             createdAt = entitlementListResponse.createdAt
             entityId = entitlementListResponse.entityId
+            hasSoftLimit = entitlementListResponse.hasSoftLimit
             parentId = entitlementListResponse.parentId
             scopeEntityIds = entitlementListResponse.scopeEntityIds.map { it.toMutableList() }
             updatedAt = entitlementListResponse.updatedAt
@@ -340,6 +365,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
+
+        /** Whether usage past `usageLimit` is allowed and still counted, instead of blocked. */
+        fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(JsonField.of(hasSoftLimit))
+
+        /**
+         * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+            this.hasSoftLimit = hasSoftLimit
+        }
 
         /** Parent entity ID in the hierarchy, or `null` for a root. */
         fun parentId(parentId: String?) = parentId(JsonField.ofNullable(parentId))
@@ -476,6 +515,7 @@ private constructor(
          * .cadence()
          * .createdAt()
          * .entityId()
+         * .hasSoftLimit()
          * .parentId()
          * .scopeEntityIds()
          * .updatedAt()
@@ -490,6 +530,7 @@ private constructor(
                 checkRequired("cadence", cadence),
                 checkRequired("createdAt", createdAt),
                 checkRequired("entityId", entityId),
+                checkRequired("hasSoftLimit", hasSoftLimit),
                 checkRequired("parentId", parentId),
                 checkRequired("scopeEntityIds", scopeEntityIds).map { it.toImmutable() },
                 checkRequired("updatedAt", updatedAt),
@@ -519,6 +560,7 @@ private constructor(
         cadence()
         createdAt()
         entityId()
+        hasSoftLimit()
         parentId()
         scopeEntityIds()
         updatedAt()
@@ -547,6 +589,7 @@ private constructor(
             (if (cadence.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (entityId.asKnown().isPresent) 1 else 0) +
+            (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
             (if (parentId.asKnown().isPresent) 1 else 0) +
             (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
@@ -564,6 +607,7 @@ private constructor(
             cadence == other.cadence &&
             createdAt == other.createdAt &&
             entityId == other.entityId &&
+            hasSoftLimit == other.hasSoftLimit &&
             parentId == other.parentId &&
             scopeEntityIds == other.scopeEntityIds &&
             updatedAt == other.updatedAt &&
@@ -579,6 +623,7 @@ private constructor(
             cadence,
             createdAt,
             entityId,
+            hasSoftLimit,
             parentId,
             scopeEntityIds,
             updatedAt,
@@ -592,5 +637,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EntitlementListResponse{id=$id, cadence=$cadence, createdAt=$createdAt, entityId=$entityId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, updatedAt=$updatedAt, usageLimit=$usageLimit, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+        "EntitlementListResponse{id=$id, cadence=$cadence, createdAt=$createdAt, entityId=$entityId, hasSoftLimit=$hasSoftLimit, parentId=$parentId, scopeEntityIds=$scopeEntityIds, updatedAt=$updatedAt, usageLimit=$usageLimit, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
 }

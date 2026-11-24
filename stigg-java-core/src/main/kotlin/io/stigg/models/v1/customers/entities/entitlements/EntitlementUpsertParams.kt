@@ -518,6 +518,7 @@ private constructor(
         private val cadence: JsonField<String>,
         private val currencyId: JsonField<String>,
         private val featureId: JsonField<String>,
+        private val hasSoftLimit: JsonField<Boolean>,
         private val parentId: JsonField<String>,
         private val scopeEntityIds: JsonField<List<String>>,
         private val usageLimit: JsonField<Double>,
@@ -536,6 +537,9 @@ private constructor(
             @JsonProperty("featureId")
             @ExcludeMissing
             featureId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("hasSoftLimit")
+            @ExcludeMissing
+            hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("parentId")
             @ExcludeMissing
             parentId: JsonField<String> = JsonMissing.of(),
@@ -550,6 +554,7 @@ private constructor(
             cadence,
             currencyId,
             featureId,
+            hasSoftLimit,
             parentId,
             scopeEntityIds,
             usageLimit,
@@ -589,6 +594,15 @@ private constructor(
          *   server responded with an unexpected value).
          */
         fun featureId(): Optional<String> = featureId.getOptional("featureId")
+
+        /**
+         * Allow usage past `usageLimit` and keep counting it, instead of blocking. Defaults to
+         * `false` on create; omit on update to keep the current value.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun hasSoftLimit(): Optional<Boolean> = hasSoftLimit.getOptional("hasSoftLimit")
 
         /**
          * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new node
@@ -649,6 +663,16 @@ private constructor(
         @JsonProperty("featureId") @ExcludeMissing fun _featureId(): JsonField<String> = featureId
 
         /**
+         * Returns the raw JSON value of [hasSoftLimit].
+         *
+         * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("hasSoftLimit")
+        @ExcludeMissing
+        fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
+
+        /**
          * Returns the raw JSON value of [parentId].
          *
          * Unlike [parentId], this method doesn't throw if the JSON field has an unexpected type.
@@ -706,6 +730,7 @@ private constructor(
             private var cadence: JsonField<String> = JsonMissing.of()
             private var currencyId: JsonField<String> = JsonMissing.of()
             private var featureId: JsonField<String> = JsonMissing.of()
+            private var hasSoftLimit: JsonField<Boolean> = JsonMissing.of()
             private var parentId: JsonField<String> = JsonMissing.of()
             private var scopeEntityIds: JsonField<MutableList<String>>? = null
             private var usageLimit: JsonField<Double> = JsonMissing.of()
@@ -717,6 +742,7 @@ private constructor(
                 cadence = entityEntitlement.cadence
                 currencyId = entityEntitlement.currencyId
                 featureId = entityEntitlement.featureId
+                hasSoftLimit = entityEntitlement.hasSoftLimit
                 parentId = entityEntitlement.parentId
                 scopeEntityIds = entityEntitlement.scopeEntityIds.map { it.toMutableList() }
                 usageLimit = entityEntitlement.usageLimit
@@ -776,6 +802,23 @@ private constructor(
              * supported value.
              */
             fun featureId(featureId: JsonField<String>) = apply { this.featureId = featureId }
+
+            /**
+             * Allow usage past `usageLimit` and keep counting it, instead of blocking. Defaults to
+             * `false` on create; omit on update to keep the current value.
+             */
+            fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(JsonField.of(hasSoftLimit))
+
+            /**
+             * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                this.hasSoftLimit = hasSoftLimit
+            }
 
             /**
              * Parent entity ID in the hierarchy. Omit to leave the current parent untouched (a new
@@ -886,6 +929,7 @@ private constructor(
                     cadence,
                     currencyId,
                     featureId,
+                    hasSoftLimit,
                     parentId,
                     (scopeEntityIds ?: JsonMissing.of()).map { it.toImmutable() },
                     usageLimit,
@@ -913,6 +957,7 @@ private constructor(
             cadence()
             currencyId()
             featureId()
+            hasSoftLimit()
             parentId()
             scopeEntityIds()
             usageLimit()
@@ -939,6 +984,7 @@ private constructor(
                 (if (cadence.asKnown().isPresent) 1 else 0) +
                 (if (currencyId.asKnown().isPresent) 1 else 0) +
                 (if (featureId.asKnown().isPresent) 1 else 0) +
+                (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                 (if (parentId.asKnown().isPresent) 1 else 0) +
                 (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                 (if (usageLimit.asKnown().isPresent) 1 else 0)
@@ -953,6 +999,7 @@ private constructor(
                 cadence == other.cadence &&
                 currencyId == other.currencyId &&
                 featureId == other.featureId &&
+                hasSoftLimit == other.hasSoftLimit &&
                 parentId == other.parentId &&
                 scopeEntityIds == other.scopeEntityIds &&
                 usageLimit == other.usageLimit &&
@@ -965,6 +1012,7 @@ private constructor(
                 cadence,
                 currencyId,
                 featureId,
+                hasSoftLimit,
                 parentId,
                 scopeEntityIds,
                 usageLimit,
@@ -975,7 +1023,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "EntityEntitlement{entityId=$entityId, cadence=$cadence, currencyId=$currencyId, featureId=$featureId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+            "EntityEntitlement{entityId=$entityId, cadence=$cadence, currencyId=$currencyId, featureId=$featureId, hasSoftLimit=$hasSoftLimit, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

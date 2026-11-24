@@ -234,6 +234,7 @@ private constructor(
         private val displayName: JsonField<String>,
         private val entityId: JsonField<String>,
         private val entityTypeId: JsonField<String>,
+        private val hasSoftLimit: JsonField<Boolean>,
         private val parentId: JsonField<String>,
         private val scopeEntityIds: JsonField<List<String>>,
         private val usageLimit: JsonField<Double>,
@@ -260,6 +261,9 @@ private constructor(
             @JsonProperty("entityTypeId")
             @ExcludeMissing
             entityTypeId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("hasSoftLimit")
+            @ExcludeMissing
+            hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("parentId")
             @ExcludeMissing
             parentId: JsonField<String> = JsonMissing.of(),
@@ -290,6 +294,7 @@ private constructor(
             displayName,
             entityId,
             entityTypeId,
+            hasSoftLimit,
             parentId,
             scopeEntityIds,
             usageLimit,
@@ -345,6 +350,15 @@ private constructor(
         fun entityTypeId(): String = entityTypeId.getRequired("entityTypeId")
 
         /**
+         * Whether usage past `usageLimit` is allowed and still counted. `null` when the node has no
+         * usage configuration.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
+         *   server responded with an unexpected value).
+         */
+        fun hasSoftLimit(): Optional<Boolean> = hasSoftLimit.getOptional("hasSoftLimit")
+
+        /**
          * External id of the parent entity in the tree. `null` means the entity is either a root or
          * not yet placed in the hierarchy — placement rides on an assignment, so an entity with no
          * limits set has no parent yet. Both render at the top level; use it to rebuild the tree.
@@ -364,7 +378,7 @@ private constructor(
         fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
         /**
-         * Hard usage limit for this node per cadence period.
+         * Usage limit for this node per cadence period.
          *
          * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g. if the
          *   server responded with an unexpected value).
@@ -461,6 +475,16 @@ private constructor(
         fun _entityTypeId(): JsonField<String> = entityTypeId
 
         /**
+         * Returns the raw JSON value of [hasSoftLimit].
+         *
+         * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("hasSoftLimit")
+        @ExcludeMissing
+        fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
+
+        /**
          * Returns the raw JSON value of [parentId].
          *
          * Unlike [parentId], this method doesn't throw if the JSON field has an unexpected type.
@@ -555,6 +579,7 @@ private constructor(
              * .displayName()
              * .entityId()
              * .entityTypeId()
+             * .hasSoftLimit()
              * .parentId()
              * .scopeEntityIds()
              * .usageLimit()
@@ -574,6 +599,7 @@ private constructor(
             private var displayName: JsonField<String>? = null
             private var entityId: JsonField<String>? = null
             private var entityTypeId: JsonField<String>? = null
+            private var hasSoftLimit: JsonField<Boolean>? = null
             private var parentId: JsonField<String>? = null
             private var scopeEntityIds: JsonField<MutableList<String>>? = null
             private var usageLimit: JsonField<Double>? = null
@@ -591,6 +617,7 @@ private constructor(
                 displayName = data.displayName
                 entityId = data.entityId
                 entityTypeId = data.entityTypeId
+                hasSoftLimit = data.hasSoftLimit
                 parentId = data.parentId
                 scopeEntityIds = data.scopeEntityIds.map { it.toMutableList() }
                 usageLimit = data.usageLimit
@@ -696,6 +723,35 @@ private constructor(
             }
 
             /**
+             * Whether usage past `usageLimit` is allowed and still counted. `null` when the node
+             * has no usage configuration.
+             */
+            fun hasSoftLimit(hasSoftLimit: Boolean?) =
+                hasSoftLimit(JsonField.ofNullable(hasSoftLimit))
+
+            /**
+             * Alias for [Builder.hasSoftLimit].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun hasSoftLimit(hasSoftLimit: Boolean) = hasSoftLimit(hasSoftLimit as Boolean?)
+
+            /** Alias for calling [Builder.hasSoftLimit] with `hasSoftLimit.orElse(null)`. */
+            fun hasSoftLimit(hasSoftLimit: Optional<Boolean>) =
+                hasSoftLimit(hasSoftLimit.getOrNull())
+
+            /**
+             * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                this.hasSoftLimit = hasSoftLimit
+            }
+
+            /**
              * External id of the parent entity in the tree. `null` means the entity is either a
              * root or not yet placed in the hierarchy — placement rides on an assignment, so an
              * entity with no limits set has no parent yet. Both render at the top level; use it to
@@ -745,7 +801,7 @@ private constructor(
                     }
             }
 
-            /** Hard usage limit for this node per cadence period. */
+            /** Usage limit for this node per cadence period. */
             fun usageLimit(usageLimit: Double?) = usageLimit(JsonField.ofNullable(usageLimit))
 
             /**
@@ -899,6 +955,7 @@ private constructor(
              * .displayName()
              * .entityId()
              * .entityTypeId()
+             * .hasSoftLimit()
              * .parentId()
              * .scopeEntityIds()
              * .usageLimit()
@@ -916,6 +973,7 @@ private constructor(
                     checkRequired("displayName", displayName),
                     checkRequired("entityId", entityId),
                     checkRequired("entityTypeId", entityTypeId),
+                    checkRequired("hasSoftLimit", hasSoftLimit),
                     checkRequired("parentId", parentId),
                     checkRequired("scopeEntityIds", scopeEntityIds).map { it.toImmutable() },
                     checkRequired("usageLimit", usageLimit),
@@ -949,6 +1007,7 @@ private constructor(
             displayName()
             entityId()
             entityTypeId()
+            hasSoftLimit()
             parentId()
             scopeEntityIds()
             usageLimit()
@@ -981,6 +1040,7 @@ private constructor(
                 (if (displayName.asKnown().isPresent) 1 else 0) +
                 (if (entityId.asKnown().isPresent) 1 else 0) +
                 (if (entityTypeId.asKnown().isPresent) 1 else 0) +
+                (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                 (if (parentId.asKnown().isPresent) 1 else 0) +
                 (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                 (if (usageLimit.asKnown().isPresent) 1 else 0) +
@@ -1001,6 +1061,7 @@ private constructor(
                 displayName == other.displayName &&
                 entityId == other.entityId &&
                 entityTypeId == other.entityTypeId &&
+                hasSoftLimit == other.hasSoftLimit &&
                 parentId == other.parentId &&
                 scopeEntityIds == other.scopeEntityIds &&
                 usageLimit == other.usageLimit &&
@@ -1019,6 +1080,7 @@ private constructor(
                 displayName,
                 entityId,
                 entityTypeId,
+                hasSoftLimit,
                 parentId,
                 scopeEntityIds,
                 usageLimit,
@@ -1034,7 +1096,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{cadence=$cadence, currentUsage=$currentUsage, displayName=$displayName, entityId=$entityId, entityTypeId=$entityTypeId, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+            "Data{cadence=$cadence, currentUsage=$currentUsage, displayName=$displayName, entityId=$entityId, entityTypeId=$entityTypeId, hasSoftLimit=$hasSoftLimit, parentId=$parentId, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, usagePeriodEnd=$usagePeriodEnd, usagePeriodStart=$usagePeriodStart, utilization=$utilization, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
     }
 
     class Pagination

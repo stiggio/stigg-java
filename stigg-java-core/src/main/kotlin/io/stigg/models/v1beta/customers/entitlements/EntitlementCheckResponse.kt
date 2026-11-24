@@ -1372,6 +1372,7 @@ private constructor(
             private constructor(
                 private val currentUsage: JsonField<Double>,
                 private val entityId: JsonField<String>,
+                private val hasSoftLimit: JsonField<Boolean>,
                 private val isGranted: JsonField<Boolean>,
                 private val scopeEntityIds: JsonField<List<String>>,
                 private val usageLimit: JsonField<Double>,
@@ -1386,6 +1387,9 @@ private constructor(
                     @JsonProperty("entityId")
                     @ExcludeMissing
                     entityId: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("hasSoftLimit")
+                    @ExcludeMissing
+                    hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
                     @JsonProperty("isGranted")
                     @ExcludeMissing
                     isGranted: JsonField<Boolean> = JsonMissing.of(),
@@ -1398,6 +1402,7 @@ private constructor(
                 ) : this(
                     currentUsage,
                     entityId,
+                    hasSoftLimit,
                     isGranted,
                     scopeEntityIds,
                     usageLimit,
@@ -1423,6 +1428,16 @@ private constructor(
                 fun entityId(): String = entityId.getRequired("entityId")
 
                 /**
+                 * Whether this node allows usage past `usageLimit` and keeps counting it. When
+                 * `true`, the node does not deny on its own limit.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun hasSoftLimit(): Boolean = hasSoftLimit.getRequired("hasSoftLimit")
+
+                /**
                  * Whether this node alone permits the requested usage.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
@@ -1443,7 +1458,7 @@ private constructor(
                 fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
-                 * Hard usage limit for this node; null when the entity has no entity entitlement.
+                 * Usage limit for this node; null when the entity has no entity entitlement.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -1469,6 +1484,16 @@ private constructor(
                 @JsonProperty("entityId")
                 @ExcludeMissing
                 fun _entityId(): JsonField<String> = entityId
+
+                /**
+                 * Returns the raw JSON value of [hasSoftLimit].
+                 *
+                 * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
 
                 /**
                  * Returns the raw JSON value of [isGranted].
@@ -1521,6 +1546,7 @@ private constructor(
                      * ```java
                      * .currentUsage()
                      * .entityId()
+                     * .hasSoftLimit()
                      * .isGranted()
                      * .scopeEntityIds()
                      * .usageLimit()
@@ -1534,6 +1560,7 @@ private constructor(
 
                     private var currentUsage: JsonField<Double>? = null
                     private var entityId: JsonField<String>? = null
+                    private var hasSoftLimit: JsonField<Boolean>? = null
                     private var isGranted: JsonField<Boolean>? = null
                     private var scopeEntityIds: JsonField<MutableList<String>>? = null
                     private var usageLimit: JsonField<Double>? = null
@@ -1543,6 +1570,7 @@ private constructor(
                     internal fun from(betaChainNode: BetaChainNode) = apply {
                         currentUsage = betaChainNode.currentUsage
                         entityId = betaChainNode.entityId
+                        hasSoftLimit = betaChainNode.hasSoftLimit
                         isGranted = betaChainNode.isGranted
                         scopeEntityIds = betaChainNode.scopeEntityIds.map { it.toMutableList() }
                         usageLimit = betaChainNode.usageLimit
@@ -1575,6 +1603,24 @@ private constructor(
                      * not yet supported value.
                      */
                     fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
+
+                    /**
+                     * Whether this node allows usage past `usageLimit` and keeps counting it. When
+                     * `true`, the node does not deny on its own limit.
+                     */
+                    fun hasSoftLimit(hasSoftLimit: Boolean) =
+                        hasSoftLimit(JsonField.of(hasSoftLimit))
+
+                    /**
+                     * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                        this.hasSoftLimit = hasSoftLimit
+                    }
 
                     /** Whether this node alone permits the requested usage. */
                     fun isGranted(isGranted: Boolean) = isGranted(JsonField.of(isGranted))
@@ -1622,8 +1668,7 @@ private constructor(
                     }
 
                     /**
-                     * Hard usage limit for this node; null when the entity has no entity
-                     * entitlement.
+                     * Usage limit for this node; null when the entity has no entity entitlement.
                      */
                     fun usageLimit(usageLimit: Double?) =
                         usageLimit(JsonField.ofNullable(usageLimit))
@@ -1681,6 +1726,7 @@ private constructor(
                      * ```java
                      * .currentUsage()
                      * .entityId()
+                     * .hasSoftLimit()
                      * .isGranted()
                      * .scopeEntityIds()
                      * .usageLimit()
@@ -1692,6 +1738,7 @@ private constructor(
                         BetaChainNode(
                             checkRequired("currentUsage", currentUsage),
                             checkRequired("entityId", entityId),
+                            checkRequired("hasSoftLimit", hasSoftLimit),
                             checkRequired("isGranted", isGranted),
                             checkRequired("scopeEntityIds", scopeEntityIds).map {
                                 it.toImmutable()
@@ -1720,6 +1767,7 @@ private constructor(
 
                     currentUsage()
                     entityId()
+                    hasSoftLimit()
                     isGranted()
                     scopeEntityIds()
                     usageLimit()
@@ -1744,6 +1792,7 @@ private constructor(
                 internal fun validity(): Int =
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                         (if (entityId.asKnown().isPresent) 1 else 0) +
+                        (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                         (if (isGranted.asKnown().isPresent) 1 else 0) +
                         (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                         (if (usageLimit.asKnown().isPresent) 1 else 0)
@@ -1756,6 +1805,7 @@ private constructor(
                     return other is BetaChainNode &&
                         currentUsage == other.currentUsage &&
                         entityId == other.entityId &&
+                        hasSoftLimit == other.hasSoftLimit &&
                         isGranted == other.isGranted &&
                         scopeEntityIds == other.scopeEntityIds &&
                         usageLimit == other.usageLimit &&
@@ -1766,6 +1816,7 @@ private constructor(
                     Objects.hash(
                         currentUsage,
                         entityId,
+                        hasSoftLimit,
                         isGranted,
                         scopeEntityIds,
                         usageLimit,
@@ -1776,7 +1827,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, hasSoftLimit=$hasSoftLimit, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
             }
 
             class InnerFeature
@@ -4142,6 +4193,7 @@ private constructor(
             private constructor(
                 private val currentUsage: JsonField<Double>,
                 private val entityId: JsonField<String>,
+                private val hasSoftLimit: JsonField<Boolean>,
                 private val isGranted: JsonField<Boolean>,
                 private val scopeEntityIds: JsonField<List<String>>,
                 private val usageLimit: JsonField<Double>,
@@ -4156,6 +4208,9 @@ private constructor(
                     @JsonProperty("entityId")
                     @ExcludeMissing
                     entityId: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("hasSoftLimit")
+                    @ExcludeMissing
+                    hasSoftLimit: JsonField<Boolean> = JsonMissing.of(),
                     @JsonProperty("isGranted")
                     @ExcludeMissing
                     isGranted: JsonField<Boolean> = JsonMissing.of(),
@@ -4168,6 +4223,7 @@ private constructor(
                 ) : this(
                     currentUsage,
                     entityId,
+                    hasSoftLimit,
                     isGranted,
                     scopeEntityIds,
                     usageLimit,
@@ -4193,6 +4249,16 @@ private constructor(
                 fun entityId(): String = entityId.getRequired("entityId")
 
                 /**
+                 * Whether this node allows usage past `usageLimit` and keeps counting it. When
+                 * `true`, the node does not deny on its own limit.
+                 *
+                 * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+                 *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+                 *   value).
+                 */
+                fun hasSoftLimit(): Boolean = hasSoftLimit.getRequired("hasSoftLimit")
+
+                /**
                  * Whether this node alone permits the requested usage.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
@@ -4213,7 +4279,7 @@ private constructor(
                 fun scopeEntityIds(): List<String> = scopeEntityIds.getRequired("scopeEntityIds")
 
                 /**
-                 * Hard usage limit for this node; null when the entity has no entity entitlement.
+                 * Usage limit for this node; null when the entity has no entity entitlement.
                  *
                  * @throws StiggInvalidDataException if the JSON field has an unexpected type (e.g.
                  *   if the server responded with an unexpected value).
@@ -4239,6 +4305,16 @@ private constructor(
                 @JsonProperty("entityId")
                 @ExcludeMissing
                 fun _entityId(): JsonField<String> = entityId
+
+                /**
+                 * Returns the raw JSON value of [hasSoftLimit].
+                 *
+                 * Unlike [hasSoftLimit], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("hasSoftLimit")
+                @ExcludeMissing
+                fun _hasSoftLimit(): JsonField<Boolean> = hasSoftLimit
 
                 /**
                  * Returns the raw JSON value of [isGranted].
@@ -4291,6 +4367,7 @@ private constructor(
                      * ```java
                      * .currentUsage()
                      * .entityId()
+                     * .hasSoftLimit()
                      * .isGranted()
                      * .scopeEntityIds()
                      * .usageLimit()
@@ -4304,6 +4381,7 @@ private constructor(
 
                     private var currentUsage: JsonField<Double>? = null
                     private var entityId: JsonField<String>? = null
+                    private var hasSoftLimit: JsonField<Boolean>? = null
                     private var isGranted: JsonField<Boolean>? = null
                     private var scopeEntityIds: JsonField<MutableList<String>>? = null
                     private var usageLimit: JsonField<Double>? = null
@@ -4313,6 +4391,7 @@ private constructor(
                     internal fun from(betaChainNode: BetaChainNode) = apply {
                         currentUsage = betaChainNode.currentUsage
                         entityId = betaChainNode.entityId
+                        hasSoftLimit = betaChainNode.hasSoftLimit
                         isGranted = betaChainNode.isGranted
                         scopeEntityIds = betaChainNode.scopeEntityIds.map { it.toMutableList() }
                         usageLimit = betaChainNode.usageLimit
@@ -4345,6 +4424,24 @@ private constructor(
                      * not yet supported value.
                      */
                     fun entityId(entityId: JsonField<String>) = apply { this.entityId = entityId }
+
+                    /**
+                     * Whether this node allows usage past `usageLimit` and keeps counting it. When
+                     * `true`, the node does not deny on its own limit.
+                     */
+                    fun hasSoftLimit(hasSoftLimit: Boolean) =
+                        hasSoftLimit(JsonField.of(hasSoftLimit))
+
+                    /**
+                     * Sets [Builder.hasSoftLimit] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.hasSoftLimit] with a well-typed [Boolean]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun hasSoftLimit(hasSoftLimit: JsonField<Boolean>) = apply {
+                        this.hasSoftLimit = hasSoftLimit
+                    }
 
                     /** Whether this node alone permits the requested usage. */
                     fun isGranted(isGranted: Boolean) = isGranted(JsonField.of(isGranted))
@@ -4392,8 +4489,7 @@ private constructor(
                     }
 
                     /**
-                     * Hard usage limit for this node; null when the entity has no entity
-                     * entitlement.
+                     * Usage limit for this node; null when the entity has no entity entitlement.
                      */
                     fun usageLimit(usageLimit: Double?) =
                         usageLimit(JsonField.ofNullable(usageLimit))
@@ -4451,6 +4547,7 @@ private constructor(
                      * ```java
                      * .currentUsage()
                      * .entityId()
+                     * .hasSoftLimit()
                      * .isGranted()
                      * .scopeEntityIds()
                      * .usageLimit()
@@ -4462,6 +4559,7 @@ private constructor(
                         BetaChainNode(
                             checkRequired("currentUsage", currentUsage),
                             checkRequired("entityId", entityId),
+                            checkRequired("hasSoftLimit", hasSoftLimit),
                             checkRequired("isGranted", isGranted),
                             checkRequired("scopeEntityIds", scopeEntityIds).map {
                                 it.toImmutable()
@@ -4490,6 +4588,7 @@ private constructor(
 
                     currentUsage()
                     entityId()
+                    hasSoftLimit()
                     isGranted()
                     scopeEntityIds()
                     usageLimit()
@@ -4514,6 +4613,7 @@ private constructor(
                 internal fun validity(): Int =
                     (if (currentUsage.asKnown().isPresent) 1 else 0) +
                         (if (entityId.asKnown().isPresent) 1 else 0) +
+                        (if (hasSoftLimit.asKnown().isPresent) 1 else 0) +
                         (if (isGranted.asKnown().isPresent) 1 else 0) +
                         (scopeEntityIds.asKnown().getOrNull()?.size ?: 0) +
                         (if (usageLimit.asKnown().isPresent) 1 else 0)
@@ -4526,6 +4626,7 @@ private constructor(
                     return other is BetaChainNode &&
                         currentUsage == other.currentUsage &&
                         entityId == other.entityId &&
+                        hasSoftLimit == other.hasSoftLimit &&
                         isGranted == other.isGranted &&
                         scopeEntityIds == other.scopeEntityIds &&
                         usageLimit == other.usageLimit &&
@@ -4536,6 +4637,7 @@ private constructor(
                     Objects.hash(
                         currentUsage,
                         entityId,
+                        hasSoftLimit,
                         isGranted,
                         scopeEntityIds,
                         usageLimit,
@@ -4546,7 +4648,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
+                    "BetaChainNode{currentUsage=$currentUsage, entityId=$entityId, hasSoftLimit=$hasSoftLimit, isGranted=$isGranted, scopeEntityIds=$scopeEntityIds, usageLimit=$usageLimit, additionalProperties=$additionalProperties}"
             }
 
             /**
