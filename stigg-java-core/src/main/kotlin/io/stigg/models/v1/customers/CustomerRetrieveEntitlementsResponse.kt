@@ -189,6 +189,7 @@ private constructor(
     private constructor(
         private val accessDeniedReason: JsonField<AccessDeniedReason>,
         private val entitlements: JsonField<List<Entitlement>>,
+        private val entitlementsUpdatedAt: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -200,7 +201,10 @@ private constructor(
             @JsonProperty("entitlements")
             @ExcludeMissing
             entitlements: JsonField<List<Entitlement>> = JsonMissing.of(),
-        ) : this(accessDeniedReason, entitlements, mutableMapOf())
+            @JsonProperty("entitlementsUpdatedAt")
+            @ExcludeMissing
+            entitlementsUpdatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        ) : this(accessDeniedReason, entitlements, entitlementsUpdatedAt, mutableMapOf())
 
         /**
          * Reason why entitlements access was denied, if applicable
@@ -218,6 +222,16 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun entitlements(): List<Entitlement> = entitlements.getRequired("entitlements")
+
+        /**
+         * When these entitlements last changed, on the same clock as the entitlementsUpdated event;
+         * always set, also when the list is empty.
+         *
+         * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun entitlementsUpdatedAt(): OffsetDateTime =
+            entitlementsUpdatedAt.getRequired("entitlementsUpdatedAt")
 
         /**
          * Returns the raw JSON value of [accessDeniedReason].
@@ -238,6 +252,16 @@ private constructor(
         @JsonProperty("entitlements")
         @ExcludeMissing
         fun _entitlements(): JsonField<List<Entitlement>> = entitlements
+
+        /**
+         * Returns the raw JSON value of [entitlementsUpdatedAt].
+         *
+         * Unlike [entitlementsUpdatedAt], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("entitlementsUpdatedAt")
+        @ExcludeMissing
+        fun _entitlementsUpdatedAt(): JsonField<OffsetDateTime> = entitlementsUpdatedAt
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -260,6 +284,7 @@ private constructor(
              * ```java
              * .accessDeniedReason()
              * .entitlements()
+             * .entitlementsUpdatedAt()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -270,12 +295,14 @@ private constructor(
 
             private var accessDeniedReason: JsonField<AccessDeniedReason>? = null
             private var entitlements: JsonField<MutableList<Entitlement>>? = null
+            private var entitlementsUpdatedAt: JsonField<OffsetDateTime>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(data: Data) = apply {
                 accessDeniedReason = data.accessDeniedReason
                 entitlements = data.entitlements.map { it.toMutableList() }
+                entitlementsUpdatedAt = data.entitlementsUpdatedAt
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -336,6 +363,24 @@ private constructor(
             fun addEntitlement(credit: Entitlement.Credit) =
                 addEntitlement(Entitlement.ofCredit(credit))
 
+            /**
+             * When these entitlements last changed, on the same clock as the entitlementsUpdated
+             * event; always set, also when the list is empty.
+             */
+            fun entitlementsUpdatedAt(entitlementsUpdatedAt: OffsetDateTime) =
+                entitlementsUpdatedAt(JsonField.of(entitlementsUpdatedAt))
+
+            /**
+             * Sets [Builder.entitlementsUpdatedAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.entitlementsUpdatedAt] with a well-typed
+             * [OffsetDateTime] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun entitlementsUpdatedAt(entitlementsUpdatedAt: JsonField<OffsetDateTime>) = apply {
+                this.entitlementsUpdatedAt = entitlementsUpdatedAt
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -364,6 +409,7 @@ private constructor(
              * ```java
              * .accessDeniedReason()
              * .entitlements()
+             * .entitlementsUpdatedAt()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -372,6 +418,7 @@ private constructor(
                 Data(
                     checkRequired("accessDeniedReason", accessDeniedReason),
                     checkRequired("entitlements", entitlements).map { it.toImmutable() },
+                    checkRequired("entitlementsUpdatedAt", entitlementsUpdatedAt),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -394,6 +441,7 @@ private constructor(
 
             accessDeniedReason().ifPresent { it.validate() }
             entitlements().forEach { it.validate() }
+            entitlementsUpdatedAt()
             validated = true
         }
 
@@ -414,7 +462,8 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (accessDeniedReason.asKnown().getOrNull()?.validity() ?: 0) +
-                (entitlements.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+                (entitlements.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (entitlementsUpdatedAt.asKnown().isPresent) 1 else 0)
 
         /** Reason why entitlements access was denied, if applicable */
         class AccessDeniedReason
@@ -4562,17 +4611,23 @@ private constructor(
             return other is Data &&
                 accessDeniedReason == other.accessDeniedReason &&
                 entitlements == other.entitlements &&
+                entitlementsUpdatedAt == other.entitlementsUpdatedAt &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(accessDeniedReason, entitlements, additionalProperties)
+            Objects.hash(
+                accessDeniedReason,
+                entitlements,
+                entitlementsUpdatedAt,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{accessDeniedReason=$accessDeniedReason, entitlements=$entitlements, additionalProperties=$additionalProperties}"
+            "Data{accessDeniedReason=$accessDeniedReason, entitlements=$entitlements, entitlementsUpdatedAt=$entitlementsUpdatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

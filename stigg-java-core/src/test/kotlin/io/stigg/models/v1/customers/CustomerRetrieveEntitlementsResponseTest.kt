@@ -67,6 +67,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                 .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
+                        .entitlementsUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
                 .build()
@@ -123,6 +124,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                             .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
                     )
+                    .entitlementsUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
     }
@@ -185,6 +187,7 @@ internal class CustomerRetrieveEntitlementsResponseTest {
                                 .validUntil(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
                         )
+                        .entitlementsUpdatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
                 .build()
