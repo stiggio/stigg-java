@@ -28,7 +28,7 @@ private constructor(
     private val currencyId: String?,
     private val dimensions: Dimensions?,
     private val featureId: String?,
-    private val requestedUsage: Long?,
+    private val requestedUsage: Double?,
     private val requestedValues: List<String>?,
     private val reservationExpiresAt: OffsetDateTime?,
     private val reservationId: String?,
@@ -58,8 +58,11 @@ private constructor(
     /** Feature ID (refId) to check. Mutually exclusive with `currencyId`. */
     fun featureId(): Optional<String> = Optional.ofNullable(featureId)
 
-    /** Requested usage amount to evaluate against the entitlement limit (numeric features only) */
-    fun requestedUsage(): Optional<Long> = Optional.ofNullable(requestedUsage)
+    /**
+     * Requested usage amount to evaluate against the entitlement limit (numeric features only);
+     * negative for usage given back
+     */
+    fun requestedUsage(): Optional<Double> = Optional.ofNullable(requestedUsage)
 
     /** Requested values to evaluate against allowed values (enum features only) */
     fun requestedValues(): Optional<List<String>> = Optional.ofNullable(requestedValues)
@@ -124,7 +127,7 @@ private constructor(
         private var currencyId: String? = null
         private var dimensions: Dimensions? = null
         private var featureId: String? = null
-        private var requestedUsage: Long? = null
+        private var requestedUsage: Double? = null
         private var requestedValues: MutableList<String>? = null
         private var reservationExpiresAt: OffsetDateTime? = null
         private var reservationId: String? = null
@@ -188,19 +191,20 @@ private constructor(
         fun featureId(featureId: Optional<String>) = featureId(featureId.getOrNull())
 
         /**
-         * Requested usage amount to evaluate against the entitlement limit (numeric features only)
+         * Requested usage amount to evaluate against the entitlement limit (numeric features only);
+         * negative for usage given back
          */
-        fun requestedUsage(requestedUsage: Long?) = apply { this.requestedUsage = requestedUsage }
+        fun requestedUsage(requestedUsage: Double?) = apply { this.requestedUsage = requestedUsage }
 
         /**
          * Alias for [Builder.requestedUsage].
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun requestedUsage(requestedUsage: Long) = requestedUsage(requestedUsage as Long?)
+        fun requestedUsage(requestedUsage: Double) = requestedUsage(requestedUsage as Double?)
 
         /** Alias for calling [Builder.requestedUsage] with `requestedUsage.orElse(null)`. */
-        fun requestedUsage(requestedUsage: Optional<Long>) =
+        fun requestedUsage(requestedUsage: Optional<Double>) =
             requestedUsage(requestedUsage.getOrNull())
 
         /** Requested values to evaluate against allowed values (enum features only) */

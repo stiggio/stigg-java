@@ -51,6 +51,7 @@ internal class UsageReportResponseTest {
                         .addEntity(
                             UsageReportResponse.Data.Entity.builder()
                                 .currentUsage(0.0)
+                                .currentUsageExact(0.0)
                                 .customerId("customerId")
                                 .entitlementId("entitlementId")
                                 .entityId("entityId")
@@ -103,6 +104,7 @@ internal class UsageReportResponseTest {
                     .addEntity(
                         UsageReportResponse.Data.Entity.builder()
                             .currentUsage(0.0)
+                            .currentUsageExact(0.0)
                             .customerId("customerId")
                             .entitlementId("entitlementId")
                             .entityId("entityId")
@@ -159,6 +161,7 @@ internal class UsageReportResponseTest {
                         .addEntity(
                             UsageReportResponse.Data.Entity.builder()
                                 .currentUsage(0.0)
+                                .currentUsageExact(0.0)
                                 .customerId("customerId")
                                 .entitlementId("entitlementId")
                                 .entityId("entityId")

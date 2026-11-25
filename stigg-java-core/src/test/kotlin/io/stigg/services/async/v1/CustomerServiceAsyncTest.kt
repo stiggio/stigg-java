@@ -198,7 +198,7 @@ internal class CustomerServiceAsyncTest {
                             .build()
                     )
                     .featureId("x")
-                    .requestedUsage(0L)
+                    .requestedUsage(-9007199254740991.0)
                     .addRequestedValue("string")
                     .reservationExpiresAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .reservationId("x")

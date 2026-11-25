@@ -26,7 +26,7 @@ internal class EntitlementServiceAsyncTest {
                             .build()
                     )
                     .featureId("x")
-                    .requestedUsage(0L)
+                    .requestedUsage(-9007199254740991.0)
                     .addRequestedValue("string")
                     .resourceId("x")
                     .xAccountId("X-ACCOUNT-ID")

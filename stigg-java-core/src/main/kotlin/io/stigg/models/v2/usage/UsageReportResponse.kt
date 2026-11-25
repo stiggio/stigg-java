@@ -1925,6 +1925,7 @@ private constructor(
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val currentUsage: JsonField<Double>,
+            private val currentUsageExact: JsonField<Double>,
             private val customerId: JsonField<String>,
             private val entitlementId: JsonField<String>,
             private val entityId: JsonField<String>,
@@ -1941,6 +1942,9 @@ private constructor(
                 @JsonProperty("currentUsage")
                 @ExcludeMissing
                 currentUsage: JsonField<Double> = JsonMissing.of(),
+                @JsonProperty("currentUsageExact")
+                @ExcludeMissing
+                currentUsageExact: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("customerId")
                 @ExcludeMissing
                 customerId: JsonField<String> = JsonMissing.of(),
@@ -1967,6 +1971,7 @@ private constructor(
                 featureId: JsonField<String> = JsonMissing.of(),
             ) : this(
                 currentUsage,
+                currentUsageExact,
                 customerId,
                 entitlementId,
                 entityId,
@@ -1979,13 +1984,24 @@ private constructor(
             )
 
             /**
-             * The absolute usage counted against the entitlement
+             * The usage counted against the entitlement, rounded up to a whole number and never
+             * below zero (readable by older SDKs). See currentUsageExact for the exact value
              *
              * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
              *   unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
              */
             fun currentUsage(): Double = currentUsage.getRequired("currentUsage")
+
+            /**
+             * The exact usage counted against the entitlement, to the millionth; negative after a
+             * negative usage report takes it below zero
+             *
+             * @throws StiggInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currentUsageExact(): Double = currentUsageExact.getRequired("currentUsageExact")
 
             /**
              * The customer whose usage counted towards the entitlement
@@ -2066,6 +2082,16 @@ private constructor(
             @JsonProperty("currentUsage")
             @ExcludeMissing
             fun _currentUsage(): JsonField<Double> = currentUsage
+
+            /**
+             * Returns the raw JSON value of [currentUsageExact].
+             *
+             * Unlike [currentUsageExact], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("currentUsageExact")
+            @ExcludeMissing
+            fun _currentUsageExact(): JsonField<Double> = currentUsageExact
 
             /**
              * Returns the raw JSON value of [customerId].
@@ -2165,6 +2191,7 @@ private constructor(
                  * The following fields are required:
                  * ```java
                  * .currentUsage()
+                 * .currentUsageExact()
                  * .customerId()
                  * .entitlementId()
                  * .entityId()
@@ -2180,6 +2207,7 @@ private constructor(
             class Builder internal constructor() {
 
                 private var currentUsage: JsonField<Double>? = null
+                private var currentUsageExact: JsonField<Double>? = null
                 private var customerId: JsonField<String>? = null
                 private var entitlementId: JsonField<String>? = null
                 private var entityId: JsonField<String>? = null
@@ -2193,6 +2221,7 @@ private constructor(
                 @JvmSynthetic
                 internal fun from(entity: Entity) = apply {
                     currentUsage = entity.currentUsage
+                    currentUsageExact = entity.currentUsageExact
                     customerId = entity.customerId
                     entitlementId = entity.entitlementId
                     entityId = entity.entityId
@@ -2204,7 +2233,10 @@ private constructor(
                     additionalProperties = entity.additionalProperties.toMutableMap()
                 }
 
-                /** The absolute usage counted against the entitlement */
+                /**
+                 * The usage counted against the entitlement, rounded up to a whole number and never
+                 * below zero (readable by older SDKs). See currentUsageExact for the exact value
+                 */
                 fun currentUsage(currentUsage: Double) = currentUsage(JsonField.of(currentUsage))
 
                 /**
@@ -2216,6 +2248,24 @@ private constructor(
                  */
                 fun currentUsage(currentUsage: JsonField<Double>) = apply {
                     this.currentUsage = currentUsage
+                }
+
+                /**
+                 * The exact usage counted against the entitlement, to the millionth; negative after
+                 * a negative usage report takes it below zero
+                 */
+                fun currentUsageExact(currentUsageExact: Double) =
+                    currentUsageExact(JsonField.of(currentUsageExact))
+
+                /**
+                 * Sets [Builder.currentUsageExact] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currentUsageExact] with a well-typed [Double]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currentUsageExact(currentUsageExact: JsonField<Double>) = apply {
+                    this.currentUsageExact = currentUsageExact
                 }
 
                 /** The customer whose usage counted towards the entitlement */
@@ -2380,6 +2430,7 @@ private constructor(
                  * The following fields are required:
                  * ```java
                  * .currentUsage()
+                 * .currentUsageExact()
                  * .customerId()
                  * .entitlementId()
                  * .entityId()
@@ -2393,6 +2444,7 @@ private constructor(
                 fun build(): Entity =
                     Entity(
                         checkRequired("currentUsage", currentUsage),
+                        checkRequired("currentUsageExact", currentUsageExact),
                         checkRequired("customerId", customerId),
                         checkRequired("entitlementId", entitlementId),
                         checkRequired("entityId", entityId),
@@ -2423,6 +2475,7 @@ private constructor(
                 }
 
                 currentUsage()
+                currentUsageExact()
                 customerId()
                 entitlementId()
                 entityId()
@@ -2451,6 +2504,7 @@ private constructor(
             @JvmSynthetic
             internal fun validity(): Int =
                 (if (currentUsage.asKnown().isPresent) 1 else 0) +
+                    (if (currentUsageExact.asKnown().isPresent) 1 else 0) +
                     (if (customerId.asKnown().isPresent) 1 else 0) +
                     (if (entitlementId.asKnown().isPresent) 1 else 0) +
                     (if (entityId.asKnown().isPresent) 1 else 0) +
@@ -2467,6 +2521,7 @@ private constructor(
 
                 return other is Entity &&
                     currentUsage == other.currentUsage &&
+                    currentUsageExact == other.currentUsageExact &&
                     customerId == other.customerId &&
                     entitlementId == other.entitlementId &&
                     entityId == other.entityId &&
@@ -2481,6 +2536,7 @@ private constructor(
             private val hashCode: Int by lazy {
                 Objects.hash(
                     currentUsage,
+                    currentUsageExact,
                     customerId,
                     entitlementId,
                     entityId,
@@ -2496,7 +2552,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Entity{currentUsage=$currentUsage, customerId=$customerId, entitlementId=$entitlementId, entityId=$entityId, resourceId=$resourceId, scopeEntityIds=$scopeEntityIds, usageUpdatedAt=$usageUpdatedAt, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
+                "Entity{currentUsage=$currentUsage, currentUsageExact=$currentUsageExact, customerId=$customerId, entitlementId=$entitlementId, entityId=$entityId, resourceId=$resourceId, scopeEntityIds=$scopeEntityIds, usageUpdatedAt=$usageUpdatedAt, currencyId=$currencyId, featureId=$featureId, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
